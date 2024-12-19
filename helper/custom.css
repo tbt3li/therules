@@ -11,7 +11,7 @@
 .ssl:hover{box-shadow: 0 0 25px 0 rgba(20,27,201,.05);cursor: pointer;background-image: linear-gradient(-45deg, #8d40fb 0%, #5a57fb 100%)}
 .database:hover{box-shadow: 0 0 25px 0 rgba(20,27,201,.05);cursor: pointer;background-image: linear-gradient(-45deg, #27b88d 0%, #22dd73 100%)}
 
-.table{font-size:13px;}
+.table{font-size:14px;}
 .bl {font-weight:bold;}
 .table td{text-align: center; }
 .table th{text-align: center; }
