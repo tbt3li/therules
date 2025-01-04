@@ -266,7 +266,22 @@ h6 {font-weight:bold;}
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+<script>
+        document.querySelectorAll('.bookmark').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default jump to anchor
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId).querySelector('h6'); // Focus on heading
 
+                // Calculate position to center the heading
+                const offset = window.innerHeight / 2 - targetElement.offsetHeight / 2;
+                const y = targetElement.getBoundingClientRect().top + window.scrollY - offset;
+
+                // Smoothly scroll to calculated position
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            });
+        });
+    </script>
 </body>
 
 </html>
