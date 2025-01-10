@@ -1,3 +1,5 @@
+document.write(`
+
  <footer id="footer" class="footer dark-background">
     <div class="container">
 	  <div style="margin: 0 0 30px 0;">
@@ -22,3 +24,5 @@
       </div>
     </div>
   </footer>
+
+`);
