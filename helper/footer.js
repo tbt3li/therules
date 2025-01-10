@@ -7,8 +7,8 @@ document.write(`
 			<img src="../assets/img/wlogo.png" style="max-height: 150px;" alt="" class="img-fluid flex-shrink-0">
 		</div>
 	  <div>
-      <h4 class="sitename">The One & Only Your Great Leader <strong style="color:#ef6603;">WOLFICH</strong></h4>
-      <p>I am committed to leading with strategy, unity, respect and dedication to ensure our clan's success.</p>
+      <h4 class="sitename"><strong style="color:#ef6603;">THE</strong> Great Family Gang</h4>
+      <p>We committed to leading with strategy, unity, respect and dedication to ensure our clan's success.</p>
       <div class="social-links d-flex justify-content-center">
         <a href="#"><i class="bi bi-discord"></i></a>
       </div>
