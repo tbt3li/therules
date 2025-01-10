@@ -9,7 +9,6 @@ document.write(`
 	  <div>
       <h4 class="sitename"><strong style="color:#ef6603;">THE</strong> Great Family Gang</h4>
       <p>We committed to leading with strategy, unity, respect and dedication to ensure our clan's success.</p>
-      <p>Gang Lead by: WOLFICH</p>
       <div class="social-links d-flex justify-content-center">
         <a href="\"><i class="bi bi-discord"></i></a>
       </div>
