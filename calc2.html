@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Total Battle Stack Calculator</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8" />
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="include-html" data-href="./html/image-modal.html"></div>
+    <div class="include-html" data-href="./html/text-entry-modal.html"></div>
+    <div class="include-html" data-href="./html/export-modal.html"></div>
+    <div class="include-html" data-href="./html/help-modal.html"></div>
+    <div class="include-html" data-href="./html/report-modal.html"></div>
+
+    <div class="summary" style="background: lightblue">
+      <div class="h6"><strong>Total Battle Stack Calculator</strong></div>
+      <div>
+        <strong style="font-weight: 500">Version:</strong>
+        <em id="app-version-number">(loading)</em>
+      </div>
+      <div>
+        <strong style="font-weight: 500">Developer:</strong>
+        <em><a href="mailto:kai.totalbattle@outlook.com">Kai@k132</a> (HoD Fireborn)</em>
+      </div>
+      <div>
+        <strong style="font-weight: 500">Disclaimer:</strong>
+        <em>I don't guarantee the results of this tool. Use good judgement, and have FUN!</em>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="section">
+      <div class="lead" style="vertical-align: middle;">
+        <em>Need help getting started? View the <a href="javascript:null" onclick="$('#help-modal').modal('show')">guide</a>.</em>
+      </div>
+    </div>
+
+    <!-- <h1>Epic Monster Troop Calculator</h1> -->
+
+    <div id="mainForm">
+      <div class="separator">1. Unit selection</div>
+      <div class="section">
+        <div class="text-description">
+          This is where you set up the unit types you'd like to take on your march. These will be either the troops or
+          monsters you can train, or the mercenaries you have available.
+        </div>
+
+        <div class="text-description">
+          <em
+            >Note: Holding the "Alt" key ("Option" on Mac) while clicking any unit type will select all units of that
+            type and tier. Give it a try!</em
+          >
+        </div>
+      </div>
+
+      <div id="Guardsmen-category" class="troop-category"></div>
+
+      <div id="Specialists-category" class="troop-category"></div>
+
+      <div id="Mercenaries-category" class="troop-category"></div>
+
+      <div id="Monsters-category" class="troop-category"></div>
+
+      <div class="section">
+        <button
+          type="button"
+          id="clear-selection"
+          class="btn btn-secondary button-stack"
+          onclick="clearTroopSelection()"
+        >
+          Clear Unit Selection
+          <i class="fa-solid fa-eraser" style="margin-left: 8px"></i>
+        </button>
+      </div>
+
+      <div class="separator">2. Army size and limits</div>
+
+      <div class="section">
+        <div class="text-label">Limits (optional)</div>
+        <div class="text-description">
+          Trained troops require leadership, mercenaries require authority, and monsters require dominance. You can find
+          your limits on the
+          <a href="javascript:null" onclick="ImageBox.show(SharedImages.LADExample)">troop selection screen</a>, and
+          they will vary widely based on the hero/captain you have selected, or whether you're taking your dragon.
+        </div>
+
+        <div class="text-description">
+          Filling in this information allows us to detect when your selected configuration will exceed your limits. It
+          will also enable use of the
+          <strong>Find it for me</strong> button.
+        </div>
+
+        <div class="flex-container flex-row-container">
+          <div class="flex-element">
+            <label for="available-leadership"><strong>Leadership</strong></label>
+            <div id="leadership-amount" class="lad-amount">0 of</div>
+            <input
+              type="number"
+              name="available-leadership"
+              id="available-leadership"
+              class="text-input lad-display leadership-display"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, 0, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="available-authority"><strong>Authority</strong></label>
+            <div id="authority-amount" class="lad-amount">0 of</div>
+            <input
+              type="number"
+              name="available-authority"
+              id="available-authority"
+              class="text-input lad-display authority-display"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, 0, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="available-dominance"><strong>Dominance</strong></label>
+            <div id="dominance-amount" class="lad-amount">0 of</div>
+            <input
+              type="number"
+              name="available-dominance"
+              id="available-dominance"
+              class="text-input lad-display dominance-display"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, 0, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="text-label">Base Count</div>
+        <div class="text-description">
+          This is the size of your smallest, strongest stack of normal troops (usually guardsmen). All other squads
+          sizes will be calculated using this as a basis, optimized so that your best troops survive as long as
+          possible.
+        </div>
+
+        <div class="text-description">
+          The <strong>Find it for me</strong> button is experimental. It will try to find the best (biggest) base count
+          number for you based on available leadership. Let me know how it goes!
+        </div>
+        <div class="flex-container flex-row-container">
+          <input
+            type="number"
+            name="reference-count"
+            id="reference-count"
+            class="text-input"
+            style="margin-right: 13px"
+            min="1"
+            value="50"
+            onchange="onChangeWithIntValidation(this, 1, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+          />
+
+          <button
+            name="find-count"
+            id="find-count"
+            class="btn btn-secondary"
+            style="padding-right: 21px; padding-left: 21px"
+            onclick="reverseCalculateArmy(false)"
+            disabled
+          >
+            Find it for me...
+            <i class="fa-solid fa-flask" style="margin-left: 8px"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="separator">3. Battle planning</div>
+
+      <div class="section">
+        <!-- <div class="text-label">Bring it all together</div> -->
+        <div class="text-description">
+          Once your settings have been provided, use the
+          <strong>Create Battle Plan</strong> button to generate a report and view the exact number of troops to take on
+          your march. The report can be further refined by providing additional information below.
+        </div>
+        <button
+          type="button"
+          id="generate-report"
+          class="btn btn-secondary button-stack"
+          disabled
+          data-bs-toggle="modal"
+          data-bs-target="#report-modal"
+        >
+          Create Battle Plan
+          <i class="fa-solid fa-bolt-lightning" style="margin-left: 8px"></i>
+        </button>
+      </div>
+
+      <div class="separator">Other Inputs</div>
+
+      <div class="section">
+        <div class="text-label">Revival Cost Reduction</div>
+        <div class="text-description">
+          Find this by clicking on your temple. It will help us provide a more accurate prediction of revival cost. It
+          ranges from 1.04 at level 1, to 5.91 at level 45.
+        </div>
+        <input
+          type="number"
+          name="revival-cost-reduction"
+          id="revival-cost-reduction"
+          class="text-input"
+          min="0"
+          value="1.00"
+          onchange="onChangeWithFloatValidation(this, 1, 5.91, 2, () => updateTroops(this))"
+        />
+      </div>
+
+      <div class="section">
+        <div class="text-label">Enemy Stacks</div>
+        <div class="text-description">
+          Specifying how many stacks the enemy is carrying will let us build a better attack assessment.
+        </div>
+        <input
+          type="number"
+          name="enemy-stack-count"
+          id="enemy-stack-count"
+          class="text-input"
+          min="1"
+          value="4"
+          onchange="onChangeWithIntValidation(this, 1, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+        />
+      </div>
+
+      <div class="section">
+        <div class="text-label">Specialist Adjustment</div>
+        <div class="text-description">
+          You typically want specialists to be killed before guardsmen, because guardsmen are stronger against monsters.
+          Choose how many specialists you'd like to add to each stack so they get targeted (and killed) first.
+        </div>
+        <input
+          type="number"
+          name="specialist-adjustment"
+          id="specialist-adjustment"
+          class="text-input"
+          min="0"
+          value="10"
+          onchange="onChangeWithIntValidation(this, 0, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+        />
+      </div>
+
+      <div class="section">
+        <div class="text-label">Health Bonuses</div>
+        <div class="text-description">
+          If you have any health bonuses that apply disproportionately to a given unit type, specify those here. Don't
+          worry about being precise, but (for example) if you're using Wu then you'll want to account for the increased
+          health of flying units.
+        </div>
+
+        <div class="flex-container flex-row-container">
+          <div class="flex-element">
+            <label for="health-bonus-Flying">Flying health %</label>
+            <input
+              type="number"
+              name="health-bonus-Flying"
+              id="health-bonus-Flying"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="health-bonus-Mounted">Mounted health %</label>
+            <input
+              type="number"
+              name="health-bonus-Mounted"
+              id="health-bonus-Mounted"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="health-bonus-Melee">Melee health %</label>
+            <input
+              type="number"
+              name="health-bonus-Melee"
+              id="health-bonus-Melee"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="health-bonus-Ranged">Ranged health %</label>
+            <input
+              type="number"
+              name="health-bonus-Ranged"
+              id="health-bonus-Ranged"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="health-bonus-Guardsman">Guardsman health %</label>
+            <input
+              type="number"
+              name="health-bonus-Guardsman"
+              id="health-bonus-Guardsman"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="health-bonus-Specialist">Specialist health %</label>
+            <input
+              type="number"
+              name="health-bonus-Specialist"
+              id="health-bonus-Specialist"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+
+          <div class="flex-element">
+            <label for="health-bonus-Monster">Monster health %</label>
+            <input
+              type="number"
+              name="health-bonus-Monster"
+              id="health-bonus-Monster"
+              class="text-input"
+              min="0"
+              value="0"
+              onchange="onChangeWithIntValidation(this, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, () => updateTroops(this))"
+            />
+          </div>
+        </div>
+
+        <div class="section"></div>
+        <div class="separator">Settings</div>
+
+        <div class="section">
+          <div class="section">
+            <div class="text-label">Local Profiles</div>
+            <div class="text-description">
+              Save, load, and manage different local profiles. Great for switching between captains, or when facing
+              multiple epics with different requirements (like snake vs wolf during Ragnarok).
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="input-group" style="max-width: 800px">
+              <select id="profile-selector" class="form-select" onchange="onProfileSelected()">
+                <option id="profile-default" selected>Select a profile...</option>
+                <option>Some profile</option>
+              </select>
+              <button class="btn-outline-secondary btn" type="button" onclick="addNewProfile()">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              <button
+                id="save-profile-button"
+                class="btn-outline-secondary btn"
+                type="button"
+                disabled
+                onclick="saveCurrentProfile()"
+              >
+                <i class="fa-regular fa-floppy-disk"></i>
+              </button>
+              <button
+                id="delete-profile-button"
+                class="btn-outline-secondary btn"
+                type="button"
+                disabled
+                onclick="removeCurrentProfile()"
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="section" id="import-export-advanced">
+            <div class="text-label">Import and Export</div>
+            <div class="text-description">
+              Import settings from a file, or export them to a file. Great for sharing with friends and clan mates.
+            </div>
+
+            <input
+              id="import-file"
+              name="import-file"
+              type="file"
+              onchange="importSelectedFile(event)"
+              accept="application/json"
+              hidden
+            />
+
+            <button class="btn btn-secondary button-stack" onclick="selectFileForImport()">
+              Import Settings
+              <i class="fa-solid fa-download" style="margin-left: 8px"></i>
+            </button>
+
+            <button class="btn btn-secondary button-stack" onclick="saveConfigurationToFile()">
+              Export Settings
+              <i class="fa-solid fa-upload" style="margin-left: 8px"></i>
+            </button>
+          </div>
+
+          <div class="section">
+            <div class="text-label">Data Cleanup</div>
+            <div class="text-description">
+              Is something no longer working how you'd expect? Do you want to start over clean? Click the
+              <strong>Factory Reset</strong> button to restore all settings to their default values.
+              <em>Note: The page will automatically reload once settings have been cleared.</em>
+            </div>
+
+            <button class="btn btn-secondary button-stack" onclick="factoryReset()">
+              Factory Reset
+              <i class="fa-solid fa-arrows-rotate" style="margin-left: 8px"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+
+    <script src="./generated/redist/native/bundle.js"></script>
+  </body>
+</html>
