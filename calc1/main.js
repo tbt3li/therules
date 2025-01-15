@@ -130,7 +130,7 @@ document.addEventListener('alpine:init', () => {
       },
       troops: [],  // initialize the troops array in the state
       fetchDataAndUpdate: function() {
-        fetch('./assets/data/troops.json')
+        fetch('./calc1/troops.json')
           .then(response => response.json())
           .then(data => {
             this.processData(data);
