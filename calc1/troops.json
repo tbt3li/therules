@@ -1,0 +1,1514 @@
+[
+    {
+        "category": "Guardsmen",
+        "tier": 1,
+        "type": "ranged",
+        "name": "Archer I",
+        "hp": 150,
+        "size": 1,
+        "img": "g1_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 1,
+        "type": "melee",
+        "name": "Spearman I",
+        "hp": 150,
+        "size": 1,
+        "img": "g1_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 1,
+        "type": "mounted",
+        "name": "Rider I",
+        "hp": 300,
+        "size": 2,
+        "img": "g1_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 1,
+        "type": "engineer",
+        "name": "Catapult I",
+        "hp": 1500,
+        "size": 10,
+        "img": "e1_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 2,
+        "type": "ranged",
+        "name": "Archer II",
+        "hp": 270,
+        "size": 1,
+        "img": "g2_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 2,
+        "type": "melee",
+        "name": "Spearman II",
+        "hp": 270,
+        "size": 1,
+        "img": "g2_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 2,
+        "type": "mounted",
+        "name": "Rider II",
+        "hp": 540,
+        "size": 2,
+        "img": "g2_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 2,
+        "type": "engineer",
+        "name": "Catapult II",
+        "hp": 2700,
+        "size": 10,
+        "img": "e2_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 3,
+        "type": "ranged",
+        "name": "Archer III",
+        "hp": 480,
+        "size": 1,
+        "img": "g3_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 3,
+        "type": "melee",
+        "name": "Spearman III",
+        "hp": 480,
+        "size": 1,
+        "img": "g3_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 3,
+        "type": "mounted",
+        "name": "Rider III",
+        "hp": 960,
+        "size": 2,
+        "img": "g3_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 3,
+        "type": "engineer",
+        "name": "Catapult III",
+        "hp": 4860,
+        "size": 10,
+        "img": "e3_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 4,
+        "type": "ranged",
+        "name": "Archer IV",
+        "hp": 870,
+        "size": 1,
+        "img": "g4_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 4,
+        "type": "melee",
+        "name": "Spearman IV",
+        "hp": 870,
+        "size": 1,
+        "img": "g4_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 4,
+        "type": "mounted",
+        "name": "Rider IV",
+        "hp": 1740,
+        "size": 2,
+        "img": "g4_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 4,
+        "type": "engineer",
+        "name": "Catapult IV",
+        "hp": 8750,
+        "size": 10,
+        "img": "e4_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 5,
+        "type": "ranged",
+        "name": "Archer V",
+        "hp": 1560,
+        "size": 1,
+        "img": "g5_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 5,
+        "type": "melee",
+        "name": "Spearman V",
+        "hp": 1560,
+        "size": 1,
+        "img": "g5_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 5,
+        "type": "mounted",
+        "name": "Rider V",
+        "hp": 3120,
+        "size": 2,
+        "img": "g5_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 5,
+        "type": "engineer",
+        "name": "Catapult V",
+        "hp": 15800,
+        "size": 10,
+        "img": "e5_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 5,
+        "type": "flyer",
+        "name": "Battle Griffin V",
+        "hp": 30000,
+        "size": 20,
+        "img": "g5_flyer.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 6,
+        "type": "ranged",
+        "name": "Heavy Arbalaster VI",
+        "hp": 2820,
+        "size": 1,
+        "img": "g6_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 6,
+        "type": "melee",
+        "name": "Heavy Halberdier VI",
+        "hp": 2820,
+        "size": 1,
+        "img": "g6_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 6,
+        "type": "mounted",
+        "name": "Mounted Knight VI",
+        "hp": 5700,
+        "size": 2,
+        "img": "g6_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 6,
+        "type": "flyer",
+        "name": "Battle Griffin VI",
+        "hp": 57000,
+        "size": 20,
+        "img": "g6_flyer.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 6,
+        "type": "engineer",
+        "name": "Siege Ballistae VI",
+        "hp": 28400,
+        "size": 10,
+        "img": "e6_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Heavy Arbalaster VII",
+        "hp": 5100,
+        "size": 1,
+        "img": "g7_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 7,
+        "type": "melee",
+        "name": "Heavy Halberdier VII",
+        "hp": 5100,
+        "size": 1,
+        "img": "g7_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Mounted Knight VII",
+        "hp": 10200,
+        "size": 2,
+        "img": "g7_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Battle Griffin VII",
+        "hp": 102000,
+        "size": 20,
+        "img": "g7_flyer.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 7,
+        "type": "engineer",
+        "name": "Siege Ballistae VII",
+        "hp": 51000,
+        "size": 10,
+        "img": "e7_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 8,
+        "type": "ranged",
+        "name": "Purifier I",
+        "hp": 9180,
+        "size": 1,
+        "img": "g8_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 8,
+        "type": "melee",
+        "name": "Punisher I",
+        "hp": 9180,
+        "size": 1,
+        "img": "g8_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 8,
+        "type": "mounted",
+        "name": "Smiter I",
+        "hp": 18360,
+        "size": 2,
+        "img": "g8_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 8,
+        "type": "flyer",
+        "name": "Corax I",
+        "hp": 183600,
+        "size": 20,
+        "img": "g8_flyer.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 8,
+        "type": "engineer",
+        "name": "Josephine I",
+        "hp": 91800,
+        "size": 10,
+        "img": "e8_cat.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Purifier II",
+        "hp": 16530,
+        "size": 1,
+        "img": "g9_ranged.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 9,
+        "type": "melee",
+        "name": "Punisher II",
+        "hp": 16530,
+        "size": 1,
+        "img": "g9_melee.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Smiter II",
+        "hp": 33060,
+        "size": 2,
+        "img": "g9_mounted.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Corax II",
+        "hp": 330600,
+        "size": 20,
+        "img": "g9_flyer.png"
+    },
+    {
+        "category": "Guardsmen",
+        "tier": 9,
+        "type": "engineer",
+        "name": "Josephine II",
+        "hp": 165300,
+        "size": 10,
+        "img": "e9_cat.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 1,
+        "type": "melee",
+        "name": "Swordsman I",
+        "hp": 150,
+        "size": 1,
+        "img": "s1_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 1,
+        "type": "scout",
+        "name": "Spy I",
+        "hp": 75,
+        "size": 5,
+        "img": "s1_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 2,
+        "type": "melee",
+        "name": "Swordsman II",
+        "hp": 270,
+        "size": 1,
+        "img": "s2_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 2,
+        "type": "scout",
+        "name": "Spy II",
+        "hp": 135,
+        "size": 5,
+        "img": "s2_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 3,
+        "type": "melee",
+        "name": "Swordsman III",
+        "hp": 480,
+        "size": 1,
+        "img": "s3_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 3,
+        "type": "scout",
+        "name": "Spy III",
+        "hp": 240,
+        "size": 5,
+        "img": "s3_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 4,
+        "type": "melee",
+        "name": "Swordsman IV",
+        "hp": 870,
+        "size": 1,
+        "img": "s4_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 4,
+        "type": "scout",
+        "name": "Spy IV",
+        "hp": 450,
+        "size": 5,
+        "img": "s4_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 5,
+        "type": "melee",
+        "name": "Swordsman V",
+        "hp": 1560,
+        "size": 1,
+        "img": "s5_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 5,
+        "type": "scout",
+        "name": "Spy V",
+        "hp": 780,
+        "size": 5,
+        "img": "s5_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 5,
+        "type": "ranged",
+        "name": "Deadshot V",
+        "hp": 1560,
+        "size": 1,
+        "img": "s5_ranged.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 5,
+        "type": "mounted",
+        "name": "Lion Rider V",
+        "hp": 3150,
+        "size": 2,
+        "img": "s5_mounted.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 5,
+        "type": "flyer",
+        "name": "Vulture V",
+        "hp": 1560,
+        "size": 1,
+        "img": "s5_flyer.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 6,
+        "type": "scout",
+        "name": "Swift Jaeger VI",
+        "hp": 1410,
+        "size": 5,
+        "img": "s6_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 6,
+        "type": "ranged",
+        "name": "Deadshot VI",
+        "hp": 2820,
+        "size": 1,
+        "img": "s6_ranged.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 6,
+        "type": "melee",
+        "name": "Heavy Knight VI",
+        "hp": 2820,
+        "size": 1,
+        "img": "s6_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 6,
+        "type": "mounted",
+        "name": "Lion Rider VI",
+        "hp": 5700,
+        "size": 2,
+        "img": "s6_mounted.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 6,
+        "type": "flyer",
+        "name": "Vulture VI",
+        "hp": 2820,
+        "size": 1,
+        "img": "s6_flyer.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 7,
+        "type": "scout",
+        "name": "Swift Jaeger VII",
+        "hp": 2550,
+        "size": 5,
+        "img": "s7_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Deadshot VII",
+        "hp": 5100,
+        "size": 1,
+        "img": "s7_ranged.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 7,
+        "type": "melee",
+        "name": "Heavy Knight VII",
+        "hp": 5100,
+        "size": 1,
+        "img": "s7_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Lion Rider VII",
+        "hp": 10200,
+        "size": 2,
+        "img": "s7_mounted.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Vulture VII",
+        "hp": 5100,
+        "size": 1,
+        "img": "s7_flyer.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 8,
+        "type": "scout",
+        "name": "Panoptic I",
+        "hp": 4590,
+        "size": 5,
+        "img": "s8_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 8,
+        "type": "ranged",
+        "name": "Legitimist I",
+        "hp": 9180,
+        "size": 1,
+        "img": "s8_ranged.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 8,
+        "type": "melee",
+        "name": "Duelist I",
+        "hp": 9180,
+        "size": 1,
+        "img": "s8_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 8,
+        "type": "mounted",
+        "name": "Whitemane I",
+        "hp": 18360,
+        "size": 2,
+        "img": "s8_mounted.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 8,
+        "type": "flyer",
+        "name": "Royal Lion I",
+        "hp": 183600,
+        "size": 20,
+        "img": "s8_flyer.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 9,
+        "type": "scout",
+        "name": "Panoptic II",
+        "hp": 8280,
+        "size": 5,
+        "img": "s9_scout.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Legitimist II",
+        "hp": 16530,
+        "size": 1,
+        "img": "s9_ranged.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 9,
+        "type": "melee",
+        "name": "Duelist II",
+        "hp": 16530,
+        "size": 1,
+        "img": "s9_melee.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Whitemane II",
+        "hp": 33060,
+        "size": 2,
+        "img": "s9_mounted.png"
+    },
+    {
+        "category": "Specialist",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Royal Lion II",
+        "hp": 330600,
+        "size": 20,
+        "img": "s9_flyer.png"
+    },
+    {
+        "category": "Monster",
+        "tier": 3,
+        "type": "flyer",
+        "name": "Emerald Dragon",
+        "hp": 13500,
+        "size": 7,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 3,
+        "type": "ranged",
+        "name": "Water Elemental",
+        "hp": 5700,
+        "size": 3,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 3,
+        "type": "flyer",
+        "name": "Stone Gargoyle",
+        "hp": 15600,
+        "size": 8,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 3,
+        "type": "mounted",
+        "name": "Battle Boar",
+        "hp": 11700,
+        "size": 6,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 4,
+        "type": "ranged",
+        "name": "Magic Dragon",
+        "hp": 45000,
+        "size": 13,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 4,
+        "type": "flyer",
+        "name": "Ice Pheonix",
+        "hp": 51000,
+        "size": 15,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 4,
+        "type": "melee",
+        "name": "Many-Armed Guard",
+        "hp": 39000,
+        "size": 11,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 4,
+        "type": "ranged",
+        "name": "Gorgon Medusa",
+        "hp": 36000,
+        "size": 10,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 5,
+        "type": "mounted",
+        "name": "Desert Vanquisher",
+        "hp": 126000,
+        "size": 20,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 5,
+        "type": "mounted",
+        "name": "Flaming Centaur",
+        "hp": 132000,
+        "size": 21,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 5,
+        "type": "melee",
+        "name": "Ettin",
+        "hp": 144000,
+        "size": 23,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 5,
+        "type": "flyer",
+        "name": "Fearsome Mantiore",
+        "hp": 138000,
+        "size": 22,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 6,
+        "type": "melee",
+        "name": "Crystal Dragon",
+        "hp": 360000,
+        "size": 33,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 6,
+        "type": "melee",
+        "name": "Ruby Golem",
+        "hp": 390000,
+        "size": 35,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 6,
+        "type": "mounted",
+        "name": "Troll Rider",
+        "hp": 330000,
+        "size": 30,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 6,
+        "type": "melee",
+        "name": "Jungle Destroyer",
+        "hp": 390000,
+        "size": 34,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Black Dragon",
+        "hp": 900000,
+        "size": 44,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Destructive Colossus",
+        "hp": 870000,
+        "size": 43,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 7,
+        "type": "melee",
+        "name": "Wind Lord",
+        "hp": 930000,
+        "size": 45,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Ancient Terror",
+        "hp": 840000,
+        "size": 41,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 8,
+        "type": "mounted",
+        "name": "Devastator I",
+        "hp": 1950000,
+        "size": 53,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 8,
+        "type": "flyer",
+        "name": "Fire Phoenix I",
+        "hp": 1980000,
+        "size": 54,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 8,
+        "type": "melee",
+        "name": "Kraken I",
+        "hp": 2010000,
+        "size": 55,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 8,
+        "type": "ranged",
+        "name": "Trickster I",
+        "hp": 1920000,
+        "size": 52,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Devastator II",
+        "hp": 3510000,
+        "size": 53,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Fire Phoenix II",
+        "hp": 3570000,
+        "size": 54,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 9,
+        "type": "melee",
+        "name": "Kraken II",
+        "hp": 3530000,
+        "size": 55,
+        "img": ""
+    },
+    {
+        "category": "Monster",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Trickster II",
+        "hp": 3450000,
+        "size": 52,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 5,
+        "type": "ranged",
+        "name": "Swift Marksman",
+        "hp": 3150,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 5,
+        "type": "",
+        "name": "Epic Monster Hunter V",
+        "hp": 3150,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "",
+        "name": "Ent",
+        "hp": 219000,
+        "size": 39,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "ranged",
+        "name": "Arbalester",
+        "hp": 5700,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Bone Golem",
+        "hp": 210000,
+        "size": 37,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Legionary",
+        "hp": 5700,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "mounted",
+        "name": "Chariot",
+        "hp": 11400,
+        "size": 2,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "flyer",
+        "name": "Sphynx",
+        "hp": 56700,
+        "size": 10,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "flyer",
+        "name": "Shedu",
+        "hp": 56700,
+        "size": 10,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Abomination",
+        "hp": 390000,
+        "size": 68,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "ranged",
+        "name": "Trailseeker",
+        "hp": 5670,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Knight VI",
+        "hp": 5700,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "engineer",
+        "name": "Trebuchet",
+        "hp": 57000,
+        "size": 10,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "scout",
+        "name": "Pathfinder",
+        "hp": 2800,
+        "size": 5,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Archdemon",
+        "hp": 540000,
+        "size": 95,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Death Chariot",
+        "hp": 171000,
+        "size": 30,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "ranged",
+        "name": "Grim Stalker",
+        "hp": 5400,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "flyer",
+        "name": "Wasp-Man",
+        "hp": 5550,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "mounted",
+        "name": "Rhino Rider",
+        "hp": 11340,
+        "size": 2,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "melee",
+        "name": "Chitinous Defender",
+        "hp": 5850,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "mounted",
+        "name": "Combat Anteater",
+        "hp": 6000,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 6,
+        "type": "",
+        "name": "Bounty Hunter VI",
+        "hp": 6090,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Lightning Lord",
+        "hp": 460000,
+        "size": 45,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "melee",
+        "name": "Jungle King",
+        "hp": 330000,
+        "size": 33,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Sea Lord",
+        "hp": 420000,
+        "size": 40,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Fire Lord",
+        "hp": 1680000,
+        "size": 164,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Overlord",
+        "hp": 600000,
+        "size": 60,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Golden Dragon",
+        "hp": 510000,
+        "size": 50,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Life Dragon",
+        "hp": 720000,
+        "size": 70,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "",
+        "name": "Bounty Hunter",
+        "hp": 11220,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "",
+        "name": "Epic Monster Hunter",
+        "hp": 11220,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Shedu",
+        "hp": 408000,
+        "size": 40,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Trailseeker",
+        "hp": 10200,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Grim Stalker VII",
+        "hp": 9600,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Wasp-Man VII",
+        "hp": 9900,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "melee",
+        "name": "Chitinous Defender VII",
+        "hp": 10500,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Combat Anteater VII",
+        "hp": 10800,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Rhino Rider",
+        "hp": 20400,
+        "size": 2,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "ranged",
+        "name": "Arbalester",
+        "hp": 10200,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "melee",
+        "name": "Legionary",
+        "hp": 10200,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "mounted",
+        "name": "Chariot",
+        "hp": 20400,
+        "size": 2,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "melee",
+        "name": "Knight VI",
+        "hp": 10200,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "melee",
+        "name": "Sandworm",
+        "hp": 1290000,
+        "size": 128,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Cursed Dragon",
+        "hp": 960000,
+        "size": 93,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "flyer",
+        "name": "Sphynx",
+        "hp": 408000,
+        "size": 40,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 7,
+        "type": "engineer",
+        "name": "Palintone",
+        "hp": 102000,
+        "size": 10,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "melee",
+        "name": "Scarface",
+        "hp": 33000,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Pounder",
+        "hp": 33000,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Galloper",
+        "hp": 66000,
+        "size": 2,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Jago",
+        "hp": 660000,
+        "size": 20,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Grim Stalker",
+        "hp": 31800,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Wasp-Man",
+        "hp": 32400,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "melee",
+        "name": "Chitinous Defender",
+        "hp": 33600,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Combat Anteater",
+        "hp": 34200,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Warregal",
+        "hp": 660000,
+        "size": 20,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Highlander",
+        "hp": 33000,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "melee",
+        "name": "Slavic Warrior",
+        "hp": 33000,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Quicksand",
+        "hp": 66000,
+        "size": 2,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "engineer",
+        "name": "Ariel",
+        "hp": 330000,
+        "size": 10,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "scout",
+        "name": "Grace",
+        "hp": 16530,
+        "size": 5,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "melee",
+        "name": "Demonic Salamander",
+        "hp": 1230000,
+        "size": 38,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "ranged",
+        "name": "Eternal Cannoneer",
+        "hp": 1320000,
+        "size": 40,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "mounted",
+        "name": "Warden",
+        "hp": 1410000,
+        "size": 43,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "flyer",
+        "name": "Wyvern",
+        "hp": 2070000,
+        "size": 63,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "",
+        "name": "Sup. Epic Monster Hunter",
+        "hp": 75000,
+        "size": 1,
+        "img": ""
+    },
+    {
+        "category": "Merc",
+        "tier": 9,
+        "type": "",
+        "name": "Sup. Yokai Hunter",
+        "hp": 75000,
+        "size": 1,
+        "img": ""
+    }
+]
