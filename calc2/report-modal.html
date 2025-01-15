@@ -1,0 +1,29 @@
+
+<div id="report-modal" class="modal modal-md" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Battle Plan</h3>
+        <button type="button" class="close btn" data-bs-dismiss="modal">&times;</button>
+      </div>
+
+      <div id="report-body" class="modal-body"></div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(() => {
+    // Set up the settings copy modal
+    $("#export-modal").on("shown.bs.modal", () => {
+      saveSettings();
+      $("#export-box").val(`${readSettingsValue()}`);
+    });
+
+    loadSettings();
+  });
+</script>

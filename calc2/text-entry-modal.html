@@ -1,0 +1,40 @@
+
+<div id="text-entry-modal" class="modal modal-lg" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content import-export-content">
+      <div class="modal-header">
+        <h3 id="text-entry-modal-title" class="modal-title">Title Text</h3>
+        <button type="button" class="close btn" data-bs-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="section">
+          <div id="text-entry-modal-description" class="text-description">
+            Body text
+          </div>
+        </div>
+        <input id="text-entry-modal-text" class="form-control" type="text" />
+        <div
+          id="text-entry-modal-error"
+          class="section text-description alerted"
+          style="margin-top: 8px"
+        >
+          Error
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          id="text-modal-entry-button"
+          type="button"
+          class="btn btn-secondary"
+          onclick="TextModal.onConfirm()"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+
+<div id="export-modal" class="modal modal-lg" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content import-export-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Share Settings</h3>
+        <button type="button" class="close btn" data-bs-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div id="export-body" class="modal-body">
+        <textarea id="export-box" class="import-export-box" readonly></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="navigator.clipboard.writeText($('#export-box').val())"
+        >
+          <i class="fa-solid fa-copy"></i> Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
