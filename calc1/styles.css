@@ -1,0 +1,64 @@
+.guards-select-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px;
+}
+
+.guards-select-container .form-group {
+    flex: 1; /* Makes each select box take equal width */
+    padding: 5px;
+}
+
+.bg-cyan-700 {
+    background-color: #0095a8; /* Bootstrap cyan-700 equivalent */
+}
+
+.bg-red-700 {
+    background-color: #c82333; /* Bootstrap red-700 equivalent */
+}
+
+.bg-teal-800 {
+    background-color: #00695c; /* Bootstrap teal-800 equivalent */
+}
+
+.bg-yellow-800 {
+    background-color: #856404; /* Bootstrap yellow-800 equivalent */
+}
+
+.border-cyan-700 {
+    border: 1px solid #0095a8; /* Bootstrap cyan-700 equivalent */
+}
+
+.border-red-700 {
+    border: 1px solid #c82333; /* Bootstrap red-700 equivalent */
+}
+
+.border-teal-800 {
+    border: 1px solid #00695c; /* Bootstrap teal-800 equivalent */
+}
+
+.border-yellow-800 {
+    border: 1px solid #856404; /* Bootstrap yellow-800 equivalent */
+}
+
+/* Base style for title */
+.title-text {
+    font-size: 1.25rem; /* Default size for h4 */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .title-text {
+        font-size: 1rem; /* Smaller text on smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .title-text {
+        font-size: 0.875rem; /* Even smaller text for very small screens */
+    }
+}
+
+label[for="leadership"]::after {
+    background-color: transparent !important; 
+  }
