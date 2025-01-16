@@ -17,48 +17,35 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>Total Battle Troop Stacking Calculator</title>
   </head>
-	<style>
+<style>
   .menubtn { line-height: 1.2;border: 2px solid #ef6603; border-radius: 6px;}
- 
-  .navbar {
-      padding: 0px 70px; /* Increase padding for a bigger navbar */
-    }
 
-    .navbar-brand img {
-      height: 60px; /* Make the logo taller */
-      width: auto;   /* Maintain the aspect ratio */
-    }
-
-    .navbar-nav .nav-link {
-      font-size: 16px; /* Increase font size for menu items */
-    }
-.navbar a:hover, .navbar .active, .navbar .active:focus {
-        color: #ef6603;
+.navbar-brand img {
+      height: 60px;
+      width: auto;
     }
 .navbar-nav .nav-link {
-      font-size: 18px;
+	  font-size: 16px;
       padding: 4px;
-      color: white; /* Default text color */
-      border-radius: 30px; /* Rounded corners for list items */
-      transition: background-color 0.3s ease, color 0.3s ease;
+      color: white;
+      border-radius: 30px;
 	  margin-right: 10px;
     }
-    .navbar-nav .nav-link:hover {
-      background-color: #ef6603; /* Background color on hover */
-      color: white;            /* Text color remains white */
+ .navbar-nav .nav-link:hover {
+      background-color: #ef6603;
+      color: white;
     }
-	.navbar-nav .dropdown:hover .dropdown-menu {
-  display: block; /* Show dropdown */
-  margin-top: 0; /* Align properly */
-}
-	
+.navbar-nav .dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}	
   </style>
   <body x-data="pageSetup()" x-init="init()">
 <header id="header" class="header d-flex align-items-center fixed-top bg-dark">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <!-- Logo/Image -->
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="\">
         <img src="assets/img/logo.png" alt="Logo">
       </a>
       <!-- Hamburger Icon for Mobile -->
