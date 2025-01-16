@@ -17,10 +17,86 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>Total Battle Troop Stacking Calculator</title>
   </head>
+	<style>
+  .menubtn { line-height: 1.2;border: 2px solid #ef6603; border-radius: 6px;}
+ 
+  .navbar {
+      padding: 5px 70px; /* Increase padding for a bigger navbar */
+    }
+
+    .navbar-brand img {
+      height: 60px; /* Make the logo taller */
+      width: auto;   /* Maintain the aspect ratio */
+    }
+
+    .navbar-nav .nav-link {
+      font-size: 16px; /* Increase font size for menu items */
+    }
+.navbar a:hover, .navbar .active, .navbar .active:focus {
+        color: #ef6603;
+    }
+.navbar-nav .nav-link {
+      font-size: 18px;
+      padding: 4px;
+      color: white; /* Default text color */
+      border-radius: 30px; /* Rounded corners for list items */
+      transition: background-color 0.3s ease, color 0.3s ease;
+	  margin-right: 10px;
+    }
+    .navbar-nav .nav-link:hover {
+      background-color: #ef6603; /* Background color on hover */
+      color: white;            /* Text color remains white */
+    }
+	.navbar-nav .dropdown:hover .dropdown-menu {
+  display: block; /* Show dropdown */
+  margin-top: 0; /* Align properly */
+}
+	
+  </style>
   <body x-data="pageSetup()" x-init="init()">
-    <div class="container-fluid py-2 px-3 mx-auto">
-      <header class="d-md-flex justify-content-between align-items-md-center pb-2 mb-3 border-bottom">
-        <nav class="navbar bg-dark">
+<header id="header" class="header d-flex align-items-center fixed-top bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <!-- Logo/Image -->
+      <a class="navbar-brand" href="#">
+        <img src="assets/img/logo.png" alt="Logo">
+      </a>
+      <!-- Hamburger Icon for Mobile -->
+      <button 
+        class="navbar-toggler" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Menu Items -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li><a href="#hero" class="nav-link">Home</a></li>
+        <li><a href="#team" class="nav-link">Team</a></li>
+        <li><a href="calendar.html" class="nav-link menubtn">TB Calendar</a></li>
+        <li><a href="helper/index.html" class="nav-link menubtn">TB Helper</a></li>
+        <li><a href="tbgifts.html" class="nav-link menubtn">TB Gifts</a></li>
+        <li class="dropdown">
+          <a href="rules.html" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Rules</a>
+          <ul class="dropdown-menu">
+            <li><a href="roek139.html" class="dropdown-item">ROE K139</a></li>
+            <li><a href="therules.html" class="dropdown-item">Clan Rules</a></li>
+            <li><a href="cprun.html" class="dropdown-item">CP Run / Rules</a></li>
+          </ul>
+        </li>
+        <li><a href="#about" class="nav-link">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  </header>    
+<div class="container-fluid py-2 px-3 mx-auto" style="margin-top:65px;">
+      <div class="d-md-flex justify-content-between align-items-md-center pb-2 mb-3 border-bottom">
+        <div class="navbar bg-dark">
           <div class="container-fluid">
             <div class="d-flex">  
               <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#helpModal" title="Get help">
@@ -28,7 +104,7 @@
               </button>
             </div><a class="navbar-brand"><span class="badge rounded-pill text-bg-light">v1.0</span></a>
           </div>
-        </nav>
+        </div>
          
           <div class="d-flex align-items-center">
               <a href="/" class="d-flex align-items-center text-body text-decoration-none">
@@ -53,7 +129,7 @@
             </div>
           </div>
           
-      </header>
+      </div>
   </div>
     <!--Main Section-->
     <div class="container-fluid">
