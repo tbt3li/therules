@@ -32,7 +32,11 @@ table a:active {color: blue;}
 table a:visited {color: green;}
 table a:hover {color:blue;}
 table a:focus {color:blue;outline: none;}
-	
+
+@media screen and (max-width: 768px) {
+      .rimg {
+        margin-top: 60px !important; /* Extra margin on small screens */
+      }
 </style>
 <body class="index-page">
 
@@ -70,7 +74,7 @@ table a:focus {color:blue;outline: none;}
     <!-- Page Title -->
     <div class="page-title dark-background">
       <div class="container position-relative">
-	<div class="container" style="position:absolute;max-width:700px;margin-top: 3rem !important;">
+	<div class="container rimg" style="position:absolute;max-width:700px;margin-top: 3rem;">
 	<div class="row">
             <div class="col-4">
                 <img src="assets/img/calendar.png" class="img-fluid" style="z-index: 10; position: relative;">
