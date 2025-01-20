@@ -2552,4 +2552,12 @@ section,
 /*--------------------------------------------------------------
 # Custom CSS
 --------------------------------------------------------------*/
-.thbk { background: linear-gradient(45deg, #ff7e5f, #feb47b) !important; }
+.thbk1 {
+	background: linear-gradient(45deg, #51c160, #afc3fd) !important;
+	}
+.thbk2 {
+	background: linear-gradient(45deg, #ff7e5f, #feb47b) !important;
+	}
+.thbk3 {
+	background: linear-gradient(45deg, #ff3100d6, #ffb67d) !important;
+	}
