@@ -2548,3 +2548,8 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 60%);
   font-size: 14px;
 }
+
+/*--------------------------------------------------------------
+# Custom CSS
+--------------------------------------------------------------*/
+.thbk { background: linear-gradient(45deg, #ff7e5f, #feb47b) !important; }
