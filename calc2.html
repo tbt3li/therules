@@ -46,14 +46,79 @@
     />
 
     <link rel="stylesheet" type="text/css" href="calc2/style.css" />
+    <link rel="stylesheet" href="calcfooter.css" />
   </head>
+  <style>
+  .menubtn { line-height: 1.2;border: 2px solid #ef6603; border-radius: 6px;}
+
+.navbar-brand img {
+      height: 60px;
+      width: auto;
+    }
+.navbar-nav .nav-link {
+	  font-size: 16px;
+      padding: 4px;
+      color: white;
+      border-radius: 30px;
+	  margin-right: 10px;
+    }
+ .navbar-nav .nav-link:hover {
+      background-color: #ef6603;
+      color: white;
+    }
+.navbar-nav .dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}	
+  </style>
   <body>
+<header id="header" class="header d-flex align-items-center fixed-top bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="--bs-navbar-padding-y: 0rem !important;">
+    <div class="container-fluid">
+      <!-- Logo/Image -->
+      <a class="navbar-brand" href="\" style="margin-left: 10%;">
+        <img src="assets/img/logo.png" alt="Logo">
+      </a>
+      <!-- Hamburger Icon for Mobile -->
+      <button 
+        class="navbar-toggler" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Menu Items -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav" style="margin-right: 10%;">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#team" class="nav-link">Team</a></li>
+        <li><a href="calendar.html" class="nav-link menubtn">TB Calendar</a></li>
+        <li><a href="helper/index.html" class="nav-link menubtn">TB Helper</a></li>
+        <li><a href="gifts.html" class="nav-link menubtn">TB Gifts</a></li>
+        <li class="dropdown">
+          <a href="rules.html" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Rules</a>
+          <ul class="dropdown-menu">
+            <li><a href="roek139.html" class="dropdown-item">ROE K139</a></li>
+            <li><a href="therules.html" class="dropdown-item">Clan Rules</a></li>
+            <li><a href="cprun.html" class="dropdown-item">CP Run / Rules</a></li>
+          </ul>
+        </li>
+        <li><a href="index.html#about" class="nav-link">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  </header>    
+    
     <div class="include-html" data-href="calc2/image-modal.html"></div>
     <div class="include-html" data-href="calc2/text-entry-modal.html"></div>
     <div class="include-html" data-href="calc2/export-modal.html"></div>
     <div class="include-html" data-href="calc2/help-modal.html"></div>
     <div class="include-html" data-href="calc2/report-modal.html"></div>
-
+    
     <div class="summary" style="background: lightblue">
       <div class="h6"><strong>Total Battle Stack Calculator-2</strong></div>
       <div>
@@ -473,7 +538,27 @@
       </div>
       <br />
     </div>
-
+<footer id="footer" class="footer dark-background">
+    <div class="container">
+	  <div style="margin: 0 0 30px 0;">
+		<div style="float: left;">
+		<a href="\"><img src="assets/img/wlogo.png" style="max-height: 150px;" alt="" class="img-fluid flex-shrink-0"></a>
+		</div>
+	  <div>
+      <h4 class="sitename"><strong style="color:#ef6603;">THE</strong> Great Family Gang</h4>
+      <p>We committed to leading with strategy, unity, respect and dedication to ensure our clan's success.</p>
+	  </div>
+	  </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright 2025 All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="\" style="color:#ef6603;text-decoration: none;transition: 0.3s;">T3li</a> Distributed By <a href="\" style="color:#ef6603;text-decoration: none;transition: 0.3s;">THE</a>
+        </div>
+      </div>
+    </div>
+  </footer>
     <script src="calc2/bundle.js"></script>
   </body>
 </html>
