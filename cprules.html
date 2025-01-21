@@ -74,25 +74,26 @@ h6 {font-weight:bold;}
 
   <main class="main">
 
-    <!-- Page Title -->
-    <div class="page-title dark-background">
-      <div class="container position-relative">
-	<div class="container rimg" style="position: absolute;max-width:700px;">
-	<div class="row">
-            <div class="col-4">
-                <img src="assets/img/cprules.png" class="img-fluid" style="z-index: 10; position: relative;">
-            </div>
-        </div>
-	</div>
-        <h1>CP Run / Rules</h1>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="index.html">Home</a></li>
-            <li class="current">Conquest Points Rules</li>
-          </ol>
-        </nav>
-      </div>
-    </div><!-- End Page Title -->
+   <!-- Page Title -->
+    <div class="page-title dark-background" style="position: relative;">
+	  <div class="container position-relative">
+		<div class="container rimg" style="position: absolute; top: 0; left: 0; max-width: 700px; z-index: 10;">
+		  <div class="row">
+			<div class="col-4">
+			  <!-- Use pointer-events: none; on the parent container for extra assurance -->
+			  <img src="assets/img/cprules.png" class="img-fluid" style="pointer-events: none;">
+			</div>
+		  </div>
+		</div>
+		<h1>CP Run / Rules</h1>
+		<nav class="breadcrumbs" style="position: relative; z-index: 20;">
+		  <ol>
+			<li><a href="index.html" style="z-index: 20; position: relative;">Home</a></li>
+			<li class="current">Conquest Points Rules</li>
+		  </ol>
+		</nav>
+	  </div>
+	</div><!-- End Page Title -->
 
     <!-- Starter Section Section -->
     <section id="starter-section" class="starter-section section" style="padding: 30px 0;">
