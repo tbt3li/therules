@@ -150,6 +150,31 @@
                  0 0 25px rgba(255, 235, 59, 0.5);
     cursor: pointer; /* Add pointer cursor on hover */
   }
+.team-member {
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Make sure team-member images adjust properly */
+.team-member .member-img img {
+  max-width: 100%; /* Ensure images are fully responsive */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* For smaller screens, ensure boxes appear side by side */
+@media (max-width: 576px) {
+  .col-6 {
+    width: 50%; /* Each column takes 50% of the screen width */
+  }
+}
+
+/* Fine-tune layout for extremely small screens */
+@media (max-width: 340px) {
+  .col-6 {
+    padding: 5px; /* Add smaller padding for better fit */
+  }
+}
 </style>
 <body class="index-page">
 
@@ -258,7 +283,7 @@
         <div class="row gy-4">
 			
 			<div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <p>Welcome to <b>[THE] Family Gangsta</b>, a powerful and united clan in Kingdom 139 of Total Battle. We are a community of dedicated players who thrive on strategy, teamwork, and mutual support. Our mission is to dominate the battlefield while fostering an environment where every member feels valued and empowered. Whether you are a seasoned warrior or a rising strategist, [THE] is your home for growth, camaraderie, and victory. Together, we conquer kingdoms and etch our legacy into the history of Total Battle. Join us, and become part of something extraordinary!</p>
+            <p>Welcome to <b>[THE] Family Gang</b>, a powerful and united clan in Kingdom 139 of Total Battle. We are a community of dedicated players who thrive on strategy, teamwork and mutual support. Our mission is to dominate the battlefield while fostering an environment where every member feels valued and empowered. Whether you are a seasoned warrior or a rising strategist, [THE] is your home for growth, camaraderie, and victory. Together, we conquer kingdoms and etch our legacy into the history of Total Battle. Join us, and become part of something extraordinary!</p>
             <!-- <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>  -->
           </div>
 			
@@ -391,7 +416,7 @@
 
         <div class="row gy-4">
 
-          <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/1.png" class="img-fluid" alt="">
@@ -403,7 +428,7 @@
             </div>
           </div><!-- End Team Member -->
 
-          <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -415,7 +440,7 @@
             </div>
           </div><!-- End Team Member -->
 
-          <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
+          <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -427,7 +452,7 @@
             </div>
           </div><!-- End Team Member -->
 
-          <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+          <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/1.png" class="img-fluid" alt="">
@@ -438,7 +463,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -449,7 +474,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -460,7 +485,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -471,7 +496,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -482,7 +507,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -493,7 +518,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/1.png" class="img-fluid" alt="">
@@ -504,7 +529,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -515,7 +540,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/1.png" class="img-fluid" alt="">
@@ -526,7 +551,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
@@ -537,7 +562,7 @@
               </div>
             </div>
           </div><!-- End Team Member -->
-		  <div class="col-lg-2 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
+		  <div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
               <div class="member-img">
                 <img src="assets/img/team/1.png" class="img-fluid" alt="">
