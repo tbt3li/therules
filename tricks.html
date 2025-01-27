@@ -27,6 +27,50 @@
 .menubtn { line-height: 1.2;border: 2px solid var(--accent-color);}
 ui { text-decoration: underline; font-style: italic; }
 cr {color: #ff0000de;}
+  .c1 {background-color:#cfe2ff;}
+  .c2 {background-color:#d1e7dd;}
+  .c3 {background-color:#ff73003d;}
+  .c4 {background-color:#0000ff29;}
+.box {
+  border: 1.5px solid #bfb8b8;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.box h4 { margin-bottom: 8px; font-weight: bold; }
+p { margin: 0; }
+/* Default state: all tabs white when collapsed */
+.accordion-button.collapsed {
+  background-color: white;
+  color: black; /* Black text color */
+}
+
+/* Active state for even tabs (header and body) */
+.accordion-item.even.active .accordion-button{
+ background-color: lightblue;
+  color: black;
+}
+.accordion-item.even.active .accordion-body {
+  background-color: #add8e669;
+  color: black;
+}
+
+/* Active state for odd tabs (header and body) */
+.accordion-item.odd.active .accordion-button{
+ background-color: #c5e1d4;
+  color: black;
+ }
+.accordion-item.odd.active .accordion-body {
+  background-color: #d1e7dd82;
+  color: black;
+}
+
+/* color red */
+r{color:red;font-weight: bold;}
+
+/* color blue with bold*/
+b {color:blue;}
+
 </style>
 <body class="index-page">
 
@@ -274,7 +318,36 @@ cr {color: #ff0000de;}
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const accordionItems = document.querySelectorAll(".accordion-item");
 
+  accordionItems.forEach((item, index) => {
+    // Add even or odd class based on the index
+    if (index % 2 === 0) {
+      item.classList.add("even");
+    } else {
+      item.classList.add("odd");
+    }
+
+    const button = item.querySelector(".accordion-button");
+    const collapse = item.querySelector(".accordion-collapse");
+
+    button.addEventListener("click", () => {
+      // Remove "active" class from all items
+      accordionItems.forEach((otherItem) => {
+        otherItem.classList.remove("active");
+      });
+
+      // Add "active" class to the currently clicked item if expanding
+      if (!collapse.classList.contains("show")) {
+        item.classList.add("active");
+      }
+    });
+  });
+});
+
+</script>
 </body>
 
 </html>
