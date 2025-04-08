@@ -2554,8 +2554,9 @@ section,
 --------------------------------------------------------------*/
 .thbk1 { background: linear-gradient(45deg, #51c160, #afc3fd) !important; }
 .thbk2 { background: linear-gradient(45deg, #ff7e5f, #feb47b) !important; }
-.thbk3 { background: linear-gradient(45deg, #ff3100d6, #ffb67d) !important; }
-.thbk4 { background: linear-gradient(45deg, #6f0aab7d, #ffb67d) !important; }
+.thbk3 { background: linear-gradient(45deg, #fda5f7b0, #ed00007d) !important; }
+.thbk4 { background: linear-gradient(45deg, #49d1df7d, #3845e169) !important; }
+.thbk5 { background: linear-gradient(45deg, #cfef1c7d, #ffb67d) !important; }
 @media screen and (max-width: 768px) {
 .rimg {
         margin-top: 60px !important; /* Extra margin on small screens */
