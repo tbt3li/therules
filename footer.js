@@ -19,7 +19,7 @@ document.write(`
           <span>Copyright 2025 All Rights Reserved</span>
         </div>
         <div class="credits">
-          Designed by <a href="\"><text style="font-size:14px;">T3li</text></a> Distributed By <a href="\">THE</a>
+          Designed by <a href="\"><text style="font-size:16px; font-style:italic;">T3li</text></a> Distributed By <a href="\">THE</a>
         </div>
       </div>
     </div>
