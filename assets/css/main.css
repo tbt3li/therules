@@ -2561,9 +2561,3 @@ section,
 .rimg {
         margin-top: 60px !important; /* Extra margin on small screens */
       }
-#osh {
-  text-shadow: 3px 3px 6px rgba(245, 139, 62, 0.3), 
-               -3px -3px 6px rgba(245, 139, 62, 0.3),
-               3px -3px 6px rgba(245, 139, 62, 0.3),
-               -3px 3px 6px rgba(245, 139, 62, 0.3);
-}
