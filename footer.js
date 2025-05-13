@@ -1,5 +1,11 @@
 document.write(`
-
+<div id="google_element"></div>
+<script src="http://translate.google.com/translate_a/element.js?db=loadGogleTranslate"></script>
+<script>
+function loadGogleTranslate(){
+new google.translate.TranslateElement(google_element);
+}
+</script>
     <footer id="footer" class="footer dark-background">
     <div class="container">
 	  <div style="margin: 0 0 30px 0;">
