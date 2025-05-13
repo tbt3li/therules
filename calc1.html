@@ -40,7 +40,19 @@
 .navbar-nav .dropdown:hover .dropdown-menu {
   display: block;
   margin-top: 0;
-}	
+}
+	.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+  }
+
+  body {
+    top: 0px !important;
+  }
+
+  /* Also remove any extra padding caused by Translate bar */
+  body > .skiptranslate {
+    display: none !important;
+  }
   </style>
   <body x-data="pageSetup()" x-init="init()">
 <header id="header" class="header d-flex align-items-center fixed-top bg-dark">
