@@ -621,7 +621,19 @@ margin-top: 60px !important;
   </main>
 
   <script src="footer.js"></script>
-
+  <script>
+     const divs = document.querySelectorAll(".animate-div");
+	divs.forEach(div => {
+	  div.addEventListener("mouseover", () => {
+	    div.classList.add("animate__animated", "animate__jello");
+	
+	    // Remove the animation classes after it ends
+	    div.addEventListener("animationend", () => {
+	      div.classList.remove("animate__animated", "animate__jello");
+	    }, { once: true });
+	  });
+	});
+  </script>
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
