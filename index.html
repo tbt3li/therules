@@ -179,6 +179,25 @@
   .goog-te-banner-frame.skiptranslate { display: none !important; }
   body { top: 0px !important; }
   body > .skiptranslate { display: none !important; }
+
+.hero-image {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  max-height: 400px; /* Control vertical size */
+  object-fit: contain; /* Prevent distortion */
+}
+.tpmargin {
+margin-top: 60px !important;
+}
+@media only screen and (max-width: 768px) {
+  .tpmargin {
+    margin-top: 70px !important;
+  }
+  .hero .carousel-container {
+  padding-top: 10px !important;
+  }
+}
 </style>
 <body class="index-page">
 
@@ -246,20 +265,34 @@
     <!-- Hero Section -->
     <section id="hero" class="hero section dark-background">
 
-      <div id="hero-carousel" data-bs-interval="5000" class="container carousel carousel-fade" data-bs-ride="carousel">
-
-        <!-- Slide 1 -->
-        <div class="carousel-item active">
-          <div class="carousel-container">
-            <h2 class="animate__animated animate__fadeInDown">Welcome to <text style="text-shadow: 3px 3px 6px rgba(245, 139, 62, 0.3), 
-                   -3px -3px 6px rgba(245, 139, 62, 0.3),
-                   3px -3px 6px rgba(245, 139, 62, 0.3),
-                   -3px 3px 6px rgba(245, 139, 62, 0.3);">[THE]</text> Family Gang</h2>
-            <p class="animate__animated animate__fadeInUp">We are a united and unstoppable force in Kingdom 138 (Total Battle), driven by loyalty, strategy, and teamwork. At [THE] Family Gang, every member is valued, and together we conquer challenges and lead the way in Total Battle. Join us, and become part of a legacy that stands for strength, unity, and victory.</p>
-            <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Read More</a>
-          </div>
-        </div>	
-      </div>
+      <div class="container">
+	    <div class="row align-items-center tpmargin">
+	      
+	      <!-- Left Side: Image -->
+	      <div class="col-md-6 text-center">
+	        <img src="assets/img/thefamily.png" class="img-fluid hero-image animate__animated animate__heartBeat" >
+	      </div>
+	
+	      <!-- Right Side: Carousel Content -->
+	      <div class="col-md-6">
+	        <div id="hero-carousel" data-bs-interval="5000" class="carousel carousel-fade" data-bs-ride="carousel">
+	          <!-- Slide 1 -->
+	          <div class="carousel-item active">
+	            <div class="carousel-container">
+	              <h2 class="animate__animated animate__fadeInDown">Welcome to [THE] Family Gang</h2>
+	              <p class="animate__animated animate__fadeInUp">
+	                We are a united and unstoppable force in Kingdom 139, driven by loyalty, strategy, and teamwork.
+	                At [THE] Family Gang, every member is valued, and together we conquer challenges and lead the way in Total Battle.
+	                Join us, and become part of a legacy that stands for strength, unity, and victory.
+	              </p>
+	              <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Read More</a>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+	
+	    </div>
+  </div>
 
       <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
         <defs>
