@@ -638,11 +638,11 @@ margin-top: 60px !important;
      const divs = document.querySelectorAll(".animate-div");
 	divs.forEach(div => {
 	  div.addEventListener("mouseover", () => {
-	    div.classList.add("animate__animated", "animate__pulse");
+	    div.classList.add("animate__animated", "animate__bounceIn");
 	
 	    // Remove the animation classes after it ends
 	    div.addEventListener("animationend", () => {
-	      div.classList.remove("animate__animated", "animate__pulse");
+	      div.classList.remove("animate__animated", "animate__bounceIn");
 	    }, { once: true });
 	  });
 	});
