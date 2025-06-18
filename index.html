@@ -556,7 +556,7 @@ margin-top: 60px !important;
           </div><!-- End Team Member -->
 
 	<div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
-            <div class="team-member">
+            <div class="team-member animate-div">
               <div class="member-img">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
               </div>
@@ -569,7 +569,7 @@ margin-top: 60px !important;
 		
 	<div class="col-lg-2 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="team-member">
-              <div class="member-img">
+              <div class="member-img animate-div">
                 <img src="assets/img/team/2.png" class="img-fluid" alt="">
               </div>
               <div class="member-info">
@@ -638,11 +638,11 @@ margin-top: 60px !important;
      const divs = document.querySelectorAll(".animate-div");
 	divs.forEach(div => {
 	  div.addEventListener("mouseover", () => {
-	    div.classList.add("animate__animated", "animate__jello");
+	    div.classList.add("animate__animated", "animate__pulse");
 	
 	    // Remove the animation classes after it ends
 	    div.addEventListener("animationend", () => {
-	      div.classList.remove("animate__animated", "animate__jello");
+	      div.classList.remove("animate__animated", "animate__pulse");
 	    }, { once: true });
 	  });
 	});
