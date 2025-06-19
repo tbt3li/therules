@@ -10,7 +10,7 @@ document.write(`
       <h4 class="sitename"><strong style="color:#ef6603;">THE</strong> Great Family Gang</h4>
       <p>We committed to leading with strategy, unity, respect and dedication to ensure our clan's success.</p>
       <div class="social-links d-flex justify-content-center">
-        <a href="https://discord.gg/cut3mimi"><i class="bi bi-discord"></i>웃</a>
+        <a href="https://discord.com/users/cut3mimi"><i class="bi bi-discord"></i></a>
       </div>
 	  </div>
 	  </div>
