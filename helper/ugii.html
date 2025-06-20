@@ -25,7 +25,11 @@
   <link href="../assets/css/main.css" rel="stylesheet">
   <link href="custom.css" rel="stylesheet">
 </head>
-
+<style>
+.goog-te-banner-frame.skiptranslate { display: none !important; }
+  body { top: 0px !important; }
+  body > .skiptranslate { display: none !important; }
+</style>
 <body class="index-page">
 
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -54,6 +58,33 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
+	    <!-- Small Translate Icon -->
+    <div id="google_translate_trigger" title="Translate Page" style="cursor:pointer; font-size: 18px; margin-left: 10px;">🌐</div>
+    <!-- Hidden Translate Container -->
+    <div id="google_translate_element" style="display:none; position:absolute; top:50px; right:20px; z-index:999;"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      layout: google.translate.TranslateElement.InlineLayout.VERTICAL
+    }, 'google_translate_element');
+  }
+
+  // Toggle dropdown on icon click
+  window.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('click', function (e) {
+      const btn = document.getElementById('google_translate_trigger');
+      const box = document.getElementById('google_translate_element');
+
+      if (btn && btn.contains(e.target)) {
+        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+      } else if (!box.contains(e.target)) {
+        box.style.display = 'none';
+      }
+    });
+  });
+</script>
+	    
     </div>
   </header>
 
@@ -211,8 +242,7 @@
   <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  
-
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <!-- Main JS File -->
   <script src="../assets/js/main.js"></script>
