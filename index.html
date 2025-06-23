@@ -198,7 +198,25 @@ margin-top: 60px !important;
   padding-top: 10px !important;
   }
 }
-</style>
+/* Smaller size when scrolled */
+.navbar-logo.shrink {
+  width: 40px;
+  height: 40px;
+transition: all 0.5s ease;
+}
+ </style>
+ <script>
+  window.addEventListener("scroll", function () {
+    const logo = document.querySelector(".navbar-logo");
+    if (window.scrollY > 50) {
+      // Add 'shrink' class when scrolled down
+      logo.classList.add("shrink");
+    } else {
+      // Remove 'shrink' class when at the top
+      logo.classList.remove("shrink");
+    }
+  });
+</script>
 <body class="index-page">
 
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -207,7 +225,7 @@ margin-top: 60px !important;
       <a href="index.html" class="logo d-flex align-items-center">
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <!-- <h1 class="sitename"></h1> -->
-		<img src="assets/img/logo.png" class="img-fluid" alt="">
+		<img src="assets/img/logo.png" class="img-fluid navbar-logo" alt="">
       </a>
 
       <nav id="navmenu" class="navmenu">
