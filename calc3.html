@@ -1,0 +1,477 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Battle CP Troop Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body class="bg-dark text-white">
+    <div class="container py-4">
+	<!-- Modal for Unit Settings -->
+<!-- Modal for Strength -->
+<div class="modal fade" id="strengthModal" tabindex="-1" aria-labelledby="strengthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="strengthModalLabel">Set Strength</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Guardsmen -->
+                    <div class="col-md-4">
+                        <h6>Guardsmen</h6>
+                        <div class="mb-2">
+                            <label for="guardsmenRangedStrength" class="form-label">Ranged</label>
+                            <input type="number" class="form-control" id="guardsmenRangedStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenMeleeStrength" class="form-label">Melee</label>
+                            <input type="number" class="form-control" id="guardsmenMeleeStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenMountedStrength" class="form-label">Mounted</label>
+                            <input type="number" class="form-control" id="guardsmenMountedStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenFlyerStrength" class="form-label">Flyer</label>
+                            <input type="number" class="form-control" id="guardsmenFlyerStrength" placeholder="Optional">
+                        </div>
+                    </div>
+                    <!-- Specialists -->
+                    <div class="col-md-4">
+                        <h6>Specialists</h6>
+                        <div class="mb-2">
+                            <label for="specialistsRangedStrength" class="form-label">Ranged</label>
+                            <input type="number" class="form-control" id="specialistsRangedStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsMeleeStrength" class="form-label">Melee</label>
+                            <input type="number" class="form-control" id="specialistsMeleeStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsMountedStrength" class="form-label">Mounted</label>
+                            <input type="number" class="form-control" id="specialistsMountedStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsFlyerStrength" class="form-label">Flyer</label>
+                            <input type="number" class="form-control" id="specialistsFlyerStrength" placeholder="Optional">
+                        </div>
+                    </div>
+                    <!-- Monsters -->
+                    <div class="col-md-4">
+                        <h6>Monsters</h6>
+                        <div class="mb-2">
+                            <label for="monstersRangedStrength" class="form-label">Ranged</label>
+                            <input type="number" class="form-control" id="monstersRangedStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersMeleeStrength" class="form-label">Melee</label>
+                            <input type="number" class="form-control" id="monstersMeleeStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersMountedStrength" class="form-label">Mounted</label>
+                            <input type="number" class="form-control" id="monstersMountedStrength" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersFlyerStrength" class="form-label">Flyer</label>
+                            <input type="number" class="form-control" id="monstersFlyerStrength" placeholder="Optional">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Save</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Health -->
+<div class="modal fade" id="healthModal" tabindex="-1" aria-labelledby="healthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="healthModalLabel">Set Health</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Guardsmen -->
+                    <div class="col-md-4">
+                        <h6>Guardsmen</h6>
+                        <div class="mb-2">
+                            <label for="guardsmenRangedHealth" class="form-label">Ranged</label>
+                            <input type="number" class="form-control" id="guardsmenRangedHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenMeleeHealth" class="form-label">Melee</label>
+                            <input type="number" class="form-control" id="guardsmenMeleeHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenMountedHealth" class="form-label">Mounted</label>
+                            <input type="number" class="form-control" id="guardsmenMountedHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenFlyerHealth" class="form-label">Flyer</label>
+                            <input type="number" class="form-control" id="guardsmenFlyerHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="guardsmenAgainstHealth" class="form-label">Health against players</label>
+                            <input type="number" class="form-control" id="guardsmenAgainstHealth" placeholder="Optional">
+                        </div>
+                    </div>
+                    <!-- Specialists -->
+                    <div class="col-md-4">
+                        <h6>Specialists</h6>
+                        <div class="mb-2">
+                            <label for="specialistsRangedHealth" class="form-label">Ranged</label>
+                            <input type="number" class="form-control" id="specialistsRangedHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsMeleeHealth" class="form-label">Melee</label>
+                            <input type="number" class="form-control" id="specialistsMeleeHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsMountedHealth" class="form-label">Mounted</label>
+                            <input type="number" class="form-control" id="specialistsMountedHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsFlyerHealth" class="form-label">Flyer</label>
+                            <input type="number" class="form-control" id="specialistsFlyerHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="specialistsAgainstHealth" class="form-label">Health against players</label>
+                            <input type="number" class="form-control" id="specialistsAgainstHealth" placeholder="Optional">
+                        </div>
+                    </div>
+                    <!-- Monsters -->
+                    <div class="col-md-4">
+                        <h6>Monsters</h6>
+                        <div class="mb-2">
+                            <label for="monstersRangedHealth" class="form-label">Ranged</label>
+                            <input type="number" class="form-control" id="monstersRangedHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersMeleeHealth" class="form-label">Melee</label>
+                            <input type="number" class="form-control" id="monstersMeleeHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersMountedHealth" class="form-label">Mounted</label>
+                            <input type="number" class="form-control" id="monstersMountedHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersFlyerHealth" class="form-label">Flyer</label>
+                            <input type="number" class="form-control" id="monstersFlyerHealth" placeholder="Optional">
+                        </div>
+                        <div class="mb-2">
+                            <label for="monstersAgainstHealth" class="form-label">Health against players</label>
+                            <input type="number" class="form-control" id="monstersAgainstHealth" placeholder="Optional">
+                        </div>
+                    </div>
+                    <!-- March -->
+                    <div class="col-md-4">
+                        <h6>Clan March health</h6>
+                        <div class="mb-2">
+                            
+                            <input type="number" class="form-control" id="marchHealth" placeholder="Optional">
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fs-3">TB CP RUN</h1>
+           
+        </div>
+
+        <div class="row">
+            <!-- Left Settings Panel -->
+            <div class="col-lg-3">
+                <div class="bg-danger rounded p-3">
+                    <div class="mb-4">
+                        <h5 class="text-center">Squad health</h5>
+                        <input type="number" id="squadHealth" class="form-control text-center" value="800000000">
+                    </div>
+                    <div class="mb-4">
+                        <h5 class="text-center">TANK Squad health only for G and S</h5>
+                        <input type="number" id="squadHealthTank" class="form-control text-center" value="900000000">
+                    </div>
+                     <div class="mb-4">
+                        <h5 class="text-center">How many squads will die? </h5>
+                        <input type="number" id="squadDeadTank" class="form-control text-center" value="4">
+                    </div>
+                    <!-- Guardsmen -->
+                    <div class="mb-4">
+                        <h6>Guardsmen</h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <select class="form-select me-2" id="minGuardsTier">
+                                <option value="0">Don't use</option>
+                                <option value="1">G1</option>
+                                <option value="2">G2</option>
+                                <option value="3">G3</option>
+                                <option value="4">G4</option>
+                                <option value="5">G5</option>
+                                <option value="6" selected>G6</option>
+                                <option value="7">G7</option>
+                                <option value="8">G8</option>
+                                <option value="9">G9</option>
+                            </select>
+                            <select class="form-select" id="maxGuardsTier">
+                                <option value="0">Don't use</option>
+                                <option value="1">G1</option>
+                                <option value="2">G2</option>
+                                <option value="3">G3</option>
+                                <option value="4">G4</option>
+                                <option value="5">G5</option>
+                                <option value="6">G6</option>
+                                <option value="7" selected>G7</option>
+                                <option value="8">G8</option>
+                                <option value="9">G9</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Specialists -->
+                    <div class="mb-4">
+                        <h6>Specialists</h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <select class="form-select me-2" id="minSpecialistsTier">
+                                <option value="0">Don't use</option>
+                                <option value="1">S1</option>
+                                <option value="2">S2</option>
+                                <option value="3">S3</option>
+                                <option value="4">S4</option>
+                                <option value="5">S5</option>
+                                <option value="6" selected>S6</option>
+                                <option value="7">S7</option>
+                                <option value="8">S8</option>
+                                <option value="9">S9</option>
+                            </select>
+                            <select class="form-select" id="maxSpecialistsTier">
+                                <option value="0">Don't use</option>
+                                <option value="1">S1</option>
+                                <option value="2">S2</option>
+                                <option value="3">S3</option>
+                                <option value="4">S4</option>
+                                <option value="5">S5</option>
+                                <option value="6">S6</option>
+                                <option value="7" selected>S7</option>
+                                <option value="8">S8</option>
+                                <option value="9">S9</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Monsters -->
+                    <div class="mb-4">
+                        <h6>Monsters</h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <select class="form-select me-2" id="minMonstersTier">
+                                <option value="0">Don't use</option>
+                                <option value="3">M3</option>
+                                <option value="4">M4</option>
+                                <option value="5">M5</option>
+                                <option value="6" selected>M6</option>
+                                <option value="7">M7</option>
+                                <option value="8">M8</option>
+                                <option value="9">M9</option>
+                            </select>
+                            <select class="form-select" id="maxMonstersTier">
+                                <option value="0">Don't use</option>
+                                <option value="3">M3</option>
+                                <option value="4">M4</option>
+                                <option value="5">M5</option>
+                                <option value="6">M6</option>
+                                <option value="7" selected>M7</option>
+                                <option value="8">M8</option>
+                                <option value="9">M9</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-warning btn-sm" id="calculateButton">Calculate</button>
+						<button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#healthModal">Set Health</button>
+					<!--	<button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#strengthModal">Set Strength</button>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Data Panel -->
+            <div class="col-lg-9">
+                <div class="row">
+                    <!-- Guardsmen List -->
+                    <div class="col-md-3">
+                        <div class="bg-primary rounded p-3">
+                            <h6 class="text-center">Guardsmen</h6>
+                            <ul id="guardsmenList" class="list-group"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Specialists List -->
+                    <div class="col-md-3">
+                        <div class="bg-danger rounded p-3">
+                            <h6 class="text-center">Specialists</h6>
+                            <ul id="specialistList" class="list-group"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Monsters List -->
+                    <div class="col-md-3">
+                        <div class="bg-success rounded p-3">
+                            <h6 class="text-center">Monsters</h6>
+                            <ul id="monsterList" class="list-group"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Mercenaries List -->
+                    <div class="col-md-3">
+                        <div class="bg-warning rounded p-3">
+                            <h6 class="text-center">Mercenaries</h6>
+                             <ul id="mercList" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <p>Total (Guardsmen + Specialists): <span id="totalSizeGuardsmenSpecialists"></span></p>
+                    <p>Total Monsters: <span id="totalSizeMonsters"></span></p>
+                    <p>Total Mercenaries: <span id="totalSizeMercenaries"></span></p>
+                    <p>Total Army HP: <span id="totalArmyHP"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.getElementById("calculateButton").addEventListener("click", function () {
+    // Ottieni i valori dai modali e dai campi selezionati
+    const data = {
+        squadHealth: document.getElementById("squadHealth").value,
+        squadHealthTank: document.getElementById("squadHealthTank").value,
+        squadDeadTank: document.getElementById("squadDeadTank").value,
+        minGuardsTier: document.getElementById("minGuardsTier").value,
+        maxGuardsTier: document.getElementById("maxGuardsTier").value,
+        minSpecialistsTier: document.getElementById("minSpecialistsTier").value,
+        maxSpecialistsTier: document.getElementById("maxSpecialistsTier").value,
+        minMonstersTier: document.getElementById("minMonstersTier").value,
+        maxMonstersTier: document.getElementById("maxMonstersTier").value,
+        guardsmenRangedHealth: document.getElementById("guardsmenRangedHealth").value || 0,
+        guardsmenMeleeHealth: document.getElementById("guardsmenMeleeHealth").value || 0,
+        guardsmenMountedHealth: document.getElementById("guardsmenMountedHealth").value || 0,
+        guardsmenFlyerHealth: document.getElementById("guardsmenFlyerHealth").value || 0,
+        guardsmenRangedStrength: document.getElementById("guardsmenRangedStrength").value || 0,
+        guardsmenMeleeStrength: document.getElementById("guardsmenMeleeStrength").value || 0,
+        guardsmenMountedStrength: document.getElementById("guardsmenMountedStrength").value || 0,
+        guardsmenFlyerStrength: document.getElementById("guardsmenFlyerStrength").value || 0,
+        specialistsRangedHealth: document.getElementById("specialistsRangedHealth").value || 0,
+        specialistsMeleeHealth: document.getElementById("specialistsMeleeHealth").value || 0,
+        specialistsMountedHealth: document.getElementById("specialistsMountedHealth").value || 0,
+        specialistsFlyerHealth: document.getElementById("specialistsFlyerHealth").value || 0,
+        specialistsRangedStrength: document.getElementById("specialistsRangedStrength").value || 0,
+        specialistsMeleeStrength: document.getElementById("specialistsMeleeStrength").value || 0,
+        specialistsMountedStrength: document.getElementById("specialistsMountedStrength").value || 0,
+        specialistsFlyerStrength: document.getElementById("specialistsFlyerStrength").value || 0,
+        monstersRangedHealth: document.getElementById("monstersRangedHealth").value || 0,
+        monstersMeleeHealth: document.getElementById("monstersMeleeHealth").value || 0,
+        monstersMountedHealth: document.getElementById("monstersMountedHealth").value || 0,
+        monstersFlyerHealth: document.getElementById("monstersFlyerHealth").value || 0,
+        monstersRangedStrength: document.getElementById("monstersRangedStrength").value || 0,
+        monstersMeleeStrength: document.getElementById("monstersMeleeStrength").value || 0,
+        monstersMountedStrength: document.getElementById("monstersMountedStrength").value || 0,
+        monstersFlyerStrength: document.getElementById("monstersFlyerStrength").value || 0,
+        monstersAgainstHealth: document.getElementById("monstersAgainstHealth").value || 0,
+        specialistsAgainstHealth: document.getElementById("specialistsAgainstHealth").value || 0,
+        guardsmenAgainstHealth: document.getElementById("guardsmenAgainstHealth").value || 0,
+        marchHealth: document.getElementById("marchHealth").value || 0,
+    };
+
+    // Converti i dati in FormData
+    const formData = new URLSearchParams();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
+
+    // Effettua una chiamata AJAX al backend
+    fetch("process_units_cp.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            updateTables(result); // Aggiorna le tabelle
+        })
+        .catch((error) => console.error("Errore:", error));
+});
+
+
+// Funzione per aggiornare le tabelle
+function updateTables(data) {
+    // Pulisce le tabelle esistenti
+    document.getElementById("guardsmenList").innerHTML = "";
+    document.getElementById("specialistList").innerHTML = "";
+    document.getElementById("monsterList").innerHTML = "";
+    document.getElementById("mercList").innerHTML = "";
+
+    // Aggiunge i Guardsmen
+    data.Guardsmen.forEach((unit) => {
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item d-flex justify-content-between";
+        listItem.innerHTML = `${unit.tier} ${unit.type} (${unit.name}) <span class="badge bg-light text-dark">${unit.count}</span>`;
+        document.getElementById("guardsmenList").appendChild(listItem);
+    });
+
+    // Aggiunge gli Specialist
+    data.Specialist.forEach((unit) => {
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item d-flex justify-content-between";
+        listItem.innerHTML = `${unit.tier} ${unit.type} (${unit.name}) <span class="badge bg-light text-dark">${unit.count}</span>`;
+        document.getElementById("specialistList").appendChild(listItem);
+    });
+
+    // Aggiunge i Monsters
+    data.Monster.forEach((unit) => {
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item d-flex justify-content-between";
+        listItem.innerHTML = `${unit.tier} ${unit.type} (${unit.name}) <span class="badge bg-light text-dark">${unit.count}</span>`;
+        document.getElementById("monsterList").appendChild(listItem);
+    });
+
+    // Aggiunge i Mercenaries
+    data.Mercenaries.forEach((unit) => {
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item d-flex justify-content-between";
+        listItem.innerHTML = `${unit.tier} ${unit.type} (${unit.name}) <span class="badge bg-light text-dark">${unit.count}</span>`;
+        document.getElementById("mercList").appendChild(listItem);
+    });
+
+    // Aggiorna i totali
+    document.getElementById("totalSizeGuardsmenSpecialists").innerText = data.Sizes.GuardsmenAndSpecialists;
+    document.getElementById("totalSizeMonsters").innerText = data.Sizes.Monsters;
+    document.getElementById("totalSizeMercenaries").innerText = data.Sizes.Mercenaries;
+    document.getElementById("totalArmyHP").innerText = data.totalHP;
+}
+
+</script>
+</body>
+</html>
