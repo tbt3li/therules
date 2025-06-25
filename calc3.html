@@ -410,19 +410,14 @@
     }
 
     // Effettua una chiamata AJAX al backend
-    fetch("https://tb-bum.com/process_units_cp.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-    })
-        .then((response) => response.json())
-        .then((result) => {
-            updateTables(result); // Aggiorna le tabelle
-        })
-        .catch((error) => console.error("Errore:", error));
-});
+ fetch('https://thefamily.pages.dev/api/proxy')
+  .then(res => res.text())
+  .then(data => {
+    console.log("Fetched from PHP:", data);
+  })
+  .catch(err => {
+    console.error("Error:", err);
+  });
 
 
 // Funzione per aggiornare le tabelle
