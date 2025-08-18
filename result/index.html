@@ -319,8 +319,10 @@
                             // Color coding
                             if (percentage < 30) {
                                 progressBar.style.backgroundColor = '#ff5252'; // Red
-                            } else if (percentage < 70) {
-                                progressBar.style.backgroundColor = '#ffab40'; // Orange
+                            } else if (percentage < 60) {
+                                progressBar.style.backgroundColor = '#FFA500'; // Orange
+                            } else if (percentage < 100) {
+                                progressBar.style.backgroundColor = '#FFFF00'; // yellow
                             } else {
                                 progressBar.style.backgroundColor = '#4caf50'; // Green
                             }
