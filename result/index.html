@@ -341,7 +341,7 @@
 					            progressBar.style.backgroundColor = '#4caf50'; // Green
 					        }
 					        
-					        progressBar.textContent = `${points.toLocaleString()}%`;
+					        progressBar.textContent = `${Math.round(points).toLocaleString()}%`;
 					        progressContainer.appendChild(progressBar);
 					        td.appendChild(progressContainer);
 					    } else {
