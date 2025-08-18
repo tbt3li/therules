@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Family Clan - Members</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #4a6fa5;
@@ -17,12 +18,12 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,47 +33,46 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            max-width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            box-sizing: border-box;
-            overflow: hidden;
         }
         
         h1 {
             color: var(--secondary-color);
             text-align: center;
-            margin: 0 0 20px 0;
-            padding: 10px;
-            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            flex-shrink: 0;
         }
         
-        .table-container {
+        .table-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .table-container {
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .table-scroll {
-            flex: 1;
             overflow: auto;
-            position: relative;
+            flex: 1;
         }
         
         table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            min-width: 600px;
-        }
-        
-        thead {
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            min-width: 800px;
         }
         
         th {
@@ -80,24 +80,26 @@
             color: var(--light-text);
             padding: 12px 15px;
             text-align: left;
-            font-weight: bold;
+            font-weight: 500;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
         
-        /* Frozen first column (ID) */
+        /* Frozen first column */
         th:first-child,
         td:first-child {
             position: sticky;
             left: 0;
             z-index: 5;
-            background-color: var(--primary-color);
-            color: var(--light-text);
+        }
+        
+        th:first-child {
+            background-color: var(--secondary-color);
         }
         
         td:first-child {
             background-color: white;
-            color: var(--text-color);
             font-weight: bold;
         }
         
@@ -108,7 +110,10 @@
         td {
             padding: 12px 15px;
             border-bottom: 1px solid #ddd;
-            background-color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
         
         tr:nth-child(even) td {
@@ -116,11 +121,18 @@
         }
         
         tr:hover td {
-            background-color: rgba(79, 195, 247, 0.2);
+            background-color: rgba(79, 195, 247, 0.1);
         }
         
         tr:hover td:first-child {
-            background-color: rgba(79, 195, 247, 0.3);
+            background-color: rgba(79, 195, 247, 0.2);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
         }
         
         .progress-container {
@@ -137,28 +149,18 @@
             transition: width 0.3s ease, background-color 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding-right: 5px;
-            font-size: 11px;
+            justify-content: center;
+            font-size: 12px;
             color: white;
-            font-weight: bold;
-            text-shadow: 0 0 1px rgba(0,0,0,0.5);
-            min-width: 30px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-style: italic;
-            color: #666;
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
         }
         
         .footer {
             text-align: center;
             padding: 10px;
-            font-size: 12px;
-            color: #666;
             margin-top: 10px;
+            font-size: 14px;
+            color: #666;
         }
         
         @media (max-width: 768px) {
@@ -172,23 +174,13 @@
 <body>
     <div class="container">
         <h1>The Family Clan Members</h1>
-        <div class="table-container">
-            <div class="table-scroll">
-                <table id="members-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Member</th>
-                            <th>Points Progress</th>
-                            <th>Role</th>
-                            <th>Join Date</th>
-                            <th>Activity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be loaded from CSV -->
-                    </tbody>
-                </table>
+        <div class="table-wrapper">
+            <div class="table-container">
+                <div class="table-scroll">
+                    <table id="members-table">
+                        <!-- Table will be populated by JavaScript -->
+                    </table>
+                </div>
             </div>
         </div>
         <div class="footer">
@@ -202,14 +194,14 @@
             const csvFilePath = 'members.csv';
             const maxPoints = 5000; // Your target points value
             
-            // Display loading message
-            const tbody = document.querySelector('#members-table tbody');
-            tbody.innerHTML = '<tr><td colspan="6" class="loading">Loading clan members data...</td></tr>';
-            
             fetch(csvFilePath)
                 .then(response => response.text())
                 .then(csvData => {
-                    tbody.innerHTML = '';
+                    const table = document.getElementById('members-table');
+                    const loading = document.createElement('div');
+                    loading.className = 'loading';
+                    loading.textContent = 'Loading clan members data...';
+                    table.parentNode.insertBefore(loading, table);
                     
                     // Parse CSV data
                     const rows = csvData.split('\n');
@@ -223,69 +215,100 @@
                     const joinDateIndex = headers.findIndex(h => h.toLowerCase().includes('join') || h.toLowerCase().includes('date'));
                     const activityIndex = headers.findIndex(h => h.toLowerCase().includes('activity'));
                     
-                    // Process each row
+                    // Create table header
+                    let thead = document.createElement('thead');
+                    let headerRow = document.createElement('tr');
+                    
+                    // Always include ID column first
+                    headerRow.appendChild(document.createElement('th')).textContent = 'ID';
+                    
+                    // Add other columns in order
+                    if (nameIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[nameIndex];
+                    if (pointsIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = 'Points Progress';
+                    if (roleIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[roleIndex];
+                    if (joinDateIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[joinDateIndex];
+                    if (activityIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[activityIndex];
+                    
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+                    
+                    // Create table body
+                    let tbody = document.createElement('tbody');
+                    
                     for (let i = 1; i < rows.length; i++) {
                         if (rows[i].trim() === '') continue;
                         
-                        const cols = rows[i].split(',');
-                        const row = document.createElement('tr');
+                        let row = document.createElement('tr');
+                        let cols = rows[i].split(',');
                         
-                        // ID column
-                        const idCell = document.createElement('td');
+                        // ID column (always first)
+                        let idCell = document.createElement('td');
                         idCell.textContent = idIndex !== -1 ? cols[idIndex].trim() : i;
                         row.appendChild(idCell);
                         
                         // Name column
-                        const nameCell = document.createElement('td');
-                        nameCell.textContent = nameIndex !== -1 ? cols[nameIndex].trim() : 'Member ' + i;
-                        row.appendChild(nameCell);
+                        if (nameIndex !== -1) {
+                            let nameCell = document.createElement('td');
+                            nameCell.textContent = cols[nameIndex] ? cols[nameIndex].trim() : '';
+                            row.appendChild(nameCell);
+                        }
                         
-                        // Points Progress column
-                        const pointsCell = document.createElement('td');
+                        // Points Progress column (after name)
                         if (pointsIndex !== -1 && cols[pointsIndex]) {
-                            const points = parseFloat(cols[pointsIndex].trim()) || 0;
-                            const percentage = Math.min((points / maxPoints) * 100, 100);
+                            let pointsCell = document.createElement('td');
+                            let points = parseFloat(cols[pointsIndex].trim()) || 0;
                             
-                            let color;
+                            let progressContainer = document.createElement('div');
+                            progressContainer.className = 'progress-container';
+                            
+                            let progressBar = document.createElement('div');
+                            progressBar.className = 'progress-bar';
+                            
+                            let percentage = Math.min((points / maxPoints) * 100, 100);
+                            progressBar.style.width = `${percentage}%`;
+                            
                             if (percentage < 30) {
-                                color = '#ff5252'; // Red
+                                progressBar.style.backgroundColor = '#ff5252'; // Red
                             } else if (percentage < 70) {
-                                color = '#ffab40'; // Orange
+                                progressBar.style.backgroundColor = '#ffab40'; // Orange
                             } else {
-                                color = '#4caf50'; // Green
+                                progressBar.style.backgroundColor = '#4caf50'; // Green
                             }
                             
-                            pointsCell.innerHTML = `
-                                <div class="progress-container">
-                                    <div class="progress-bar" style="width: ${percentage}%; background: ${color}">
-                                        ${points.toLocaleString()}
-                                    </div>
-                                </div>
-                            `;
+                            progressBar.textContent = `${points.toLocaleString()}`;
+                            progressContainer.appendChild(progressBar);
+                            pointsCell.appendChild(progressContainer);
+                            row.appendChild(pointsCell);
                         }
-                        row.appendChild(pointsCell);
                         
-                        // Role column
-                        const roleCell = document.createElement('td');
-                        roleCell.textContent = roleIndex !== -1 ? cols[roleIndex].trim() : 'Member';
-                        row.appendChild(roleCell);
+                        // Other columns
+                        if (roleIndex !== -1) {
+                            let roleCell = document.createElement('td');
+                            roleCell.textContent = cols[roleIndex] ? cols[roleIndex].trim() : '';
+                            row.appendChild(roleCell);
+                        }
                         
-                        // Join Date column
-                        const dateCell = document.createElement('td');
-                        dateCell.textContent = joinDateIndex !== -1 ? cols[joinDateIndex].trim() : 'N/A';
-                        row.appendChild(dateCell);
+                        if (joinDateIndex !== -1) {
+                            let dateCell = document.createElement('td');
+                            dateCell.textContent = cols[joinDateIndex] ? cols[joinDateIndex].trim() : '';
+                            row.appendChild(dateCell);
+                        }
                         
-                        // Activity column
-                        const activityCell = document.createElement('td');
-                        activityCell.textContent = activityIndex !== -1 ? cols[activityIndex].trim() : 'Medium';
-                        row.appendChild(activityCell);
+                        if (activityIndex !== -1) {
+                            let activityCell = document.createElement('td');
+                            activityCell.textContent = cols[activityIndex] ? cols[activityIndex].trim() : '';
+                            row.appendChild(activityCell);
+                        }
                         
                         tbody.appendChild(row);
                     }
+                    
+                    table.appendChild(tbody);
+                    loading.remove();
                 })
                 .catch(error => {
                     console.error('Error loading CSV file:', error);
-                    tbody.innerHTML = '<tr><td colspan="6" class="loading">Error loading clan members data. Please try again later.</td></tr>';
+                    document.querySelector('.loading').textContent = 'Error loading clan members data. Please try again later.';
                 });
         });
     </script>
