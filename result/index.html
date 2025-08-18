@@ -342,7 +342,10 @@
                             progressBar.textContent = `${points.toLocaleString()}%`;
                             progressContainer.appendChild(progressBar);
                             td.appendChild(progressContainer);
-                        } else {
+                        } else  if (rowIndex === rows.length - 1) {
+					        // For last row, just show empty cell
+					        td.textContent = '';
+					    } else {
                             // Regular column
                             const cellValue = row[colIndex] !== undefined ? row[colIndex] : '';
                             td.textContent = cellValue.toString().trim();
