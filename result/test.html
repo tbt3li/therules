@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Family Clan - Member Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ddd;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .dashboard {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            position: relative;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 800px;
+        }
+        
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        
+        th {
+            background: linear-gradient(to bottom, #3a7bd5, #2c5eaa);
+            color: white;
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+        
+        /* Frozen first column */
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background: linear-gradient(to right, #3a7bd5, #2c5eaa);
+            color: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        td:first-child {
+            background: #fff;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) td:first-child {
+            background: #f8f9fa;
+        }
+        
+        tr:hover td:first-child {
+            background: #e3f2fd;
+        }
+        
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+        
+        tr {
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e3f2fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            height: 26px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1), background-color 0.8s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+            padding-right: 10px;
+            min-width: 40px;
+        }
+        
+        .role {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .leader { background-color: #ff9800; color: white; }
+        .co-leader { background-color: #2196f3; color: white; }
+        .elder { background-color: #9c27b0; color: white; }
+        .member { background-color: #4caf50; color: white; }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c5eaa;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+            
+            th, td {
+                padding: 12px 15px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-users"></i> THE FAMILY CLAN</h1>
+            <p class="subtitle">United in strength, loyalty, and excellence. Our members showcase dedication and progress in every challenge.</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Members</div>
+                <div class="stat-value" id="total-members">24</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Points</div>
+                <div class="stat-value" id="avg-points">3,240</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Top Performer</div>
+                <div class="stat-value">ShadowStrike</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Clan Level</div>
+                <div class="stat-value">15</div>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="table-container">
+                <table id="members-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Member</th>
+                            <th>Role</th>
+                            <th>Join Date</th>
+                            <th>Activity</th>
+                            <th>Points Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded from CSV -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="refresh-btn">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+            <button class="btn" id="export-btn">
+                <i class="fas fa-file-export"></i> Export Data
+            </button>
+        </div>
+        
+        <footer>
+            <p>The Family Clan &copy; 2023 | United We Stand, Divided We Fall</p>
+            <p>Clan Website: thefamily.pages.dev</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mock data - replace with your CSV loading logic
+            const mockData = [
+                ["1", "ShadowStrike", "Leader", "2022-11-15", "Very High", "4980"],
+                ["2", "DragonSlayer", "Co-Leader", "2023-01-22", "High", "4670"],
+                ["3", "NightHunter", "Elder", "2023-02-10", "High", "4320"],
+                ["4", "PhoenixRise", "Elder", "2023-03-05", "Medium", "3850"],
+                ["5", "StormBringer", "Member", "2023-03-18", "Medium", "3540"],
+                ["6", "IronShield", "Member", "2023-04-02", "Medium", "3210"],
+                ["7", "FrostBite", "Member", "2023-04-15", "Medium", "2950"],
+                ["8", "SwiftArrow", "Member", "2023-05-01", "Medium", "2670"],
+                ["9", "ThunderFist", "Member", "2023-05-12", "Low", "2410"],
+                ["10", "SilentWalker", "Member", "2023-05-25", "Low", "2180"],
+                ["11", "FireHeart", "Member", "2023-06-08", "Low", "1950"],
+                ["12", "MoonWatcher", "Member", "2023-06-20", "Low", "1780"],
+                ["13", "SteelWill", "Member", "2023-07-03", "Low", "1620"],
+                ["14", "GhostBlade", "Member", "2023-07-15", "Low", "1450"],
+                ["15", "SkyGuardian", "Member", "2023-07-28", "Low", "1290"],
+                ["16", "EarthShaker", "Member", "2023-08-10", "Low", "1150"],
+                ["17", "OceanMaster", "Member", "2023-08-22", "Low", "980"],
+                ["18", "LightningStrike", "Member", "2023-09-05", "Low", "820"],
+                ["19", "MysticSage", "Member", "2023-09-18", "Low", "670"],
+                ["20", "BlazeRunner", "Member", "2023-10-01", "Low", "540"],
+                ["21", "StoneWall", "Member", "2023-10-15", "Low", "420"],
+                ["22", "WindRider", "Member", "2023-10-28", "Low", "310"],
+                ["23", "VenomFang", "Member", "2023-11-10", "Low", "210"],
+                ["24", "SolarFlare", "Member", "2023-11-23", "Low", "120"]
+            ];
+            
+            const maxPoints = 5000;
+            const tableBody = document.querySelector('#members-table tbody');
+            
+            // Function to create progress bar
+            function createProgressBar(points) {
+                const percentage = Math.min((points / maxPoints) * 100, 100);
+                
+                // Determine color based on percentage
+                let color;
+                if (percentage < 30) {
+                    color = '#ff5252'; // Red
+                } else if (percentage < 70) {
+                    color = '#ffab40'; // Orange
+                } else {
+                    color = '#4caf50'; // Green
+                }
+                
+                return `
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${percentage}%; background: ${color};">
+                            ${points.toLocaleString()}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Function to get role class
+            function getRoleClass(role) {
+                const roles = {
+                    "Leader": "leader",
+                    "Co-Leader": "co-leader",
+                    "Elder": "elder",
+                    "Member": "member"
+                };
+                return roles[role] || "member";
+            }
+            
+            // Populate table with mock data
+            function populateTable(data) {
+                tableBody.innerHTML = '';
+                
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row[0]}</td>
+                        <td>${row[1]}</td>
+                        <td><span class="role ${getRoleClass(row[2])}">${row[2]}</span></td>
+                        <td>${row[3]}</td>
+                        <td>${row[4]}</td>
+                        <td>${createProgressBar(parseInt(row[5]))}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+            
+            // Initialize with mock data
+            populateTable(mockData);
+            
+            // CSV loading functionality (for when you have real CSV)
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                alert('In a real implementation, this would reload your CSV data.\nFor now, we\'re using mock data.');
+            });
+            
+            document.getElementById('export-btn').addEventListener('click', function() {
+                alert('Export functionality would be implemented here.');
+            });
+        });
+    </script>
+</body>
+</html>
