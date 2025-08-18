@@ -172,29 +172,6 @@
             text-shadow: 0 0 2px rgba(0,0,0,0.5);
         }
         
-        .file-input {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .file-input label {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .file-input label:hover {
-            background-color: var(--secondary-color);
-        }
-        
-        .file-input input[type="file"] {
-            display: none;
-        }
-        
         .footer {
             text-align: center;
             padding: 10px;
@@ -220,11 +197,6 @@
     <div class="container">
         <h1>The Family Clan Members</h1>
         
-        <div class="file-input">
-            <label for="file-upload">Upload Excel File (.xlsx)</label>
-            <input id="file-upload" type="file" accept=".xlsx" />
-        </div>
-        
         <div class="table-wrapper">
             <div class="table-container">
                 <div class="table-scroll">
@@ -242,25 +214,25 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const maxPoints = 5000; // Your target points value
-            const fileInput = document.getElementById('file-upload');
             const table = document.getElementById('members-table');
+            const xlsxFile = 'members.xlsx'; // Your XLSX file name
             
             // Add loading element
             const loading = document.createElement('div');
             loading.className = 'loading';
-            loading.textContent = 'Upload an Excel file to view clan members';
+            loading.textContent = 'Loading clan members data...';
             table.parentNode.insertBefore(loading, table);
             
-            fileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                loading.textContent = 'Loading clan members data...';
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
+            // Fetch and process the XLSX file
+            fetch(xlsxFile)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('File not found');
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(data => {
                     try {
-                        const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, { type: 'array' });
                         
                         // Get first sheet
@@ -276,11 +248,13 @@
                         displayData(jsonData);
                     } catch (error) {
                         console.error('Error processing Excel file:', error);
-                        loading.textContent = 'Error loading Excel file. Please try again.';
+                        loading.textContent = 'Error loading Excel file. Please ensure members.xlsx exists.';
                     }
-                };
-                reader.readAsArrayBuffer(file);
-            });
+                })
+                .catch(error => {
+                    console.error('Error fetching Excel file:', error);
+                    loading.textContent = 'Error loading Excel file. Please ensure members.xlsx exists.';
+                });
             
             function displayData(data) {
                 const headers = data[0];
