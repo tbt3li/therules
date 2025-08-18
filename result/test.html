@@ -207,27 +207,23 @@
                     const rows = csvData.split('\n');
                     const headers = rows[0].split(',').map(header => header.trim());
                     
-                    // Find column indexes
-                    const idIndex = headers.findIndex(h => h.toLowerCase().includes('id'));
-                    const nameIndex = headers.findIndex(h => h.toLowerCase().includes('name') || h.toLowerCase().includes('member'));
+                    // Find points column index
                     const pointsIndex = headers.findIndex(h => h.toLowerCase().includes('points'));
-                    const roleIndex = headers.findIndex(h => h.toLowerCase().includes('role'));
-                    const joinDateIndex = headers.findIndex(h => h.toLowerCase().includes('join') || h.toLowerCase().includes('date'));
-                    const activityIndex = headers.findIndex(h => h.toLowerCase().includes('activity'));
                     
                     // Create table header
                     let thead = document.createElement('thead');
                     let headerRow = document.createElement('tr');
                     
-                    // Always include ID column first
-                    headerRow.appendChild(document.createElement('th')).textContent = 'ID';
-                    
-                    // Add other columns in order
-                    if (nameIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[nameIndex];
-                    if (pointsIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = 'Points Progress';
-                    if (roleIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[roleIndex];
-                    if (joinDateIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[joinDateIndex];
-                    if (activityIndex !== -1) headerRow.appendChild(document.createElement('th')).textContent = headers[activityIndex];
+                    // Add all headers to the table
+                    headers.forEach((header, index) => {
+                        let th = document.createElement('th');
+                        th.textContent = header;
+                        // Special case for points column
+                        if (index === pointsIndex) {
+                            th.textContent = 'Points Progress';
+                        }
+                        headerRow.appendChild(th);
+                    });
                     
                     thead.appendChild(headerRow);
                     table.appendChild(thead);
@@ -241,64 +237,42 @@
                         let row = document.createElement('tr');
                         let cols = rows[i].split(',');
                         
-                        // ID column (always first)
-                        let idCell = document.createElement('td');
-                        idCell.textContent = idIndex !== -1 ? cols[idIndex].trim() : i;
-                        row.appendChild(idCell);
-                        
-                        // Name column
-                        if (nameIndex !== -1) {
-                            let nameCell = document.createElement('td');
-                            nameCell.textContent = cols[nameIndex] ? cols[nameIndex].trim() : '';
-                            row.appendChild(nameCell);
-                        }
-                        
-                        // Points Progress column (after name)
-                        if (pointsIndex !== -1 && cols[pointsIndex]) {
-                            let pointsCell = document.createElement('td');
-                            let points = parseFloat(cols[pointsIndex].trim()) || 0;
+                        // Add all columns to the table
+                        headers.forEach((header, colIndex) => {
+                            let td = document.createElement('td');
                             
-                            let progressContainer = document.createElement('div');
-                            progressContainer.className = 'progress-container';
-                            
-                            let progressBar = document.createElement('div');
-                            progressBar.className = 'progress-bar';
-                            
-                            let percentage = Math.min((points / maxPoints) * 100, 100);
-                            progressBar.style.width = `${percentage}%`;
-                            
-                            if (percentage < 30) {
-                                progressBar.style.backgroundColor = '#ff5252'; // Red
-                            } else if (percentage < 70) {
-                                progressBar.style.backgroundColor = '#ffab40'; // Orange
+                            // Special handling for points column
+                            if (colIndex === pointsIndex) {
+                                let points = parseFloat(cols[colIndex].trim()) || 0;
+                                
+                                let progressContainer = document.createElement('div');
+                                progressContainer.className = 'progress-container';
+                                
+                                let progressBar = document.createElement('div');
+                                progressBar.className = 'progress-bar';
+                                
+                                let percentage = Math.min((points / maxPoints) * 100, 100);
+                                progressBar.style.width = `${percentage}%`;
+                                
+                                // Color coding
+                                if (percentage < 30) {
+                                    progressBar.style.backgroundColor = '#ff5252'; // Red
+                                } else if (percentage < 70) {
+                                    progressBar.style.backgroundColor = '#ffab40'; // Orange
+                                } else {
+                                    progressBar.style.backgroundColor = '#4caf50'; // Green
+                                }
+                                
+                                progressBar.textContent = `${points.toLocaleString()}`;
+                                progressContainer.appendChild(progressBar);
+                                td.appendChild(progressContainer);
                             } else {
-                                progressBar.style.backgroundColor = '#4caf50'; // Green
+                                // Regular column
+                                td.textContent = cols[colIndex] ? cols[colIndex].trim() : '';
                             }
                             
-                            progressBar.textContent = `${points.toLocaleString()}`;
-                            progressContainer.appendChild(progressBar);
-                            pointsCell.appendChild(progressContainer);
-                            row.appendChild(pointsCell);
-                        }
-                        
-                        // Other columns
-                        if (roleIndex !== -1) {
-                            let roleCell = document.createElement('td');
-                            roleCell.textContent = cols[roleIndex] ? cols[roleIndex].trim() : '';
-                            row.appendChild(roleCell);
-                        }
-                        
-                        if (joinDateIndex !== -1) {
-                            let dateCell = document.createElement('td');
-                            dateCell.textContent = cols[joinDateIndex] ? cols[joinDateIndex].trim() : '';
-                            row.appendChild(dateCell);
-                        }
-                        
-                        if (activityIndex !== -1) {
-                            let activityCell = document.createElement('td');
-                            activityCell.textContent = cols[activityIndex] ? cols[activityIndex].trim() : '';
-                            row.appendChild(activityCell);
-                        }
+                            row.appendChild(td);
+                        });
                         
                         tbody.appendChild(row);
                     }
