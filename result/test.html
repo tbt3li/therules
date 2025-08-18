@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Family Clan - Members</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary-color: #4a6fa5;
@@ -83,49 +84,65 @@
             font-weight: 500;
             position: sticky;
             top: 0;
+            z-index: 20;
+        }
+        
+        /* Frozen first two columns */
+        th:nth-child(1),
+        th:nth-child(2),
+        td:nth-child(1),
+        td:nth-child(2) {
+            position: sticky;
             z-index: 10;
         }
         
-        /* Frozen first column */
-        th:first-child,
-        td:first-child {
-            position: sticky;
+        /* First column styling */
+        th:nth-child(1) {
             left: 0;
-            z-index: 5;
-        }
-        
-        th:first-child {
             background-color: var(--secondary-color);
         }
         
-        td:first-child {
+        td:nth-child(1) {
+            left: 0;
             background-color: white;
             font-weight: bold;
         }
         
-        tr:nth-child(even) td:first-child {
+        /* Second column styling */
+        th:nth-child(2) {
+            left: 60px; /* Adjust based on your first column width */
+            background-color: var(--primary-color);
+        }
+        
+        td:nth-child(2) {
+            left: 60px; /* Adjust based on your first column width */
+            background-color: white;
+        }
+        
+        /* Alternating row colors */
+        tr:nth-child(even) td {
             background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) td:nth-child(1),
+        tr:nth-child(even) td:nth-child(2) {
+            background-color: #f2f2f2;
+        }
+        
+        /* Hover effects */
+        tr:hover td {
+            background-color: rgba(79, 195, 247, 0.1);
+        }
+        
+        tr:hover td:nth-child(1),
+        tr:hover td:nth-child(2) {
+            background-color: rgba(79, 195, 247, 0.2);
         }
         
         td {
             padding: 12px 15px;
             border-bottom: 1px solid #ddd;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        
-        tr:nth-child(even) td {
-            background-color: #f2f2f2;
-        }
-        
-        tr:hover td {
-            background-color: rgba(79, 195, 247, 0.1);
-        }
-        
-        tr:hover td:first-child {
-            background-color: rgba(79, 195, 247, 0.2);
+            background-color: white;
         }
         
         .loading {
@@ -147,11 +164,35 @@
             height: 100%;
             border-radius: 4px;
             transition: width 0.3s ease, background-color 0.3s ease;
+            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            color: black;
+            color: white;
             text-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+        
+        .file-input {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .file-input label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .file-input label:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .file-input input[type="file"] {
+            display: none;
         }
         
         .footer {
@@ -167,12 +208,23 @@
                 padding: 8px 10px;
                 font-size: 14px;
             }
+            
+            th:nth-child(2),
+            td:nth-child(2) {
+                left: 50px; /* Adjust for smaller screens */
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>The Family Clan Members</h1>
+        
+        <div class="file-input">
+            <label for="file-upload">Upload Excel File (.xlsx)</label>
+            <input id="file-upload" type="file" accept=".xlsx" />
+        </div>
+        
         <div class="table-wrapper">
             <div class="table-container">
                 <div class="table-scroll">
@@ -189,100 +241,132 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Path to your CSV file (upload this to your GitHub repo)
-            const csvFilePath = 'members.xlsx';
-            const maxPoints = 4000; // Your target points value
+            const maxPoints = 5000; // Your target points value
+            const fileInput = document.getElementById('file-upload');
+            const table = document.getElementById('members-table');
             
-            fetch(csvFilePath)
-                .then(response => response.text())
-                .then(csvData => {
-                    const table = document.getElementById('members-table');
-                    const loading = document.createElement('div');
-                    loading.className = 'loading';
-                    loading.textContent = 'Loading clan members data...';
-                    table.parentNode.insertBefore(loading, table);
-                    
-                    // Parse CSV data
-                    const rows = csvData.split('\n');
-                    const headers = rows[0].split(',').map(header => header.trim());
-                    
-                    // Find points column index
-                    const pointsIndex = headers.findIndex(h => h.toLowerCase().includes('points'));
-                    
-                    // Create table header
-                    let thead = document.createElement('thead');
-                    let headerRow = document.createElement('tr');
-                    
-                    // Add all headers to the table
-                    headers.forEach((header, index) => {
-                        let th = document.createElement('th');
-                        th.textContent = header;
-                        // Special case for points column
-                        if (index === pointsIndex) {
-                            th.textContent = 'Points Progress';
+            // Add loading element
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            loading.textContent = 'Upload an Excel file to view clan members';
+            table.parentNode.insertBefore(loading, table);
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                loading.textContent = 'Loading clan members data...';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Get first sheet
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        
+                        // Convert to JSON
+                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                        
+                        if (jsonData.length < 2) {
+                            throw new Error('No data found in the Excel file');
                         }
-                        headerRow.appendChild(th);
-                    });
-                    
-                    thead.appendChild(headerRow);
-                    table.appendChild(thead);
-                    
-                    // Create table body
-                    let tbody = document.createElement('tbody');
-                    
-                    for (let i = 1; i < rows.length; i++) {
-                        if (rows[i].trim() === '') continue;
                         
-                        let row = document.createElement('tr');
-                        let cols = rows[i].split(',');
+                        displayData(jsonData);
+                    } catch (error) {
+                        console.error('Error processing Excel file:', error);
+                        loading.textContent = 'Error loading Excel file. Please try again.';
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+            
+            function displayData(data) {
+                const headers = data[0];
+                const rows = data.slice(1);
+                
+                // Clear existing table
+                table.innerHTML = '';
+                
+                // Find points column index
+                const pointsIndex = headers.findIndex(h => 
+                    h && h.toString().toLowerCase().includes('points'));
+                
+                // Create table header
+                let thead = document.createElement('thead');
+                let headerRow = document.createElement('tr');
+                
+                // Add all headers to the table
+                headers.forEach((header, index) => {
+                    if (header === undefined || header === null) return;
+                    
+                    let th = document.createElement('th');
+                    th.textContent = header;
+                    // Special case for points column
+                    if (index === pointsIndex) {
+                        th.textContent = 'Points Progress';
+                    }
+                    headerRow.appendChild(th);
+                });
+                
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create table body
+                let tbody = document.createElement('tbody');
+                
+                rows.forEach((row, rowIndex) => {
+                    if (row.length === 0) return;
+                    
+                    let tr = document.createElement('tr');
+                    
+                    // Add all columns to the table
+                    headers.forEach((header, colIndex) => {
+                        if (header === undefined || header === null) return;
                         
-                        // Add all columns to the table
-                        headers.forEach((header, colIndex) => {
-                            let td = document.createElement('td');
+                        let td = document.createElement('td');
+                        
+                        // Special handling for points column
+                        if (colIndex === pointsIndex) {
+                            const points = parseFloat(row[colIndex]) || 0;
                             
-                            // Special handling for points column
-                            if (colIndex === pointsIndex) {
-                                let points = parseFloat(cols[colIndex].trim()) || 0;
-                                
-                                let progressContainer = document.createElement('div');
-                                progressContainer.className = 'progress-container';
-                                
-                                let progressBar = document.createElement('div');
-                                progressBar.className = 'progress-bar';
-                                
-                                let percentage = Math.min((points / maxPoints) * 100, 100);
-                                progressBar.style.width = `${percentage}%`;
-                                
-                                // Color coding
-                                if (percentage < 30) {
-                                    progressBar.style.backgroundColor = '#ff5252'; // Red
-                                } else if (percentage < 70) {
-                                    progressBar.style.backgroundColor = '#ffab40'; // Orange
-                                } else {
-                                    progressBar.style.backgroundColor = '#4caf50'; // Green
-                                }
-                                
-                                progressBar.textContent = `${points.toLocaleString()}`;
-                                progressContainer.appendChild(progressBar);
-                                td.appendChild(progressContainer);
+                            let progressContainer = document.createElement('div');
+                            progressContainer.className = 'progress-container';
+                            
+                            let progressBar = document.createElement('div');
+                            progressBar.className = 'progress-bar';
+                            
+                            let percentage = Math.min((points / maxPoints) * 100, 100);
+                            progressBar.style.width = `${percentage}%`;
+                            
+                            // Color coding
+                            if (percentage < 30) {
+                                progressBar.style.backgroundColor = '#ff5252'; // Red
+                            } else if (percentage < 70) {
+                                progressBar.style.backgroundColor = '#ffab40'; // Orange
                             } else {
-                                // Regular column
-                                td.textContent = cols[colIndex] ? cols[colIndex].trim() : '';
+                                progressBar.style.backgroundColor = '#4caf50'; // Green
                             }
                             
-                            row.appendChild(td);
-                        });
+                            progressBar.textContent = `${points.toLocaleString()}`;
+                            progressContainer.appendChild(progressBar);
+                            td.appendChild(progressContainer);
+                        } else {
+                            // Regular column
+                            const cellValue = row[colIndex] !== undefined ? row[colIndex] : '';
+                            td.textContent = cellValue.toString().trim();
+                        }
                         
-                        tbody.appendChild(row);
-                    }
+                        tr.appendChild(td);
+                    });
                     
-                    table.appendChild(tbody);
-                    loading.remove();
-                })
-                .catch(error => {
-                    console.error('Error loading CSV file:', error);
-                    document.querySelector('.loading').textContent = 'Error loading clan members data. Please try again later.';
+                    tbody.appendChild(tr);
                 });
+                
+                table.appendChild(tbody);
+                loading.remove();
+            }
         });
     </script>
 </body>
