@@ -229,145 +229,140 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const maxPoints = 100; // Your target points value
-            const table = document.getElementById('members-table');
-            const xlsxFile = 'members.xlsx'; // Your XLSX file name
-            
-            // Add loading element
-            const loading = document.createElement('div');
-            loading.className = 'loading';
-            loading.textContent = 'Loading clan members data...';
-            table.parentNode.insertBefore(loading, table);
-            
-            // Fetch and process the XLSX file
-            fetch(xlsxFile)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('File not found');
-                    }
-                    return response.arrayBuffer();
-                })
-                .then(data => {
-                    try {
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        
-                        // Get first sheet
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        
-                        // Convert to JSON
-                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                        
-                        if (jsonData.length < 2) {
-                            throw new Error('No data found in the Excel file');
-                        }
-                        
-                        displayData(jsonData);
-                    } catch (error) {
-                        console.error('Error processing Excel file:', error);
-                        loading.textContent = 'Error loading results. You can visit Google Sheet.';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching Excel file:', error);
-                    loading.textContent = 'Error loading results. You can visit Google Sheet.';
-                });
-            
-            function displayData(data) {
-                const headers = data[0];
-                const rows = data.slice(1);
-                
-                // Clear existing table
-                table.innerHTML = '';
-                
-                // Find points column index
-                const progressIndex = headers.findIndex(h => 
-                    h && h.toString().toLowerCase().includes('progress'));
-                
-                // Create table header
-                let thead = document.createElement('thead');
-                let headerRow = document.createElement('tr');
-                
-                // Add all headers to the table
-                headers.forEach((header, index) => {
-                    if (header === undefined || header === null) return;
-                    
-                    let th = document.createElement('th');
-                    th.textContent = header;
-                    // Special case for points column
-                    if (index === pointsIndex) {
-                        th.textContent = 'Progress Percentage';
-                    }
-                    headerRow.appendChild(th);
-                });
-                
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-                
-                // Create table body
-                let tbody = document.createElement('tbody');
-                
-                rows.forEach((row, rowIndex) => {
-                    if (row.length === 0) return;
-                    
-                    let tr = document.createElement('tr');
-                    
-                    // Add all columns to the table
-                    headers.forEach((header, colIndex) => {
-                        if (header === undefined || header === null) return;
-                        
-                        let td = document.createElement('td');
-                        
-                        // Special handling for points column
-                        if (colIndex === pointsIndex) {
-					    const points = parseFloat(row[colIndex]) || 0;
-					    
-					    // Skip progress bar creation for last row
-					    if (rowIndex !== rows.length - 1) {
-					        let progressContainer = document.createElement('div');
-					        progressContainer.className = 'progress-container';
-					        
-					        let progressBar = document.createElement('div');
-					        progressBar.className = 'progress-bar';
-					        
-					        let percentage = Math.min((points / maxPoints) * 100, 100);
-					        progressBar.style.width = `${percentage}%`;
-					        
-					        // Color coding
-					        if (percentage < 30) {
-					            progressBar.style.backgroundColor = '#ff0000'; // Red
-					        } else if (percentage < 60) {
-					            progressBar.style.backgroundColor = '#ffa200'; // Orange
-					        } else if (percentage < 100) {
-					            progressBar.style.backgroundColor = '#e3ed0e'; // Yellow
-					        } else {
-					            progressBar.style.backgroundColor = '#4caf50'; // Green
-					        }
-					        
-					        progressBar.textContent = `${Math.round(points).toLocaleString()}%`;
-					        progressContainer.appendChild(progressBar);
-					        td.appendChild(progressContainer);
-					    } else {
-					        // For last row, leave the cell empty
-					        td.textContent = '';
-					    }
-					} else {
-					    // Regular column (unchanged)
-					    const cellValue = row[colIndex] !== undefined ? row[colIndex] : '';
-					    td.textContent = cellValue.toString().trim();
-					}
-
-                        
-                        tr.appendChild(td);
-                    });
-                    
-                    tbody.appendChild(tr);
-                });
-                
-                table.appendChild(tbody);
-                loading.remove();
-            }
-        });
-    </script>
+              document.addEventListener('DOMContentLoaded', function() {
+                  const maxPoints = 100; // Your target points value
+                  const table = document.getElementById('members-table');
+                  const xlsxFile = 'members.xlsx'; // Your XLSX file name
+                  
+                  // Add loading element
+                  const loading = document.createElement('div');
+                  loading.className = 'loading';
+                  loading.textContent = 'Loading clan members data...';
+                  table.parentNode.insertBefore(loading, table);
+                  
+                  // Fetch and process the XLSX file
+                  fetch(xlsxFile)
+                      .then(response => {
+                          if (!response.ok) {
+                              throw new Error('File not found');
+                          }
+                          return response.arrayBuffer();
+                      })
+                      .then(data => {
+                          try {
+                              const workbook = XLSX.read(data, { type: 'array' });
+                              
+                              // Get first sheet
+                              const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                              
+                              // Convert to JSON
+                              const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                              
+                              if (jsonData.length < 2) {
+                                  throw new Error('No data found in the Excel file');
+                              }
+                              
+                              displayData(jsonData);
+                          } catch (error) {
+                              console.error('Error processing Excel file:', error);
+                              loading.textContent = 'Error loading Excel file. Please ensure members.xlsx exists.';
+                          }
+                      })
+                      .catch(error => {
+                          console.error('Error fetching Excel file:', error);
+                          loading.textContent = 'Error loading Excel file. Please ensure members.xlsx exists.';
+                      });
+                  
+                  function displayData(data) {
+                      const headers = data[0];
+                      const rows = data.slice(1);
+                      
+                      // Clear existing table
+                      table.innerHTML = '';
+                      
+                      // Find progress column index (changed from pointsIndex to progressIndex)
+                      const progressIndex = headers.findIndex(h => 
+                          h && h.toString().toLowerCase() === 'progress'); // Exact match for "Progress"
+                      
+                      // Create table header
+                      let thead = document.createElement('thead');
+                      let headerRow = document.createElement('tr');
+                      
+                      // Add all headers to the table
+                      headers.forEach((header, index) => {
+                          if (header === undefined || header === null) return;
+                          
+                          let th = document.createElement('th');
+                          th.textContent = header;
+                          headerRow.appendChild(th);
+                      });
+                      
+                      thead.appendChild(headerRow);
+                      table.appendChild(thead);
+                      
+                      // Create table body
+                      let tbody = document.createElement('tbody');
+                      
+                      rows.forEach((row, rowIndex) => {
+                          if (row.length === 0) return;
+                          
+                          let tr = document.createElement('tr');
+                          
+                          // Add all columns to the table
+                          headers.forEach((header, colIndex) => {
+                              if (header === undefined || header === null) return;
+                              
+                              let td = document.createElement('td');
+                              
+                              // Special handling only for exact "Progress" column
+                              if (colIndex === progressIndex) {
+                                  const points = parseFloat(row[colIndex]) || 0;
+                                  
+                                  // Skip progress bar creation for last row
+                                  if (rowIndex !== rows.length - 1) {
+                                      let progressContainer = document.createElement('div');
+                                      progressContainer.className = 'progress-container';
+                                      
+                                      let progressBar = document.createElement('div');
+                                      progressBar.className = 'progress-bar';
+                                      
+                                      let percentage = Math.min((points / maxPoints) * 100, 100);
+                                      progressBar.style.width = `${percentage}%`;
+                                      
+                                      // Color coding
+                                      if (percentage < 30) {
+                                          progressBar.style.backgroundColor = '#ff0000'; // Red
+                                      } else if (percentage < 60) {
+                                          progressBar.style.backgroundColor = '#ffa200'; // Orange
+                                      } else if (percentage < 100) {
+                                          progressBar.style.backgroundColor = '#e3ed0e'; // Yellow
+                                      } else {
+                                          progressBar.style.backgroundColor = '#4caf50'; // Green
+                                      }
+                                      
+                                      progressBar.textContent = `${Math.round(points).toLocaleString()}%`;
+                                      progressContainer.appendChild(progressBar);
+                                      td.appendChild(progressContainer);
+                                  } else {
+                                      // For last row, leave the cell empty
+                                      td.textContent = '';
+                                  }
+                              } else {
+                                  // Regular column (unchanged)
+                                  const cellValue = row[colIndex] !== undefined ? row[colIndex] : '';
+                                  td.textContent = cellValue.toString().trim();
+                              }
+                              
+                              tr.appendChild(td);
+                          });
+                          
+                          tbody.appendChild(tr);
+                      });
+                      
+                      table.appendChild(tbody);
+                      loading.remove();
+                  }
+              });
+          </script>
 </body>
 </html>
