@@ -279,7 +279,7 @@
                 table.innerHTML = '';
                 
                 // Find points column index
-                const pointsIndex = headers.findIndex(h => 
+                const progressIndex = headers.findIndex(h => 
                     h && h.toString().toLowerCase().includes('progress'));
                 
                 // Create table header
@@ -294,7 +294,7 @@
                     th.textContent = header;
                     // Special case for points column
                     if (index === pointsIndex) {
-                        th.textContent = 'Points Progress';
+                        th.textContent = 'Progress Percentage';
                     }
                     headerRow.appendChild(th);
                 });
