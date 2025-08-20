@@ -307,11 +307,11 @@
             function loadData(week) {
                 const xlsxFile = week === 'this' ? 'membersx.xlsx' : 'members.xlsx';
                 const weekText = week === 'this' ? 
-                    'Weekly (Mon->Sun) Results (11-08-2025 to 17-08-2025)' : 
-                    'Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)';
+                    'Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)' : 
+                    'Weekly (Mon->Sun) Results (17-08-2025 to 17-08-2025)';
                 const updateText = week === 'this' ? 
-                    '' : 
-                    'Updated on : 19-08-2025';
+                    'Updated on : 19-08-2025' : 
+                    '';
                 
                 weekRange.textContent = weekText;
                 updateDate.textContent = updateText;
