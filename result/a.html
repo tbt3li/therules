@@ -258,8 +258,8 @@
         <h2>Chests Count Result</h2>
         
         <div class="week-selector">
-            <button id="thisWeekBtn" class="week-btn active">This Week (18-08-2025 to 24-08-2025)</button>
-            <button id="prevWeekBtn" class="week-btn">Previous Week (11-08-2025 to 17-08-2025)</button>
+            <button id="prevWeekBtn" class="week-btn">Previous Week</button>
+            <button id="thisWeekBtn" class="week-btn active">Current Week</button>
         </div>
         
         <h4 id="weekRange">Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)</h4>
@@ -305,13 +305,13 @@
             
             // Function to load data based on week selection
             function loadData(week) {
-                const xlsxFile = week === 'this' ? 'members.xlsx' : 'membersx.xlsx';
+                const xlsxFile = week === 'this' ? 'membersx.xlsx' : 'members.xlsx';
                 const weekText = week === 'this' ? 
-                    'Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)' : 
-                    'Weekly (Mon->Sun) Results (11-08-2025 to 17-08-2025)';
+                    'Weekly (Mon->Sun) Results (11-08-2025 to 17-08-2025)' : 
+                    'Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)';
                 const updateText = week === 'this' ? 
-                    'Updated on : 19-08-2025' : 
-                    'Updated on : 12-08-2025';
+                    '' : 
+                    'Updated on : 19-08-2025';
                 
                 weekRange.textContent = weekText;
                 updateDate.textContent = updateText;
