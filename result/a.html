@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Family Clan - Weekly Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --active-color: #4caf50;
+            --inactive-color: #e0e0e0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            text-align: center;
+            font-weight: 700;
+            margin-block-start: 0.0em !important;
+            margin-block-end: 0.0em !important;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-block-start: 0.0em !important;
+            margin-block-end: 0.0em !important;
+        }
+        
+        h4 {
+            text-align: center;
+            margin-block-start: 0.0em !important;
+            margin-block-end: 0.0em !important;
+        }
+        
+        .week-selector {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 15px;
+        }
+        
+        .week-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: var(--inactive-color);
+            color: #555;
+        }
+        
+        .week-btn.active {
+            background-color: var(--active-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        
+        .week-btn:hover:not(.active) {
+            background-color: #c0c0c0;
+        }
+        
+        .sheet-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: rgba(79, 195, 247, 0.1);
+            border-radius: var(--border-radius);
+        }
+        
+        .table-wrapper {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-scroll {
+            overflow: auto;
+            flex: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 800px;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        
+        /* Frozen first two columns */
+        th:nth-child(1),
+        td:nth-child(1) {
+            position: sticky;
+            z-index: 10;
+        }
+        
+        /* First column styling */
+        th:nth-child(1) {
+            left: 0;
+            background-color: var(--secondary-color);
+        }
+
+        /* Bold last row */
+        tr:last-child td {
+            font-weight: bold;
+            background-color: #4a6fa5c4 !important;
+        }
+        
+        td:nth-child(1) {
+            left: 0;
+            background-color: white;
+            font-weight: bold;
+        }
+        
+        /* Second column styling */
+        th:nth-child(2) {
+            left: 60px; /* Adjust based on your first column width */
+            background-color: var(--primary-color);
+        }
+        
+        td:nth-child(2) {
+            left: 60px; /* Adjust based on your first column width */
+            background-color: white;
+        }
+        
+        /* Alternating row colors */
+        tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) td:nth-child(1),
+        tr:nth-child(even) td:nth-child(2) {
+            background-color: #f2f2f2;
+        }
+        
+        /* Hover effects */
+        tr:hover td {
+            background-color: rgba(79, 195, 247, 0.1);
+        }
+        
+        tr:hover td:nth-child(1),
+        tr:hover td:nth-child(2) {
+            background-color: rgba(79, 195, 247, 0.2);
+        }
+        
+        td {
+            border-bottom: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: black;
+            display: flex;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            
+            th:nth-child(2),
+            td:nth-child(2) {
+                left: 50px; /* Adjust for smaller screens */
+            }
+            
+            .week-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .sheet-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Family Clan Members</h1>
+        <h2>Chests Count Result</h2>
+        
+        <div class="week-selector">
+            <button id="thisWeekBtn" class="week-btn active">This Week (18-08-2025 to 24-08-2025)</button>
+            <button id="prevWeekBtn" class="week-btn">Previous Week (11-08-2025 to 17-08-2025)</button>
+        </div>
+        
+        <h4 id="weekRange">Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)</h4>
+        <h4 id="updateDate" style="color:#0000ff5e;">Updated on : 19-08-2025</h4>
+        
+        <div class="sheet-info">
+            <div><strong>Google Sheet:</strong> <a href="https://tinyurl.com/chestTHE">https://tinyurl.com/chestTHE</a></div>
+            <div><strong>Contact if any issue: </strong> 웃 T3li</div>
+        </div>
+        
+        <div class="table-wrapper">
+            <div class="table-container">
+                <div class="table-scroll">
+                    <table id="members-table">
+                        <!-- Table will be populated by JavaScript -->
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2025 The Family Gang 
+            <div class="credits">
+                Designed by <a href="https://thefamily.pages.dev/" style="text-decoration: none; font-weight: bold; color: #ef6603;"><text style="font-size:16px; font-style:italic;">웃 T3li</text></a> Distributed By <a href="https://thefamily.pages.dev/" style="text-decoration: none; font-weight: bold; color: #ef6603;">THE</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const maxPoints = 100;
+            const table = document.getElementById('members-table');
+            const thisWeekBtn = document.getElementById('thisWeekBtn');
+            const prevWeekBtn = document.getElementById('prevWeekBtn');
+            const weekRange = document.getElementById('weekRange');
+            const updateDate = document.getElementById('updateDate');
+            
+            // Add loading element
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            loading.textContent = 'Loading clan members data...';
+            table.parentNode.insertBefore(loading, table);
+            
+            // Function to load data based on week selection
+            function loadData(week) {
+                const xlsxFile = week === 'this' ? 'members.xlsx' : 'membersx.xlsx';
+                const weekText = week === 'this' ? 
+                    'Weekly (Mon->Sun) Results (18-08-2025 to 24-08-2025)' : 
+                    'Weekly (Mon->Sun) Results (11-08-2025 to 17-08-2025)';
+                const updateText = week === 'this' ? 
+                    'Updated on : 19-08-2025' : 
+                    'Updated on : 12-08-2025';
+                
+                weekRange.textContent = weekText;
+                updateDate.textContent = updateText;
+                
+                // Update button states
+                if (week === 'this') {
+                    thisWeekBtn.classList.add('active');
+                    prevWeekBtn.classList.remove('active');
+                } else {
+                    thisWeekBtn.classList.remove('active');
+                    prevWeekBtn.classList.add('active');
+                }
+                
+                // Show loading
+                loading.style.display = 'block';
+                table.innerHTML = '';
+                
+                // Fetch and process the XLSX file
+                fetch(xlsxFile)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('File not found');
+                        }
+                        return response.arrayBuffer();
+                    })
+                    .then(data => {
+                        try {
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            
+                            // Get first sheet
+                            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                            
+                            // Convert to JSON
+                            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                            
+                            if (jsonData.length < 2) {
+                                throw new Error('No data found in the Excel file');
+                            }
+                            
+                            displayData(jsonData);
+                            loading.style.display = 'none';
+                        } catch (error) {
+                            console.error('Error processing Excel file:', error);
+                            loading.textContent = 'Error loading Excel file. Please ensure ' + xlsxFile + ' exists.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Excel file:', error);
+                        loading.textContent = 'Error loading Excel file. Please ensure ' + xlsxFile + ' exists.';
+                    });
+            }
+            
+            // Event listeners for buttons
+            thisWeekBtn.addEventListener('click', () => loadData('this'));
+            prevWeekBtn.addEventListener('click', () => loadData('prev'));
+            
+            // Initial load
+            loadData('this');
+            
+            function displayData(data) {
+                const headers = data[0];
+                const rows = data.slice(1);
+                
+                // Clear existing table
+                table.innerHTML = '';
+                
+                // Find progress column index
+                const progressIndex = headers.findIndex(h => 
+                    h && h.toString().toLowerCase() === 'progress');
+                
+                // Create table header
+                let thead = document.createElement('thead');
+                let headerRow = document.createElement('tr');
+                
+                // Add all headers to the table
+                headers.forEach((header, index) => {
+                    if (header === undefined || header === null) return;
+                    
+                    let th = document.createElement('th');
+                    th.textContent = header;
+                    headerRow.appendChild(th);
+                });
+                
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                // Create table body
+                let tbody = document.createElement('tbody');
+                
+                rows.forEach((row, rowIndex) => {
+                    if (row.length === 0) return;
+                    
+                    let tr = document.createElement('tr');
+                    
+                    // Add all columns to the table
+                    headers.forEach((header, colIndex) => {
+                        if (header === undefined || header === null) return;
+                        
+                        let td = document.createElement('td');
+                        
+                        // Special handling only for exact "Progress" column
+                        if (colIndex === progressIndex) {
+                            const points = parseFloat(row[colIndex]) || 0;
+                            
+                            // Skip progress bar creation for last row
+                            if (rowIndex !== rows.length - 1) {
+                                let progressContainer = document.createElement('div');
+                                progressContainer.className = 'progress-container';
+                                
+                                let progressBar = document.createElement('div');
+                                progressBar.className = 'progress-bar';
+                                
+                                let percentage = Math.min((points / maxPoints) * 100, 100);
+                                progressBar.style.width = `${percentage}%`;
+                                
+                                // Color coding
+                                if (percentage < 30) {
+                                    progressBar.style.backgroundColor = '#ff0000'; // Red
+                                } else if (percentage < 60) {
+                                    progressBar.style.backgroundColor = '#ffa200'; // Orange
+                                } else if (percentage < 100) {
+                                    progressBar.style.backgroundColor = '#e3ed0e'; // Yellow
+                                } else {
+                                    progressBar.style.backgroundColor = '#4caf50'; // Green
+                                }
+                                
+                                progressBar.textContent = `${Math.round(points).toLocaleString()}%`;
+                                progressContainer.appendChild(progressBar);
+                                td.appendChild(progressContainer);
+                            } else {
+                                // For last row, leave the cell empty
+                                td.textContent = '';
+                            }
+                        } else {
+                            // Regular column (unchanged)
+                            const cellValue = row[colIndex] !== undefined ? row[colIndex] : '';
+                            td.textContent = cellValue.toString().trim();
+                        }
+                        
+                        tr.appendChild(td);
+                    });
+                    
+                    tbody.appendChild(tr);
+                });
+                
+                table.appendChild(tbody);
+            }
+        });
+    </script>
+</body>
+</html>
