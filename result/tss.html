@@ -166,22 +166,49 @@
         }
         
         .progress-container {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            height: 20px;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease, background-color 0.3s ease;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: black;
-        }
+		    width: 100%;
+		    background-color: #e0e0e0;
+		    border-radius: 4px;
+		    height: 20px;
+		    overflow: hidden;
+		    position: relative;
+		}
+	
+		.progress-bar {
+		    height: 100%;
+		    border-radius: 4px;
+		    transition: all 0.5s ease; /* Smooth transition for width and colors */
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    font-size: 12px;
+		    color: white;
+		    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+		    /* Smooth gradient from red to orange to yellow to green */
+		    background: linear-gradient(90deg, 
+		        #ff0000 0%, 
+		        #ffa200 30%, 
+		        #e3ed0e 60%, 
+		        #4caf50 100%);
+		    background-size: 100% 100%;
+		    position: relative;
+		    overflow: hidden;
+		}
+		
+		/* Optional: Add a shine effect for extra smoothness */
+		.progress-bar::after {
+		    content: '';
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    bottom: 0;
+		    background: linear-gradient(90deg, 
+		        rgba(255,255,255,0.2) 0%, 
+		        rgba(255,255,255,0.1) 50%, 
+		        rgba(255,255,255,0.2) 100%);
+		    pointer-events: none;
+		}
         
         .footer {
             text-align: center;
@@ -320,42 +347,28 @@
                               
                               // Special handling only for exact "Progress" column
                               if (colIndex === progressIndex) {
-                                  const points = parseFloat(row[colIndex]) || 0;
-                                  
-                                  // Skip progress bar creation for last row
-                                  if (rowIndex !== rows.length - 1) {
-                                      let progressContainer = document.createElement('div');
-                                      progressContainer.className = 'progress-container';
-                                      
-                                      let progressBar = document.createElement('div');
-                                      progressBar.className = 'progress-bar';
-                                      
-                                      let percentage = Math.min((points / maxPoints) * 100, 100);
-                                      progressBar.style.width = `${percentage}%`;
-                                      
-                                      // Color coding
-                                      if (percentage < 30) {
-                                          progressBar.style.backgroundColor = '#ff0000'; // Red
-                                      } else if (percentage < 60) {
-                                          progressBar.style.backgroundColor = '#ffa200'; // Orange
-                                      } else if (percentage < 100) {
-                                          progressBar.style.backgroundColor = '#e3ed0e'; // Yellow
-                                      } else {
-                                          progressBar.style.backgroundColor = '#4caf50'; // Green
-                                      }
-                                      
-                                      progressBar.textContent = `${Math.round(points).toLocaleString()}%`;
-                                      progressContainer.appendChild(progressBar);
-                                      td.appendChild(progressContainer);
-                                  } else {
-                                      // For last row, leave the cell empty
-                                      td.textContent = '';
-                                  }
-                              } else {
-                                  // Regular column (unchanged)
-                                  const cellValue = row[colIndex] !== undefined ? row[colIndex] : '';
-                                  td.textContent = cellValue.toString().trim();
-                              }
+								    const points = parseFloat(row[colIndex]) || 0;
+								    
+								    if (rowIndex !== rows.length - 1) {
+								        const progressContainer = document.createElement('div');
+								        progressContainer.className = 'progress-container';
+								        
+								        const progressBar = document.createElement('div');
+								        progressBar.className = 'progress-bar';
+								        
+								        const percentage = Math.min((points / maxPoints) * 100, 100);
+								        progressBar.style.width = `${percentage}%`;
+								        
+								        // Remove individual color assignments - CSS gradient will handle colors
+								        // The gradient automatically transitions between colors based on width
+								        
+								        progressBar.textContent = `${Math.round(points).toLocaleString()}%`;
+								        progressContainer.appendChild(progressBar);
+								        td.appendChild(progressContainer);
+								    } else {
+								        td.textContent = '';
+								    }
+								}
                               
                               tr.appendChild(td);
                           });
