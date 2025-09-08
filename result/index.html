@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Redirection System - thefamily.pages.dev</title>
+    <title>Smart Redirection System - thefamily.page.dev</title>
     <style>
         * {
             margin: 0;
@@ -124,6 +124,14 @@
             background: #3e8e41;
         }
         
+        .btn-slash {
+            background: #9c27b0;
+        }
+        
+        .btn-slash:hover {
+            background: #7b1fa2;
+        }
+        
         .instructions {
             margin-top: 30px;
         }
@@ -210,6 +218,11 @@
             .url-input {
                 width: 100%;
             }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
         }
     </style>
 </head>
@@ -217,19 +230,21 @@
     <div class="container">
         <header>
             <h1>Smart Redirection System</h1>
-            <p class="description">For domain: <span class="domain-name">thefamily.pages.dev</span></p>
+            <p class="description">For domain: <span class="domain-name">thefamily.page.dev</span></p>
+            <p class="description">Now handles trailing slashes correctly!</p>
         </header>
         
         <div class="card">
             <h2>Try It Out</h2>
             <div class="url-box">
-                <span class="url-prefix">thefamily.pages.dev/</span>
+                <span class="url-prefix">thefamily.page.dev/</span>
                 <input type="text" class="url-input" id="pathInput" placeholder="Enter path (e.g. 'result')" value="result">
             </div>
             
             <div style="text-align: center;">
                 <button class="btn" id="navigateBtn">Navigate to Path</button>
                 <button class="btn btn-secondary" id="simulateWrongBtn">Simulate Wrong Path</button>
+                <button class="btn btn-slash" id="testSlashBtn">Test With Trailing Slash</button>
             </div>
             
             <div id="statusMessage" class="status"></div>
@@ -244,18 +259,25 @@
             <h2>How It Works</h2>
             <ol>
                 <li>The system checks if the requested path is in the list of valid paths</li>
-                <li>If the path is valid (like "/result"), the page loads normally</li>
+                <li>Paths with trailing slashes (like "/result/") are normalized and treated the same as without slashes</li>
+                <li>If the path is valid (like "/result" or "/result/"), the page loads normally</li>
                 <li>If the path is invalid (like "/newresult"), the user is redirected to the home page</li>
                 <li>The redirection happens seamlessly with a visual indicator</li>
             </ol>
             
             <div class="code-block">
-// Valid paths array for thefamily.pages.dev
+// Valid paths array for thefamily.page.dev
 const validPaths = ['result', 'about', 'contact', 'services', 'family', 'members'];
+
+// Function to normalize path (remove trailing slashes)
+function normalizePath(path) {
+    return path.replace(/\/+$/, ''); // Remove trailing slashes
+}
 
 // Function to check if path is valid
 function isValidPath(path) {
-    return validPaths.includes(path);
+    const normalizedPath = normalizePath(path);
+    return validPaths.includes(normalizedPath);
 }
 
 // Function to handle navigation
@@ -277,8 +299,9 @@ function handleNavigation() {
     
     if (isValidPath(path)) {
         // Valid path
+        const normalizedPath = normalizePath(path);
         document.getElementById('statusMessage').className = 'status valid';
-        document.getElementById('statusMessage').innerHTML = `Valid path: "/${path}" - Page would load normally.`;
+        document.getElementById('statusMessage').innerHTML = `Valid path: "/${path}" (normalized to "/${normalizedPath}") - Page would load normally.`;
     } else {
         // Invalid path
         document.getElementById('statusMessage').className = 'status invalid';
@@ -289,7 +312,7 @@ function handleNavigation() {
         
         // Redirect to home page after a short delay
         setTimeout(() => {
-            window.location.href = 'https://thefamily.pages.dev/';
+            window.location.href = 'https://thefamily.page.dev/';
         }, 2000);
     }
 }
@@ -297,17 +320,23 @@ function handleNavigation() {
         </div>
         
         <div class="footer">
-            <p>Designed specifically for thefamily.pages.dev</p>
+            <p>Designed specifically for thefamily.page.dev | Handles trailing slashes correctly</p>
         </div>
     </div>
 
     <script>
-        // Valid paths array for thefamily.pages.dev
+        // Valid paths array for thefamily.page.dev
         const validPaths = ['result', 'about', 'contact', 'services', 'family', 'members'];
+        
+        // Function to normalize path (remove trailing slashes)
+        function normalizePath(path) {
+            return path.replace(/\/+$/, ''); // Remove trailing slashes
+        }
         
         // Function to check if path is valid
         function isValidPath(path) {
-            return validPaths.includes(path);
+            const normalizedPath = normalizePath(path);
+            return validPaths.includes(normalizedPath);
         }
         
         // Function to handle navigation
@@ -329,8 +358,9 @@ function handleNavigation() {
             
             if (isValidPath(path)) {
                 // Valid path
+                const normalizedPath = normalizePath(path);
                 document.getElementById('statusMessage').className = 'status valid';
-                document.getElementById('statusMessage').innerHTML = `Valid path: "/${path}" - Page would load normally.`;
+                document.getElementById('statusMessage').innerHTML = `Valid path: "/${path}" (normalized to "/${normalizedPath}") - Page would load normally.`;
             } else {
                 // Invalid path
                 document.getElementById('statusMessage').className = 'status invalid';
@@ -341,7 +371,7 @@ function handleNavigation() {
                 
                 // Redirect to home page after a short delay
                 setTimeout(() => {
-                    window.location.href = 'https://thefamily.pages.dev/';
+                    window.location.href = 'https://thefamily.page.dev/';
                 }, 2000);
             }
         }
@@ -357,6 +387,12 @@ function handleNavigation() {
             const wrongPaths = ['newresult', 'invalid', 'wrongpath', 'test', 'random', 'error'];
             const randomPath = wrongPaths[Math.floor(Math.random() * wrongPaths.length)];
             window.history.pushState({}, '', `/${randomPath}`);
+            handleNavigation();
+        });
+        
+        document.getElementById('testSlashBtn').addEventListener('click', function() {
+            const path = document.getElementById('pathInput').value.trim();
+            window.history.pushState({}, '', `/${path}/`);
             handleNavigation();
         });
         
