@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clan HQ - Member Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --primary-dark: #005a9e;
+            --secondary-color: #f3f2f1;
+            --dark-bg: #201f1e;
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #faf9f8;
+            color: #323130;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: linear-gradient(135deg, rgba(0, 120, 212, 0.05) 0%, rgba(92, 45, 145, 0.05) 100%);
+        }
+
+        .login-container {
+            display: flex;
+            width: 900px;
+            min-height: 600px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Left Side - Branding */
+        .login-brand {
+            flex: 1;
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-brand::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 120, 212, 0.1) 0%, rgba(92, 45, 145, 0.1) 100%);
+            z-index: 0;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            font-size: 42px;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .brand-tagline {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .brand-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+
+        .features-list i {
+            color: var(--primary-color);
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .copyright {
+            position: relative;
+            z-index: 1;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 30px;
+        }
+
+        /* Right Side - Login Form */
+        .login-form-container {
+            flex: 1;
+            background-color: var(--card-bg);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #323130;
+        }
+
+        .login-header p {
+            color: #605e5c;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #323130;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #605e5c;
+            font-size: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 1px solid #edebe9;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background-color: #faf9f8;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+            background-color: white;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .remember-me label {
+            font-size: 14px;
+            color: #605e5c;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #605e5c;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #edebe9;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 14px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #edebe9;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .social-btn:hover {
+            background-color: #faf9f8;
+            border-color: #d2d0ce;
+        }
+
+        .social-btn i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .btn-steam {
+            color: #171a21;
+        }
+
+        .btn-discord {
+            color: #5865f2;
+        }
+
+        .register-link {
+            text-align: center;
+            font-size: 15px;
+            color: #605e5c;
+        }
+
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background-color: #fde7e9;
+            color: #d13438;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 950px) {
+            .login-container {
+                width: 95%;
+                max-width: 800px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                width: 90%;
+                max-width: 500px;
+            }
+
+            .login-brand {
+                padding: 40px 30px;
+            }
+
+            .login-form-container {
+                padding: 40px 30px;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 95%;
+            }
+
+            .login-brand, .login-form-container {
+                padding: 30px 20px;
+            }
+
+            .logo-text {
+                font-size: 28px;
+            }
+
+            .brand-tagline {
+                font-size: 18px;
+            }
+
+            .login-header h1 {
+                font-size: 28px;
+            }
+        }
+		
+		.button-row {
+			display: flex;
+			justify-content: space-between;
+			gap: 10px;
+		}
+
+		.button-row .btn {
+			flex: 1;
+			padding: 10px 20px;
+		}
+		
+		.mode-notice {
+			margin-top: 15px;
+			padding: 12px 15px;
+			background: #e1f5fe;
+			border-radius: var(--border-radius);
+			color: #01579b;
+			font-size: 14px;
+			display: none;
+			animation: fadeIn 0.3s ease;
+		}
+		
+		.mode-notice.show {
+			display: block;
+		}
+		
+		.mode-notice i {
+			margin-right: 8px;
+		}
+		
+		.success-message {
+			background-color: #dff6dd;
+			color: #107c10;
+			padding: 12px 15px;
+			border-radius: var(--border-radius);
+			margin-bottom: 20px;
+			display: none;
+			font-size: 14px;
+		}
+		
+		.success-message.show {
+			display: block;
+			animation: fadeIn 0.3s ease;
+		}
+		
+		.btn-spinner {
+			display: none;
+			margin-left: 8px;
+		}
+		
+		.btn:disabled {
+			opacity: 0.7;
+			cursor: not-allowed;
+		}
+		
+		.btn-success {
+			background-color: #28a745;
+		}
+		
+		.btn-success:hover {
+			background-color: #218838;
+		}
+		
+		.btn-secondary {
+			background-color: #6c757d;
+		}
+		
+		.btn-secondary:hover {
+			background-color: #5a6268;
+		}
+		
+		@keyframes shake {
+			0%, 100% { transform: translateX(0); }
+			10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+			20%, 40%, 60%, 80% { transform: translateX(5px); }
+		}
+		
+		.shake {
+			animation: shake 0.5s;
+		}
+		
+		
+		/* Beautiful Notification Styles */
+.custom-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 400px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    z-index: 10000;
+    animation: slideInRight 0.3s ease-out;
+    border-left: 4px solid #0078d4;
+    transform: translateX(0);
+    transition: all 0.3s ease;
+}
+
+.custom-notification-success {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+}
+
+.custom-notification-warning {
+    border-left-color: #ffc107;
+    background: linear-gradient(135deg, #fffdf5 0%, #fff8e1 100%);
+}
+
+.custom-notification-error {
+    border-left-color: #dc3545;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    position: relative;
+}
+
+.notification-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.custom-notification-success .notification-icon {
+    color: #28a745;
+}
+
+.custom-notification-warning .notification-icon {
+    color: #ffc107;
+}
+
+.custom-notification-error .notification-icon {
+    color: #dc3545;
+}
+
+.notification-text {
+    flex: 1;
+    color: #323130;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #605e5c;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    font-size: 14px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+.notification-progress {
+    height: 3px;
+    width: 100%;
+    background: rgba(0, 120, 212, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: #0078d4;
+    animation: progressBar 5s linear forwards;
+}
+
+.custom-notification-success .notification-progress::after {
+    background: #28a745;
+}
+
+.custom-notification-warning .notification-progress::after {
+    background: #ffc107;
+}
+
+.custom-notification-error .notification-progress::after {
+    background: #dc3545;
+}
+
+/* Animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes progressBar {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Make form error message also look better */
+.error-message {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    color: #c62828;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c62828;
+    display: none;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 2px 8px rgba(198, 40, 40, 0.1);
+}
+
+.error-message i {
+    color: #c62828;
+    margin-right: 10px;
+}
+
+.success-message {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    color: #2e7d32;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2e7d32;
+    display: none;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.1);
+}
+
+.success-message i {
+    color: #2e7d32;
+    margin-right: 10px;
+}
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Side - Branding -->
+        <div class="login-brand">
+            <div class="brand-content">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-chess-knight"></i></div>
+                    <div class="logo-text">THE <text style="font-size:22px !important;">Family Gang</text> <text style="font-size:14px !important;">(Kingdom 123)</text></div>
+                </div>
+
+                <h2 class="brand-tagline">Access Premium Clan Resources</h2>
+                <p class="brand-description">Login to access exclusive tutorials, equipment guides, hacks, and cheat sheets available only to verified clan members.</p>
+                
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> Premium Tutorials & Guides</li>
+                    <li><i class="fas fa-check-circle"></i> Equipment Loadout Optimizer</li>
+                    <li><i class="fas fa-check-circle"></i> Pro Strategies & Tactics</li>
+                    <li><i class="fas fa-check-circle"></i> Exclusive Cheat Sheets</li>
+                    <li><i class="fas fa-check-circle"></i> Clan Member Statistics</li>
+                </ul>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 THE Family Gang. <br>Premium access for members.
+            </div>
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1 id="loginTitle">Member Login</h1>
+                <p id="loginSubtitle">Enter your credentials to access the clan dashboard</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Invalid username or password. Please try again.</span>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> <span id="successText">Login successful!</span>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" id="emailLabel">Clan Username or Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="email" class="form-control" placeholder="Enter your username or email" 
+       autocomplete="username email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" 
+       autocomplete="current-password" required>
+                    </div>
+                </div>
+                
+                <div class="remember-forgot" id="rememberForgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
+                </div>
+                
+				<div class="button-row">
+					<button type="submit" class="btn" id="loginBtn">
+						<span id="signinBtn">Sign In</span>
+						<i class="fas fa-spinner fa-spin" id="btnSpinner" style="display: none;"></i>
+					</button>
+					<button type="button" class="btn" id="signBtn">
+						<span id="signupBtn">Sign Up</span>
+						<i class="fas fa-spinner fa-spin" id="btnSpinner" style="display: none;"></i>
+					</button>
+				</div>
+            </form>
+            
+            <div class="mode-notice" id="modeNotice">
+                <i class="fas fa-info-circle"></i> You are in Sign Up mode. Fill in your details to create a new account.
+            </div>
+            
+            <div class="divider" id="divider">
+                <span>Or sign in with</span>
+            </div>
+            
+            <div class="social-login" id="socialLogin">
+                <button class="social-btn btn-steam" id="steamBtn">
+                    <i class="fab fa-steam"></i> Steam
+                </button>
+                <button class="social-btn btn-discord" id="discordBtn">
+                    <i class="fab fa-discord"></i> Discord
+                </button>
+            </div>
+            
+            <div class="register-link">
+                <span id="registerText">Not a clan member yet?</span> <a href="#" id="registerLink">Request access</a>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <!-- Remove the type="module" since we're using regular script -->
+<script type="module">
+    const _0x_0x1ffec0=(function(){let _0x2ab37f=!![];return function(_0x36b680,_0x54c01e){const _0x4260b6=_0x2ab37f?function(){if(_0x54c01e){const _0x5e2a2a=_0x54c01e['apply'](_0x36b680,arguments);return _0x54c01e=null,_0x5e2a2a;}}:function(){};return _0x2ab37f=![],_0x4260b6;};}()),_0x_0x55b91d=_0x_0x1ffec0(this,function(){const _0x2c9e95={};_0x2c9e95['lKKHr']='(((.+)+)+)'+'+$';const _0x15f249=_0x2c9e95;return _0x_0x55b91d['toString']()['search'](_0x15f249['lKKHr'])['toString']()['constructo'+'r'](_0x_0x55b91d)['search'](_0x15f249['lKKHr']);});_0x_0x55b91d();const _0x_0x1cabec=(function(){let _0x12ab77=!![];return function(_0x418ab6,_0x6cf775){const _0x4fc9a5=_0x12ab77?function(){if(_0x6cf775){const _0x355ea1=_0x6cf775['apply'](_0x418ab6,arguments);return _0x6cf775=null,_0x355ea1;}}:function(){};return _0x12ab77=![],_0x4fc9a5;};}());(function(){const _0x36d5c6={'CfvRq':'\x5c+\x5c+\x20*(?:['+'a-zA-Z_$]['+'0-9a-zA-Z_'+'$]*)','qRBKf':'init','gIncr':function(_0x39e320,_0x556118){return _0x39e320+_0x556118;},'YBROs':function(_0x25b5e5,_0x23fe60){return _0x25b5e5+_0x23fe60;},'Ususp':function(_0x41f1ec,_0x3dd07a){return _0x41f1ec(_0x3dd07a);},'fDqQX':function(_0x363a26){return _0x363a26();},'CnPbl':function(_0x5c613d,_0xa3f28d,_0x61f6ba){return _0x5c613d(_0xa3f28d,_0x61f6ba);}};_0x36d5c6['CnPbl'](_0x_0x1cabec,this,function(){const _0x455266=new RegExp('function\x20*'+'\x5c(\x20*\x5c)'),_0x2325f8=new RegExp(_0x36d5c6['CfvRq'],'i'),_0x237b83=_0x_0x2aaed3(_0x36d5c6['qRBKf']);!_0x455266['test'](_0x36d5c6['gIncr'](_0x237b83,'chain'))||!_0x2325f8['test'](_0x36d5c6['YBROs'](_0x237b83,'input'))?_0x36d5c6['Ususp'](_0x237b83,'0'):_0x36d5c6['fDqQX'](_0x_0x2aaed3);})();}());const _0x_0x4033ac=(function(){let _0x570f45=!![];return function(_0x515616,_0x4565d7){const _0x153a5e=_0x570f45?function(){if(_0x4565d7){const _0x4d5605=_0x4565d7['apply'](_0x515616,arguments);return _0x4565d7=null,_0x4d5605;}}:function(){};return _0x570f45=![],_0x153a5e;};}()),_0x_0x12b985=_0x_0x4033ac(this,function(){const _0x4ca10e={};_0x4ca10e['iojHk']=function(_0x53ddbb,_0x453b48){return _0x53ddbb+_0x453b48;},_0x4ca10e['wKgau']=function(_0x32dee9,_0x3b56eb){return _0x32dee9+_0x3b56eb;},_0x4ca10e['veIEj']='return\x20(fu'+'nction()\x20',_0x4ca10e['OjLXX']='warn',_0x4ca10e['jhJoK']='info',_0x4ca10e['XeTqA']='error',_0x4ca10e['KaBON']='exception',_0x4ca10e['GaYBk']='trace';const _0x4f2091=_0x4ca10e;let _0x4e7413;try{const _0x18b3b0=Function(_0x4f2091['iojHk'](_0x4f2091['wKgau'](_0x4f2091['veIEj'],'{}.constru'+'ctor(\x22retu'+'rn\x20this\x22)('+'\x20)'),');'));_0x4e7413=_0x18b3b0();}catch(_0x1b90d3){_0x4e7413=window;}const _0x33e184=_0x4e7413['console']=_0x4e7413['console']||{},_0x589875=['log',_0x4f2091['OjLXX'],_0x4f2091['jhJoK'],_0x4f2091['XeTqA'],_0x4f2091['KaBON'],'table',_0x4f2091['GaYBk']];for(let _0x583367=0x39b*0x1+0xfb*-0x5+0x14c;_0x583367<_0x589875['length'];_0x583367++){const _0x35deb1=_0x_0x4033ac['constructo'+'r']['prototype']['bind'](_0x_0x4033ac),_0x168b88=_0x589875[_0x583367],_0x19b94e=_0x33e184[_0x168b88]||_0x35deb1;_0x35deb1['__proto__']=_0x_0x4033ac['bind'](_0x_0x4033ac),_0x35deb1['toString']=_0x19b94e['toString']['bind'](_0x19b94e),_0x33e184[_0x168b88]=_0x35deb1;}});_0x_0x12b985();import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';const _0x_0x44da4f={};_0x_0x44da4f['apiKey']='AIzaSyAsTg'+'EIpxc-izK-'+'gIV7YJZMcB'+'4NXF6QDLU',_0x_0x44da4f['authDomain']='thefamily-'+'300c8.fire'+'baseapp.co'+'m',_0x_0x44da4f['projectId']='thefamily-'+'300c8',_0x_0x44da4f['storageBuc'+'ket']='thefamily-'+'300c8.fire'+'basestorag'+'e.app',_0x_0x44da4f['messagingS'+'enderId']='4708431504'+'60',_0x_0x44da4f['appId']='1:47084315'+'0460:web:a'+'347d7a25a6'+'98b2b8cb9f'+'9',_0x_0x44da4f['measuremen'+'tId']='G-MK1SFPNH'+'WV';const firebaseConfig=_0x_0x44da4f,app=initializeApp(firebaseConfig),auth=getAuth(app);onAuthStateChanged(auth,_0x527854=>{_0x527854&&(console['log']('User\x20alrea'+'dy\x20logged\x20'+'in,\x20redire'+'cting...'),window['location']['href']='dashboard.'+'html');});function _0x_0x2aaed3(_0x5b81d3){const _0x4c012c={'YYfuQ':function(_0x96ab4e,_0x2fcd81){return _0x96ab4e===_0x2fcd81;},'rKWgV':'string','dUkjQ':'counter','UmZKs':function(_0x178a3e,_0x3c0308){return _0x178a3e+_0x3c0308;},'IuVff':function(_0xb019d3,_0x35efe5){return _0xb019d3/_0x35efe5;},'vkOhP':function(_0x159ad3,_0x13fa72){return _0x159ad3%_0x13fa72;},'PYZEv':'debu','mBvNJ':'gger','VTTud':'action','jdbJL':'stateObjec'+'t','NDIan':function(_0x2590c4,_0x1f4fb7){return _0x2590c4(_0x1f4fb7);}};function _0x2e636d(_0x268b01){if(_0x4c012c['YYfuQ'](typeof _0x268b01,_0x4c012c['rKWgV']))return function(_0x522ca7){}['constructo'+'r']('while\x20(tru'+'e)\x20{}')['apply'](_0x4c012c['dUkjQ']);else _0x4c012c['UmZKs']('',_0x4c012c['IuVff'](_0x268b01,_0x268b01))['length']!==-0x1242+-0x193e+0x2b81||_0x4c012c['YYfuQ'](_0x4c012c['vkOhP'](_0x268b01,-0x53*0x45+0x4*-0x788+0x2b*0x139),-0x10f+0x8a4*0x4+-0x2181)?function(){return!![];}['constructo'+'r'](_0x4c012c['UmZKs'](_0x4c012c['PYZEv'],_0x4c012c['mBvNJ']))['call'](_0x4c012c['VTTud']):function(){return![];}['constructo'+'r'](_0x4c012c['UmZKs']('debu','gger'))['apply'](_0x4c012c['jdbJL']);_0x4c012c['NDIan'](_0x2e636d,++_0x268b01);}try{if(_0x5b81d3)return _0x2e636d;else _0x4c012c['NDIan'](_0x2e636d,0x27d*-0xa+-0xbed+0x1*0x24cf);}catch(_0x3243a6){}}
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements - Get them inside DOMContentLoaded to ensure they exist
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const signBtn = document.getElementById('signBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginTitle = document.querySelector('.login-header h1');
+        const loginSubtitle = document.querySelector('.login-header p');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const rememberForgot = document.querySelector('.remember-forgot');
+        const divider = document.querySelector('.divider');
+        const socialLogin = document.querySelector('.social-login');
+        const registerText = document.querySelector('.register-link');
+        const forgotPasswordLink = document.querySelector('.forgot-password');
+        
+        // Get the text spans inside buttons
+        const signinBtnText = loginBtn.querySelector('span');
+        const signupBtnText = signBtn.querySelector('span');
+        
+        // State
+        let isSignUpMode = false;
+
+        // Toggle between login and signup modes
+        function toggleSignUpMode() {
+            isSignUpMode = !isSignUpMode;
+            
+            if (isSignUpMode) {
+                // Switch to Sign Up mode
+                loginTitle.textContent = 'Create Account';
+                loginSubtitle.textContent = 'Join the clan by creating a new account';
+                signinBtnText.textContent = 'Create Account';
+                signupBtnText.textContent = 'Back to Login';
+                document.querySelector('label[for="email"]').textContent = 'Email Address';
+                emailInput.placeholder = 'Enter your email address';
+                emailInput.type = 'email';
+                rememberForgot.style.display = 'none';
+                divider.style.display = 'none';
+                socialLogin.style.display = 'none';
+                registerText.innerHTML = 'Already have an account? <a href="#" id="switchToLogin">Sign In</a>';
+                
+                // Change button colors
+                loginBtn.style.backgroundColor = '#28a745';
+                signBtn.style.backgroundColor = '#6c757d';
+                
+                // Add switch to login handler
+                setTimeout(() => {
+                    const switchLink = document.getElementById('switchToLogin');
+                    if (switchLink) {
+                        switchLink.onclick = (e) => {
+                            e.preventDefault();
+                            toggleSignUpMode();
+                        };
+                    }
+                }, 0);
+            } else {
+                // Switch to Login mode
+                loginTitle.textContent = 'Member Login';
+                loginSubtitle.textContent = 'Enter your credentials to access the clan dashboard';
+                signinBtnText.textContent = 'Sign In';
+                signupBtnText.textContent = 'Sign Up';
+                document.querySelector('label[for="email"]').textContent = 'Clan Username or Email';
+                emailInput.placeholder = 'Enter your username or email';
+                emailInput.type = 'text';
+                rememberForgot.style.display = 'flex';
+                divider.style.display = 'flex';
+                socialLogin.style.display = 'flex';
+                registerText.innerHTML = 'Not a clan member yet? <a href="#" id="registerLink">Request access</a>';
+                
+                // Change button colors back
+                loginBtn.style.backgroundColor = '#0078d4';
+                signBtn.style.backgroundColor = '#0078d4';
+                
+                // Re-attach register link handler
+                setTimeout(() => {
+                    const registerLink = document.getElementById('registerLink');
+                    if (registerLink) {
+                        registerLink.onclick = handleRegisterLink;
+                    }
+                }, 0);
+            }
+            
+            // Clear messages
+            errorMessage.classList.remove('show');
+            // Clear form
+            emailInput.value = '';
+            passwordInput.value = '';
+            emailInput.focus();
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorMessage.classList.add('show');
+            
+            // Add shake animation
+            loginForm.classList.add('shake');
+            setTimeout(() => {
+                loginForm.classList.remove('shake');
+            }, 500);
+        }
+
+        // Show loading state
+        function showLoading(isLoading) {
+            loginBtn.disabled = isLoading;
+            signBtn.disabled = isLoading;
+            
+            if (isLoading) {
+                signinBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            } else {
+                signinBtnText.textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+            }
+        }
+
+
+		
+		// Function to show beautiful error notifications
+		function showBeautifulError(message, type = 'error') {
+			// Remove any existing custom notification
+			const existingNotification = document.querySelector('.custom-notification');
+			if (existingNotification) {
+				existingNotification.remove();
+			}
+			
+			// Create notification element
+			const notification = document.createElement('div');
+			notification.className = `custom-notification custom-notification-${type}`;
+			
+			// Set icon based on type
+			let icon = '';
+			switch(type) {
+				case 'success':
+					icon = '<i class="fas fa-check-circle"></i>';
+					break;
+				case 'warning':
+					icon = '<i class="fas fa-exclamation-triangle"></i>';
+					break;
+				case 'error':
+				default:
+					icon = '<i class="fas fa-times-circle"></i>';
+			}
+			
+			// Set notification content
+			notification.innerHTML = `
+				<div class="notification-content">
+					<div class="notification-icon">${icon}</div>
+					<div class="notification-text">${message}</div>
+					<button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+						<i class="fas fa-times"></i>
+					</button>
+				</div>
+				<div class="notification-progress"></div>
+			`;
+			
+			// Add to page
+			document.querySelector('.login-form-container').prepend(notification);
+			
+			// Auto-remove after 5 seconds (except for success messages that will redirect)
+			if (type !== 'success') {
+				setTimeout(() => {
+					if (notification.parentElement) {
+						notification.style.opacity = '0';
+						setTimeout(() => {
+							if (notification.parentElement) {
+								notification.remove();
+							}
+						}, 300);
+					}
+				}, 5000);
+			}
+		}
+
+		// Function to show success message and redirect
+		function showSuccessAndRedirect(message, redirectUrl, delay = 2000) {
+			showBeautifulError(message, 'success');
+			setTimeout(() => {
+				window.location.href = redirectUrl;
+			}, delay);
+		}
+
+
+
+
+
+
+
+        // Handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Validation
+            if (!email || !password) {
+                showError('Please fill in all fields.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters.');
+                return;
+            }
+            
+            // Show loading
+            showLoading(true);
+            
+            try {
+                if (isSignUpMode) {
+                    // Sign Up with Firebase
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    console.log('User created:', user.email);
+                    
+                    // Show success and redirect
+                    showSuccessAndRedirect('Account created successfully! Welcome to the clan!', 'dashboard.html', 2000);
+                } else {
+                    // Sign In with Firebase
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    console.log('User signed in:', user.email);
+                    
+                    // Check "Remember me"
+                    const rememberMe = document.getElementById('rememberMe').checked;
+                    if (rememberMe) {
+                        console.log('Remember me enabled');
+                    }
+                    
+                    // Redirect to dashboard
+                    showSuccessAndRedirect('Login successful! Welcome back!', 'dashboard.html', 1500);
+                }
+            }  catch (error) {
+				console.error('Auth error code:', error.code);
+				
+				// USE THIS INSTEAD OF YOUR CURRENT ERROR SHOWING CODE
+				let userMessage = "Something went wrong. Please try again.";
+				
+				if (error.code === 'auth/invalid-credential') {
+					userMessage = "The email or password is incorrect. Please check and try again.";
+				} else if (error.code === 'auth/user-not-found') {
+					userMessage = "No account found with this email.";
+				} else if (error.code === 'auth/wrong-password') {
+					userMessage = "Incorrect password. Try again or use 'Forgot password'.";
+				} else if (error.code === 'auth/too-many-requests') {
+					userMessage = "Too many failed attempts. Please wait a minute.";
+				} else if (error.code === 'auth/email-already-in-use') {
+					userMessage = "This email is already registered. Try signing in instead.";
+				} else if (error.code === 'auth/weak-password') {
+					userMessage = "Password is too weak. Use at least 6 characters.";
+				}
+				
+				// Show the beautiful error
+				showBeautifulError(userMessage, 'error');
+				
+			} finally {
+				showLoading(false);
+			}	
+        }
+
+        // Handle forgot password
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim() || prompt('Please enter your email address:');
+            
+            if (!email) {
+                showError('Please enter your email address.');
+                return;
+            }
+            
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert(`Password reset email sent to: ${email}\n\nCheck your inbox and follow the instructions.`);
+            } catch (error) {
+                console.error('Password reset error:', error);
+                let errorMsg = 'Failed to send reset email.';
+                
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        errorMsg = 'No account found with this email.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg = 'Please enter a valid email address.';
+                        break;
+                }
+                
+                showError(errorMsg);
+            }
+        }
+
+        // Handle register link
+        function handleRegisterLink(e) {
+            e.preventDefault();
+            alert('To request clan membership, please contact the admin (T3li).\n\nFor demo, you can use the Sign Up button to create a test account.');
+        }
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // Form submission
+            loginForm.addEventListener('submit', handleFormSubmit);
+            
+            // Sign Up/Login toggle button
+            signBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleSignUpMode();
+            });
+            
+            // Forgot password
+            forgotPasswordLink.addEventListener('click', handleForgotPassword);
+            
+            // Register link
+            const initialRegisterLink = document.querySelector('.register-link a');
+            if (initialRegisterLink) {
+                initialRegisterLink.addEventListener('click', handleRegisterLink);
+            }
+            
+            // Social login buttons
+            document.querySelector('.btn-steam').addEventListener('click', () => {
+                alert('Steam authentication is not yet configured.\nPlease use email/password login.');
+            });
+            
+            document.querySelector('.btn-discord').addEventListener('click', () => {
+                alert('Discord authentication is not yet configured.\nPlease use email/password login.');
+            });
+            
+            // Auto-fill demo credentials for testing (optional)
+            emailInput.value = 'test@familygang.com';
+            passwordInput.value = 'clan123';
+        }
+
+        // Initialize the application
+        initEventListeners();
+
+        // Add CSS for shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+            
+            .shake {
+                animation: shake 0.5s;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+</body>
+</html>
