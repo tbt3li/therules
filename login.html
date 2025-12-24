@@ -58,14 +58,13 @@
         }
 
         .login-brand::before {
-            content: '';
-            position: absolute;
+            position: relative;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: linear-gradient(45deg, rgba(0, 120, 212, 0.1) 0%, rgba(92, 45, 145, 0.1) 100%);
-            z-index: 0;
+            z-index: 1;
         }
 
         .brand-content {
@@ -251,7 +250,7 @@
         .divider {
             display: flex;
             align-items: center;
-            margin: 30px 0;
+            margin: 10px 0;
             color: #605e5c;
         }
 
@@ -654,6 +653,10 @@
     color: #2e7d32;
     margin-right: 10px;
 }
+
+a:hover {
+    cursor: pointer !important;
+}
     </style>
 </head>
 <body>
@@ -661,11 +664,11 @@
         <!-- Left Side - Branding -->
         <div class="login-brand">
             <div class="brand-content">
-                <div class="logo">
-                    <div class="logo-icon"><i class="fas fa-chess-knight"></i></div>
-                    <div class="logo-text">THE <text style="font-size:22px !important;">Family Gang</text> <text style="font-size:14px !important;">(Kingdom 123)</text></div>
+                <div class="logo" >
+                    <div class="logo-icon"><img src="assets/img/logo.png" style="max-height: 50px;" class="img-fluid navbar-logo" alt=""></div>
+                    <div class="logo-text" style="text-align: center !important;">THE <text style="font-size:22px !important;">Family Gang</text><br> <text style="font-size:14px !important;">(Kingdom 123)</text></div>
                 </div>
-
+				
                 <h2 class="brand-tagline">Access Premium Clan Resources</h2>
                 <p class="brand-description">Login to access exclusive tutorials, equipment guides, hacks, and cheat sheets available only to verified clan members.</p>
                 
@@ -677,7 +680,9 @@
                     <li><i class="fas fa-check-circle"></i> Clan Member Statistics</li>
                 </ul>
             </div>
-            
+            <div class="register-link">
+                <span id="registerText">Not a clan member yet?</span> <a href="#" id="registerLink" style="text-decoration: none;">Request access</a>
+            </div>
             <div class="copyright">
                 &copy; 2025 THE Family Gang. <br>Premium access for members.
             </div>
@@ -708,7 +713,7 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 10px !important;">
                     <label for="password">Password</label>
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
@@ -754,9 +759,24 @@
                 </button>
             </div>
             
-            <div class="register-link">
-                <span id="registerText">Not a clan member yet?</span> <a href="#" id="registerLink">Request access</a>
-            </div>
+            
+				<div style="text-align: center; padding-top: 15px; border-top: 1px solid #edebe9;">
+					<a href="index.html" style="
+						display: inline-block;
+						background-color: transparent;
+						color: #0078d4;
+						padding: 12px 30px;
+						border-radius: var(--border-radius);
+						text-decoration: none;
+						font-weight: 600;
+						border: 2px solid #0078d4;
+						transition: all 0.3s ease;
+						font-size: 15px;
+					" onmouseover="this.style.backgroundColor='#0078d4'; this.style.color='white'" 
+					 onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0078d4'">
+						<i class="fas fa-home" style="margin-right: 8px;"></i> Back to Home
+					</a>
+				</div>
         </div>
     </div>
 
@@ -1092,9 +1112,6 @@
                 alert('Discord authentication is not yet configured.\nPlease use email/password login.');
             });
             
-            // Auto-fill demo credentials for testing (optional)
-            emailInput.value = 'test@familygang.com';
-            passwordInput.value = 'clan123';
         }
 
         // Initialize the application
