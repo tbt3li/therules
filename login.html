@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clan HQ - Member Login</title>
+    <title>Dashboard - Member Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -681,7 +681,7 @@ a:hover {
                 </ul>
             </div>
             <div class="register-link">
-                <span id="registerText">Not a clan member yet?</span> <a href="#" id="registerLink" style="text-decoration: none;">Request access</a>
+                <span id="registerText">Not a member yet?</span> <a href="#" id="registerLink" style="text-decoration: none;">Request access</a>
             </div>
             <div class="copyright">
                 &copy; 2025 THE Family Gang. <br>T3li (123.250.832)<br>Premium access for members.
@@ -692,7 +692,7 @@ a:hover {
         <div class="login-form-container">
             <div class="login-header">
                 <h1 id="loginTitle">Member Login</h1>
-                <p id="loginSubtitle">Enter your credentials to access the clan dashboard</p>
+                <p id="loginSubtitle">Enter your credentials to access the dashboard</p>
             </div>
             
             <div class="error-message" id="errorMessage">
@@ -705,7 +705,7 @@ a:hover {
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email" id="emailLabel">Clan Username or Email</label>
+                    <label for="email" id="emailLabel">Username or Email</label>
                     <div class="input-with-icon">
                         <i class="fas fa-user"></i>
                         <input type="text" id="email" class="form-control" placeholder="Enter your username or email" 
@@ -854,7 +854,7 @@ a:hover {
                 rememberForgot.style.display = 'flex';
                 divider.style.display = 'flex';
                 socialLogin.style.display = 'flex';
-                registerText.innerHTML = 'Not a clan member yet? <a href="#" id="registerLink">Request access</a>';
+                registerText.innerHTML = 'Not a member yet? <a href="#" id="registerLink">Request access</a>';
                 
                 // Change button colors back
                 loginBtn.style.backgroundColor = '#0078d4';
@@ -1002,7 +1002,7 @@ a:hover {
                     console.log('User created:', user.email);
                     
                     // Show success and redirect
-                    showSuccessAndRedirect('Account created successfully! Welcome to the clan!', 'dashboard.html', 2000);
+                    showSuccessAndRedirect('Account created successfully! Welcome to the Dashboard!', 'dashboard.html', 2000);
                 } else {
                     // Sign In with Firebase
                     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -1080,7 +1080,7 @@ a:hover {
         // Handle register link
         function handleRegisterLink(e) {
             e.preventDefault();
-            alert('To request clan membership, please contact the admin (T3li).\n\nFor demo, you can use the Sign Up button to create a test account.');
+            alert('To request membership, please contact the admin (T3li).\n\nFor demo, you can use the Sign Up button to create a test account.');
         }
 
         // Initialize event listeners
@@ -1135,6 +1135,7 @@ a:hover {
 </script>
 </body>
 </html>
+
 
 
 
