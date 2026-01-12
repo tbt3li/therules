@@ -59,32 +59,7 @@ strongb {color:#0e0ecd; font-weight:bold;}
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 	<li class="login-btn"><a href="login.html" class="rules-cp" style="color: white;">Login</a></li>
-	<!-- Small Translate Icon -->
-    <div id="google_translate_trigger" title="Translate Page" style="cursor:pointer; font-size: 18px; margin-left: 10px;">🌐</div>
-    <!-- Hidden Translate Container -->
-    <div id="google_translate_element" style="display:none; position:absolute; top:50px; right:20px; z-index:999;"></div>
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      layout: google.translate.TranslateElement.InlineLayout.VERTICAL
-    }, 'google_translate_element');
-  }
-
-  // Toggle dropdown on icon click
-  window.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('click', function (e) {
-      const btn = document.getElementById('google_translate_trigger');
-      const box = document.getElementById('google_translate_element');
-
-      if (btn && btn.contains(e.target)) {
-        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
-      } else if (!box.contains(e.target)) {
-        box.style.display = 'none';
-      }
-    });
-  });
-</script>
+	
 	    
     </div>
   </header>
