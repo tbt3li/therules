@@ -10,7 +10,7 @@ function calculate() {
   var b = document.getElementById("b").value || 0;
   var c = document.getElementById("c").value || 0;
 
-  // Create URL-encoded string instead of FormData
+  // Create URL-encoded data
   var params = new URLSearchParams();
   params.append("a", a);
   params.append("b", b);
@@ -23,10 +23,33 @@ function calculate() {
     },
     body: params.toString()
   })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("result").innerText = data.result;
+  .then(async response => {
+    // First check if response is OK
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.error("Invalid JSON response:", text.substring(0, 200));
+      throw new Error("Invalid JSON response from server");
+    }
   })
-  .catch(err => console.log(err));
+  .then(data => {
+    if (data.error) {
+      document.getElementById("result").innerText = "Error: " + data.error;
+    } else {
+      document.getElementById("result").innerText = data.result;
+    }
+  })
+  .catch(err => {
+    console.error("Fetch error:", err);
+    document.getElementById("result").innerText = "Error: " + err.message;
+  });
 }
+
+// Call calculate on page load
+window.onload = calculate;
 </script>
