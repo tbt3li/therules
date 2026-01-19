@@ -1,1 +1,33 @@
+<input type="number" id="a" placeholder="Value A">
+<input type="number" id="b" placeholder="Value B">
+<input type="number" id="c" placeholder="Value C">
+
+<h2>Result: <span id="result">0</span></h2>
+
+<script>
+const inputs = document.querySelectorAll("input");
+
+inputs.forEach(input => {
+  input.addEventListener("input", calculate);
+});
+
+function calculate() {
+  const formData = new FormData();
+  formData.append("a", document.getElementById("a").value);
+  formData.append("b", document.getElementById("b").value);
+  formData.append("c", document.getElementById("c").value);
+
+  fetch("https://thefamily.kesug.com/tst.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("result").innerText = data.result;
+  });
+}
+
+</script>
+
+
 
