@@ -19,7 +19,7 @@ function calculate() {
   method: "POST",
   body: formData
 })
-.then(res => res.json())
+.then(res => res.json())   // JSON parse
 .then(data => {
   document.getElementById("result").innerText = data.result;
 })
