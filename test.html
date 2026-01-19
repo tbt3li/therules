@@ -1,42 +1,83 @@
-<input type="number" id="a" placeholder="Value A" oninput="calculate()" value="0">
-<input type="number" id="b" placeholder="Value B" oninput="calculate()" value="0">
-<input type="number" id="c" placeholder="Value C" oninput="calculate()" value="0">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        h2 {
+            color: #333;
+        }
+        #result {
+            color: #0066cc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculator</h1>
+    
+    <input type="number" id="a" placeholder="Value A" oninput="calculate()" value="1">
+    <input type="number" id="b" placeholder="Value B" oninput="calculate()" value="2">
+    <input type="number" id="c" placeholder="Value C" oninput="calculate()" value="3">
+    
+    <h2>Result: <span id="result">0</span></h2>
+    
+    <div id="debug" style="font-size: 12px; color: #666; margin-top: 20px;"></div>
 
-<h2>Result: <span id="result">0</span></h2>
-
-<script>
-function calculate() {
-  const a = document.getElementById("a").value || 0;
-  const b = document.getElementById("b").value || 0;
-  const c = document.getElementById("c").value || 0;
-  
-  // Create FormData object
-  const formData = new FormData();
-  formData.append("a", a);
-  formData.append("b", b);
-  formData.append("c", c);
-  
-  // Send to Worker
-  fetch("https://calc1-proxy.t3li.workers.dev/", {
-    method: "POST",
-    body: formData  // Worker will convert this to URL-encoded
-  })
-  .then(async response => {
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
+    <script>
+    async function calculate() {
+        const a = document.getElementById("a").value || 0;
+        const b = document.getElementById("b").value || 0;
+        const c = document.getElementById("c").value || 0;
+        
+        const debug = document.getElementById("debug");
+        debug.textContent = `Calculating: (${a} × 2) + (${b} × 3) + (${c} × 4)...`;
+        
+        try {
+            // Using FormData as in your original code
+            const formData = new FormData();
+            formData.append("a", a);
+            formData.append("b", b);
+            formData.append("c", c);
+            
+            const response = await fetch("https://calc1-proxy.t3li.workers.dev/", {
+                method: "POST",
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.result !== undefined) {
+                document.getElementById("result").innerText = data.result;
+                debug.textContent = `Formula: (${data.inputs.a} × 2) + (${data.inputs.b} × 3) + (${data.inputs.c} × 4) = ${data.result}`;
+            } else {
+                document.getElementById("result").innerText = "Error: No result";
+                debug.textContent = "Error in response: " + JSON.stringify(data);
+            }
+            
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("result").innerText = "Error";
+            debug.textContent = "Fetch error: " + error.message;
+        }
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log("Success:", data);
-    document.getElementById("result").innerText = data.result;
-  })
-  .catch(error => {
-    console.error("Error:", error);
-    document.getElementById("result").innerText = "Error: " + error.message;
-  });
-}
-
-// Initial calculation
-calculate();
-</script>
+    
+    // Initial calculation on page load
+    calculate();
+    </script>
+</body>
+</html>
