@@ -5,28 +5,27 @@
 <h2>Result: <span id="result">0</span></h2>
 
 <script>
-export default {
-  async fetch(request) {
+const inputs = document.querySelectorAll("input");
 
-    const phpURL = "https://thefamily.kesug.com/tst.php";
+inputs.forEach(input => {
+  input.addEventListener("input", calculate);
+});
 
-    const response = await fetch(phpURL, {
-      method: request.method,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: request.method === "POST" ? await request.text() : null
-    });
+function calculate() {
+  const formData = new FormData();
+  formData.append("a", document.getElementById("a").value);
+  formData.append("b", document.getElementById("b").value);
+  formData.append("c", document.getElementById("c").value);
 
-    return new Response(await response.text(), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
-    });
-  }
-};
-
+  fetch("https://yourdomain.infinityfreeapp.com/calculator.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("result").innerText = data.result;
+  });
+}
 </script>
 
 
