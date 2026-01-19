@@ -15,18 +15,14 @@ function calculate() {
   formData.append("b", b);
   formData.append("c", c);
 
-  fetch("https://calc1-proxy.t3li.workers.dev/", {
-    method: "POST",
-    body: formData
-  })
-  .then(function(res) {
-    return res.json();
-  })
-  .then(function(data) {
-    document.getElementById("result").innerText = data.result;
-  })
-  .catch(function(err) {
-    console.log(err);
-  });
+  fetch("https://calc1-proxy.t3li.workers.dev", {
+  method: "POST",
+  body: formData
+})
+.then(res => res.json())
+.then(data => {
+  document.getElementById("result").innerText = data.result;
+})
+.catch(err => console.log(err));
 }
 </script>
