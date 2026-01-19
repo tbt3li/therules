@@ -6,23 +6,27 @@
 
 <script>
 function calculate() {
-  var a = document.getElementById("a").value;
-  var b = document.getElementById("b").value;
-  var c = document.getElementById("c").value;
+  var a = document.getElementById("a").value || 0;
+  var b = document.getElementById("b").value || 0;
+  var c = document.getElementById("c").value || 0;
 
-  var formData = new FormData();
-  formData.append("a", a);
-  formData.append("b", b);
-  formData.append("c", c);
+  // Create URL-encoded string instead of FormData
+  var params = new URLSearchParams();
+  params.append("a", a);
+  params.append("b", b);
+  params.append("c", c);
 
   fetch("https://calc1-proxy.t3li.workers.dev", {
-  method: "POST",
-  body: formData
-})
-.then(res => res.json())   // parse JSON
-.then(data => {
-  document.getElementById("result").innerText = data.result;
-})
-.catch(err => console.log(err));
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString()
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("result").innerText = data.result;
+  })
+  .catch(err => console.log(err));
 }
 </script>
