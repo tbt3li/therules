@@ -17,10 +17,10 @@ function calculate() {
   formData.append("b", document.getElementById("b").value);
   formData.append("c", document.getElementById("c").value);
 
-  fetch("https://thefamily.kesug.com/tst.php", {
-    method: "POST",
-    body: formData
-  })
+  fetch("https://calc1-proxy-thefamily.workers.dev", {
+  method: "POST",
+  body: formData
+});
   .then(res => res.json())
   .then(data => {
     document.getElementById("result").innerText = data.result;
