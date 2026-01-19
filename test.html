@@ -9,10 +9,13 @@ function calculate() {
 
   var a = document.getElementById("a").value;
   var b = document.getElementById("b").value;
+  var c = document.getElementById("c").value;
+
 
   var formData = new FormData();
   formData.append("a", a);
   formData.append("b", b);
+  formData.append("c", c);
 
   fetch("https://calc1-proxy-thefamily.workers.dev", {
     method: "POST",
