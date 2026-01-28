@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citadel Battle Calculator</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="style.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="fa/css/all.min.css" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="text-center"><i class="fa-brands fa-fort-awesome"></i> Citadel Battle Calculator</h1>
+            <p class="text-center lead">Select the best army composition to conquer citadels with minimal losses</p>
+        </div>
+    </div>
+
+    <div class="container calculator-container">
+        <!-- Progress Steps -->
+        <div class="step-indicator">
+            <div class="step active" id="step1-indicator">
+                <div class="step-circle">1</div>
+                <div class="step-label">Citadel Level</div>
+            </div>
+            <div class="step" id="step2-indicator">
+                <div class="step-circle">2</div>
+                <div class="step-label">Army Levels</div>
+            </div>
+            <div class="step" id="step3-indicator">
+                <div class="step-circle">3</div>
+                <div class="step-label">Calculate</div>
+            </div>
+            <div class="step" id="step4-indicator">
+                <div class="step-circle">4</div>
+                <div class="step-label">Results</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Citadel Level Selection -->
+        <div class="card" id="step1">
+            <div class="card-header">
+                <i class="fa-brands fa-fort-awesome"></i> Step 1: Select Citadel Level
+            </div>
+            <div class="card-body">
+                <p class="card-text">Choose the level of citadel you want to attack. This will determine the defenders you'll face.</p>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="d-flex flex-wrap justify-content-start mb-4">
+                            <button class="btn btn-outline-primary selection-btn" data-level="30"><i class="fa-brands fa-fort-awesome"></i> Level 30</button>
+                            <button class="btn btn-outline-primary selection-btn" data-level="25"><i class="fa-brands fa-fort-awesome"></i> Level 25</button>
+                            <button class="btn btn-outline-primary selection-btn" data-level="20"><i class="fa-brands fa-fort-awesome"></i> Level 20</button>
+                            <button class="btn btn-outline-primary selection-btn" data-level="15"><i class="fa-brands fa-fort-awesome"></i> Level 15</button>
+                            <button class="btn btn-outline-primary selection-btn" data-level="10"><i class="fa-brands fa-fort-awesome"></i> Level 10</button>
+                        </div>
+                        
+                        <div id="citadel-details" class="hidden">
+                            <h5 class="section-title">Citadel Details</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Defender Type</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="citadel-defenders">
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="row" id="extra-damage-info">
+                                <p class="mt-2 text-muted alert alert-info mt-3"><small>We'll avoid using these troop types in our attack.</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-info-circle me-2"></i>Information</h5>
+                                <p class="card-text">
+                                   <i class="fa-brands fa-fort-awesome"></i> <strong>Citadel Level:</strong> Higher level citadels have more and stronger defenders.
+                                </p>
+                                <p class="card-text">
+                                    <strong>Extra Damage:</strong> Some defenders deal extra damage to specific attacker types. We'll avoid using those troop types.
+                                </p>
+                                <p class="card-text">
+                                    <strong>Strategy:</strong> Engineers will attack walls, while other troops will attack defenders.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-end mt-4">
+                    <button class="btn btn-primary" id="next-step-1">Next: Army Levels <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Army Level Selection -->
+        <div class="card hidden" id="step2">
+            <div class="card-header">
+                <i class="fas fa-users me-2"></i>Step 2: Select Your Highest Army Levels
+            </div>
+            <div class="card-body">
+                <p class="card-text">Select the highest level available for each troop type. The calculator will choose the best 2 levels for each (except Engineers - only 1 level).</p>
+                
+				<!-- Add this in Step 2, after the row with army level cards -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-line me-2"></i>Army Bonuses Summary
+            </div>
+            <div class="card-body">
+                <p class="card-text">View and configure your army bonuses from research, runes, monsters, etc.</p>
+                
+                <!-- Bonuses Summary Table -->
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Strength Bonuses</th>
+                                <th>Health Bonuses</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bonus-summary-display">
+                            <tr>
+                                <td><i class="fas fa-users me-2"></i>Army (General)</td>
+                                <td id="army-strength-display">0%</td>
+                                <td id="army-health-display">0%</td>
+                                <td id="army-total-display">0%</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-flask me-2"></i>Research</td>
+                                <td id="research-strength-display">0%</td>
+                                <td id="research-health-display">0%</td>
+                                <td id="research-total-display">0%</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-dragon me-2"></i>Monsters</td>
+                                <td id="monsters-strength-display">0%</td>
+                                <td id="monsters-health-display">0%</td>
+                                <td id="monsters-total-display">0%</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-shield-alt me-2"></i>Guard</td>
+                                <td id="guard-strength-display">0%</td>
+                                <td id="guard-health-display">0%</td>
+                                <td id="guard-total-display">0%</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star me-2"></i>Specialist</td>
+                                <td id="specialist-strength-display">0%</td>
+                                <td id="specialist-health-display">0%</td>
+                                <td id="specialist-total-display">0%</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-cogs me-2"></i>Engineer</td>
+                                <td id="engineer-strength-display">0%</td>
+                                <td id="engineer-health-display">0%</td>
+                                <td id="engineer-total-display">0%</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-secondary">
+                            <tr>
+                                <th>Overall Total</th>
+                                <th id="total-strength-display">0%</th>
+                                <th id="total-health-display">0%</th>
+                                <th id="grand-total-display">0%</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <button class="btn btn-primary" id="configure-bonuses-btn" data-bs-toggle="modal" data-bs-target="#extraPowerModal">
+                        <i class="fas fa-sliders-h me-2"></i>Configure All Bonuses
+                    </button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="clearAllBonuses()">
+                        <i class="fas fa-trash-alt me-2"></i>Clear All Bonuses
+                    </button>
+                </div>
+                
+                <div class="alert alert-info mt-3">
+                    <small>
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> Bonuses are applied only to their specific categories. Click "Configure" to set up detailed bonuses for each category.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+				
+				
+				
+				
+
+                <div class="row">
+					<div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-center"><i class="fas fa-cogs me-2"></i>Engineers</h5>
+                                <p class="text-center">Select highest Engineer level:</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="1">1</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="2">2</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="3">3</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="4">4</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="5">5</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="6">6</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="7">7</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="8">8</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="engineer" data-level="9">9</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <span class="badge bg-secondary" id="selected-engineer">Not selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+					<div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-center"><i class="fas fa-dragon me-2"></i>Dragons</h5>
+                                <p class="text-center">Select highest Dragon level:</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="3">3</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="4">4</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="5">5</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="6">6</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="7">7</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="8">8</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="dragon" data-level="9">9</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <span class="badge bg-secondary" id="selected-dragon">Not selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-center"><i class="fas fa-shield-alt me-2"></i>Guards</h5>
+                                <p class="text-center">Select highest Guard level:</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="1">1</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="2">2</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="3">3</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="4">4</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="5">5</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="6">6</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="7">7</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="8">8</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="guard" data-level="9">9</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <span class="badge bg-secondary" id="selected-guard">Not selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-center"><i class="fas fa-star me-2"></i>Special</h5>
+                                <p class="text-center">Select highest Special level:</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="1">1</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="2">2</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="3">3</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="4">4</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="5">5</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="6">6</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="7">7</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="8">8</button>
+                                    <button class="btn btn-outline-primary selection-btn army-level" data-type="special" data-level="9">9</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <span class="badge bg-secondary" id="selected-special">Not selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div id="selected-army-summary" class="hidden">
+                            <h5 class="section-title">Your Selected Army Levels</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Army Type</th>
+                                            <th>Highest Level</th>
+                                            <th>Will Use Levels</th>
+                                            <th>Note</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge bg-warning text-dark army-type-badge">Engineers</span></td>
+                                            <td id="summary-engineer-level">-</td>
+                                            <td id="summary-engineer-used">-</td>
+                                            <td>Only 1 level (highest) for walls</td>
+                                        </tr>
+										<tr>
+                                            <td><span class="badge bg-danger army-type-badge">Dragons</span></td>
+                                            <td id="summary-dragon-level">-</td>
+                                            <td id="summary-dragon-used">-</td>
+                                            <td>Best 2 levels will be selected</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-primary army-type-badge">Guards</span></td>
+                                            <td id="summary-guard-level">-</td>
+                                            <td id="summary-guard-used">-</td>
+                                            <td>Best 2 levels will be selected</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-success army-type-badge">Special</span></td>
+                                            <td id="summary-special-level">-</td>
+                                            <td id="summary-special-used">-</td>
+                                            <td>Best 2 levels will be selected</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-lightbulb me-2"></i>Strategy Note</h5>
+                                <p class="card-text">
+                                    The calculator will:
+                                </p>
+                                <ul class="small">
+                                    <li>Use Engineers (1 level) to attack walls</li>
+                                    <li>Select the best 2 levels for Guards, Special, and Dragons</li>
+                                    <li>Avoid troop types that citadel has extra damage against</li>
+                                    <li>Ensure your army's total (Strength+Health) > Citadel's total</li>
+                                    <li>Minimize losses by matching strengths effectively</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-end mt-4">
+                    <button class="btn btn-outline-secondary me-2" id="prev-step-2"><i class="fas fa-arrow-left me-2"></i>Back</button>
+                    <button class="btn btn-primary" id="next-step-2">Calculate Battle <i class="fas fa-calculator ms-2"></i></button>
+                </div>
+            </div>
+        </div>
+		
+        <!-- Step 3: Calculation -->
+        <div class="card hidden" id="step3">
+            <div class="card-header">
+                <i class="fas fa-calculator me-2"></i>Step 3: Calculating Optimal Army Composition
+            </div>
+            <div class="card-body">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4 class="mt-4">Calculating optimal army composition...</h4>
+                    <p class="text-muted">Analyzing citadel defenses and selecting best troops to minimize losses</p>
+                    
+                    <div class="progress mt-4" style="height: 10px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="calculation-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+				<!-- Remove button view results 
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary hidden" id="view-results">View Results <i class="fas fa-chart-bar ms-2"></i></button>
+                </div>
+				 end remove button view results -->
+            </div>
+        </div>
+
+        <!-- Step 4: Results -->
+        <div class="card hidden" id="step4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-2"></i>Step 4: Citadel Battle Plan Results
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h5><i class="fas fa-check-circle me-2"></i>Optimal Army Composition Calculated!</h5>
+                    <p class="mb-0">This plan is designed to conquer the citadel with minimal losses by avoiding troops that citadel defenders have extra damage against.</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="section-title">Recommended Army Composition</h5>
+                        
+                        <div class="recommendation-box">
+                            <h6><i class="fas fa-bullseye me-2"></i>Battle Strategy</h6>
+                            <p><strong>Engineers:</strong> Attack walls | <strong>Other Troops:</strong> Attack defenders only</p>
+                            <p><strong>Avoided:</strong> Troop types that citadel has extra damage against</p>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped summary-table">
+                                <thead>
+                                    <tr>
+                                        <th>Army Type</th>
+                                        <th>Level</th>
+                                        <th>Category</th>
+                                        <th>Quantity Needed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recommended-army">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                        
+                        
+                    </div>
+                    
+                    <div class="col-md-4">
+					
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-clipboard-list me-2"></i>Battle Summary</h5>
+                                <p class="card-text">
+                                    <strong>Citadel Level:</strong> <span id="result-citadel-level" class="badge bg-primary">-</span><br>
+                                    <strong>Total Defenders:</strong> <span id="result-defender-count">0</span> types<br>
+                                    <strong>Army Types Used:</strong> <span id="result-army-types">0</span><br>
+                                    <strong>Engineers Used:</strong> <span id="result-engineers">0</span> (for walls)<br>
+                                    <strong>Strategy Success:</strong> <span id="strategy-success" class="badge bg-success">High</span>
+                                </p>
+                                
+                                <hr>
+                                
+                                <h6><i class="fas fa-trophy me-2"></i>Battle Outcome Prediction</h6>
+                                <p id="outcome-prediction">Based on the calculated army composition, you should be able to conquer this citadel with minimal losses.</p>
+                                <!--
+                                <div class="alert alert-info mt-3">
+                                    <small><i class="fas fa-info-circle me-2"></i><strong>Note:</strong> This calculator assumes optimal battle conditions. Actual results may vary based on battle mechanics.</small>
+                                </div>
+								-->
+                            </div>
+                        </div>
+                        
+						<div class="card">
+                            <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-balance-scale me-2"></i>Power Comparison</h5>
+                                        <p class="card-text">
+                                            <strong>Army Total Power:</strong> <span id="army-power-display">0</span><br>
+                                            <strong>Citadel Total Power:</strong> <span id="citadel-power-display">0</span><br>
+                                            <strong>Advantage:</strong> <span id="power-advantage" class="comparison-positive">0%</span>
+                                        </p>
+                                        <div class="strength-indicator mt-3">
+                                            <div class="strength-fill" id="power-indicator" style="width: 0%"></div>
+                                        </div>
+                            </div>
+                        </div>
+						
+						
+                        
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-secondary me-2" id="prev-step-4"><i class="fas fa-arrow-left me-2"></i>Back to Army Selection</button>
+                    <button class="btn btn-outline-primary me-2" id="restart-calculation"><i class="fas fa-redo me-2"></i>Start New Calculation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="fun.js"></script>
+    <script src="data.js"></script>
+    
+	
+	
+	<!-- Extra Power Bonus Modal -->
+	<div class="modal fade" id="extraPowerModal" tabindex="-1" aria-labelledby="extraPowerModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="extraPowerModalLabel">
+						<i class="fas fa-magic me-2"></i>Extra Power Bonuses Configuration
+					</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-info">
+						<i class="fas fa-info-circle me-2"></i>
+						Enter strength and health bonuses for each category separately. These bonuses apply ONLY to their specific categories.
+					</div>
+					
+					<!-- Army Bonuses -->
+					<div class="category-section mb-4">
+						<h6 class="section-title mb-3">
+							<i class="fas fa-users me-2"></i>Army Bonuses (General)
+							<small class="text-muted ms-2">Applies to all troops</small>
+						</h6>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="bonus-row" data-category="army" data-type="strength">
+									<label class="form-label">
+										<i class="fas fa-fist-raised me-2 text-warning"></i>Army Strength Bonus 1 (%)
+									</label>
+									<div class="input-group mb-2">
+										<input type="number" class="form-control army-strength" 
+											   data-index="1" min="0" max="500" step="0.1" value="0">
+										<span class="input-group-text">%</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="bonus-row" data-category="army" data-type="health">
+									<label class="form-label">
+										<i class="fas fa-heart me-2 text-danger"></i>Army Health Bonus 1 (%)
+									</label>
+									<div class="input-group mb-2">
+										<input type="number" class="form-control army-health" 
+											   data-index="1" min="0" max="500" step="0.1" value="0">
+										<span class="input-group-text">%</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Add 5 more rows for Army -->
+						<div class="additional-bonuses" id="army-additional-bonuses">
+							<!-- Will be populated by JavaScript -->
+						</div>
+						
+						<button class="btn btn-sm btn-outline-primary mt-2" onclick="addBonusRow('army')">
+							<i class="fas fa-plus me-1"></i>Add More Army Bonuses
+						</button>
+					</div>
+					
+					<!-- Repeat for other categories -->
+					<div class="row">
+						<div class="col-md-6">
+							<!-- Research Bonuses -->
+							<div class="category-section mb-4">
+								<h6 class="section-title mb-3">
+									<i class="fas fa-flask me-2 text-info"></i>Research Bonuses
+									<small class="text-muted d-block">Applies based on research type</small>
+								</h6>
+								<div id="research-strength-bonuses">
+									<div class="bonus-row" data-category="research" data-type="strength">
+										<label class="form-label">Research Strength Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control research-strength" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<div id="research-health-bonuses">
+									<div class="bonus-row" data-category="research" data-type="health">
+										<label class="form-label">Research Health Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control research-health" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<button class="btn btn-sm btn-outline-info mt-2" onclick="addBonusRow('research')">
+									<i class="fas fa-plus me-1"></i>Add Research Bonuses
+								</button>
+							</div>
+							
+							<!-- Monsters Bonuses -->
+							<div class="category-section mb-4">
+								<h6 class="section-title mb-3">
+									<i class="fas fa-dragon me-2 text-danger"></i>Monsters Bonuses
+									<small class="text-muted d-block">Applies to monster/dragon troops</small>
+								</h6>
+								<div id="monsters-strength-bonuses">
+									<div class="bonus-row" data-category="monsters" data-type="strength">
+										<label class="form-label">Monsters Strength Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control monsters-strength" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<div id="monsters-health-bonuses">
+									<div class="bonus-row" data-category="monsters" data-type="health">
+										<label class="form-label">Monsters Health Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control monsters-health" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<button class="btn btn-sm btn-outline-danger mt-2" onclick="addBonusRow('monsters')">
+									<i class="fas fa-plus me-1"></i>Add Monsters Bonuses
+								</button>
+							</div>
+						</div>
+						
+						<div class="col-md-6">
+							<!-- Guard Bonuses -->
+							<div class="category-section mb-4">
+								<h6 class="section-title mb-3">
+									<i class="fas fa-shield-alt me-2 text-primary"></i>Guard Bonuses
+									<small class="text-muted d-block">Applies to Guard troops only</small>
+								</h6>
+								<div id="guard-strength-bonuses">
+									<div class="bonus-row" data-category="guard" data-type="strength">
+										<label class="form-label">Guard Strength Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control guard-strength" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<div id="guard-health-bonuses">
+									<div class="bonus-row" data-category="guard" data-type="health">
+										<label class="form-label">Guard Health Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control guard-health" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<button class="btn btn-sm btn-outline-primary mt-2" onclick="addBonusRow('guard')">
+									<i class="fas fa-plus me-1"></i>Add Guard Bonuses
+								</button>
+							</div>
+							
+							<!-- Specialist Bonuses -->
+							<div class="category-section mb-4">
+								<h6 class="section-title mb-3">
+									<i class="fas fa-star me-2 text-warning"></i>Specialist Bonuses
+									<small class="text-muted d-block">Applies to Special troops only</small>
+								</h6>
+								<div id="specialist-strength-bonuses">
+									<div class="bonus-row" data-category="specialist" data-type="strength">
+										<label class="form-label">Specialist Strength Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control specialist-strength" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<div id="specialist-health-bonuses">
+									<div class="bonus-row" data-category="specialist" data-type="health">
+										<label class="form-label">Specialist Health Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control specialist-health" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<button class="btn btn-sm btn-outline-warning mt-2" onclick="addBonusRow('specialist')">
+									<i class="fas fa-plus me-1"></i>Add Specialist Bonuses
+								</button>
+							</div>
+							
+							<!-- Engineer Bonuses -->
+							<div class="category-section mb-4">
+								<h6 class="section-title mb-3">
+									<i class="fas fa-cogs me-2 text-success"></i>Engineer Bonuses
+									<small class="text-muted d-block">Applies to Engineer troops only</small>
+								</h6>
+								<div id="engineer-strength-bonuses">
+									<div class="bonus-row" data-category="engineer" data-type="strength">
+										<label class="form-label">Engineer Strength Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control engineer-strength" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<div id="engineer-health-bonuses">
+									<div class="bonus-row" data-category="engineer" data-type="health">
+										<label class="form-label">Engineer Health Bonus 1 (%)</label>
+										<div class="input-group mb-2">
+											<input type="number" class="form-control engineer-health" 
+												   data-index="1" min="0" max="500" step="0.1" value="0">
+											<span class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+								<button class="btn btn-sm btn-outline-success mt-2" onclick="addBonusRow('engineer')">
+									<i class="fas fa-plus me-1"></i>Add Engineer Bonuses
+								</button>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Summary Section -->
+					<div class="card mt-4">
+						<div class="card-header">
+							<i class="fas fa-calculator me-2"></i>Bonuses Summary
+						</div>
+						<div class="card-body">
+							<table class="table table-sm">
+								<thead>
+									<tr>
+										<th>Category</th>
+										<th>Total Strength Bonus</th>
+										<th>Total Health Bonus</th>
+										<th>Number of Entries</th>
+									</tr>
+								</thead>
+								<tbody id="bonus-summary-table">
+									<!-- Will be populated by JavaScript -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-danger me-auto" onclick="clearAllBonuses()">
+						<i class="fas fa-trash-alt me-1"></i>Clear All
+					</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="saveBonusConfig()">
+						<i class="fas fa-save me-2"></i>Save Bonuses
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Info Modal -->
+	<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="infoModalLabel">
+						<i class="fas fa-info-circle me-2 text-info"></i>Information
+					</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="infoModalBody">
+					<!-- Content will be inserted dynamically -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</body>
+</html>
