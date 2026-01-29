@@ -111,7 +111,7 @@
         .step-indicator {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             position: relative;
         }
         
@@ -254,4 +254,5 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
+
 
