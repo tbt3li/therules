@@ -594,56 +594,69 @@ function addBonusRow(category) {
 }
 
 function addBonusRowSilently(category) {
-    const strengthInputs = document.querySelectorAll(`.${category}-strength`);
-    const nextIndex = strengthInputs.length + 1;
-    
-    if (nextIndex > 6) {
-        throw new Error('Maximum reached');
-    }
-    
-    const strengthHtml = `
-        <div class="bonus-row" data-category="${category}" data-type="strength" data-index="${nextIndex}">
-            <div class="d-flex justify-content-between align-items-center">
-                <label class="form-label">${formatCategoryName(category)} Strength Bonus ${nextIndex} (%)</label>
-                <button type="button" class="btn btn-sm btn-outline-danger remove-bonus-btn" 
-                        onclick="removeBonusRow(this, '${category}', 'strength')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="input-group mb-2">
-                <input type="number" class="form-control ${category}-strength" 
-                       data-index="${nextIndex}" min="0" max="500" step="0.1" value="0">
-                <span class="input-group-text">%</span>
-            </div>
-        </div>
-    `;
-    
-    const healthHtml = `
-        <div class="bonus-row" data-category="${category}" data-type="health" data-index="${nextIndex}">
-            <div class="d-flex justify-content-between align-items-center">
-                <label class="form-label">${formatCategoryName(category)} Health Bonus ${nextIndex} (%)</label>
-                <button type="button" class="btn btn-sm btn-outline-danger remove-bonus-btn" 
-                        onclick="removeBonusRow(this, '${category}', 'health')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="input-group mb-2">
-                <input type="number" class="form-control ${category}-health" 
-                       data-index="${nextIndex}" min="0" max="500" step="0.1" value="0">
-                <span class="input-group-text">%</span>
-            </div>
-        </div>
-    `;
-    
-    if (category === 'army') {
-        document.getElementById('army-additional-bonuses').insertAdjacentHTML('beforeend', strengthHtml + healthHtml);
-    } else {
-        document.getElementById(`${category}-strength-bonuses`).insertAdjacentHTML('beforeend', strengthHtml);
-        document.getElementById(`${category}-health-bonuses`).insertAdjacentHTML('beforeend', healthHtml);
-    }
-    
-    return true;
-}
+			const strengthInputs = document.querySelectorAll(`.${category}-strength`);
+			const nextIndex = strengthInputs.length + 1;
+			
+			if (nextIndex > 6) {
+				throw new Error('Maximum reached');
+			}
+			
+			// Color codes for Strength and Health words
+			const strengthColor = 'text-warning';
+			const healthColor = 'text-danger';
+			
+			// Get category display name
+			const categoryName = formatCategoryName(category);
+			
+			// Create new strength input with colored "Strength" word
+			const strengthHtml = `
+				<div class="bonus-row" data-category="${category}" data-type="strength" data-index="${nextIndex}">
+					<div class="d-flex justify-content-between align-items-center">
+						<label class="form-label">
+							${categoryName} <span class="${strengthColor}">Strength</span> Bonus ${nextIndex} (%)
+						</label>
+						<button type="button" class="btn btn-sm btn-outline-danger remove-bonus-btn" 
+								onclick="removeBonusRow(this, '${category}', 'strength')">
+							<i class="fas fa-times"></i>
+						</button>
+					</div>
+					<div class="input-group mb-2">
+						<input type="number" class="form-control ${category}-strength" 
+							   data-index="${nextIndex}" min="0" max="500" step="0.1" value="0">
+						<span class="input-group-text">%</span>
+					</div>
+				</div>
+			`;
+			
+			// Create new health input with colored "Health" word
+			const healthHtml = `
+				<div class="bonus-row" data-category="${category}" data-type="health" data-index="${nextIndex}">
+					<div class="d-flex justify-content-between align-items-center">
+						<label class="form-label">
+							${categoryName} <span class="${healthColor}">Health</span> Bonus ${nextIndex} (%)
+						</label>
+						<button type="button" class="btn btn-sm btn-outline-danger remove-bonus-btn" 
+								onclick="removeBonusRow(this, '${category}', 'health')">
+							<i class="fas fa-times"></i>
+						</button>
+					</div>
+					<div class="input-group mb-2">
+						<input type="number" class="form-control ${category}-health" 
+							   data-index="${nextIndex}" min="0" max="500" step="0.1" value="0">
+						<span class="input-group-text">%</span>
+					</div>
+				</div>
+			`;
+			
+			if (category === 'army') {
+				document.getElementById('army-additional-bonuses').insertAdjacentHTML('beforeend', strengthHtml + healthHtml);
+			} else {
+				document.getElementById(`${category}-strength-bonuses`).insertAdjacentHTML('beforeend', strengthHtml);
+				document.getElementById(`${category}-health-bonuses`).insertAdjacentHTML('beforeend', healthHtml);
+			}
+			
+			return true;
+		}
 
 function removeBonusRow(button, category, type) {
     const row = button.closest('.bonus-row');
