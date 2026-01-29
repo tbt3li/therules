@@ -745,9 +745,7 @@ function saveBonusConfig() {
     const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
     document.getElementById('infoModalBody').innerHTML = `
         <div class="alert alert-success">
-              <h4 class="alert-heading">
-                <i class="fas fa-check-circle me-2"></i>Success!
-              </h4>
+            <i class="fas fa-check-circle me-2"></i>
             Bonuses have been saved successfully! They will be applied in your next calculation.
         </div>
     `;
