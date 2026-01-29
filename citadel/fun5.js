@@ -75,6 +75,9 @@ async function selectCitadelLevel(button) {
     
     // Set selected citadel level
     selectedCitadelLevel = parseInt(button.getAttribute('data-level'), 10);
+
+    // Show loading message immediately
+    showCitadelLoading();
     
     try {
         // Call the worker to get citadel details
@@ -875,4 +878,32 @@ function loadSavedBonusValuesForCategory(category) {
             input.value = healthValues[index];
         }
     });
+}
+
+
+// Function to show loading message while fetching citadel details
+function showCitadelLoading() {
+    const tbody = document.getElementById('citadel-defenders');
+    const extraDamageDiv = document.getElementById('extra-damage-info');
+    
+    // Show loading message
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="2" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 mb-0">Loading citadel details...</p>
+            </td>
+        </tr>
+    `;
+    
+    extraDamageDiv.innerHTML = `
+        <div class="col-12">
+            <p class="text-muted text-center"><small>Please wait while we fetch the citadel information...</small></p>
+        </div>
+    `;
+    
+    // Make sure the details section is visible
+    document.getElementById('citadel-details').classList.remove('hidden');
 }
