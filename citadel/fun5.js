@@ -414,7 +414,7 @@ function displayResults() {
             <td>${displayName}</td>
             <td>${troop.level || '?'}</td>
             <td>${troop.category || 'Various'}</td>
-            <td style="color:#354bd3;"><strong>>${(troop.quantity || 0).toLocaleString()}</strong></td>
+            <td style="color:#354bd3;"><strong>${(troop.quantity || 0).toLocaleString()}</strong></td>
         `;
         recommendedArmyTable.appendChild(row);
     });
