@@ -488,6 +488,7 @@ function displayBonusesInResults() {
     
     // Create bonuses HTML
     let bonusesHTML = `
+    <div class="card">
     <div class="card-body" style="padding-top: 0rem !important;">
         <div class="bonuses-section mt-3">
             <h6 class="mb-2"><i class="fas fa-chart-pie me-2 text-info"></i>Applied Bonuses</h6>
@@ -517,7 +518,7 @@ function displayBonusesInResults() {
             <small><i class="fas fa-info-circle me-1"></i>Bonuses applied to all troop stats in calculations</small>
         </div>
     </div>
-    </div>
+    </div></div>
     `;
     
     // Find where to insert the bonuses section - after Power Comparison card
