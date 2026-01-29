@@ -463,7 +463,6 @@ function displayResults() {
     }
 }
 
-// Display bonuses in results
 function displayBonusesInResults() {
     // First, remove any existing bonuses section
     const existingBonusesSection = document.querySelector('.bonuses-section');
@@ -487,18 +486,9 @@ function displayBonusesInResults() {
         return; // No bonuses to display
     }
     
-    // Find where to insert the bonuses section
-    const battleSummaryCard = document.querySelector('#step4 .col-md-4 .card:first-child .card-body');
-    
-    if (!battleSummaryCard) {
-        console.error('Battle Summary card not found');
-        return;
-    }
-    
     // Create bonuses HTML
     let bonusesHTML = `
-        <div class="card-body" style="padding-top: 0rem !important;">
-        <div class="bonuses-breakdown-section mt-3">
+        <div class="bonuses-section mt-3">
             <h6 class="mb-2"><i class="fas fa-chart-pie me-2 text-info"></i>Applied Bonuses</h6>
     `;
     
@@ -508,9 +498,10 @@ function displayBonusesInResults() {
         const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
         
         if (strengthTotal > 0 || healthTotal > 0) {
+            const categoryName = formatCategoryName(category);
             bonusesHTML += `
                 <div class="mb-1">
-                    <small><strong>${formatCategoryName(category)}:</strong></small>
+                    <small><strong>${categoryName}:</strong></small>
                     <div class="d-flex justify-content-between">
                         <span class="badge bg-warning bg-opacity-75 text-dark">+${strengthTotal.toFixed(1)}% Str</span>
                         <span class="badge bg-danger bg-opacity-75 text-dark">+${healthTotal.toFixed(1)}% HP</span>
@@ -522,19 +513,22 @@ function displayBonusesInResults() {
     
     bonusesHTML += `
         <div class="alert alert-info p-2 mt-2 mb-0">
-            <small><i class="fas fa-info-circle me-1"></i>Bonuses are applied to all troop stats</small>
+            <small><i class="fas fa-info-circle me-1"></i>Bonuses applied to all troop stats in calculations</small>
         </div>
-    </div>
     </div>
     `;
     
-    // Insert before the Power Comparison card
-    const powerComparisonCard = battleSummaryCard.parentNode.nextElementSibling;
-    if (powerComparisonCard && powerComparisonCard.classList.contains('card')) {
-        battleSummaryCard.parentNode.insertAdjacentHTML('beforeend', bonusesHTML);
+    // Find where to insert the bonuses section - after Power Comparison card
+    const powerComparisonCard = document.querySelector('#step4 .col-md-4 .card:nth-child(2)');
+    if (powerComparisonCard) {
+        // Insert after the Power Comparison card
+        powerComparisonCard.insertAdjacentHTML('afterend', bonusesHTML);
     } else {
-        // Fallback: append to battle summary card
-        battleSummaryCard.insertAdjacentHTML('beforeend', bonusesHTML);
+        // Fallback: insert in the right column
+        const rightColumn = document.querySelector('#step4 .col-md-4');
+        if (rightColumn) {
+            rightColumn.insertAdjacentHTML('beforeend', bonusesHTML);
+        }
     }
 }
 
