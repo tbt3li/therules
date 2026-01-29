@@ -180,7 +180,7 @@
         .recommendation-box {
             background-color: #e8f4ff;
             border-left: 4px solid var(--primary-color);
-            padding: 15px;
+            padding: 5px;
             border-radius: 0 8px 8px 0;
             margin: 15px 0;
         }
@@ -254,3 +254,4 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
+
