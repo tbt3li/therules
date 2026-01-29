@@ -494,6 +494,7 @@ function displayBonusesInResults() {
     
     // Create bonuses HTML
     let bonusesHTML = `
+        <div class="card-body">
         <div class="bonuses-breakdown-section mt-3">
             <h6 class="mb-2"><i class="fas fa-chart-pie me-2 text-info"></i>Applied Bonuses</h6>
     `;
@@ -520,6 +521,7 @@ function displayBonusesInResults() {
         <div class="alert alert-info p-2 mt-2 mb-0">
             <small><i class="fas fa-info-circle me-1"></i>Bonuses are applied to all troop stats</small>
         </div>
+    </div>
     </div>
     `;
     
