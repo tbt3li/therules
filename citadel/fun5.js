@@ -465,6 +465,12 @@ function displayResults() {
 
 // Display bonuses in results
 function displayBonusesInResults() {
+    // First, remove any existing bonuses section
+    const existingBonusesSection = document.querySelector('.bonuses-section');
+    if (existingBonusesSection) {
+        existingBonusesSection.remove();
+    }
+    
     // Check if there are any bonuses to display
     let hasBonuses = false;
     for (const category in armyBonuses) {
