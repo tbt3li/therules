@@ -137,14 +137,14 @@ function displayCitadelDetails(defenders) {
         extraDamageDiv.innerHTML = `
             <div class="col-12">
                 <p class="mt-2 text-muted alert alert-info mt-3">
-                    <small>We'll avoid using those troop types that citadel deal extra damage in our attack.</small>
+                    <small>We'll avoid using those troop types that citadel deal extra damage in attack.</small>
                 </p>
             </div>
         `;
     } else {
         extraDamageDiv.innerHTML = `
             <div class="col-12">
-                <p class="text-muted"><small>We'll avoid using those troop types that citadel deal extra damage in our attack.</small></p>
+                <p class="text-muted"><small>We'll avoid using those troop types that citadel deal extra damage in attack.</small></p>
             </div>
         `;
     }
