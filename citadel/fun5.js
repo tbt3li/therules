@@ -710,13 +710,24 @@ function updateBonusSummary() {
     for (const category in armyBonuses) {
         const strengthTotal = armyBonuses[category].strength.reduce((a, b) => a + b, 0);
         const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
+        const categoryTotal = strengthTotal + healthTotal;
         const entryCount = armyBonuses[category].strength.length;
         
+        // Determine row class based on category total
+        let rowClass = '';
+        if (categoryTotal === 0) {
+            rowClass = 'table-danger';
+        } else if (categoryTotal < 10) {
+            rowClass = 'table-warning';
+        } else {
+            rowClass = 'table-success';
+        }
+        
         html += `
-            <tr>
+            <tr class="${rowClass}">
                 <td><strong>${formatCategoryName(category)}</strong></td>
-                <td><span class="badge bg-warning">+${strengthTotal.toFixed(1)}%</span></td>
-                <td><span class="badge bg-danger">+${healthTotal.toFixed(1)}%</span></td>
+                <td><span class="badge ${strengthTotal > 0 ? 'bg-warning' : 'bg-secondary'}">+${strengthTotal.toFixed(1)}%</span></td>
+                <td><span class="badge ${healthTotal > 0 ? 'bg-danger' : 'bg-secondary'}">+${healthTotal.toFixed(1)}%</span></td>
                 <td>${entryCount} entries</td>
             </tr>
         `;
@@ -902,19 +913,55 @@ function updateBonusSummaryDisplay() {
         const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
         const categoryTotal = strengthTotal + healthTotal;
         
+        // Update display
         document.getElementById(`${category}-strength-display`).textContent = `${strengthTotal.toFixed(1)}%`;
         document.getElementById(`${category}-health-display`).textContent = `${healthTotal.toFixed(1)}%`;
         document.getElementById(`${category}-total-display`).textContent = `${categoryTotal.toFixed(1)}%`;
         
-        // Style based on value
+        // Get the table row for this category
+        const tableRow = document.querySelector(`#bonus-summary-display tr:has(td#${category}-strength-display)`);
+        
+        if (tableRow) {
+            // Remove previous styling
+            tableRow.classList.remove('table-danger', 'table-warning', 'table-success');
+            
+            // Apply styling based on category total
+            if (categoryTotal === 0) {
+                // Red background for 0% total
+                tableRow.classList.add('table-danger');
+                
+                // Add warning icon
+                const firstTd = tableRow.querySelector('td:first-child');
+                if (!firstTd.querySelector('.fa-exclamation-circle')) {
+                    firstTd.innerHTML = `<i class="fas fa-exclamation-circle me-2 text-danger"></i>${firstTd.textContent}`;
+                }
+            } else if (categoryTotal < 10) {
+                // Yellow background for low bonuses (<10%)
+                tableRow.classList.add('table-warning');
+            } else {
+                // Green background for good bonuses (>=10%)
+                tableRow.classList.add('table-success');
+            }
+        }
+        
+        // Style individual cells
+        const strengthEl = document.getElementById(`${category}-strength-display`);
+        const healthEl = document.getElementById(`${category}-health-display`);
+        const totalEl = document.getElementById(`${category}-total-display`);
+        
+        // Reset classes
+        strengthEl.className = '';
+        healthEl.className = '';
+        totalEl.className = '';
+        
         if (strengthTotal > 0) {
-            document.getElementById(`${category}-strength-display`).classList.add('text-warning', 'fw-bold');
+            strengthEl.classList.add('text-warning', 'fw-bold');
         }
         if (healthTotal > 0) {
-            document.getElementById(`${category}-health-display`).classList.add('text-danger', 'fw-bold');
+            healthEl.classList.add('text-danger', 'fw-bold');
         }
         if (categoryTotal > 0) {
-            document.getElementById(`${category}-total-display`).classList.add('text-success', 'fw-bold');
+            totalEl.classList.add('text-success', 'fw-bold');
         }
         
         totalStrength += strengthTotal;
@@ -926,15 +973,39 @@ function updateBonusSummaryDisplay() {
     document.getElementById('total-health-display').textContent = `${totalHealth.toFixed(1)}%`;
     document.getElementById('grand-total-display').textContent = `${(totalStrength + totalHealth).toFixed(1)}%`;
     
-    // Style overall totals
+    // Style overall totals row
+    const totalRow = document.querySelector('#bonus-summary-display tfoot tr');
+    if (totalRow) {
+        totalRow.classList.remove('table-danger', 'table-warning', 'table-success');
+        
+        const grandTotal = totalStrength + totalHealth;
+        if (grandTotal === 0) {
+            totalRow.classList.add('table-danger');
+        } else if (grandTotal < 10) {
+            totalRow.classList.add('table-warning');
+        } else {
+            totalRow.classList.add('table-success');
+        }
+    }
+    
+    // Style overall total cells
+    const totalStrengthEl = document.getElementById('total-strength-display');
+    const totalHealthEl = document.getElementById('total-health-display');
+    const grandTotalEl = document.getElementById('grand-total-display');
+    
+    // Reset classes
+    totalStrengthEl.className = '';
+    totalHealthEl.className = '';
+    grandTotalEl.className = '';
+    
     if (totalStrength > 0) {
-        document.getElementById('total-strength-display').classList.add('text-warning', 'fw-bold');
+        totalStrengthEl.classList.add('text-warning', 'fw-bold');
     }
     if (totalHealth > 0) {
-        document.getElementById('total-health-display').classList.add('text-danger', 'fw-bold');
+        totalHealthEl.classList.add('text-danger', 'fw-bold');
     }
     if ((totalStrength + totalHealth) > 0) {
-        document.getElementById('grand-total-display').classList.add('text-success', 'fw-bold');
+        grandTotalEl.classList.add('text-success', 'fw-bold');
     }
 }
 
