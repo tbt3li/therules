@@ -845,15 +845,10 @@ function loadBonusConfig() {
     if (saved) {
         armyBonuses = JSON.parse(saved);
         updateBonusSummary();
-        updateBonusSummaryDisplay();
+        updateBonusSummaryDisplay(); // This will highlight rows
         
         // Check if loaded bonuses are actually 0%
-        const totalStrengthDisplay = document.getElementById('total-strength-display').textContent;
-        const totalHealthDisplay = document.getElementById('total-health-display').textContent;
         const grandTotalDisplay = document.getElementById('grand-total-display').textContent;
-        
-        const totalStrengthValue = parseFloat(totalStrengthDisplay.replace('%', '')) || 0;
-        const totalHealthValue = parseFloat(totalHealthDisplay.replace('%', '')) || 0;
         const grandTotalValue = parseFloat(grandTotalDisplay.replace('%', '')) || 0;
         
         if (grandTotalValue === 0) {
@@ -870,6 +865,9 @@ function loadBonusConfig() {
             updateBonusSummary();
             updateBonusSummaryDisplay();
         }
+    } else {
+        // Initialize with default empty values and highlight
+        updateBonusSummaryDisplay();
     }
 }
 
@@ -1030,6 +1028,7 @@ function initializeSavedBonusRows() {
     });
     
     updateBonusSummary();
+    updateBonusSummaryDisplay(); // Make sure to call this to highlight rows
 }
 
 function loadSavedBonusValuesForCategory(category) {
