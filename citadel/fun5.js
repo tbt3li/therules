@@ -495,12 +495,6 @@ function displayBonusesInResults() {
         return;
     }
     
-    // Remove any existing bonuses section
-    const existingBonusesSection = battleSummaryCard.querySelector('.bonuses-breakdown-section');
-    if (existingBonusesSection) {
-        existingBonusesSection.remove();
-    }
-    
     // Create bonuses HTML
     let bonusesHTML = `
         <div class="card-body" style="padding-top: 0rem !important;">
