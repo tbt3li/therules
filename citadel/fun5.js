@@ -234,16 +234,21 @@ function goToStep2() {
 
 function goToStep3() {
     // Validate all army levels are selected
-    const missing = [];
+    const missingArmyLevels = [];
     Object.keys(selectedArmyLevels).forEach(type => {
         if (selectedArmyLevels[type] === null) {
-            missing.push(type);
+            missingArmyLevels.push(type);
         }
     });
     
-    if (missing.length > 0) {
-        alert(`Please select levels for: ${missing.join(', ')}`);
+    if (missingArmyLevels.length > 0) {
+        alert(`Please select levels for: ${missingArmyLevels.join(', ')}`);
         return;
+    }
+    
+    // STRICT VALIDATION: Check if ALL categories have bonuses
+    if (!validateAllBonusesBeforeProceed()) {
+        return; // Don't proceed to calculation
     }
     
     changeStep(3);
@@ -727,12 +732,16 @@ function saveBonusConfig() {
     }
     
     const categories = ['army', 'research', 'monsters', 'guard', 'specialist', 'engineer'];
+    const missingCategories = [];
     
     categories.forEach(category => {
+        let categoryHasBonus = false;
+        
         document.querySelectorAll(`.${category}-strength`).forEach(input => {
             const value = parseFloat(input.value) || 0;
             if (value > 0) {
                 armyBonuses[category].strength.push(value);
+                categoryHasBonus = true;
             }
         });
         
@@ -740,12 +749,63 @@ function saveBonusConfig() {
             const value = parseFloat(input.value) || 0;
             if (value > 0) {
                 armyBonuses[category].health.push(value);
+                categoryHasBonus = true;
             }
         });
+        
+        if (!categoryHasBonus) {
+            missingCategories.push(formatCategoryName(category));
+        }
     });
     
+    // Update displays
     updateBonusSummary();
     updateBonusSummaryDisplay();
+    
+    // Check if any categories are missing bonuses
+    if (missingCategories.length > 0) {
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        document.getElementById('infoModalBody').innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Some categories have no bonuses!</strong>
+                <br><br>
+                <strong>Missing bonuses in:</strong>
+                <br>
+                ${missingCategories.join(', ')}
+                <br><br>
+                <small>Each category must have at least one bonus value greater than 0%.</small>
+                <br>
+                <small>If you have no bonuses in a category, you can enter 0.1% as a minimum.</small>
+                <br><br>
+                <button class="btn btn-sm btn-outline-secondary" onclick="fillMinimumBonuses()">
+                    <i class="fas fa-magic me-1"></i>Fill 0.1% minimum in empty categories
+                </button>
+            </div>
+        `;
+        infoModal.show();
+        return; // Don't save until all categories have bonuses
+    }
+    
+    // Check overall total
+    const grandTotalDisplay = document.getElementById('grand-total-display').textContent;
+    const grandTotalValue = parseFloat(grandTotalDisplay.replace('%', '')) || 0;
+    
+    if (grandTotalValue === 0) {
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        document.getElementById('infoModalBody').innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Total Bonuses is 0%!</strong>
+                <br><br>
+                The sum of all bonuses across all categories is 0%.
+                <br><br>
+                <strong>Please enter positive bonus values in at least some categories.</strong>
+            </div>
+        `;
+        infoModal.show();
+        return;
+    }
     
     // Save to localStorage
     localStorage.setItem('armyBonuses', JSON.stringify(armyBonuses));
@@ -759,7 +819,11 @@ function saveBonusConfig() {
     document.getElementById('infoModalBody').innerHTML = `
         <div class="alert alert-success">
             <i class="fas fa-check-circle me-2"></i>
-            Bonuses have been saved successfully! They will be applied in your next calculation.
+            <strong>All Bonuses Saved Successfully!</strong>
+            <br><br>
+            <small>All 6 categories now have bonuses configured.</small>
+            <br>
+            <small>You can now proceed with the calculation.</small>
         </div>
     `;
     infoModal.show();
@@ -771,6 +835,30 @@ function loadBonusConfig() {
         armyBonuses = JSON.parse(saved);
         updateBonusSummary();
         updateBonusSummaryDisplay();
+        
+        // Check if loaded bonuses are actually 0%
+        const totalStrengthDisplay = document.getElementById('total-strength-display').textContent;
+        const totalHealthDisplay = document.getElementById('total-health-display').textContent;
+        const grandTotalDisplay = document.getElementById('grand-total-display').textContent;
+        
+        const totalStrengthValue = parseFloat(totalStrengthDisplay.replace('%', '')) || 0;
+        const totalHealthValue = parseFloat(totalHealthDisplay.replace('%', '')) || 0;
+        const grandTotalValue = parseFloat(grandTotalDisplay.replace('%', '')) || 0;
+        
+        if (grandTotalValue === 0) {
+            // Clear empty bonuses
+            localStorage.removeItem('armyBonuses');
+            armyBonuses = {
+                army: { strength: [], health: [] },
+                research: { strength: [], health: [] },
+                monsters: { strength: [], health: [] },
+                guard: { strength: [], health: [] },
+                specialist: { strength: [], health: [] },
+                engineer: { strength: [], health: [] }
+            };
+            updateBonusSummary();
+            updateBonusSummaryDisplay();
+        }
     }
 }
 
@@ -916,4 +1004,202 @@ function showCitadelLoading() {
     
     // Make sure the details section is visible
     document.getElementById('citadel-details').classList.remove('hidden');
+}
+
+// Function to check if any bonuses are entered
+function hasBonusesEntered() {
+    for (const category in armyBonuses) {
+        const strengthTotal = armyBonuses[category].strength.reduce((a, b) => a + b, 0);
+        const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
+        
+        // Check if either strength or health has a positive value
+        if (strengthTotal > 0 || healthTotal > 0) {
+            return true;
+        }
+    }
+    
+    // Also check the total display in the summary table
+    const totalStrengthDisplay = document.getElementById('total-strength-display').textContent;
+    const totalHealthDisplay = document.getElementById('total-health-display').textContent;
+    
+    const totalStrengthValue = parseFloat(totalStrengthDisplay.replace('%', '')) || 0;
+    const totalHealthValue = parseFloat(totalHealthDisplay.replace('%', '')) || 0;
+    
+    return (totalStrengthValue > 0 || totalHealthValue > 0);
+}
+
+// Function to validate bonuses before proceeding
+function validateBonusesBeforeProceed() {
+    const missingCategories = [];
+    const categories = {
+        'army': 'Army (General)',
+        'research': 'Research',
+        'monsters': 'Monsters',
+        'guard': 'Guard',
+        'specialist': 'Specialist',
+        'engineer': 'Engineer'
+    };
+    
+    // Check each category
+    for (const category in categories) {
+        const strengthTotal = armyBonuses[category].strength.reduce((a, b) => a + b, 0);
+        const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
+        
+        if (strengthTotal === 0 && healthTotal === 0) {
+            missingCategories.push(categories[category]);
+        }
+    }
+    
+    // Check overall totals
+    const totalStrengthDisplay = document.getElementById('total-strength-display').textContent;
+    const totalHealthDisplay = document.getElementById('total-health-display').textContent;
+    const grandTotalDisplay = document.getElementById('grand-total-display').textContent;
+    
+    const totalStrengthValue = parseFloat(totalStrengthDisplay.replace('%', '')) || 0;
+    const totalHealthValue = parseFloat(totalHealthDisplay.replace('%', '')) || 0;
+    const grandTotalValue = parseFloat(grandTotalDisplay.replace('%', '')) || 0;
+    
+    if (grandTotalValue === 0) {
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        document.getElementById('infoModalBody').innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>No Bonuses Configured!</strong>
+                <br><br>
+                <strong>Total Bonuses: 0%</strong>
+                <br>
+                You haven't entered any bonuses yet.
+                <br><br>
+                <small>Categories without bonuses: ${missingCategories.join(', ') || 'All categories'}</small>
+                <br><br>
+                <strong>Please enter bonuses for at least one category before proceeding.</strong>
+                <br>
+                <small>If you truly have no bonuses, click "Skip Bonuses" to proceed with base calculations.</small>
+            </div>
+        `;
+        infoModal.show();
+        return false;
+    }
+    
+    return true;
+}
+
+// Function to check if ALL required categories have bonuses
+function areAllCategoriesWithBonuses() {
+    const requiredCategories = ['army', 'research', 'monsters', 'guard', 'specialist', 'engineer'];
+    const missingCategories = [];
+    
+    for (const category of requiredCategories) {
+        const strengthTotal = armyBonuses[category].strength.reduce((a, b) => a + b, 0);
+        const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
+        const categoryTotal = strengthTotal + healthTotal;
+        
+        if (categoryTotal === 0) {
+            missingCategories.push(formatCategoryName(category));
+        }
+    }
+    
+    return {
+        allValid: missingCategories.length === 0,
+        missingCategories: missingCategories
+    };
+}
+
+// Function to check if ANY bonuses are entered (for backward compatibility)
+function hasBonusesEntered() {
+    const validation = areAllCategoriesWithBonuses();
+    return validation.allValid;
+}
+
+
+// Strict validation - ALL categories must have bonuses
+function validateAllBonusesBeforeProceed() {
+    const validation = areAllCategoriesWithBonuses();
+    
+    if (!validation.allValid) {
+        // Show which categories are missing bonuses
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        document.getElementById('infoModalBody').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>Missing Bonuses in Some Categories!</strong>
+                <br><br>
+                <strong>The following categories have 0% bonuses:</strong>
+                <br>
+                <ul class="mb-2">
+                    ${validation.missingCategories.map(cat => `<li><strong>${cat}</strong></li>`).join('')}
+                </ul>
+                <br>
+                <strong>Please enter bonuses for ALL categories before proceeding.</strong>
+                <br><br>
+                <small>Each category must have at least one bonus value greater than 0%.</small>
+                <br>
+                <small>If you truly have no bonuses in a category, enter 0.1% as a minimum.</small>
+            </div>
+        `;
+        infoModal.show();
+        
+        // Automatically open the bonuses modal to fix missing categories
+        setTimeout(() => {
+            const bonusModal = new bootstrap.Modal(document.getElementById('extraPowerModal'));
+            bonusModal.show();
+        }, 1000);
+        
+        return false;
+    }
+    
+    // Also check overall total
+    const grandTotalDisplay = document.getElementById('grand-total-display').textContent;
+    const grandTotalValue = parseFloat(grandTotalDisplay.replace('%', '')) || 0;
+    
+    if (grandTotalValue === 0) {
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        document.getElementById('infoModalBody').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>Total Bonuses is 0%!</strong>
+                <br><br>
+                The sum of all bonuses across all categories is 0%.
+                <br><br>
+                <strong>Please enter positive bonus values in at least some categories.</strong>
+            </div>
+        `;
+        infoModal.show();
+        return false;
+    }
+    
+    return true;
+}
+
+// Helper function to fill minimum bonuses in empty categories
+function fillMinimumBonuses() {
+    const categories = ['army', 'research', 'monsters', 'guard', 'specialist', 'engineer'];
+    
+    categories.forEach(category => {
+        const strengthInputs = document.querySelectorAll(`.${category}-strength`);
+        const healthInputs = document.querySelectorAll(`.${category}-health`);
+        
+        // Check if all inputs are 0 for this category
+        let allZero = true;
+        strengthInputs.forEach(input => {
+            if (parseFloat(input.value) > 0) allZero = false;
+        });
+        healthInputs.forEach(input => {
+            if (parseFloat(input.value) > 0) allZero = false;
+        });
+        
+        // If all are zero, set minimum value in first strength input
+        if (allZero && strengthInputs.length > 0) {
+            strengthInputs[0].value = '0.1';
+        }
+    });
+    
+    // Close current modal and re-save
+    const currentModal = bootstrap.Modal.getInstance(document.getElementById('infoModal'));
+    if (currentModal) currentModal.hide();
+    
+    // Save with the new minimum values
+    setTimeout(() => {
+        saveBonusConfig();
+    }, 500);
 }
