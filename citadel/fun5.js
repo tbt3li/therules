@@ -1,4 +1,4 @@
-// fun5.js - Updated for Cloudflare Worker Integration
+
 let currentStep = 1;
 let selectedCitadelLevel = null;
 let selectedArmyLevels = {
@@ -21,7 +21,6 @@ let citadelTotals = { strength: 0, health: 0, power: 0 };
 let extraDamageTypes = [];
 let recommendedArmy = [];
 
-// Your Cloudflare Worker URL
 const WORKER_URL = 'https://citadel.t3li.workers.dev/';
 
 // Initialize the application
@@ -400,6 +399,13 @@ function displayResults() {
             displayName = `${troop.type} L${troop.level} (${troop.category})`;
         }
         
+        // Check if troop has bonus information
+        const hasBonusInfo = troop.baseStrength && troop.baseHealth;
+        const strengthBonus = hasBonusInfo ? 
+            ((troop.strength / troop.baseStrength - 1) * 100).toFixed(1) : '0.0';
+        const healthBonus = hasBonusInfo ? 
+            ((troop.health / troop.baseHealth - 1) * 100).toFixed(1) : '0.0';
+        
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${displayName}</td>
@@ -430,6 +436,9 @@ function displayResults() {
     const engineers = recommendedArmy.find(t => t.type === 'Engineer');
     document.getElementById('result-engineers').textContent = engineers ? engineers.quantity.toLocaleString() : '0';
     
+    // Display bonuses breakdown in results
+    displayBonusesInResults();
+    
     // Update outcome prediction
     const outcomeElement = document.getElementById('outcome-prediction');
     if (parseFloat(powerComparison) >= 50) {
@@ -448,6 +457,79 @@ function displayResults() {
         outcomeElement.innerHTML = `<span class="comparison-negative">Low chance of victory. Your army is underpowered for this citadel.</span> Consider attacking a lower level citadel or significantly increasing your army.`;
         document.getElementById('strategy-success').className = 'badge bg-danger';
         document.getElementById('strategy-success').textContent = 'Poor';
+    }
+}
+
+// Display bonuses in results
+function displayBonusesInResults() {
+    // Check if there are any bonuses to display
+    let hasBonuses = false;
+    for (const category in armyBonuses) {
+        const strengthTotal = armyBonuses[category].strength.reduce((a, b) => a + b, 0);
+        const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
+        
+        if (strengthTotal > 0 || healthTotal > 0) {
+            hasBonuses = true;
+            break;
+        }
+    }
+    
+    if (!hasBonuses) {
+        return; // No bonuses to display
+    }
+    
+    // Find where to insert the bonuses section
+    const battleSummaryCard = document.querySelector('#step4 .col-md-4 .card:first-child .card-body');
+    
+    if (!battleSummaryCard) {
+        console.error('Battle Summary card not found');
+        return;
+    }
+    
+    // Remove any existing bonuses section
+    const existingBonusesSection = battleSummaryCard.querySelector('.bonuses-breakdown-section');
+    if (existingBonusesSection) {
+        existingBonusesSection.remove();
+    }
+    
+    // Create bonuses HTML
+    let bonusesHTML = `
+        <div class="bonuses-breakdown-section mt-3">
+            <h6 class="mb-2"><i class="fas fa-chart-pie me-2 text-info"></i>Applied Bonuses</h6>
+    `;
+    
+    // Add each category with bonuses
+    for (const category in armyBonuses) {
+        const strengthTotal = armyBonuses[category].strength.reduce((a, b) => a + b, 0);
+        const healthTotal = armyBonuses[category].health.reduce((a, b) => a + b, 0);
+        
+        if (strengthTotal > 0 || healthTotal > 0) {
+            bonusesHTML += `
+                <div class="mb-1">
+                    <small><strong>${formatCategoryName(category)}:</strong></small>
+                    <div class="d-flex justify-content-between">
+                        <span class="badge bg-warning bg-opacity-75 text-dark">+${strengthTotal.toFixed(1)}% Str</span>
+                        <span class="badge bg-danger bg-opacity-75 text-dark">+${healthTotal.toFixed(1)}% HP</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    bonusesHTML += `
+        <div class="alert alert-info p-2 mt-2 mb-0">
+            <small><i class="fas fa-info-circle me-1"></i>Bonuses are applied to all troop stats</small>
+        </div>
+    </div>
+    `;
+    
+    // Insert before the Power Comparison card
+    const powerComparisonCard = battleSummaryCard.parentNode.nextElementSibling;
+    if (powerComparisonCard && powerComparisonCard.classList.contains('card')) {
+        battleSummaryCard.parentNode.insertAdjacentHTML('beforeend', bonusesHTML);
+    } else {
+        // Fallback: append to battle summary card
+        battleSummaryCard.insertAdjacentHTML('beforeend', bonusesHTML);
     }
 }
 
@@ -488,7 +570,7 @@ function restartCalculation() {
     changeStep(1);
 }
 
-// Bonus management functions (remain the same as before)
+// Bonus management functions
 function addBonusRow(category) {
     const strengthInputs = document.querySelectorAll(`.${category}-strength`);
     const nextIndex = strengthInputs.length + 1;
@@ -656,6 +738,16 @@ function saveBonusConfig() {
     // Close modal
     const modal = bootstrap.Modal.getInstance(document.getElementById('extraPowerModal'));
     if (modal) modal.hide();
+    
+    // Show success message
+    const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+    document.getElementById('infoModalBody').innerHTML = `
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i>
+            Bonuses have been saved successfully! They will be applied in your next calculation.
+        </div>
+    `;
+    infoModal.show();
 }
 
 function loadBonusConfig() {
@@ -711,13 +803,36 @@ function updateBonusSummaryDisplay() {
         document.getElementById(`${category}-health-display`).textContent = `${healthTotal.toFixed(1)}%`;
         document.getElementById(`${category}-total-display`).textContent = `${categoryTotal.toFixed(1)}%`;
         
+        // Style based on value
+        if (strengthTotal > 0) {
+            document.getElementById(`${category}-strength-display`).classList.add('text-warning', 'fw-bold');
+        }
+        if (healthTotal > 0) {
+            document.getElementById(`${category}-health-display`).classList.add('text-danger', 'fw-bold');
+        }
+        if (categoryTotal > 0) {
+            document.getElementById(`${category}-total-display`).classList.add('text-success', 'fw-bold');
+        }
+        
         totalStrength += strengthTotal;
         totalHealth += healthTotal;
     }
     
+    // Update overall totals
     document.getElementById('total-strength-display').textContent = `${totalStrength.toFixed(1)}%`;
     document.getElementById('total-health-display').textContent = `${totalHealth.toFixed(1)}%`;
     document.getElementById('grand-total-display').textContent = `${(totalStrength + totalHealth).toFixed(1)}%`;
+    
+    // Style overall totals
+    if (totalStrength > 0) {
+        document.getElementById('total-strength-display').classList.add('text-warning', 'fw-bold');
+    }
+    if (totalHealth > 0) {
+        document.getElementById('total-health-display').classList.add('text-danger', 'fw-bold');
+    }
+    if ((totalStrength + totalHealth) > 0) {
+        document.getElementById('grand-total-display').classList.add('text-success', 'fw-bold');
+    }
 }
 
 function initializeSavedBonusRows() {
