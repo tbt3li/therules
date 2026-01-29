@@ -494,7 +494,7 @@ function displayBonusesInResults() {
     
     // Create bonuses HTML
     let bonusesHTML = `
-        <div class="card-body" style="padding-top: 0rem !important;">
+        <hr><div class="card-body" style="padding-top: 0rem !important;">
         <div class="bonuses-breakdown-section mt-3">
             <h6 class="mb-2"><i class="fas fa-chart-pie me-2 text-info"></i>Applied Bonuses</h6>
     `;
