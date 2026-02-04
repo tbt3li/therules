@@ -2,126 +2,112 @@
 <html>
 <head>
     <title>Family Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            max-width: 400px; 
-            margin: 50px auto; 
-            padding: 20px; 
-        }
-        input, button { 
-            width: 100%; 
-            padding: 10px; 
-            margin: 10px 0; 
-            border-radius: 5px; 
-            border: 1px solid #ddd; 
-        }
-        button { 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-        }
-        button:hover { background: #0056b3; }
-        .tab { 
-            cursor: pointer; 
-            padding: 10px; 
-            display: inline-block; 
-        }
-        .active { 
-            border-bottom: 3px solid #007bff; 
-            font-weight: bold; 
-        }
-        .message { 
-            padding: 10px; 
-            margin: 10px 0; 
-            border-radius: 5px; 
-            display: none; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: white; border-radius: 10px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        .tabs { display: flex; margin-bottom: 20px; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-bottom: 2px solid #ddd; }
+        .tab.active { border-bottom: 2px solid #667eea; font-weight: bold; color: #667eea; }
+        .form { display: none; }
+        .form.active { display: block; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #5a67d8; }
+        .message { padding: 10px; margin: 10px 0; border-radius: 5px; display: none; }
         .success { background: #d4edda; color: #155724; }
         .error { background: #f8d7da; color: #721c24; }
+        .dashboard { display: none; text-align: center; }
+        .dashboard.active { display: block; }
     </style>
 </head>
 <body>
-    <h1>Family Portal</h1>
-    
-    <!-- Tabs -->
-    <div>
-        <span class="tab active" onclick="showTab('login')">Login</span>
-        <span class="tab" onclick="showTab('signup')">Signup</span>
-    </div>
-
-    <!-- Messages -->
-    <div id="message" class="message"></div>
-
-    <!-- Login Form -->
-    <div id="loginForm">
-        <input type="email" id="loginEmail" placeholder="Email">
-        <input type="password" id="loginPassword" placeholder="Password">
-        <button onclick="login()">Login</button>
-    </div>
-
-    <!-- Signup Form -->
-    <div id="signupForm" style="display:none;">
-        <input type="text" id="signupName" placeholder="Full Name">
-        <input type="email" id="signupEmail" placeholder="Email">
-        <input type="password" id="signupPassword" placeholder="Password">
-        <button onclick="signup()">Sign Up</button>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboard" style="display:none;">
-        <h2>Welcome, <span id="userName"></span>!</h2>
-        <p>Email: <span id="userEmail"></span></p>
-        <button onclick="logout()">Logout</button>
+    <div class="container">
+        <h1>Family Portal</h1>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('login')">Login</div>
+            <div class="tab" onclick="showTab('signup')">Signup</div>
+        </div>
+        
+        <!-- Message -->
+        <div id="message" class="message"></div>
+        
+        <!-- Login Form -->
+        <form id="loginForm" class="form active" onsubmit="event.preventDefault(); login();">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        
+        <!-- Signup Form -->
+        <form id="signupForm" class="form" onsubmit="event.preventDefault(); signup();">
+            <input type="text" id="signupName" placeholder="Full Name" required>
+            <input type="email" id="signupEmail" placeholder="Email" required>
+            <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" minlength="6" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <h2>Welcome, <span id="userName"></span>!</h2>
+            <p>Email: <span id="userEmail"></span></p>
+            <button onclick="logout()" style="background:#e53e3e; margin-top:20px;">Logout</button>
+        </div>
     </div>
 
     <script>
-        const API_URL = 'https://login.t3li.workers.dev';
+        const API_URL = 'https://login.t3li.workers.dev/api'; // NOTE: /api prefix!
         let authToken = localStorage.getItem('token');
-
-        // Check login on page load
+        
+        // Check login on load
         if (authToken) {
             checkLogin();
         }
-
-        // Show/hide tabs
+        
         function showTab(tab) {
+            // Update tabs
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             
-            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-            document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+            // Show form
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('signupForm').classList.remove('active');
+            document.getElementById(tab + 'Form').classList.add('active');
+            
+            // Clear message
+            hideMessage();
         }
-
-        // Show message
+        
         function showMessage(text, type) {
             const msg = document.getElementById('message');
             msg.textContent = text;
             msg.className = `message ${type}`;
             msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 3000);
+            setTimeout(() => msg.style.display = 'none', 5000);
         }
-
+        
+        function hideMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+        
         // Signup
         async function signup() {
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
-
-            if (!name || !email || !password) {
-                showMessage('All fields required', 'error');
-                return;
-            }
-
+            
             const response = await fetch(`${API_URL}/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password })
             });
-
+            
             const data = await response.json();
-
+            
             if (data.success) {
                 authToken = data.token;
                 localStorage.setItem('token', authToken);
@@ -131,20 +117,20 @@
                 showMessage(data.error, 'error');
             }
         }
-
+        
         // Login
         async function login() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-
+            
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-
+            
             const data = await response.json();
-
+            
             if (data.success) {
                 authToken = data.token;
                 localStorage.setItem('token', authToken);
@@ -154,15 +140,15 @@
                 showMessage(data.error, 'error');
             }
         }
-
-        // Check login status
+        
+        // Check login
         async function checkLogin() {
             const response = await fetch(`${API_URL}/check`, {
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
-
+            
             const data = await response.json();
-
+            
             if (data.success) {
                 showDashboard(data.user);
             } else {
@@ -170,18 +156,19 @@
                 authToken = null;
             }
         }
-
+        
         // Show dashboard
         function showDashboard(user) {
             document.getElementById('userName').textContent = user.name;
             document.getElementById('userEmail').textContent = user.email;
             
+            // Hide forms, show dashboard
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('signupForm').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.querySelector('.tab').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            document.querySelector('.tabs').style.display = 'none';
         }
-
+        
         // Logout
         async function logout() {
             if (authToken) {
@@ -194,23 +181,19 @@
             localStorage.removeItem('token');
             authToken = null;
             
-            document.getElementById('dashboard').style.display = 'none';
+            // Show login form
+            document.getElementById('dashboard').classList.remove('active');
             document.getElementById('loginForm').style.display = 'block';
-            document.querySelector('.tab').style.display = 'inline-block';
-            
+            document.querySelector('.tabs').style.display = 'flex';
             showTab('login');
+            
+            // Clear form fields
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('signupName').value = '';
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPassword').value = '';
         }
-
-        // Enter key support
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                if (document.getElementById('loginForm').style.display !== 'none') {
-                    login();
-                } else if (document.getElementById('signupForm').style.display !== 'none') {
-                    signup();
-                }
-            }
-        });
     </script>
 </body>
 </html>
