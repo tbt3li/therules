@@ -1,9 +1,4 @@
-# Single page app routing
-/* /dashboard.html 200
-/login /login.html 200
-/dashboard /dashboard.html 200
-
-# Static assets
-/assets/* /assets/:splat 200
-/components/* /components/:splat 200
-/pages/* /pages/:splat 200
+# Cloudflare Pages redirects
+/* /index.html 200
+/login.html /login.html 200
+/dashboard.html /dashboard.html 200
