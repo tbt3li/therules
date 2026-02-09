@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Coming Soon | THE Family Gang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ================ CSS RESET & BASE ================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 50%, #4a69bd 100%);
+            color: white;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* Mobile Safari fix */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+            width: 100vw;
+        }
+
+        /* ================ RESPONSIVE TYPOGRAPHY ================ */
+        :root {
+            --text-scale: 1;
+        }
+
+        /* ================ ANIMATED BACKGROUND ELEMENTS ================ */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .circle-1 {
+            width: min(300px, 40vw);
+            height: min(300px, 40vw);
+            top: -10%;
+            right: -10%;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: min(200px, 30vw);
+            height: min(200px, 30vw);
+            bottom: -5%;
+            left: -5%;
+            animation-delay: 5s;
+        }
+
+        .circle-3 {
+            width: min(150px, 25vw);
+            height: min(150px, 25vw);
+            top: 20%;
+            right: 15%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg) scale(1); 
+            }
+            33% { 
+                transform: translateY(-20px) rotate(120deg) scale(1.05); 
+            }
+            66% { 
+                transform: translateY(20px) rotate(240deg) scale(0.95); 
+            }
+        }
+
+        /* ================ MAIN CONTAINER ================ */
+        .construction-container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            padding: clamp(20px, 5vw, 40px);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border-radius: clamp(20px, 4vw, 30px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
+            animation: containerAppear 1s ease-out;
+            margin: 0 auto;
+        }
+
+        @keyframes containerAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================ LOGO ================ */
+        .logo {
+            margin-bottom: clamp(20px, 4vw, 30px);
+            animation: pulse 2s infinite;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo i {
+            font-size: clamp(50px, 12vw, 80px);
+            color: #f6b93b;
+            text-shadow: 0 0 20px rgba(246, 185, 59, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1); 
+            }
+            50% { 
+                transform: scale(1.05); 
+            }
+        }
+
+        /* ================ TITLE ================ */
+        .title {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: clamp(15px, 3vw, 20px);
+            background: linear-gradient(45deg, #f6b93b, #fad390);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* ================ SUBTITLE ================ */
+        .subtitle {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+            margin-bottom: clamp(10px, 2vw, 15px);
+            font-weight: 300;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* ================ CONSTRUCTION ICON ================ */
+        .construction-icon {
+            margin: clamp(30px, 5vw, 40px) auto;
+            position: relative;
+            height: clamp(100px, 20vw, 150px);
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .gear {
+            font-size: clamp(60px, 15vw, 120px);
+            color: #f6b93b;
+            position: absolute;
+            animation: spin 10s linear infinite;
+        }
+
+        .gear-1 {
+            left: 25%;
+            animation-direction: normal;
+        }
+
+        .gear-2 {
+            right: 25%;
+            animation-direction: reverse;
+            font-size: clamp(45px, 11vw, 90px);
+            top: 30%;
+        }
+
+        .hard-hat {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(40px, 10vw, 80px);
+            color: #e55039;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { 
+                transform: translate(-50%, -50%) translateY(0); 
+            }
+            50% { 
+                transform: translate(-50%, -50%) translateY(-10px); 
+            }
+        }
+
+        /* ================ MESSAGE ================ */
+        .message {
+            font-size: clamp(1rem, 2.8vw, 1.3rem);
+            line-height: 1.6;
+            margin: clamp(20px, 4vw, 30px) 0;
+            padding: 0 clamp(10px, 3vw, 20px);
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .highlight {
+            color: #f6b93b;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        /* ================ COUNTDOWN TIMER ================ */
+        .countdown {
+            margin: clamp(30px, 5vw, 40px) auto;
+            display: flex;
+            justify-content: center;
+            gap: clamp(10px, 2vw, 20px);
+            flex-wrap: wrap;
+            max-width: 500px;
+        }
+
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: clamp(10px, 2vw, 15px);
+            padding: clamp(15px, 3vw, 20px) clamp(10px, 2vw, 15px);
+            min-width: clamp(70px, 15vw, 100px);
+            flex: 1;
+            max-width: 120px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .countdown-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .countdown-number {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 700;
+            color: #f6b93b;
+            display: block;
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: clamp(3px, 1vw, 5px);
+            opacity: 0.8;
+        }
+
+        /* ================ PROGRESS BAR ================ */
+        .progress-container {
+            margin: clamp(30px, 5vw, 40px) auto;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: clamp(8px, 1.5vw, 10px);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .progress-bar {
+            height: clamp(8px, 1.5vw, 10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(90deg, #f6b93b, #e55039);
+            border-radius: 5px;
+            position: relative;
+            animation: progressAnimation 2s ease-in-out infinite;
+        }
+
+        @keyframes progressAnimation {
+            0%, 100% { width: 65%; }
+            50% { width: 68%; }
+        }
+
+        /* ================ HOME BUTTON ================ */
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(8px, 2vw, 12px);
+            background: linear-gradient(45deg, #f6b93b, #e55039);
+            color: white;
+            padding: clamp(14px, 3vw, 18px) clamp(25px, 5vw, 40px);
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: 600;
+            margin-top: clamp(20px, 4vw, 30px);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(246, 185, 59, 0.3);
+            position: relative;
+            overflow: hidden;
+            width: auto;
+            min-width: 200px;
+            max-width: 300px;
+            white-space: nowrap;
+        }
+
+        .home-btn:hover,
+        .home-btn:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(246, 185, 59, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .home-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .home-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s;
+        }
+
+        .home-btn:hover::before,
+        .home-btn:focus::before {
+            left: 100%;
+        }
+
+        .home-btn i {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            transition: transform 0.3s;
+        }
+
+        .home-btn:hover i,
+        .home-btn:focus i {
+            transform: translateX(5px);
+        }
+
+        /* ================ SOCIAL LINKS ================ */
+        .social-links {
+            margin-top: clamp(30px, 5vw, 40px);
+            display: flex;
+            justify-content: center;
+            gap: clamp(15px, 3vw, 20px);
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: clamp(40px, 8vw, 50px);
+            height: clamp(40px, 8vw, 50px);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .social-link:hover,
+        .social-link:focus {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px) rotate(10deg);
+            outline: none;
+        }
+
+        /* ================ FOOTER ================ */
+        .footer {
+            margin-top: clamp(30px, 5vw, 40px);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: clamp(15px, 3vw, 20px);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .footer p {
+            margin-bottom: 5px;
+        }
+
+        /* ================ MOBILE-SPECIFIC ADJUSTMENTS ================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                align-items: flex-start;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+            
+            .construction-container {
+                padding: 25px 20px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .construction-icon {
+                height: clamp(80px, 25vw, 120px);
+                margin: 25px auto;
+            }
+            
+            .gear-1 {
+                left: 20%;
+            }
+            
+            .gear-2 {
+                right: 20%;
+                top: 25%;
+            }
+            
+            .countdown-item {
+                min-width: 22%;
+                flex: 0 0 22%;
+                max-width: none;
+            }
+            
+            .home-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .construction-container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            
+            .title {
+                font-size: clamp(1.8rem, 7vw, 2.2rem);
+                line-height: 1.1;
+            }
+            
+            .subtitle {
+                font-size: clamp(1.1rem, 4vw, 1.3rem);
+            }
+            
+            .construction-icon {
+                height: 70px;
+            }
+            
+            .gear-1 {
+                left: 15%;
+            }
+            
+            .gear-2 {
+                right: 15%;
+                top: 20%;
+            }
+            
+            .countdown {
+                gap: 8px;
+            }
+            
+            .countdown-item {
+                min-width: 45%;
+                flex: 0 0 45%;
+                padding: 12px 8px;
+                margin-bottom: 5px;
+            }
+            
+            .message {
+                padding: 0 5px;
+                line-height: 1.5;
+            }
+            
+            .social-links {
+                gap: 12px;
+            }
+            
+            .social-link {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        /* ================ VERY SMALL PHONES ================ */
+        @media (max-width: 320px) {
+            .construction-container {
+                padding: 15px 10px;
+            }
+            
+            .title {
+                font-size: 1.6rem;
+            }
+            
+            .countdown-item {
+                min-width: 48%;
+                flex: 0 0 48%;
+            }
+            
+            .countdown-number {
+                font-size: 1.8rem;
+            }
+            
+            .home-btn {
+                min-width: 180px;
+                font-size: 0.95rem;
+                padding: 12px 20px;
+            }
+        }
+
+        /* ================ LANDSCAPE MODE ================ */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+            
+            .construction-container {
+                padding: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            .title {
+                margin-bottom: 10px;
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                margin-bottom: 8px;
+                font-size: 1.3rem;
+            }
+            
+            .construction-icon {
+                margin: 20px auto;
+                height: 80px;
+            }
+            
+            .countdown {
+                margin: 20px auto;
+            }
+            
+            .message {
+                margin: 15px 0;
+                font-size: 1rem;
+            }
+        }
+
+        /* ================ DARK MODE SUPPORT ================ */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0a1d3e 0%, #152c5b 50%, #2c3e6d 100%);
+            }
+            
+            .construction-container {
+                background: rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .countdown-item {
+                background: rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        /* ================ TOUCH DEVICE OPTIMIZATIONS ================ */
+        @media (hover: none) and (pointer: coarse) {
+            .home-btn:hover,
+            .social-link:hover,
+            .countdown-item:hover {
+                transform: none;
+            }
+            
+            .home-btn:active,
+            .social-link:active,
+            .countdown-item:active {
+                transform: scale(0.98);
+            }
+            
+            .home-btn::before,
+            .home-btn:hover::before {
+                display: none;
+            }
+        }
+
+        /* ================ HIGH CONTRAST MODE ================ */
+        @media (prefers-contrast: high) {
+            .highlight {
+                color: #ffcc00;
+            }
+            
+            .countdown-number {
+                color: #ffcc00;
+            }
+            
+            .gear, .hard-hat {
+                filter: brightness(1.5);
+            }
+        }
+
+        /* ================ REDUCED MOTION ================ */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            
+            .bg-circle,
+            .logo,
+            .gear,
+            .hard-hat,
+            .progress-fill {
+                animation: none !important;
+            }
+            
+            .home-btn:hover,
+            .social-link:hover,
+            .countdown-item:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ================ PRINT STYLES ================ */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .construction-container {
+                background: white !important;
+                border: 2px solid #ccc !important;
+                box-shadow: none !important;
+                color: black !important;
+            }
+            
+            .title {
+                background: none !important;
+                -webkit-text-fill-color: black !important;
+                color: black !important;
+            }
+            
+            .highlight,
+            .countdown-number {
+                color: black !important;
+            }
+            
+            .home-btn,
+            .social-links,
+            .bg-circle {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="bg-circle circle-3"></div>
+
+    <!-- Main Container -->
+    <div class="construction-container">
+        <!-- Logo -->
+        <div class="logo">
+            <i class="fas fa-chess-knight"></i>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title">UNDER CONSTRUCTION</h1>
+        
+        <!-- Subtitle -->
+        <p class="subtitle">Something Amazing is Coming!</p>
+
+        <!-- Construction Icon -->
+        <div class="construction-icon">
+            <i class="fas fa-cog gear gear-1"></i>
+            <i class="fas fa-cog gear gear-2"></i>
+            <i class="fas fa-hard-hat hard-hat"></i>
+        </div>
+
+        <!-- Message -->
+        <div class="message">
+            <p>We're working hard to bring you an <span class="highlight">incredible experience</span> with premium tutorials, equipment guides, and exclusive clan content.</p>
+            <p style="margin-top: clamp(10px, 2vw, 15px);">This portion is under construction and will be available soon. Stay tuned for the big reveal!</p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="days">00</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">00</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">00</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="seconds">00</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>Development Progress</span>
+                <span>65%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Home Button -->
+        <a href="dashboard.html" class="home-btn">
+            <i class="fas fa-home"></i>
+            Back to Home
+        </a>
+
+        <!-- Social Links -->
+        <div class="social-links">
+            <a href="#" class="social-link" title="Discord" aria-label="Discord">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="#" class="social-link" title="Steam" aria-label="Steam">
+                <i class="fab fa-steam"></i>
+            </a>
+            <a href="#" class="social-link" title="Twitter" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-link" title="Email" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2025 THE Family Gang. All rights reserved. | Premium Clan Access</p>
+            <p style="margin-top: clamp(3px, 1vw, 5px); font-size: clamp(0.7rem, 1.8vw, 0.8rem);">T3li (123.250.832) | Kingdom 123</p>
+        </div>
+    </div>
+
+    <script>
+        // ================ RESPONSIVE JAVASCRIPT ================
+        
+        // Update viewport for mobile devices
+        function setViewportScale() {
+            const viewport = document.querySelector('meta[name="viewport"]');
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile && window.innerWidth <= 768) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            } else {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
+            }
+        }
+        
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const launchDate = new Date();
+            launchDate.setDate(launchDate.getDate() + 30);
+            
+            const distance = launchDate - now;
+            
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.querySelector('.title').textContent = "WE'RE LIVE!";
+                document.querySelector('.subtitle').textContent = "The wait is over!";
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Smooth transitions for countdown numbers
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Progress animation
+        let progress = 65;
+        function animateProgress() {
+            if (progress < 85) {
+                progress += Math.random() * 0.1;
+                if (progress > 85) progress = 85;
+                
+                const progressElement = document.querySelector('.progress-label span:last-child');
+                const progressFill = document.querySelector('.progress-fill');
+                
+                if (progressElement && progressFill) {
+                    progressElement.textContent = Math.floor(progress) + '%';
+                    progressFill.style.width = progress + '%';
+                }
+            }
+        }
+        
+        // Adjust layout for mobile
+        function adjustMobileLayout() {
+            const isMobile = window.innerWidth <= 768;
+            const container = document.querySelector('.construction-container');
+            
+            if (isMobile) {
+                // Optimize for mobile
+                document.body.style.padding = '10px';
+                if (container) {
+                    container.style.marginTop = '10px';
+                }
+                
+                // Adjust countdown layout
+                const countdownItems = document.querySelectorAll('.countdown-item');
+                countdownItems.forEach(item => {
+                    item.style.minWidth = '22%';
+                });
+            }
+        }
+        
+        // Handle orientation change
+        function handleOrientationChange() {
+            adjustMobileLayout();
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        }
+        
+        // Create responsive particles
+        function createResponsiveParticles() {
+            const container = document.querySelector('.construction-container');
+            if (!container) return;
+            
+            // Clear existing particles
+            const existingParticles = container.querySelectorAll('.particle');
+            existingParticles.forEach(p => p.remove());
+            
+            // Create new particles based on screen size
+            const particleCount = window.innerWidth <= 480 ? 8 : 
+                                 window.innerWidth <= 768 ? 12 : 15;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.cssText = `
+                    position: absolute;
+                    width: ${Math.random() * 5 + 2}px;
+                    height: ${Math.random() * 5 + 2}px;
+                    background: rgba(246, 185, 59, 0.5);
+                    border-radius: 50%;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    z-index: 1;
+                    pointer-events: none;
+                    animation: float ${Math.random() * 10 + 10}s infinite ease-in-out;
+                    animation-delay: ${Math.random() * 5}s;
+                `;
+                container.appendChild(particle);
+            }
+        }
+        
+        // Initialize everything
+        function initPage() {
+            setViewportScale();
+            updateCountdown();
+            adjustMobileLayout();
+            createResponsiveParticles();
+            
+            // Set intervals
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            const progressInterval = setInterval(animateProgress, 5000);
+            
+            // Handle resize
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    setViewportScale();
+                    adjustMobileLayout();
+                    createResponsiveParticles();
+                }, 250);
+            });
+            
+            // Handle orientation change
+            window.addEventListener('orientationchange', handleOrientationChange);
+            
+            // Handle page visibility (for mobile browsers)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    updateCountdown();
+                }
+            });
+            
+            // Add touch feedback for mobile
+            if ('ontouchstart' in window) {
+                document.querySelectorAll('.home-btn, .social-link, .countdown-item').forEach(el => {
+                    el.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.95)';
+                    });
+                    
+                    el.addEventListener('touchend', function() {
+                        this.style.transform = '';
+                    });
+                });
+            }
+        }
+        
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', initPage);
+        
+        // Fallback for slow loading
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
