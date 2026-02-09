@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Coming Soon | THE Family Gang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ================ CSS RESET & BASE ================ */
+        /* ================ CSS RESET ================ */
         * {
             margin: 0;
             padding: 0;
@@ -14,31 +14,24 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
+        /* ================ PAGE LAYOUT - NO SCROLL ================ */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
         }
 
         body {
             background: linear-gradient(135deg, #0c2461 0%, #1e3799 50%, #4a69bd 100%);
             color: white;
-            min-height: 100vh;
-            min-height: -webkit-fill-available; /* Mobile Safari fix */
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
             position: relative;
             padding: 20px;
-            width: 100vw;
         }
 
-        /* ================ RESPONSIVE TYPOGRAPHY ================ */
-        :root {
-            --text-scale: 1;
-        }
-
-        /* ================ ANIMATED BACKGROUND ELEMENTS ================ */
+        /* ================ BACKGROUND ELEMENTS ================ */
         .bg-circle {
             position: absolute;
             border-radius: 50%;
@@ -48,134 +41,118 @@
         }
 
         .circle-1 {
-            width: min(300px, 40vw);
-            height: min(300px, 40vw);
-            top: -10%;
-            right: -10%;
-            animation-delay: 0s;
+            width: min(250px, 35vw);
+            height: min(250px, 35vw);
+            top: 5%;
+            right: 5%;
         }
 
         .circle-2 {
-            width: min(200px, 30vw);
-            height: min(200px, 30vw);
-            bottom: -5%;
-            left: -5%;
+            width: min(180px, 25vw);
+            height: min(180px, 25vw);
+            bottom: 5%;
+            left: 5%;
             animation-delay: 5s;
         }
 
-        .circle-3 {
-            width: min(150px, 25vw);
-            height: min(150px, 25vw);
-            top: 20%;
-            right: 15%;
-            animation-delay: 10s;
-        }
-
         @keyframes float {
-            0%, 100% { 
-                transform: translateY(0) rotate(0deg) scale(1); 
-            }
-            33% { 
-                transform: translateY(-20px) rotate(120deg) scale(1.05); 
-            }
-            66% { 
-                transform: translateY(20px) rotate(240deg) scale(0.95); 
-            }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
         }
 
-        /* ================ MAIN CONTAINER ================ */
+        /* ================ MAIN CONTAINER - FITS ONE SCREEN ================ */
         .construction-container {
             text-align: center;
-            max-width: 800px;
+            max-width: 600px;
             width: 100%;
-            padding: clamp(20px, 5vw, 40px);
+            padding: 30px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border-radius: clamp(20px, 4vw, 30px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             position: relative;
             z-index: 10;
-            animation: containerAppear 1s ease-out;
-            margin: 0 auto;
+            animation: appear 0.8s ease-out;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        @keyframes containerAppear {
+        @keyframes appear {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
+        }
+
+        /* ================ CONTENT AREA - FIXED HEIGHT ================ */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
         }
 
         /* ================ LOGO ================ */
         .logo {
-            margin-bottom: clamp(20px, 4vw, 30px);
-            animation: pulse 2s infinite;
-            display: flex;
-            justify-content: center;
+            margin-bottom: 10px;
         }
 
         .logo i {
-            font-size: clamp(50px, 12vw, 80px);
+            font-size: clamp(50px, 10vw, 65px);
             color: #f6b93b;
             text-shadow: 0 0 20px rgba(246, 185, 59, 0.5);
+            animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { 
-                transform: scale(1); 
-            }
-            50% { 
-                transform: scale(1.05); 
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         /* ================ TITLE ================ */
         .title {
-            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-size: clamp(1.8rem, 5vw, 2.2rem);
             font-weight: 800;
-            margin-bottom: clamp(15px, 3vw, 20px);
+            margin-bottom: 5px;
             background: linear-gradient(45deg, #f6b93b, #fad390);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            letter-spacing: 0.5px;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
             line-height: 1.2;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
         }
 
         /* ================ SUBTITLE ================ */
         .subtitle {
-            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
-            margin-bottom: clamp(10px, 2vw, 15px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 15px;
             font-weight: 300;
             opacity: 0.9;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         /* ================ CONSTRUCTION ICON ================ */
         .construction-icon {
-            margin: clamp(30px, 5vw, 40px) auto;
+            margin: 15px 0;
             position: relative;
-            height: clamp(100px, 20vw, 150px);
+            height: clamp(80px, 15vw, 100px);
             width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 300px;
         }
 
         .gear {
-            font-size: clamp(60px, 15vw, 120px);
+            font-size: clamp(50px, 10vw, 70px);
             color: #f6b93b;
             position: absolute;
-            animation: spin 10s linear infinite;
+            animation: spin 8s linear infinite;
         }
 
         .gear-1 {
@@ -186,8 +163,8 @@
         .gear-2 {
             right: 25%;
             animation-direction: reverse;
-            font-size: clamp(45px, 11vw, 90px);
-            top: 30%;
+            font-size: clamp(35px, 8vw, 55px);
+            top: 15px;
         }
 
         .hard-hat {
@@ -195,9 +172,9 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(40px, 10vw, 80px);
+            font-size: clamp(35px, 8vw, 55px);
             color: #e55039;
-            animation: bounce 2s infinite;
+            animation: bounce 1.5s infinite;
         }
 
         @keyframes spin {
@@ -206,263 +183,130 @@
         }
 
         @keyframes bounce {
-            0%, 100% { 
-                transform: translate(-50%, -50%) translateY(0); 
-            }
-            50% { 
-                transform: translate(-50%, -50%) translateY(-10px); 
-            }
+            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-8px); }
         }
 
-        /* ================ MESSAGE ================ */
+        /* ================ MESSAGE - COMPACT ================ */
         .message {
-            font-size: clamp(1rem, 2.8vw, 1.3rem);
-            line-height: 1.6;
-            margin: clamp(20px, 4vw, 30px) 0;
-            padding: 0 clamp(10px, 3vw, 20px);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.4;
+            margin: 10px 0;
+            padding: 0 10px;
             opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 500px;
         }
 
         .highlight {
             color: #f6b93b;
             font-weight: 600;
-            font-style: italic;
         }
 
-        /* ================ COUNTDOWN TIMER ================ */
-        .countdown {
-            margin: clamp(30px, 5vw, 40px) auto;
-            display: flex;
-            justify-content: center;
-            gap: clamp(10px, 2vw, 20px);
-            flex-wrap: wrap;
-            max-width: 500px;
-        }
-
-        .countdown-item {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: clamp(10px, 2vw, 15px);
-            padding: clamp(15px, 3vw, 20px) clamp(10px, 2vw, 15px);
-            min-width: clamp(70px, 15vw, 100px);
-            flex: 1;
-            max-width: 120px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s, background 0.3s;
-        }
-
-        .countdown-item:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .countdown-number {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            font-weight: 700;
-            color: #f6b93b;
-            display: block;
-            line-height: 1;
-        }
-
-        .countdown-label {
-            font-size: clamp(0.7rem, 1.8vw, 0.9rem);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: clamp(3px, 1vw, 5px);
-            opacity: 0.8;
-        }
-
-        /* ================ PROGRESS BAR ================ */
+        /* ================ PROGRESS - COMPACT ================ */
         .progress-container {
-            margin: clamp(30px, 5vw, 40px) auto;
-            max-width: 500px;
+            margin: 10px 0;
             width: 100%;
+            max-width: 300px;
         }
 
         .progress-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: clamp(8px, 1.5vw, 10px);
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            flex-wrap: wrap;
-            gap: 5px;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
         }
 
         .progress-bar {
-            height: clamp(8px, 1.5vw, 10px);
+            height: 6px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            border-radius: 3px;
             overflow: hidden;
-            width: 100%;
         }
 
         .progress-fill {
             height: 100%;
             width: 65%;
             background: linear-gradient(90deg, #f6b93b, #e55039);
-            border-radius: 5px;
-            position: relative;
-            animation: progressAnimation 2s ease-in-out infinite;
+            border-radius: 3px;
+            animation: progress 2s ease-in-out infinite;
         }
 
-        @keyframes progressAnimation {
+        @keyframes progress {
             0%, 100% { width: 65%; }
             50% { width: 68%; }
         }
 
-        /* ================ HOME BUTTON ================ */
+        /* ================ HOME BUTTON - PROMINENT ================ */
         .home-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: clamp(8px, 2vw, 12px);
+            gap: 10px;
             background: linear-gradient(45deg, #f6b93b, #e55039);
             color: white;
-            padding: clamp(14px, 3vw, 18px) clamp(25px, 5vw, 40px);
+            padding: 14px 30px;
             border-radius: 50px;
             text-decoration: none;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
             font-weight: 600;
-            margin-top: clamp(20px, 4vw, 30px);
+            margin: 15px 0;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(246, 185, 59, 0.3);
-            position: relative;
-            overflow: hidden;
-            width: auto;
-            min-width: 200px;
-            max-width: 300px;
-            white-space: nowrap;
+            box-shadow: 0 8px 25px rgba(246, 185, 59, 0.3);
+            min-width: 180px;
+            max-width: 250px;
         }
 
-        .home-btn:hover,
-        .home-btn:focus {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(246, 185, 59, 0.4);
-            letter-spacing: 1px;
-        }
-
-        .home-btn:active {
-            transform: translateY(-2px);
-        }
-
-        .home-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s;
-        }
-
-        .home-btn:hover::before,
-        .home-btn:focus::before {
-            left: 100%;
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(246, 185, 59, 0.4);
+            letter-spacing: 0.5px;
         }
 
         .home-btn i {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-size: 1.1rem;
             transition: transform 0.3s;
         }
 
-        .home-btn:hover i,
-        .home-btn:focus i {
-            transform: translateX(5px);
+        .home-btn:hover i {
+            transform: translateX(3px);
         }
 
-        /* ================ SOCIAL LINKS ================ */
-        .social-links {
-            margin-top: clamp(30px, 5vw, 40px);
-            display: flex;
-            justify-content: center;
-            gap: clamp(15px, 3vw, 20px);
-            flex-wrap: wrap;
-        }
-
-        .social-link {
-            width: clamp(40px, 8vw, 50px);
-            height: clamp(40px, 8vw, 50px);
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            flex-shrink: 0;
-        }
-
-        .social-link:hover,
-        .social-link:focus {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px) rotate(10deg);
-            outline: none;
-        }
-
-        /* ================ FOOTER ================ */
+        /* ================ FOOTER - MINIMAL ================ */
         .footer {
-            margin-top: clamp(30px, 5vw, 40px);
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            opacity: 0.7;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            opacity: 0.6;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: clamp(15px, 3vw, 20px);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5;
+            padding-top: 10px;
+            width: 100%;
+            max-width: 400px;
         }
 
-        .footer p {
-            margin-bottom: 5px;
-        }
-
-        /* ================ MOBILE-SPECIFIC ADJUSTMENTS ================ */
+        /* ================ RESPONSIVE ADJUSTMENTS ================ */
         @media (max-width: 768px) {
             body {
                 padding: 15px;
-                align-items: flex-start;
-                min-height: 100vh;
-                overflow-y: auto;
             }
             
             .construction-container {
                 padding: 25px 20px;
-                margin-top: 20px;
-                margin-bottom: 20px;
+                max-height: 85vh;
+            }
+            
+            .content {
+                gap: 15px;
             }
             
             .construction-icon {
-                height: clamp(80px, 25vw, 120px);
-                margin: 25px auto;
-            }
-            
-            .gear-1 {
-                left: 20%;
-            }
-            
-            .gear-2 {
-                right: 20%;
-                top: 25%;
-            }
-            
-            .countdown-item {
-                min-width: 22%;
-                flex: 0 0 22%;
-                max-width: none;
+                height: 70px;
+                margin: 10px 0;
             }
             
             .home-btn {
-                width: 100%;
-                max-width: 280px;
+                padding: 12px 25px;
+                min-width: 160px;
             }
         }
 
@@ -477,229 +321,142 @@
             }
             
             .title {
-                font-size: clamp(1.8rem, 7vw, 2.2rem);
-                line-height: 1.1;
-            }
-            
-            .subtitle {
-                font-size: clamp(1.1rem, 4vw, 1.3rem);
-            }
-            
-            .construction-icon {
-                height: 70px;
-            }
-            
-            .gear-1 {
-                left: 15%;
-            }
-            
-            .gear-2 {
-                right: 15%;
-                top: 20%;
-            }
-            
-            .countdown {
-                gap: 8px;
-            }
-            
-            .countdown-item {
-                min-width: 45%;
-                flex: 0 0 45%;
-                padding: 12px 8px;
-                margin-bottom: 5px;
-            }
-            
-            .message {
-                padding: 0 5px;
-                line-height: 1.5;
-            }
-            
-            .social-links {
-                gap: 12px;
-            }
-            
-            .social-link {
-                width: 45px;
-                height: 45px;
-            }
-        }
-
-        /* ================ VERY SMALL PHONES ================ */
-        @media (max-width: 320px) {
-            .construction-container {
-                padding: 15px 10px;
-            }
-            
-            .title {
                 font-size: 1.6rem;
             }
             
-            .countdown-item {
-                min-width: 48%;
-                flex: 0 0 48%;
+            .subtitle {
+                font-size: 1rem;
             }
             
-            .countdown-number {
-                font-size: 1.8rem;
+            .message {
+                font-size: 0.85rem;
+                padding: 0;
+            }
+            
+            .construction-icon {
+                height: 60px;
+            }
+            
+            .gear-1 {
+                left: 20%;
+            }
+            
+            .gear-2 {
+                right: 20%;
             }
             
             .home-btn {
-                min-width: 180px;
+                padding: 11px 22px;
                 font-size: 0.95rem;
-                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .construction-container {
+                padding: 15px 12px;
+            }
+            
+            .title {
+                font-size: 1.4rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .message {
+                font-size: 0.8rem;
+            }
+            
+            .home-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                min-width: 150px;
             }
         }
 
         /* ================ LANDSCAPE MODE ================ */
-        @media (max-height: 600px) and (orientation: landscape) {
-            body {
-                padding: 10px;
-                align-items: flex-start;
-            }
-            
+        @media (orientation: landscape) and (max-height: 500px) {
             .construction-container {
-                padding: 20px;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                max-height: 90vh;
-                overflow-y: auto;
+                max-height: 85vh;
+                padding: 15px 20px;
             }
             
-            .logo {
-                margin-bottom: 15px;
+            .content {
+                gap: 10px;
+            }
+            
+            .logo i {
+                font-size: 40px;
             }
             
             .title {
-                margin-bottom: 10px;
-                font-size: 2.2rem;
+                font-size: 1.5rem;
+                margin-bottom: 3px;
             }
             
             .subtitle {
-                margin-bottom: 8px;
-                font-size: 1.3rem;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
             }
             
             .construction-icon {
-                margin: 20px auto;
-                height: 80px;
+                height: 50px;
+                margin: 5px 0;
             }
             
-            .countdown {
-                margin: 20px auto;
+            .gear {
+                font-size: 40px;
+            }
+            
+            .gear-2 {
+                font-size: 30px;
+                top: 10px;
+            }
+            
+            .hard-hat {
+                font-size: 30px;
             }
             
             .message {
-                margin: 15px 0;
-                font-size: 1rem;
-            }
-        }
-
-        /* ================ DARK MODE SUPPORT ================ */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(135deg, #0a1d3e 0%, #152c5b 50%, #2c3e6d 100%);
+                margin: 5px 0;
+                font-size: 0.8rem;
             }
             
-            .construction-container {
-                background: rgba(0, 0, 0, 0.3);
-                border-color: rgba(255, 255, 255, 0.1);
+            .home-btn {
+                margin: 10px 0;
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
             
-            .countdown-item {
-                background: rgba(0, 0, 0, 0.2);
-            }
-        }
-
-        /* ================ TOUCH DEVICE OPTIMIZATIONS ================ */
-        @media (hover: none) and (pointer: coarse) {
-            .home-btn:hover,
-            .social-link:hover,
-            .countdown-item:hover {
-                transform: none;
-            }
-            
-            .home-btn:active,
-            .social-link:active,
-            .countdown-item:active {
-                transform: scale(0.98);
-            }
-            
-            .home-btn::before,
-            .home-btn:hover::before {
-                display: none;
-            }
-        }
-
-        /* ================ HIGH CONTRAST MODE ================ */
-        @media (prefers-contrast: high) {
-            .highlight {
-                color: #ffcc00;
-            }
-            
-            .countdown-number {
-                color: #ffcc00;
-            }
-            
-            .gear, .hard-hat {
-                filter: brightness(1.5);
+            .footer {
+                margin-top: 5px;
+                font-size: 0.7rem;
+                padding-top: 8px;
             }
         }
 
         /* ================ REDUCED MOTION ================ */
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-            
-            .bg-circle,
-            .logo,
-            .gear,
-            .hard-hat,
-            .progress-fill {
+            * {
                 animation: none !important;
+                transition: none !important;
             }
             
-            .home-btn:hover,
-            .social-link:hover,
-            .countdown-item:hover {
-                transform: none !important;
+            .home-btn:hover {
+                transform: none;
             }
         }
 
-        /* ================ PRINT STYLES ================ */
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
+        /* ================ TOUCH DEVICES ================ */
+        @media (hover: none) and (pointer: coarse) {
+            .home-btn:hover {
+                transform: none;
+                box-shadow: 0 8px 25px rgba(246, 185, 59, 0.3);
             }
             
-            .construction-container {
-                background: white !important;
-                border: 2px solid #ccc !important;
-                box-shadow: none !important;
-                color: black !important;
-            }
-            
-            .title {
-                background: none !important;
-                -webkit-text-fill-color: black !important;
-                color: black !important;
-            }
-            
-            .highlight,
-            .countdown-number {
-                color: black !important;
-            }
-            
-            .home-btn,
-            .social-links,
-            .bg-circle {
-                display: none !important;
+            .home-btn:active {
+                transform: scale(0.98);
             }
         }
     </style>
@@ -708,141 +465,81 @@
     <!-- Background Elements -->
     <div class="bg-circle circle-1"></div>
     <div class="bg-circle circle-2"></div>
-    <div class="bg-circle circle-3"></div>
 
     <!-- Main Container -->
     <div class="construction-container">
-        <!-- Logo -->
-        <div class="logo">
-            <i class="fas fa-chess-knight"></i>
-        </div>
-
-        <!-- Title -->
-        <h1 class="title">UNDER CONSTRUCTION</h1>
-        
-        <!-- Subtitle -->
-        <p class="subtitle">Something Amazing is Coming!</p>
-
-        <!-- Construction Icon -->
-        <div class="construction-icon">
-            <i class="fas fa-cog gear gear-1"></i>
-            <i class="fas fa-cog gear gear-2"></i>
-            <i class="fas fa-hard-hat hard-hat"></i>
-        </div>
-
-        <!-- Message -->
-        <div class="message">
-            <p>We're working hard to bring you an <span class="highlight">incredible experience</span> with premium tutorials, equipment guides, and exclusive clan content.</p>
-            <p style="margin-top: clamp(10px, 2vw, 15px);">This portion is under construction and will be available soon. Stay tuned for the big reveal!</p>
-        </div>
-
-        <!-- Countdown Timer -->
-        <div class="countdown">
-            <div class="countdown-item">
-                <span class="countdown-number" id="days">00</span>
-                <span class="countdown-label">Days</span>
+        <div class="content">
+            <!-- Logo -->
+            <div class="logo">
+                <i class="fas fa-chess-knight"></i>
             </div>
-            <div class="countdown-item">
-                <span class="countdown-number" id="hours">00</span>
-                <span class="countdown-label">Hours</span>
-            </div>
-            <div class="countdown-item">
-                <span class="countdown-number" id="minutes">00</span>
-                <span class="countdown-label">Minutes</span>
-            </div>
-            <div class="countdown-item">
-                <span class="countdown-number" id="seconds">00</span>
-                <span class="countdown-label">Seconds</span>
-            </div>
-        </div>
 
-        <!-- Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-label">
-                <span>Development Progress</span>
-                <span>65%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-        </div>
+            <!-- Title -->
+            <h1 class="title">UNDER CONSTRUCTION</h1>
+            
+            <!-- Subtitle -->
+            <p class="subtitle">Coming Soon!</p>
 
-        <!-- Home Button -->
-        <a href="dashboard.html" class="home-btn">
-            <i class="fas fa-home"></i>
-            Back to Home
-        </a>
+            <!-- Construction Icon -->
+            <div class="construction-icon">
+                <i class="fas fa-cog gear gear-1"></i>
+                <i class="fas fa-cog gear gear-2"></i>
+                <i class="fas fa-hard-hat hard-hat"></i>
+            </div>
 
-        <!-- Social Links -->
-        <div class="social-links">
-            <a href="#" class="social-link" title="Discord" aria-label="Discord">
-                <i class="fab fa-discord"></i>
+            <!-- Message -->
+            <div class="message">
+                <p>We're working hard to bring you an <span class="highlight">amazing experience</span>.</p>
+                <p>This page will be available soon!</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Progress</span>
+                    <span>65%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Home Button -->
+            <a href="dashboard.html" class="home-btn">
+                <i class="fas fa-home"></i>
+                Back to Dashboard
             </a>
-            <a href="#" class="social-link" title="Steam" aria-label="Steam">
-                <i class="fab fa-steam"></i>
-            </a>
-            <a href="#" class="social-link" title="Twitter" aria-label="Twitter">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-link" title="Email" aria-label="Email">
-                <i class="fas fa-envelope"></i>
-            </a>
-        </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>© 2025 THE Family Gang. All rights reserved. | Premium Clan Access</p>
-            <p style="margin-top: clamp(3px, 1vw, 5px); font-size: clamp(0.7rem, 1.8vw, 0.8rem);">T3li (123.250.832) | Kingdom 123</p>
+            <!-- Footer -->
+            <div class="footer">
+                <p>© 2025 THE Family Gang | Premium Clan Access</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // ================ RESPONSIVE JAVASCRIPT ================
-        
-        // Update viewport for mobile devices
-        function setViewportScale() {
-            const viewport = document.querySelector('meta[name="viewport"]');
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        // ================ ENSURE NO SCROLLING ================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lock scroll on body
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
             
-            if (isMobile && window.innerWidth <= 768) {
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-            } else {
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
-            }
-        }
-        
-        // Countdown Timer
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const launchDate = new Date();
-            launchDate.setDate(launchDate.getDate() + 30);
+            // Prevent any scroll events
+            document.addEventListener('scroll', function(e) {
+                window.scrollTo(0, 0);
+            });
             
-            const distance = launchDate - now;
-            
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                document.querySelector('.title').textContent = "WE'RE LIVE!";
-                document.querySelector('.subtitle').textContent = "The wait is over!";
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            // Smooth transitions for countdown numbers
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-        }
-        
-        // Progress animation
+            // Prevent touch scroll
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        });
+
+        // ================ PROGRESS ANIMATION ================
         let progress = 65;
-        function animateProgress() {
+        setInterval(() => {
             if (progress < 85) {
-                progress += Math.random() * 0.1;
+                progress += 0.05;
                 if (progress > 85) progress = 85;
                 
                 const progressElement = document.querySelector('.progress-label span:last-child');
@@ -853,122 +550,94 @@
                     progressFill.style.width = progress + '%';
                 }
             }
-        }
-        
-        // Adjust layout for mobile
-        function adjustMobileLayout() {
-            const isMobile = window.innerWidth <= 768;
+        }, 2000);
+
+        // ================ ADJUST FOR SCREEN SIZE ================
+        function adjustLayout() {
             const container = document.querySelector('.construction-container');
+            const content = document.querySelector('.content');
             
-            if (isMobile) {
-                // Optimize for mobile
-                document.body.style.padding = '10px';
-                if (container) {
-                    container.style.marginTop = '10px';
-                }
-                
-                // Adjust countdown layout
-                const countdownItems = document.querySelectorAll('.countdown-item');
-                countdownItems.forEach(item => {
-                    item.style.minWidth = '22%';
-                });
+            if (!container || !content) return;
+            
+            const viewportHeight = window.innerHeight;
+            const containerHeight = container.offsetHeight;
+            
+            // If container is taller than viewport, scale it down
+            if (containerHeight > viewportHeight * 0.9) {
+                const scale = (viewportHeight * 0.9) / containerHeight;
+                container.style.transform = `scale(${scale})`;
+            } else {
+                container.style.transform = 'scale(1)';
             }
         }
-        
-        // Handle orientation change
-        function handleOrientationChange() {
-            adjustMobileLayout();
+
+        // Initial adjustment
+        window.addEventListener('load', adjustLayout);
+        window.addEventListener('resize', adjustLayout);
+        window.addEventListener('orientationchange', adjustLayout);
+
+        // ================ BUTTON EFFECT ================
+        document.querySelector('.home-btn').addEventListener('click', function(e) {
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                width: ${size}px;
+                height: ${size}px;
+                top: ${y}px;
+                left: ${x}px;
+                pointer-events: none;
+            `;
+            
+            this.appendChild(ripple);
+            
+            // Remove ripple after animation
             setTimeout(() => {
-                window.scrollTo(0, 0);
-            }, 100);
-        }
-        
-        // Create responsive particles
-        function createResponsiveParticles() {
-            const container = document.querySelector('.construction-container');
-            if (!container) return;
-            
-            // Clear existing particles
-            const existingParticles = container.querySelectorAll('.particle');
-            existingParticles.forEach(p => p.remove());
-            
-            // Create new particles based on screen size
-            const particleCount = window.innerWidth <= 480 ? 8 : 
-                                 window.innerWidth <= 768 ? 12 : 15;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.cssText = `
-                    position: absolute;
-                    width: ${Math.random() * 5 + 2}px;
-                    height: ${Math.random() * 5 + 2}px;
-                    background: rgba(246, 185, 59, 0.5);
-                    border-radius: 50%;
-                    left: ${Math.random() * 100}%;
-                    top: ${Math.random() * 100}%;
-                    z-index: 1;
-                    pointer-events: none;
-                    animation: float ${Math.random() * 10 + 10}s infinite ease-in-out;
-                    animation-delay: ${Math.random() * 5}s;
-                `;
-                container.appendChild(particle);
-            }
-        }
-        
-        // Initialize everything
-        function initPage() {
-            setViewportScale();
-            updateCountdown();
-            adjustMobileLayout();
-            createResponsiveParticles();
-            
-            // Set intervals
-            const countdownInterval = setInterval(updateCountdown, 1000);
-            const progressInterval = setInterval(animateProgress, 5000);
-            
-            // Handle resize
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    setViewportScale();
-                    adjustMobileLayout();
-                    createResponsiveParticles();
-                }, 250);
-            });
-            
-            // Handle orientation change
-            window.addEventListener('orientationchange', handleOrientationChange);
-            
-            // Handle page visibility (for mobile browsers)
-            document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) {
-                    updateCountdown();
-                }
-            });
-            
-            // Add touch feedback for mobile
-            if ('ontouchstart' in window) {
-                document.querySelectorAll('.home-btn, .social-link, .countdown-item').forEach(el => {
-                    el.addEventListener('touchstart', function() {
-                        this.style.transform = 'scale(0.95)';
-                    });
-                    
-                    el.addEventListener('touchend', function() {
-                        this.style.transform = '';
-                    });
-                });
-            }
-        }
-        
-        // Start when page loads
-        document.addEventListener('DOMContentLoaded', initPage);
-        
-        // Fallback for slow loading
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '1';
+                ripple.remove();
+            }, 600);
         });
+
+        // Add ripple animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(3);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ================ DISABLE ZOOM ON MOBILE ================
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        // ================ KEYBOARD NAVIGATION ================
+        document.addEventListener('keydown', function(e) {
+            // Escape key goes home
+            if (e.key === 'Escape') {
+                window.location.href = 'dashboard.html';
+            }
+            
+            // Enter key on button
+            if (e.key === 'Enter' && document.activeElement.classList.contains('home-btn')) {
+                document.activeElement.click();
+            }
+        });
+
+        // Focus the button for accessibility
+        document.querySelector('.home-btn').focus();
     </script>
 </body>
 </html>
