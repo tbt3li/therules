@@ -693,6 +693,53 @@
         }
     </style>
 </head>
+<script>
+    // Check if already logged in - ADD THIS AT THE VERY BEGINNING
+const API_URL = 'https://login.t3li.workers.dev/api';
+const authToken = localStorage.getItem('family_token') || localStorage.getItem('family_token_session');
+
+// Function to check if user is already logged in
+async function checkIfLoggedIn() {
+    if (!authToken) return false;
+    
+    try {
+        const response = await fetch(`${API_URL}/check`, {
+            headers: { 
+                'Authorization': `Bearer ${authToken}` 
+            }
+        });
+        
+        const data = await response.json();
+        return data.success;
+    } catch (error) {
+        console.error('Login check error:', error);
+        return false;
+    }
+}
+
+// Check on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    const isLoggedIn = await checkIfLoggedIn();
+    if (isLoggedIn) {
+        // Already logged in, redirect to dashboard
+        window.location.href = 'dashboard.html';
+    } else {
+        // Not logged in, show login form
+        hideLoading();
+        initLoginPage(); // Your existing login page initialization
+    }
+});
+
+function hideLoading() {
+    const loading = document.getElementById('loading');
+    if (loading) loading.style.display = 'none';
+}
+
+// Your existing login page initialization function
+function initLoginPage() {
+    // Your existing login page code here...
+}
+</script>
 <body>
     <!-- Loading Screen -->
     <div id="loading">
