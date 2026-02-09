@@ -1,0 +1,115 @@
+<div class="settings-page">
+    <!-- Messages -->
+    <div class="message success" id="successMessage" style="display: none;">
+        <i class="fas fa-check-circle"></i> <span>Password updated successfully!</span>
+    </div>
+    
+    <div class="message error" id="errorMessage" style="display: none;">
+        <i class="fas fa-exclamation-circle"></i> <span id="errorText">An error occurred.</span>
+    </div>
+    
+    <!-- User Information Card -->
+    <div class="settings-card">
+        <div class="card-header">
+            <h3><i class="fas fa-user-circle"></i> Account Information</h3>
+        </div>
+        <div class="card-content">
+            <div class="user-info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value" id="settingsUserName">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value" id="settingsUserEmail">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Member Since</div>
+                    <div class="info-value" id="memberSince">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Account Status</div>
+                    <div class="info-value">
+                        <span style="color: #28a745; font-weight: bold;">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password Card -->
+    <div class="settings-card">
+        <div class="card-header">
+            <h3><i class="fas fa-key"></i> Change Password</h3>
+        </div>
+        <div class="card-content">
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="newPassword" class="form-control" 
+                               placeholder="Enter new password" minlength="6" required>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="passwordStrength"></div>
+                    </div>
+                    <div class="password-requirements">
+                        Password must be at least 6 characters long
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" class="form-control" 
+                               placeholder="Confirm new password" minlength="6" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-save" id="savePasswordBtn">
+                    <i class="fas fa-save"></i> Save New Password
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Security Tips Card -->
+    <div class="settings-card">
+        <div class="card-header">
+            <h3><i class="fas fa-shield-alt"></i> Security Tips</h3>
+        </div>
+        <div class="card-content">
+            <ul class="security-tips">
+                <li>Use a strong password with at least 6 characters</li>
+                <li>Don't use the same password on multiple sites</li>
+                <li>Consider using a password manager</li>
+                <li>Log out when using shared devices</li>
+                <li>Contact admin if you suspect unauthorized access</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update user info when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const user = window.AppState?.currentUser;
+        if (user) {
+            document.getElementById('settingsUserName').textContent = user.name;
+            document.getElementById('settingsUserEmail').textContent = user.email;
+            
+            // Format member since date
+            const memberSince = user.createdAt ? 
+                new Date(user.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }) : 'Today';
+            document.getElementById('memberSince').textContent = memberSince;
+        }
+    });
+</script>
