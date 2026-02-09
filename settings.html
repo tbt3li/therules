@@ -1,1 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - Family Gang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --primary-dark: #005a9e;
+            --secondary-color: #f3f2f1;
+            --dark-bg: #201f1e;
+            --card-bg: #ffffff;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --border-radius: 8px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #faf9f8;
+            color: #323130;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--dark-bg);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            margin-right: 12px;
+            color: var(--primary-color);
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-links li {
+            padding: 12px 20px;
+            margin: 5px 0;
+        }
+
+        .nav-links li.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-links li:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .nav-links i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .user-info {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0078d4, #5c2d91);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-details h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .user-details p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+        }
+
+        header {
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: var(--card-bg);
+            padding: 0 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            color: #323130;
+        }
+
+        .header-title i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Settings Content */
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-section {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header i {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        /* User Profile */
+        .profile-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0078d4, #5c2d91);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            border: 4px solid white;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-details h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #323130;
+        }
+
+        .profile-details p {
+            color: #605e5c;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .member-since {
+            font-size: 14px;
+            color: #8a8886;
+            margin-top: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #323130;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #edebe9;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            background-color: #faf9f8;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+            background-color: white;
+        }
+
+        .form-hint {
+            font-size: 13px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+
+        .password-strength {
+            height: 4px;
+            background-color: #edebe9;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .strength-weak { background-color: var(--danger-color); }
+        .strength-medium { background-color: var(--warning-color); }
+        .strength-strong { background-color: var(--success-color); }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-box i {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .stat-box h4 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #323130;
+        }
+
+        .stat-box p {
+            font-size: 14px;
+            color: #605e5c;
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #edebe9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: #323130;
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #605e5c;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #edebe9;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .logo-text, .user-details, .nav-links li span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 10px 30px 10px;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+            }
+            
+            .nav-links li {
+                padding: 15px;
+                display: flex;
+                justify-content: center;
+            }
+            
+            .nav-links i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .user-info {
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .user-avatar {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .back-btn, .logout-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .section-content {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+        }
+
+        /* Password visibility toggle */
+        .password-input {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #605e5c;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Account Actions */
+        .account-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #edebe9;
+            transition: var(--transition);
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .action-card i {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .action-card h4 {
+            margin-bottom: 10px;
+            color: #323130;
+        }
+
+        .action-card p {
+            font-size: 14px;
+            color: #605e5c;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal">
+        <div class="modal-content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> Success</h3>
+                <button class="modal-close" onclick="closeSuccessModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage">Operation completed successfully!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="closeSuccessModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirm Action</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-chess-knight"></i></div>
+            <div class="logo-text">THE <text style="font-size:14px !important;">Family Gang</text></div>
+        </div>
+        
+        <ul class="nav-links">
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Tutorials</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-tools"></i>
+                    <span>Equipment</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-users"></i>
+                    <span>Clan Members</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Cheat Sheets</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="user-info">
+            <div class="user-avatar" id="sidebarAvatar">U</div>
+            <div class="user-details">
+                <h4 id="sidebarName">Loading...</h4>
+                <p id="sidebarEmail">Loading...</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header>
+            <div class="header-title">
+                <i class="fas fa-cog"></i>
+                <h1>Account Settings</h1>
+            </div>
+            <div class="header-actions">
+                <a href="dashboard.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Messages -->
+        <div id="message" class="message"></div>
+
+        <div class="settings-container">
+            <!-- User Profile Section -->
+            <section class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-user"></i>
+                    <h2>Profile Information</h2>
+                </div>
+                <div class="section-content">
+                    <div class="profile-info">
+                        <div class="profile-avatar" id="profileAvatar">U</div>
+                        <div class="profile-details">
+                            <h3 id="profileName">Loading...</h3>
+                            <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+                            <p><strong>Account ID:</strong> <span id="accountId">Loading...</span></p>
+                            <div class="member-since">
+                                <i class="far fa-calendar-alt"></i> Member since: <span id="memberSince">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <i class="fas fa-trophy"></i>
+                            <h4>15</h4>
+                            <p>Tutorials Completed</p>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-clock"></i>
+                            <h4>48h</h4>
+                            <p>Total Time Spent</p>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-star"></i>
+                            <h4>89%</h4>
+                            <p>Success Rate</p>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-medal"></i>
+                            <h4>5</h4>
+                            <p>Achievements</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Change Password Section -->
+            <section class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-lock"></i>
+                    <h2>Change Password</h2>
+                </div>
+                <div class="section-content">
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <div class="password-input">
+                                <input type="password" id="currentPassword" class="form-control" placeholder="Enter your current password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('currentPassword')">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <div class="password-input">
+                                <input type="password" id="newPassword" class="form-control" placeholder="Enter new password" required minlength="6">
+                                <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="password-strength-bar" id="passwordStrength"></div>
+                            </div>
+                            <div class="form-hint">Password must be at least 6 characters long</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <div class="password-input">
+                                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Account Actions Section -->
+            <section class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>Account Security</h2>
+                </div>
+                <div class="section-content">
+                    <div class="account-actions">
+                        <div class="action-card">
+                            <i class="fas fa-history"></i>
+                            <h4>Login History</h4>
+                            <p>View your recent login activity</p>
+                            <button class="btn" onclick="viewLoginHistory()">
+                                <i class="fas fa-eye"></i> View History
+                            </button>
+                        </div>
+
+                        <div class="action-card">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h4>Active Sessions</h4>
+                            <p>Manage your logged-in devices</p>
+                            <button class="btn" onclick="manageSessions()">
+                                <i class="fas fa-desktop"></i> Manage
+                            </button>
+                        </div>
+
+                        <div class="action-card">
+                            <i class="fas fa-bell"></i>
+                            <h4>Notifications</h4>
+                            <p>Configure email and push notifications</p>
+                            <button class="btn" onclick="configureNotifications()">
+                                <i class="fas fa-cog"></i> Configure
+                            </button>
+                        </div>
+
+                        <div class="action-card">
+                            <i class="fas fa-trash-alt"></i>
+                            <h4>Delete Account</h4>
+                            <p>Permanently delete your account</p>
+                            <button class="btn btn-danger" onclick="showDeleteAccountConfirmation()">
+                                <i class="fas fa-trash"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Configuration
+        const API_URL = 'https://login.t3li.workers.dev/api';
+        let authToken = localStorage.getItem('family_token') || localStorage.getItem('family_token_session');
+        let currentUser = null;
+
+        // DOM Elements
+        const loadingModal = document.getElementById('loadingModal');
+        const successModal = document.getElementById('successModal');
+        const confirmModal = document.getElementById('confirmModal');
+        const messageDiv = document.getElementById('message');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const newPasswordInput = document.getElementById('newPassword');
+        const passwordStrengthBar = document.getElementById('passwordStrength');
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            await checkAuth();
+            
+            // Load user data
+            await loadUserData();
+            
+            // Initialize event listeners
+            initEventListeners();
+            
+            // Setup password strength indicator
+            setupPasswordStrength();
+        });
+
+        // Show/hide loading modal
+        function showLoading(show) {
+            loadingModal.classList.toggle('show', show);
+        }
+
+        // Show message
+        function showMessage(text, type = 'error') {
+            messageDiv.textContent = text;
+            messageDiv.className = `message message-${type} show`;
+            
+            // Auto-hide after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        // Hide message
+        function hideMessage() {
+            messageDiv.classList.remove('show');
+        }
+
+        // Show success modal
+        function showSuccessModal(message) {
+            document.getElementById('successMessage').textContent = message;
+            successModal.classList.add('show');
+        }
+
+        function closeSuccessModal() {
+            successModal.classList.remove('show');
+        }
+
+        // Show confirm modal
+        function showConfirmModal(message, callback) {
+            document.getElementById('confirmMessage').textContent = message;
+            const confirmBtn = document.getElementById('confirmActionBtn');
+            
+            // Store callback
+            confirmBtn.onclick = callback;
+            
+            confirmModal.classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            confirmModal.classList.remove('show');
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Setup password strength indicator
+        function setupPasswordStrength() {
+            newPasswordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Check length
+                if (password.length >= 6) strength += 25;
+                if (password.length >= 8) strength += 25;
+                
+                // Check complexity
+                if (/[A-Z]/.test(password)) strength += 25;
+                if (/[0-9]/.test(password)) strength += 25;
+                
+                // Update strength bar
+                passwordStrengthBar.style.width = strength + '%';
+                
+                // Update color
+                if (strength < 50) {
+                    passwordStrengthBar.className = 'password-strength-bar strength-weak';
+                } else if (strength < 75) {
+                    passwordStrengthBar.className = 'password-strength-bar strength-medium';
+                } else {
+                    passwordStrengthBar.className = 'password-strength-bar strength-strong';
+                }
+            });
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            if (!authToken) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/check`, {
+                    headers: { 
+                        'Authorization': `Bearer ${authToken}` 
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    // Invalid token, redirect to login
+                    localStorage.removeItem('family_token');
+                    localStorage.removeItem('family_token_session');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                currentUser = data.user;
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+
+        // Load user data
+        async function loadUserData() {
+            showLoading(true);
+            
+            try {
+                // Use the data from checkAuth or fetch fresh
+                if (!currentUser) {
+                    const response = await fetch(`${API_URL}/check`, {
+                        headers: { 
+                            'Authorization': `Bearer ${authToken}` 
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        currentUser = data.user;
+                    }
+                }
+                
+                if (currentUser) {
+                    // Update profile information
+                    updateProfileUI();
+                }
+            } catch (error) {
+                console.error('Load user data error:', error);
+                showMessage('Failed to load user data. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Update profile UI
+        function updateProfileUI() {
+            if (!currentUser) return;
+            
+            // Get initials for avatar
+            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+            
+            // Update sidebar
+            document.getElementById('sidebarAvatar').textContent = initials;
+            document.getElementById('sidebarName').textContent = currentUser.name;
+            document.getElementById('sidebarEmail').textContent = currentUser.email;
+            
+            // Update profile section
+            document.getElementById('profileAvatar').textContent = initials;
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // Generate account ID (using first 8 chars of email hash)
+            const accountId = btoa(currentUser.email).substring(0, 8).toUpperCase();
+            document.getElementById('accountId').textContent = accountId;
+            
+            // Format member since date
+            if (currentUser.createdAt) {
+                const date = new Date(currentUser.createdAt);
+                document.getElementById('memberSince').textContent = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } else {
+                document.getElementById('memberSince').textContent = 'Today';
+            }
+        }
+
+        // Handle password change
+        async function changePassword(currentPassword, newPassword) {
+            try {
+                // Note: You need to add a /change-password endpoint to your Worker
+                const response = await fetch(`${API_URL}/change-password`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ 
+                        currentPassword, 
+                        newPassword 
+                    })
+                });
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Change password error:', error);
+                return { 
+                    success: false, 
+                    error: 'Network error. Please try again.' 
+                };
+            }
+        }
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // Change password form
+            changePasswordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Validation
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showMessage('Please fill in all fields.', 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    showMessage('New password must be at least 6 characters.', 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showMessage('New passwords do not match.', 'error');
+                    return;
+                }
+                
+                // Show loading
+                showLoading(true);
+                
+                try {
+                    // For now, since we don't have a change-password endpoint,
+                    // we'll simulate the process
+                    // In a real implementation, you would call the API
+                    
+                    // Simulate API call delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // For demo purposes, we'll just show success
+                    // In production, uncomment the API call below:
+                    /*
+                    const result = await changePassword(currentPassword, newPassword);
+                    
+                    if (result.success) {
+                        showSuccessModal('Password changed successfully!');
+                        changePasswordForm.reset();
+                        passwordStrengthBar.style.width = '0%';
+                    } else {
+                        showMessage(result.error, 'error');
+                    }
+                    */
+                    
+                    // Demo success
+                    showSuccessModal('Password changed successfully!');
+                    changePasswordForm.reset();
+                    passwordStrengthBar.style.width = '0%';
+                    
+                } catch (error) {
+                    showMessage('Failed to change password. Please try again.', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            });
+        }
+
+        // Account actions
+        function viewLoginHistory() {
+            showSuccessModal('Login history feature will be available soon!');
+        }
+
+        function manageSessions() {
+            showSuccessModal('Session management feature will be available soon!');
+        }
+
+        function configureNotifications() {
+            showSuccessModal('Notification settings feature will be available soon!');
+        }
+
+        function showDeleteAccountConfirmation() {
+            showConfirmModal('Are you sure you want to delete your account? This action cannot be undone.', async function() {
+                showLoading(true);
+                
+                try {
+                    // Simulate deletion
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Clear local storage
+                    localStorage.removeItem('family_token');
+                    localStorage.removeItem('family_token_session');
+                    
+                    showSuccessModal('Account deleted successfully! Redirecting to login...');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                    
+                } catch (error) {
+                    showMessage('Failed to delete account. Please try again.', 'error');
+                } finally {
+                    showLoading(false);
+                    closeConfirmModal();
+                }
+            });
+        }
+
+        // Logout
+        function logout() {
+            showConfirmModal('Are you sure you want to logout?', async function() {
+                try {
+                    // Call logout API
+                    await fetch(`${API_URL}/logout`, {
+                        method: 'POST',
+                        headers: { 
+                            'Authorization': `Bearer ${authToken}` 
+                        }
+                    });
+                } catch (error) {
+                    console.error('Logout API error:', error);
+                }
+                
+                // Clear local storage
+                localStorage.removeItem('family_token');
+                localStorage.removeItem('family_token_session');
+                
+                // Redirect to login
+                window.location.href = 'login.html';
+            });
+        }
+
+        // Navigation active state
+        document.querySelectorAll('.nav-links li').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-links li').forEach(li => {
+                    li.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
