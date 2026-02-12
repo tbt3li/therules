@@ -103,8 +103,6 @@
         /* ================ LOGO ================ */
         .logo {
             margin-bottom: 10px;
-            width: 100%;
-            max-width: 200px; /* optional max width */
         }
 
         .logo i {
@@ -460,6 +458,12 @@
             .home-btn:active {
                 transform: scale(0.98);
             }
+        }
+
+        .navbar-logo {
+            width: 80px;       /* mini logo width */
+            max-width: 100%;   /* ensures it shrinks on smaller screens */
+            height: auto;      /* maintain aspect ratio */
         }
     </style>
 </head>
