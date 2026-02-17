@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Favicons -->
+  	<link href="assets/img/favicon.png" rel="icon">
+    <!--Style Sheets-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://kit.fontawesome.com/4884549be4.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="calc1/styles.css" />
+    <link rel="stylesheet" href="calcfooter.css" />
+    
+    <!--CDN JS-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/4884549be4.js" crossorigin="anonymous"></script>
+    <script type="module" src="calc1/main1.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <title>Total Battle Troop Stacking Calculator</title>
+  </head>
+<style>
+  .menubtn { line-height: 1.2;border: 2px solid #ef6603; border-radius: 6px;}
+
+.navbar-logo {
+      height: 60px;
+      width: 60px;
+	  transition: all 0.5s ease;
+    }
+.navbar-nav .nav-link {
+	  font-size: 16px;
+      padding: 4px;
+      color: white;
+      border-radius: 30px;
+	  margin-right: 10px;
+    }
+ .navbar-nav .nav-link:hover {
+      background-color: #ef6603;
+      color: white;
+    }
+.navbar-nav .dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+  .goog-te-banner-frame.skiptranslate { display: none !important; }
+  body { top: 0px !important; }
+  body > .skiptranslate { display: none !important; }
+  /* Smaller size when scrolled */
+.navbar-logo.shrink {
+  width: 40px;
+  height: 40px;
+}
+ </style>
+ <script>
+  window.addEventListener("scroll", function () {
+    const logo = document.querySelector(".navbar-logo");
+    if (window.scrollY > 50) {
+      // Add 'shrink' class when scrolled down
+      logo.classList.add("shrink");
+    } else {
+      // Remove 'shrink' class when at the top
+      logo.classList.remove("shrink");
+    }
+  });
+</script>
+  <body x-data="pageSetup()" x-init="init()">
+<header id="header" class="header d-flex align-items-center fixed-top bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="--bs-navbar-padding-y: 0rem !important;">
+    <div class="container-fluid">
+      <!-- Logo/Image -->
+      <a class="navbar-brand" href="\" style="margin-left: 10%;">
+        <img src="assets/img/logo.png" class="navbar-logo" alt="Logo">
+      </a>
+      <!-- Hamburger Icon for Mobile -->
+      <button 
+        class="navbar-toggler" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Menu Items -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav" style="margin-right: 10%;">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#team" class="nav-link">Team</a></li>
+        <li><a href="calendar.html" class="nav-link menubtn">TB Calendar</a></li>
+        <li><a href="helper/index.html" class="nav-link menubtn">TB Helper</a></li>
+        <li><a href="gifts.html" class="nav-link menubtn">TB Gifts</a></li>
+	<li><a href="calc.html" class="nav-link menubtn" style="background-color:#ef6603;">TB Calc</a></li>
+        <li class="dropdown">
+          <a href="rules.html" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Rules</a>
+          <ul class="dropdown-menu">
+            <li><a href="roek123.html" class="dropdown-item">ROE K123</a></li>
+            <li><a href="therules.html" class="dropdown-item">Clan Rules</a></li>
+            <li><a href="cprun.html" class="dropdown-item">CP Run / Rules</a></li>
+          </ul>
+        </li>
+        </ul>
+
+	     
+	
+  </header>    
+<div class="container-fluid py-2 px-3 mx-auto" style="margin-top:65px;">
+      <div class="d-md-flex justify-content-between align-items-md-center pb-2 mb-3 border-bottom">
+        <div class="bg-dark">
+          <div class="container-fluid">
+            <div class="d-flex">  
+              <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#helpModal" title="Get help">
+                <i class="fas fa-question-circle me-2"></i>Help 
+              </button>
+            </div>
+          </div>
+        </div>
+         
+          <div class="d-flex align-items-center">
+              <a href="/" class="d-flex align-items-center text-body text-decoration-none">
+                  <img class="d-inline-block me-2" width="60" height="48" src="calc1/icons.svg" />
+                  <span class="title-text">TB Troop Calculator</span>
+              </a><span class="badge rounded-pill text-bg-light" style="margin-left:15px;">v1.0</span>
+          </div>
+          <div class="d-md-flex text-end bg-info bg-opacity-10 border border-info rounded p-1 mt-1" style="font-size: 0.875em;">
+            <div class="w-100">
+              <div class="d-flex justify-content-between mb-1">
+                <strong class="me-2">Leadership Used:</strong>
+                <span id="leadershipUsed"></span>
+              </div>
+              <div class="d-flex justify-content-between mb-1">
+                <strong class="me-2">Total Army HP:</strong>
+                <span id="totalArmyHP">0</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <strong class="me-2">Health Pool:</strong>
+                <span id="apexUnitHP">0</span>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+  </div>
+    <!--Main Section-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2 bg-danger-subtle p-3">
+          <form id="configForm">
+              <!-- Leadership Input -->
+              <div class="form-floating mb-3">
+                  <input type="number" class="form-control alert alert-warning" id="leadership" placeholder="Leadership" x-model="leadership" x-on:blur="handleInput('L', leadership)">
+                  <label class="text-warning" style="background-color: none;" for="leadership">Leadership</label>
+              </div>
+      
+              <!-- Guardsmen Settings -->
+              <h6>Guardsmen</h6>
+              <div class="row gx-2 mb-0">
+                  <div class="col-6 form-floating">
+                      <select class="form-select" id="inpMinGuards" x-model="minG" x-on:change="handleInput('minG', minG)">
+                        <option value="1">G1</option>
+                        <option value="2">G2</option>
+                        <option value="3">G3</option>
+                        <option value="4">G4</option>
+                        <option value="5">G5</option>
+                        <option value="6">G6</option>
+                        <option value="7">G7</option>
+                        <option value="8">G8</option>
+                        <option value="9">G9</option>
+                      </select>
+                      <label for="inpMinGuards">Min Guards</label>
+                  </div>
+                  <div class="col-6 form-floating">
+                      <select class="form-select" id="inpMaxGuards" x-model="maxG" x-on:change="handleInput('maxG', maxG)">
+                        <option value="1">G1</option>
+                        <option value="2">G2</option>
+                        <option value="3">G3</option>
+                        <option value="4">G4</option>
+                        <option value="5">G5</option>
+                        <option value="6">G6</option>
+                        <option value="7">G7</option>
+                        <option value="8">G8</option>
+                        <option value="9">G9</option>
+                      </select>
+                      <label for="inpMaxGuards">Max Guards</label>
+                  </div>
+              </div>
+              <div class="btn-group d-flex justify-content-between gap-0 mt-0 mb-3" role="group">
+                  <!-- Checkboxes for "maxG" settings -->
+                <input type="checkbox" class="btn-check" id="maxGf" autocomplete="off" :checked="maxGf" x-model="maxGf" x-on:change="handleInput('maxGf', maxGf, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxGf" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if <b>FLYING</b> Guards have not been unlocked">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </label>
+            
+                <input type="checkbox" class="btn-check" id="maxGmo" autocomplete="off" :checked="maxGmo" x-model="maxGmo" x-on:change="handleInput('maxGmo', maxGmo, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxGmo" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if <b>MOUNTED</b> Guards have not been unlocked">
+                    <i class="fa-solid fa-horse-head"></i>
+                </label>
+            
+                <input type="checkbox" class="btn-check" id="maxGme" autocomplete="off" :checked="maxGme" x-model="maxGme" x-on:change="handleInput('maxGme', maxGme, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxGme" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if <b>MELEE</b> Guards have not been unlocked">
+                    <i class="fa-solid fa-sword"></i>
+                </label>
+            
+                <input type="checkbox" class="btn-check" id="maxGr" autocomplete="off" :checked="maxGr" x-model="maxGr" x-on:change="handleInput('maxGr', maxGr, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxGr" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if <b>RANGED</b> Guards have not been unlocked">
+                    <i class="fa-sharp fa-solid fa-bow-arrow"></i>
+                </label>
+              </div>
+      
+              <!-- Specialists Settings -->
+              <h6>Specialists</h6>
+              <div class="row gx-2 mb-0">
+                  <div class="col-6 form-floating">
+                      <select class="form-select" id="inpMinSpecs" x-model="minS" x-on:change="handleInput('minS', minS)">
+                        <option value="1">S1</option>
+                        <option value="2">S2</option>
+                        <option value="3">S3</option>
+                        <option value="4">S4</option>
+                        <option value="5">S5</option>
+                        <option value="6">S6</option>
+                        <option value="7">S7</option>
+                        <option value="8">S8</option>
+                        <option value="9">S9</option>
+                      </select>
+                      <label for="inpMinSpecs">Min Specialists</label>
+                  </div>
+                  <div class="col-6 form-floating">
+                      <select class="form-select" id="inpMaxSpecs" x-model="maxS" x-on:change="handleInput('maxS', maxS)">
+                        <option value="1">S1</option>
+                        <option value="2">S2</option>
+                        <option value="3">S3</option>
+                        <option value="4">S4</option>
+                        <option value="5">S5</option>
+                        <option value="6">S6</option>
+                        <option value="7">S7</option>
+                        <option value="8">S8</option>
+                        <option value="9">S9</option>
+                      </select>
+                      <label for="inpMaxSpecs">Max Specialists</label>
+                  </div>
+              </div>
+              <!-- Toggle Buttons for Specialist Abilities -->
+              <div class="d-flex btn-group justify-content-between gap-0 mt-0 mb-3" role="group">
+                <input type="checkbox" class="btn-check" id="maxSf" autocomplete="off" :checked="maxSf" x-model="maxSf" x-on:change="handleInput('maxSf', maxSf, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxSf" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if you have not yet unlocked max <b>FLYING</b> units">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </label>
+            
+                <input type="checkbox" class="btn-check" id="maxSmo" autocomplete="off" :checked="maxSmo" x-model="maxSmo" x-on:change="handleInput('maxSmo', maxSmo, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxSmo" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if you have not yet unlocked max <b>MOUNTED</b> units">
+                    <i class="fa-solid fa-horse-head"></i>
+                </label>
+            
+                <input type="checkbox" class="btn-check" id="maxSme" autocomplete="off" :checked="maxSme" x-model="maxSme" x-on:change="handleInput('maxSme', maxSme, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxSme" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if you have not yet unlocked max <b>MELEE</b> units">
+                    <i class="fa-solid fa-sword"></i>
+                </label>
+            
+                <input type="checkbox" class="btn-check" id="maxSr" autocomplete="off" :checked="maxSr" x-model="maxSr" x-on:change="handleInput('maxSr', maxSr, true)">
+                <label class="btn btn-sm btn-outline-secondary" for="maxSr" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="Deselect if you have not yet unlocked max <b>RANGED</b> units">
+                    <i class="fa-sharp fa-solid fa-bow-arrow"></i>
+                </label>
+              </div>
+      
+              <!-- Monsters Settings -->
+              <h6>Monsters</h6>
+              <div class="row gx-2 mb-3">
+                  <div class="col-6 form-floating">
+                      <select class="form-select" id="inpMinMonsters" x-model="minM" x-on:change="handleInput('minM', minM)">
+                        <option value="1">M1</option>
+                        <option value="2">M2</option>
+                        <option value="3">M3</option>
+                        <option value="4">M4</option>
+                        <option value="5">M5</option>
+                        <option value="6">M6</option>
+                        <option value="7">M7</option>
+                        <option value="8">M8</option>
+                        <option value="9">M9</option>
+                      </select>
+                      <label for="inpMinMonsters">Min Monsters</label>
+                  </div>
+                  <div class="col-6 form-floating">
+                      <select class="form-select" id="inpMaxMonsters" x-model="maxM" x-on:change="handleInput('maxM', maxM)">
+                        <option value="1">M1</option>
+                        <option value="2">M2</option>
+                        <option value="3">M3</option>
+                        <option value="4">M4</option>
+                        <option value="5">M5</option>
+                        <option value="6">M6</option>
+                        <option value="7">M7</option>
+                        <option value="8">M8</option>
+                        <option value="9">M9</option>
+                      </select>
+                      <label for="inpMaxMonsters">Max Monsters</label>
+                  </div>
+              </div>
+      
+              <!-- Settings Button -->
+              <div class="d-grid">
+                  <button type="button" class="btn btn-warning" data-bs-toggle="offcanvas" data-bs-target="#settings">
+                    <i class="fa-solid fa-sliders"></i> Settings
+                  </button>
+              </div>
+              <div class="d-grid mt-4">
+                <div class="alert alert-dark d-none d-md-block" role="alert">
+                  <strong>Did you know?</strong>
+                  <div id="tipsCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner" style="font-size: 0.875em;">
+                      <div class="carousel-item active">
+                        <span>You can bookmark this page to save it!</span>
+                      </div>
+                      <div class="carousel-item">
+                        <span>Hover over each troop type to see its individual health</span>
+                      </div>
+                      <div class="carousel-item">
+                        <span>Hover over the troop count to see the health pool used</span>
+                      </div>
+                      <div class="carousel-item">
+                        <span>Use the settings button to change default settings.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+		<a href="https://info.flagcounter.com/cWwa">
+			<img src="https://s01.flagcounter.com/count2/cWwa/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_Visitors/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+		</a>
+              </div>
+          </form>
+      </div>
+      
+          <div class="col-md-10">
+              <div class="row text-center">
+                  <div class="col-md-3">
+                    <div class="border rounded p-1 mb-1 bg-cyan-700">
+                      <h5>Guardsmen</h5>
+                    </div> 
+                      <div class="list-group border-cyan-700" id="guardsmenList"></div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="border rounded p-1 mb-1 bg-red-700">
+                      <h5>Specialists</h5>
+                    </div>  
+                    <div class="list-group border-red-700" id="specialistsList"></div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="border rounded p-1 mb-1 bg-teal-800">
+                      <h5>Monsters</h5>
+                    </div> 
+                      <div class="list-group border-teal-800" id="monstersList"></div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="border rounded p-1 mb-1 bg-yellow-800">
+                      <h5>Mercenaries</h5>
+                    </div> 
+                      <div class="list-group border-yellow-800 " id="mercsList"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!--Settings Window-->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="settings" aria-labelledby="Fine-Tune Settings">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div>
+          Troop types to send:
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="sendFlying" x-model="allF" x-on:change="handleInput('allF', allF, true)">
+          <label class="form-check-label" for="sendFlying">Send <b>Flying</b> Units</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="sendMelee" x-model="allMe" x-on:change="handleInput('allMe', allMe, true)">
+          <label class="form-check-label" for="sendMelee">Send <b>Melee</b> Units</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="sendRanged" x-model="allR" x-on:change="handleInput('allR', allR, true)">
+          <label class="form-check-label" for="sendRanged">Send <b>Ranged</b> Units</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="sendMounted" x-model="allMo" x-on:change="handleInput('allMo', allMo, true)">
+          <label class="form-check-label" for="sendMounted">Send <b>Mounted</b> Units</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="sendEngineers" x-model="allE" x-on:change="handleInput('allE', allE, true)">
+          <label class="form-check-label" for="sendMounted">Send <b>Engineer/Siege</b> Units</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="sendScouts" x-model="allS" x-on:change="handleInput('allS', allS, true)">
+          <label class="form-check-label" for="sendMounted">Send <b>Scout</b> Units</label>
+        </div>
+        <div class="mt-3">
+          Output: <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" title="Use this to change the sorting by troop tier or strength">
+            <i class="fa fa-info-circle" style="font-size: 1em; cursor: pointer;"></i>
+          </span>
+        </div>
+        <div class="form-floating">
+          <select class="form-select" id="sortMode" x-model="sortMode" x-on:change="handleInput('sortMode', sortMode)">
+            <option value="normal">Troop Tier</option>
+            <option value="azora">Strength (Azora Mode)</option>
+          </select>
+          <label for="inpMaxMonsters">Sort By:</label>
+        </div>
+        <div class="mt-3">
+          Enemy Type: <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" title="Use PvP to prioritize Specialists for damage, PvE to prioritize Guardsmen. Even keeps them the same.">
+            <i class="fa fa-info-circle" style="font-size: 1em; cursor: pointer;"></i>
+          </span>
+        </div>
+        <div class="form-floating">
+          <select class="form-select" id="enemy" x-model="enemy" x-on:change="handleInput('enemy', enemy)">
+            <option value="pve">PvE</option>
+            <option value="pvp">PvP</option>
+            <option value="even">Even</option>
+          </select>
+          <label for="inpMaxMonsters">Enemy:</label>
+        </div>
+      </div>
+    </div>
+    <!--Help Modal-->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpModalLabel">Help</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h4>Overview</h4>
+            <p>This application helps players optimize troop stacking by calculating the most effective combination of troops to send in an attack, ensuring that the total leadership used is maximized without exceeding the allowed limit. It also adjusts troop compositions based on the type of enemy encountered (PVP or PVE).</p>
+            <h4>Instructions</h4>
+            <ol>
+              <li><b>Enter Your Leadership:</b> Specify the maximum leadership value your deployment can use.</li>
+              <li><b>Select Your Troop Tiers:</b> Select the minimum/maximum level of guardsmen/specialists/monsters to send</li>
+              <li><b>Enter your Stacks In-Game:</b> Use the numbers provided to build your attacking stacks</li>
+            </ol>
+            <p>The calculator will automatically update your numbers as you change values. By default, no scouts or catapults are included, but you can change this (as well as melee/ranged/mounted/flying) in the Settings button</p>
+            <p>Also in the settings is the option to sort by strength (default) or troop tiers, and you can change to PvP or PvE to optimize the troops being sent (for maximum damage)</p>
+            <h4>How it Works</h4>
+            <ul>
+              <li><b>Apex Troop Selection:</b> The highest HP Guardsman is identified as the apex unit, serving as the reference for all other calculations.</li>
+              <li><b>SubApex Ratios:</b> Troops are grouped by category and tier. Each troop's ratio is calculated relative to the apex unit, with adjustments made based on the enemy type.
+                <ol>
+                  <li>For PVP enemies, the ratios for Guardsmen are adjusted.</li>
+                  <li>For PVE enemies, the ratios for Specialists are adjusted.</li>
+                </ol>
+              </li>
+              <li><b>Leadership Padding:</b> If there is remaining leadership after initial calculations, the lowest-tier and lowest-leadership troops are incremented to fully utilize the available leadership.</li>
+              <li><b>Final Output:</b> The optimal troop deployment is displayed, including a breakdown of the total leadership used and the total HP of the army.</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <hr />
+    <footer id="footer" class="footer dark-background">
+    <div class="container">
+	  <div style="margin: 0 0 30px 0;">
+		<div style="float: left;">
+		<a href="\"><img src="assets/img/wlogo.png" style="max-height: 150px;" alt="" class="img-fluid flex-shrink-0"></a>
+		</div>
+	  <div>
+      <h4 class="sitename"><strong style="color:#ef6603;">THE</strong> Great Family Gang</h4>
+      <p>We committed to leading with strategy, unity, respect and dedication to ensure our clan's success.</p>
+	  </div>
+	  </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright 2025 All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="\" style="color:#ef6603;text-decoration: none;transition: 0.3s;">웃T3li</a> Distributed By <a href="\" style="color:#ef6603;text-decoration: none;transition: 0.3s;">THE</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  </body>
+</html>
