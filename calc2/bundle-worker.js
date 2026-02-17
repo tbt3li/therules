@@ -366,6 +366,34 @@ function generateTroopCategory(container, category) {
   return count;
 }
 
+// ==================== Modal Loading ====================
+
+// Function to load modals from HTML files
+async function loadModals() {
+  const modalPromises = [];
+  
+  $(".include-html").each(function() {
+    const element = this;
+    const url = $(element).attr("data-href");
+    
+    const promise = fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error(`Failed to load ${url}`);
+        return response.text();
+      })
+      .then(html => {
+        $(element).replaceWith(html);
+      })
+      .catch(error => {
+        console.error(`Error loading modal ${url}:`, error);
+      });
+    
+    modalPromises.push(promise);
+  });
+  
+  return Promise.all(modalPromises);
+}
+
 // ==================== State Management ====================
 
 let currentConfig = {
@@ -974,13 +1002,16 @@ window.updateTroops = async function() {
 
 // ==================== Initialization ====================
 
-$(document).ready(function() {
+$(document).ready(async function() {
   console.log("Calculator v2 initializing...");
   
   // Set version number
   $("#app-version-number").text(APP_VERSION);
   
-  // Generate troop categories
+  // First, load all modals
+  await loadModals();
+  
+  // Then generate troop categories
   for (const category in M) {
     const container = document.getElementById(`${category}-category`);
     if (container) {
@@ -993,8 +1024,11 @@ $(document).ready(function() {
   
   // Initialize tooltips if Bootstrap is available
   if (typeof bootstrap !== 'undefined') {
-    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    tooltips.forEach(t => new bootstrap.Tooltip(t));
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltips.forEach(t => new bootstrap.Tooltip(t));
+    }, 100);
   }
   
   // Refresh profile list
