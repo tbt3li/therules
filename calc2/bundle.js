@@ -6,7 +6,7 @@ const t = e,
     n = "Confirm";
 
 // Worker endpoint
-const WORKER_URL = 'https://calc2.t3li.workers.dev';
+//const WORKER_URL = 'https://calc2.t3li.workers.dev';
 
 $(document).ready((() => {
     const e = $(".include-html");
