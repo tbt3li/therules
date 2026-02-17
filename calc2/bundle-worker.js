@@ -1,62 +1,41 @@
-"use strict";
+// Client-side code for calculator v2
+// This replaces bundle.js and communicates with the worker
 
 const WORKER_URL = 'https://calc2.t3li.workers.dev';
-const VERSION = "0.1-Beta";
 
-// Existing constants and data structures (keep all your existing data)
-const M = {
-  Guardsmen: "Guardsmen",
-  Specialists: "Specialists",
-  Engineers: "Engineers",
-  Monsters: "Monsters",
-  Mercenaries: "Mercenaries"
+// Store the original functions we need to override
+let originalTroops = [];
+let currentConfig = {
+  referenceCount: 50,
+  specialistAdjustment: 10,
+  healthBonuses: {
+    flying: 0,
+    mounted: 0,
+    melee: 0,
+    ranged: 0,
+    guardsman: 0,
+    specialist: 0,
+    monster: 0
+  },
+  availableLeadership: 0,
+  availableAuthority: 0,
+  availableDominance: 0,
+  enemyStackCount: 4,
+  revivalCostReduction: 1
 };
 
-// ... (keep all your troop data arrays: z, Y, _, Q, etc.)
-
-// Modified updateTroops function to use worker
-window.updateTroops = async function(element) {
-  const config = gatherConfiguration();
-  const selectedTroops = gatherSelectedTroops();
+// Override the updateTroops function to use the worker
+async function updateTroopsWithWorker(source) {
+  // Get current UI state
+  const selectedTroops = getSelectedTroopsWithFlags();
   
   if (selectedTroops.length === 0) {
-    clearDisplays();
+    clearDisplay();
     return;
   }
-  
-  try {
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        selectedTroops: selectedTroops,
-        config: config
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error('Worker request failed');
-    }
-    
-    const result = await response.json();
-    
-    if (result.error) {
-      console.error('Worker error:', result.error);
-      return;
-    }
-    
-    displayResults(result, config);
-    
-  } catch (error) {
-    console.error('Error calculating troops:', error);
-    showError('Failed to calculate troops. Please try again.');
-  }
-};
 
-function gatherConfiguration() {
-  return {
+  // Update config from UI
+  currentConfig = {
     referenceCount: parseInt($("#reference-count").val()) || 50,
     specialistAdjustment: parseInt($("#specialist-adjustment").val()) || 10,
     healthBonuses: {
@@ -72,72 +51,126 @@ function gatherConfiguration() {
     availableAuthority: parseInt($("#available-authority").val()) || 0,
     availableDominance: parseInt($("#available-dominance").val()) || 0,
     enemyStackCount: parseInt($("#enemy-stack-count").val()) || 4,
-    revivalCostReduction: parseFloat($("#revival-cost-reduction").val()) || 1,
-    roundToTens: true
+    revivalCostReduction: parseFloat($("#revival-cost-reduction").val()) || 1
   };
+
+  // Mark reference troop
+  const referenceTroop = findReferenceTroop(selectedTroops);
+  const troopsWithRef = selectedTroops.map(t => ({
+    ...t,
+    isReference: t === referenceTroop
+  }));
+
+  // Prepare request for worker
+  const requestData = {
+    troops: troopsWithRef,
+    config: currentConfig
+  };
+
+  try {
+    // Show loading state
+    $("#report-body").html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+    
+    // Send to worker
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Worker error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    // Update UI with results
+    displayResults(result);
+    updateUIFromResult(result);
+    
+  } catch (error) {
+    console.error('Error calling worker:', error);
+    $("#report-body").html(`<div class="alert alert-danger">Error: ${error.message}</div>`);
+  }
 }
 
-function gatherSelectedTroops() {
-  let selected = [];
-  const checkedBoxes = $("input:checked.troop-checkbox");
+// Helper function to get selected troops with their flags
+function getSelectedTroopsWithFlags() {
+  const selected = [];
+  const checkboxes = $("input:checked.troop-checkbox");
   
-  checkedBoxes.each(function() {
-    const id = $(this).prop('id');
-    // Find the troop data associated with this checkbox
-    const troop = findTroopById(id);
-    if (troop) {
-      selected.push(troop);
+  for (let i = 0; i < checkboxes.length; i++) {
+    const checkbox = checkboxes[i];
+    const troopData = $(checkbox).data('troop');
+    if (troopData) {
+      selected.push(troopData);
     }
-  });
+  }
   
   return selected;
 }
 
-function findTroopById(id) {
-  // Search through your troop data structures
-  for (const category in window.troopData) {
-    for (const type in window.troopData[category]) {
-      const troop = window.troopData[category][type].find(t => t.props?.baseId === id);
-      if (troop) return troop;
-    }
-  }
-  return null;
+// Find reference troop (highest health guardsman/specialist)
+function findReferenceTroop(troops) {
+  return troops
+    .filter(t => t.category === "Guardsmen" || t.category === "Specialists")
+    .reduce((max, t) => !max || t.health > max.health ? t : max, null);
 }
 
-function displayResults(result, config) {
+// Clear display
+function clearDisplay() {
+  $("#report-body").html("");
+  $(".lad-amount").text("0 of");
+  $(".troop-count").text("0").hide();
+  $("#generate-report").prop("disabled", true);
+}
+
+// Display results in UI
+function displayResults(result) {
   const { statistics, troops, mercenaries, monsters } = result;
   
   // Update LAD displays
+  $("#required-leadership").val(formatNumber(troops.requiredLeadership));
+  $("#required-authority").val(formatNumber(mercenaries.requiredAuthority));
+  $("#required-dominance").val(formatNumber(monsters.requiredDominance));
+  
   $("#leadership-amount").text(`${formatNumber(troops.requiredLeadership)} of`);
   $("#authority-amount").text(`${formatNumber(mercenaries.requiredAuthority)} of`);
   $("#dominance-amount").text(`${formatNumber(monsters.requiredDominance)} of`);
   
-  // Update input warnings
-  $(".leadership-display").toggleClass("alerted-input", statistics.leadershipExceeded);
-  $(".authority-display").toggleClass("alerted-input", statistics.authorityExceeded);
-  $(".dominance-display").toggleClass("alerted-input", statistics.dominanceExceeded);
+  // Update troop counts
+  updateTroopCounts([...troops.squads, ...mercenaries.squads, ...monsters.squads]);
   
-  // Update requirement displays
-  $("#required-leadership").val(`${formatNumber(troops.requiredLeadership)}${config.availableLeadership > 0 ? ' / ' + formatNumber(config.availableLeadership) : ''}`);
-  $("#required-authority").val(`${formatNumber(mercenaries.requiredAuthority)}${config.availableAuthority > 0 ? ' / ' + formatNumber(config.availableAuthority) : ''}`);
-  $("#required-dominance").val(`${formatNumber(monsters.requiredDominance)}${config.availableDominance > 0 ? ' / ' + formatNumber(config.availableDominance) : ''}`);
-  
-  // Update troop counts in UI
-  updateTroopCounts(result);
-  
-  // Generate report
-  generateReportHTML(result);
+  // Generate report HTML
+  const reportHTML = generateReportHTML(result);
+  $("#report-body").html(reportHTML);
   
   // Enable generate button
   $("#generate-report").prop("disabled", false);
 }
 
-function updateTroopCounts(result) {
-  // Clear all existing counts
-  $(".troop-count").hide().text("");
+// Update UI from result
+function updateUIFromResult(result) {
+  const { statistics } = result;
   
-  // Update counts for troops
-  [...result.troops.squads, ...result.mercenaries.squads, ...result.monsters.squads].forEach(squad => {
+  // Check limits and apply warning classes
+  const leadership = parseInt($("#available-leadership").val()) || 0;
+  const authority = parseInt($("#available-authority").val()) || 0;
+  const dominance = parseInt($("#available-dominance").val()) || 0;
+  
+  $(".leadership-display").toggleClass("alerted-input", 
+    leadership > 0 && result.troops.requiredLeadership > leadership);
+  $(".authority-display").toggleClass("alerted-input", 
+    authority > 0 && result.mercenaries.requiredAuthority > authority);
+  $(".dominance-display").toggleClass("alerted-input", 
+    dominance > 0 && result.monsters.requiredDominance > dominance);
+}
+
+// Update individual troop counts
+function updateTroopCounts(squads) {
+  squads.forEach(squad => {
     const element = $(`#${squad.name.replace(/\s+/g, '-').toLowerCase()}-count`);
     if (element.length) {
       element.text(formatNumber(squad.count)).show();
@@ -146,45 +179,67 @@ function updateTroopCounts(result) {
   });
 }
 
+// Generate report HTML
 function generateReportHTML(result) {
+  const { statistics, troops, mercenaries, monsters } = result;
   let html = '<div class="flex-container flex-row-container">';
   
-  // Statistics displays
-  html += createStatDisplay("Power score", formatShortNumber(result.statistics.overallRating));
-  html += createStatDisplay("Strength", formatShortNumber(result.statistics.armyStrength));
-  html += createStatDisplay("Leadership", formatShortNumber(result.troops.requiredLeadership));
+  // Rating displays
+  html += createRatingDisplay("Power score", formatCompact(statistics.overallRating));
+  html += createRatingDisplay("Strength", formatCompact(statistics.armyStrength));
+  html += createRatingDisplay("Leadership", formatCompact(troops.requiredLeadership));
   
-  if (result.mercenaries.requiredAuthority > 0) {
-    html += createStatDisplay("Authority", formatShortNumber(result.mercenaries.requiredAuthority));
+  if (mercenaries.requiredAuthority > 0) {
+    html += createRatingDisplay("Authority", formatCompact(mercenaries.requiredAuthority));
   }
   
-  if (result.monsters.requiredDominance > 0) {
-    html += createStatDisplay("Dominance", formatShortNumber(result.monsters.requiredDominance));
+  if (monsters.requiredDominance > 0) {
+    html += createRatingDisplay("Dominance", formatCompact(monsters.requiredDominance));
   }
   
-  html += createStatDisplay("Revival cost", formatShortNumber(result.statistics.actualRevivalCost));
+  html += createRatingDisplay("Revival cost (g)", formatCompact(statistics.actualRevivalCost));
+  
+  // Attack info
+  if (statistics.attackInfo && statistics.attackInfo.rounds > 0) {
+    const { rounds, minAttacks, maxAttacks, enemyAttacks, role } = statistics.attackInfo;
+    html += createRatingDisplay("Rounds", formatNumber(rounds));
+    html += createRatingDisplay("Your hits", `${formatNumber(minAttacks)} - ${formatNumber(maxAttacks)}`);
+    html += createRatingDisplay("Enemy hits", formatNumber(enemyAttacks));
+    html += createRatingDisplay("Total hits", `${formatNumber(minAttacks + enemyAttacks)} - ${formatNumber(maxAttacks + enemyAttacks)}`);
+    html += createRatingDisplay("Your role", `~${(role * 100).toFixed(1)}%`);
+  }
   
   html += '</div>';
   
-  // Add squad breakdowns
+  // Army sections
   html += '<h4 class="separator">Your Army</h4>';
   
-  if (result.mercenaries.squads.length > 0) {
-    html += generateSquadHTML("Mercenaries", result.mercenaries.squads, "authority");
+  if (mercenaries.squads.length > 0) {
+    html += '<h5>Mercenaries</h5>';
+    html += '<div class="flex-container flex-column-container report-section">';
+    html += generateSquadHTML(mercenaries.squads, 'authority');
+    html += '</div>';
   }
   
-  if (result.monsters.squads.length > 0) {
-    html += generateSquadHTML("Monsters", result.monsters.squads, "dominance");
+  if (monsters.squads.length > 0) {
+    html += '<h5>Monsters</h5>';
+    html += '<div class="flex-container flex-column-container report-section">';
+    html += generateSquadHTML(monsters.squads, 'dominance');
+    html += '</div>';
   }
   
-  if (result.troops.squads.length > 0) {
-    html += generateSquadHTML("Normal Troops", result.troops.squads, "leadership");
+  if (troops.squads.length > 0) {
+    html += '<h5>Normal Troops</h5>';
+    html += '<div class="flex-container flex-column-container report-section">';
+    html += generateSquadHTML(troops.squads, 'leadership');
+    html += '</div>';
   }
   
-  $("#report-body").html(html);
+  return html;
 }
 
-function createStatDisplay(title, value) {
+// Create rating display div
+function createRatingDisplay(title, value) {
   return `
     <div class="rating-display flex-container flex-column-container">
       <div class="rating-title">${title}</div>
@@ -193,10 +248,9 @@ function createStatDisplay(title, value) {
   `;
 }
 
-function generateSquadHTML(title, squads, resourceType) {
-  let html = `<h5>${title}</h5>`;
-  html += '<div class="flex-container flex-column-container report-section">';
-  
+// Generate squad HTML
+function generateSquadHTML(squads, resourceType) {
+  let html = '';
   let lastTier = null;
   
   squads.forEach(squad => {
@@ -204,13 +258,9 @@ function generateSquadHTML(title, squads, resourceType) {
       html += '<div style="margin-bottom: 21px;"></div>';
     }
     
-    const bonusHtml = squad.totalHealthBonus > 0 
-      ? `<span class="bonus-tag">+${formatNumber(squad.totalHealthBonus)}</span>` 
+    const bonusTag = squad.totalHealthBonus > 0 
+      ? `<span class="bonus-tag">+${formatNumber(squad.totalHealthBonus)}</span>`
       : '';
-    
-    const resourceTotal = resourceType === 'leadership' ? squad.totalLeadership
-      : resourceType === 'authority' ? squad.totalAuthority
-      : squad.totalDominance;
     
     html += `
       <div class="report-squad">
@@ -219,9 +269,9 @@ function generateSquadHTML(title, squads, resourceType) {
           <div class="report-squad-count">${formatNumber(squad.count)}</div>
         </div>
         <div class="report-squad-details flex-container flex-row-container">
-          <div>Health: ${formatNumber(squad.totalHealth)} ${bonusHtml}</div>
+          <div>Health: ${formatNumber(squad.totalHealth)} ${bonusTag}</div>
           <div>Strength: ${formatNumber(squad.totalStrength)}</div>
-          <div>${resourceType}: ${formatNumber(resourceTotal)}</div>
+          <div>${capitalizeFirst(resourceType)}: ${formatNumber(squad[`total${capitalizeFirst(resourceType)}`])}</div>
         </div>
       </div>
     `;
@@ -229,24 +279,30 @@ function generateSquadHTML(title, squads, resourceType) {
     lastTier = squad.tier;
   });
   
-  html += '</div>';
   return html;
 }
 
+// Get tier tag HTML
 function getTierTag(category, tier) {
   const tierMap = {1:"1",2:"2",3:"3",4:"4",5:"5",6:"6",7:"7",8:"I",9:"II"};
-  const prefix = category === 'Guardsmen' ? 'G' 
-    : category === 'Specialists' ? 'S'
-    : category === 'Monsters' ? 'M'
-    : '';
+  let prefix = "";
+  
+  switch(category) {
+    case "Guardsmen": prefix = "G"; break;
+    case "Specialists": prefix = "S"; break;
+    case "Monsters": prefix = "M"; break;
+    default: prefix = "";
+  }
+  
   return `<span class="tag visual-tier-${tier}">${prefix}${tierMap[tier]}</span>`;
 }
 
+// Helper functions
 function formatNumber(num) {
-  return Intl.NumberFormat().format(Math.floor(num));
+  return Intl.NumberFormat().format(Math.trunc(num));
 }
 
-function formatShortNumber(num) {
+function formatCompact(num) {
   const abs = Math.abs(num);
   if (abs >= 1e12) return `${(num/1e12).toFixed(1)}T`;
   if (abs >= 1e9) return `${(num/1e9).toFixed(1)}B`;
@@ -255,90 +311,29 @@ function formatShortNumber(num) {
   return formatNumber(num);
 }
 
-function clearDisplays() {
-  $(".lad-amount").text("0 of");
-  $(".troop-count").hide().removeClass("troop-count-warning");
-  $("#required-leadership, #required-authority, #required-dominance").val("");
-  $("#generate-report").prop("disabled", true);
-  $("#report-body").html("");
+function capitalizeFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function showError(message) {
-  // Implement error display
-  console.error(message);
-}
-
-// Modified reverseCalculateArmy to use worker
-window.reverseCalculateArmy = async function(autoGenerate) {
-  const leadership = parseInt($("#available-leadership").val());
-  if (leadership <= 0) return;
-  
-  // First calculate with a base count
-  const config = gatherConfiguration();
-  config.referenceCount = 100; // Start with 100
-  
-  const selectedTroops = gatherSelectedTroops();
-  
-  try {
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ selectedTroops, config })
-    });
-    
-    const result = await response.json();
-    
-    // Calculate ratio and adjust
-    const ratio = leadership / result.troops.requiredLeadership;
-    const newCount = Math.floor(100 * ratio);
-    
-    $("#reference-count").val(newCount);
-    
-    // Update with new count
-    config.referenceCount = newCount;
-    
-    const finalResponse = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ selectedTroops, config })
-    });
-    
-    const finalResult = await finalResponse.json();
-    displayResults(finalResult, config);
-    
-    if (autoGenerate) {
-      $("#generate-report").click();
-    }
-    
-  } catch (error) {
-    console.error('Error in reverse calculation:', error);
-  }
-};
-
-// Keep all your existing initialization code
+// Store troop data on checkboxes when page loads
 $(document).ready(function() {
-  $("#app-version-number").text(VERSION);
+  // Store troop data on checkboxes
+  $(".troop-checkbox").each(function() {
+    const checkbox = $(this);
+    const parent = checkbox.closest('.troop-item');
+    const name = parent.find('.troop-type-label').text();
+    
+    // Extract troop data from the DOM or from your original data structure
+    // This depends on how your original bundle.js stores the data
+    // You might need to adapt this based on your actual data structure
+    
+    // For now, we'll store basic info
+    $(this).data('troop', {
+      name: name,
+      // Add other properties as needed
+    });
+  });
   
-  // Load initial settings
-  loadSettings();
-  
-  // Initialize troop categories
-  for (const category in M) {
-    const element = document.getElementById(`${category}-category`);
-    if (element) {
-      initializeTroopCategory(element, category);
-    }
-  }
+  // Override the original updateTroops function
+  window.updateTroops = updateTroopsWithWorker;
 });
-
-// Helper function to load settings
-function loadSettings() {
-  const settings = localStorage.getItem('uiSettings');
-  if (settings) {
-    applySettings(JSON.parse(settings));
-  }
-}
-
-// Note: You'll need to keep all your troop data arrays (z, Y, _, Q)
-// and initialization functions from your original bundle.js
-// Only the calculation logic has been moved to the worker
