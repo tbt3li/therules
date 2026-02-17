@@ -3,7 +3,7 @@
 
 const WORKER_URL = 'https://calc2.t3li.workers.dev';
 
-// Store the original functions we need to override
+// Store the original functions we need
 let originalTroops = [];
 let currentConfig = {
   referenceCount: 50,
@@ -24,9 +24,265 @@ let currentConfig = {
   revivalCostReduction: 1
 };
 
-// Override the updateTroops function to use the worker
-async function updateTroopsWithWorker(source) {
-  // Get current UI state
+// Global functions that were originally in bundle.js
+window.onChangeWithIntValidation = function(element, min, max, callback) {
+  const value = parseInt($(element).val());
+  if (Number.isNaN(value)) {
+    $(element).addClass("alerted-input");
+  } else {
+    $(element).val(Math.min(Math.max(value, min), max)).removeClass("alerted-input");
+    callback();
+  }
+};
+
+window.onChangeWithFloatValidation = function(element, min, max, decimals, callback) {
+  const value = parseFloat($(element).val());
+  if (Number.isNaN(value)) {
+    $(element).addClass("alerted-input");
+  } else {
+    $(element).val(Math.min(Math.max(value, min), max).toFixed(decimals)).removeClass("alerted-input");
+    callback();
+  }
+};
+
+window.clearTroopSelection = function() {
+  $(".troop-checkbox").prop("checked", false);
+  $("#generate-report").prop("disabled", true);
+  updateTroops();
+  saveSettings();
+};
+
+window.onTroopClicked = function(selector, tier, category, event) {
+  if (event.getModifierState("Shift") || event.getModifierState("Alt") || event.getModifierState("Control")) {
+    const checkboxSelector = `.tier-${tier}.category-${category} input`;
+    const isChecked = $(selector).prop("checked");
+    $(checkboxSelector).prop("checked", isChecked);
+  }
+};
+
+window.reverseCalculateArmy = async function(triggerReport) {
+  const leadership = parseInt($("#available-leadership").val());
+  if (leadership <= 0) return;
+  
+  // First calculate with current reference count
+  let result = await calculateWithWorker(100);
+  const ratio = leadership / result.troops.requiredLeadership;
+  
+  // Calculate with new reference count
+  result = await calculateWithWorker(100 * ratio);
+  
+  if (result && result.troops && result.troops.squads && result.troops.squads.length > 0) {
+    $("#reference-count").val(result.troops.squads[0].count);
+    if (triggerReport) {
+      $("#generate-report").click();
+    }
+  }
+};
+
+window.saveConfigurationToFile = async function() {
+  const settings = localStorage.uiSettings;
+  if (!settings) return;
+  
+  try {
+    const parsed = JSON.parse(settings);
+    if (parsed && typeof parsed.referenceCount === "number" && typeof parsed.selected === "object") {
+      const file = new File([JSON.stringify(parsed)], "tbstacking-settings.json", { type: "application/json" });
+      const url = URL.createObjectURL(file);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  } catch (e) {
+    console.error("Error saving configuration:", e);
+  }
+};
+
+window.selectFileForImport = function() {
+  $("#import-file").click();
+};
+
+window.importSelectedFile = function(event) {
+  const input = event?.target;
+  if (!input?.files?.length) return;
+  
+  const reader = new FileReader();
+  reader.onload = function() {
+    try {
+      const settings = reader.result;
+      if (settings) {
+        loadSettingsFromString(settings);
+      }
+    } catch (e) {
+      console.error("Error importing file:", e);
+    }
+  };
+  reader.readAsText(input.files[0]);
+};
+
+window.saveSettings = function() {
+  const settings = {
+    referenceCount: parseInt($("#reference-count").val()) || 50,
+    revivalCostReduction: parseFloat($("#revival-cost-reduction").val()) || 1,
+    enemyStackCount: parseInt($("#enemy-stack-count").val()) || 4,
+    specialistAdjustment: parseInt($("#specialist-adjustment").val()) || 10,
+    availableLeadership: parseInt($("#available-leadership").val()) || 0,
+    availableAuthority: parseInt($("#available-authority").val()) || 0,
+    availableDominance: parseInt($("#available-dominance").val()) || 0,
+    selected: []
+  };
+  
+  const checkboxes = $("input:checked.troop-checkbox");
+  for (let i = 0; i < checkboxes.length; i++) {
+    settings.selected.push(`#${$(checkboxes[i]).prop("id")}`);
+  }
+  
+  localStorage.uiSettings = JSON.stringify(settings);
+};
+
+window.loadSettings = function() {
+  const settings = localStorage.uiSettings;
+  if (settings) {
+    loadSettingsFromString(settings);
+  }
+};
+
+window.factoryReset = function() {
+  localStorage.removeItem("uiSettings");
+  localStorage.removeItem("profileNames");
+  window.location.reload();
+};
+
+window.onProfileSelected = function() {
+  const selector = $("#profile-selector");
+  const selectedIndex = selector.prop("selectedIndex");
+  
+  if (selectedIndex <= 0) {
+    $("#save-profile-button, #delete-profile-button").prop("disabled", true);
+    return;
+  }
+  
+  const profileName = selector.val();
+  const profileData = loadProfile(profileName);
+  
+  if (profileData) {
+    $("#delete-profile-button").prop("disabled", false);
+    loadSettingsFromString(profileData);
+    window.currentProfile = profileName.toLowerCase();
+    $("#save-profile-button").prop("disabled", false);
+  }
+};
+
+window.addNewProfile = function() {
+  const name = prompt("Enter profile name (letters, numbers, spaces, and hyphens only):");
+  if (!name || !name.trim()) return;
+  
+  if (!/^[a-zA-Z0-9 _\-]+$/.test(name)) {
+    alert("Only letters, numbers, spaces, hyphens, and underscore characters are allowed.");
+    return;
+  }
+  
+  if (loadProfile(name)) {
+    alert(`A profile named '${name}' already exists.`);
+    return;
+  }
+  
+  saveProfile(name, localStorage.uiSettings);
+  refreshProfileList(name);
+};
+
+window.removeCurrentProfile = function() {
+  if (!window.currentProfile) return;
+  
+  if (confirm(`Are you sure you want to delete profile '${window.currentProfile}'?`)) {
+    deleteProfile(window.currentProfile);
+    refreshProfileList();
+    window.currentProfile = null;
+    $("#save-profile-button, #delete-profile-button").prop("disabled", true);
+  }
+};
+
+window.saveCurrentProfile = function() {
+  if (window.currentProfile) {
+    saveProfile(window.currentProfile, localStorage.uiSettings);
+  } else {
+    addNewProfile();
+  }
+};
+
+// Profile management functions
+function saveProfile(name, data) {
+  const key = name.toLowerCase();
+  localStorage[key] = data;
+  
+  let profiles = JSON.parse(localStorage.profileNames || "[]");
+  if (!profiles.includes(key)) {
+    profiles.push(key);
+    localStorage.profileNames = JSON.stringify(profiles);
+  }
+}
+
+function loadProfile(name) {
+  const key = name.toLowerCase();
+  return localStorage[key];
+}
+
+function deleteProfile(name) {
+  const key = name.toLowerCase();
+  localStorage.removeItem(key);
+  
+  let profiles = JSON.parse(localStorage.profileNames || "[]");
+  profiles = profiles.filter(p => p !== key);
+  localStorage.profileNames = JSON.stringify(profiles);
+}
+
+function refreshProfileList(selected) {
+  const selector = $("#profile-selector");
+  selector.empty();
+  selector.append('<option id="profile-default" selected>Select a profile...</option>');
+  
+  const profiles = JSON.parse(localStorage.profileNames || "[]");
+  for (let i = 0; i < profiles.length; i++) {
+    const profile = profiles[i];
+    selector.append(`<option value="${profile}" ${selected === profile ? "selected" : ""}>${profile}</option>`);
+  }
+}
+
+function loadSettingsFromString(settingsString) {
+  try {
+    const settings = JSON.parse(settingsString);
+    
+    if (settings && typeof settings.referenceCount === "number") {
+      // Clear existing selections
+      $(".troop-checkbox").prop("checked", false);
+      
+      // Apply settings
+      $("#reference-count").val(settings.referenceCount || 50);
+      $("#revival-cost-reduction").val(settings.revivalCostReduction || 1);
+      $("#enemy-stack-count").val(settings.enemyStackCount || 4);
+      $("#specialist-adjustment").val(settings.specialistAdjustment || 10);
+      $("#available-leadership").val(settings.availableLeadership || 0);
+      $("#available-authority").val(settings.availableAuthority || 0);
+      $("#available-dominance").val(settings.availableDominance || 0);
+      
+      // Check selected troops
+      if (settings.selected && settings.selected.length > 0) {
+        for (let i = 0; i < settings.selected.length; i++) {
+          const selector = settings.selected[i];
+          $(selector).prop("checked", true);
+        }
+      }
+      
+      updateTroops();
+    }
+  } catch (e) {
+    console.error("Error loading settings:", e);
+  }
+}
+
+// Main update function using worker
+window.updateTroops = async function() {
   const selectedTroops = getSelectedTroopsWithFlags();
   
   if (selectedTroops.length === 0) {
@@ -54,24 +310,39 @@ async function updateTroopsWithWorker(source) {
     revivalCostReduction: parseFloat($("#revival-cost-reduction").val()) || 1
   };
 
-  // Mark reference troop
+  const result = await calculateWithWorker(currentConfig.referenceCount);
+  
+  if (result) {
+    displayResults(result);
+    updateUIFromResult(result);
+  }
+  
+  // Save settings after update
+  saveSettings();
+};
+
+// Helper function to calculate with worker
+async function calculateWithWorker(referenceCount) {
+  const selectedTroops = getSelectedTroopsWithFlags();
+  if (selectedTroops.length === 0) return null;
+  
   const referenceTroop = findReferenceTroop(selectedTroops);
   const troopsWithRef = selectedTroops.map(t => ({
     ...t,
     isReference: t === referenceTroop
   }));
 
-  // Prepare request for worker
   const requestData = {
     troops: troopsWithRef,
-    config: currentConfig
+    config: {
+      ...currentConfig,
+      referenceCount: referenceCount
+    }
   };
 
   try {
-    // Show loading state
     $("#report-body").html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
     
-    // Send to worker
     const response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: {
@@ -84,15 +355,12 @@ async function updateTroopsWithWorker(source) {
       throw new Error(`Worker error: ${response.status}`);
     }
 
-    const result = await response.json();
-    
-    // Update UI with results
-    displayResults(result);
-    updateUIFromResult(result);
+    return await response.json();
     
   } catch (error) {
     console.error('Error calling worker:', error);
     $("#report-body").html(`<div class="alert alert-danger">Error: ${error.message}</div>`);
+    return null;
   }
 }
 
@@ -125,6 +393,7 @@ function clearDisplay() {
   $(".lad-amount").text("0 of");
   $(".troop-count").text("0").hide();
   $("#generate-report").prop("disabled", true);
+  $("#find-count").prop("disabled", true);
 }
 
 // Display results in UI
@@ -147,13 +416,14 @@ function displayResults(result) {
   const reportHTML = generateReportHTML(result);
   $("#report-body").html(reportHTML);
   
-  // Enable generate button
+  // Enable buttons
   $("#generate-report").prop("disabled", false);
+  $("#find-count").prop("disabled", currentConfig.availableLeadership <= 0);
 }
 
 // Update UI from result
 function updateUIFromResult(result) {
-  const { statistics } = result;
+  const { statistics, troops, mercenaries, monsters } = result;
   
   // Check limits and apply warning classes
   const leadership = parseInt($("#available-leadership").val()) || 0;
@@ -161,17 +431,17 @@ function updateUIFromResult(result) {
   const dominance = parseInt($("#available-dominance").val()) || 0;
   
   $(".leadership-display").toggleClass("alerted-input", 
-    leadership > 0 && result.troops.requiredLeadership > leadership);
+    leadership > 0 && troops.requiredLeadership > leadership);
   $(".authority-display").toggleClass("alerted-input", 
-    authority > 0 && result.mercenaries.requiredAuthority > authority);
+    authority > 0 && mercenaries.requiredAuthority > authority);
   $(".dominance-display").toggleClass("alerted-input", 
-    dominance > 0 && result.monsters.requiredDominance > dominance);
+    dominance > 0 && monsters.requiredDominance > dominance);
 }
 
 // Update individual troop counts
 function updateTroopCounts(squads) {
   squads.forEach(squad => {
-    const element = $(`#${squad.name.replace(/\s+/g, '-').toLowerCase()}-count`);
+    const element = $(`#${squad.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}-count`);
     if (element.length) {
       element.text(formatNumber(squad.count)).show();
       element.attr("title", `Total health: ${formatNumber(squad.totalHealth)}`);
@@ -182,7 +452,7 @@ function updateTroopCounts(squads) {
 // Generate report HTML
 function generateReportHTML(result) {
   const { statistics, troops, mercenaries, monsters } = result;
-  let html = '<div class="flex-container flex-row-container">';
+  let html = '<div class="flex-container flex-row-container" style="flex-wrap: wrap;">';
   
   // Rating displays
   html += createRatingDisplay("Power score", formatCompact(statistics.overallRating));
@@ -241,7 +511,7 @@ function generateReportHTML(result) {
 // Create rating display div
 function createRatingDisplay(title, value) {
   return `
-    <div class="rating-display flex-container flex-column-container">
+    <div class="rating-display flex-container flex-column-container" style="min-width: 120px; margin: 5px;">
       <div class="rating-title">${title}</div>
       <div class="rating-value">${value}</div>
     </div>
@@ -252,14 +522,15 @@ function createRatingDisplay(title, value) {
 function generateSquadHTML(squads, resourceType) {
   let html = '';
   let lastTier = null;
+  let lastCategory = null;
   
   squads.forEach(squad => {
-    if (lastTier && lastTier !== squad.tier) {
+    if (lastTier && lastTier !== squad.tier && lastCategory !== squad.category) {
       html += '<div style="margin-bottom: 21px;"></div>';
     }
     
-    const bonusTag = squad.totalHealthBonus > 0 
-      ? `<span class="bonus-tag">+${formatNumber(squad.totalHealthBonus)}</span>`
+    const bonusTag = squad.totalHealthBonus > 5 // Only show if significant
+      ? `<span class="bonus-tag">+${formatNumber(Math.round(squad.totalHealthBonus))}</span>`
       : '';
     
     html += `
@@ -271,12 +542,13 @@ function generateSquadHTML(squads, resourceType) {
         <div class="report-squad-details flex-container flex-row-container">
           <div>Health: ${formatNumber(squad.totalHealth)} ${bonusTag}</div>
           <div>Strength: ${formatNumber(squad.totalStrength)}</div>
-          <div>${capitalizeFirst(resourceType)}: ${formatNumber(squad[`total${capitalizeFirst(resourceType)}`])}</div>
+          <div>${capitalizeFirst(resourceType)}: ${formatNumber(squad[`total${capitalizeFirst(resourceType)}`] || 0)}</div>
         </div>
       </div>
     `;
     
     lastTier = squad.tier;
+    lastCategory = squad.category;
   });
   
   return html;
@@ -294,15 +566,17 @@ function getTierTag(category, tier) {
     default: prefix = "";
   }
   
-  return `<span class="tag visual-tier-${tier}">${prefix}${tierMap[tier]}</span>`;
+  return `<span class="tag visual-tier-${tier}">${prefix}${tierMap[tier] || tier}</span>`;
 }
 
 // Helper functions
 function formatNumber(num) {
+  if (num === undefined || num === null) return "0";
   return Intl.NumberFormat().format(Math.trunc(num));
 }
 
 function formatCompact(num) {
+  if (num === undefined || num === null) return "0";
   const abs = Math.abs(num);
   if (abs >= 1e12) return `${(num/1e12).toFixed(1)}T`;
   if (abs >= 1e9) return `${(num/1e9).toFixed(1)}B`;
@@ -315,25 +589,22 @@ function capitalizeFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Store troop data on checkboxes when page loads
+// Initialize when document is ready
 $(document).ready(function() {
-  // Store troop data on checkboxes
-  $(".troop-checkbox").each(function() {
-    const checkbox = $(this);
-    const parent = checkbox.closest('.troop-item');
-    const name = parent.find('.troop-type-label').text();
-    
-    // Extract troop data from the DOM or from your original data structure
-    // This depends on how your original bundle.js stores the data
-    // You might need to adapt this based on your actual data structure
-    
-    // For now, we'll store basic info
-    $(this).data('troop', {
-      name: name,
-      // Add other properties as needed
-    });
-  });
+  console.log("Calculator v2 client initialized");
   
-  // Override the original updateTroops function
-  window.updateTroops = updateTroopsWithWorker;
+  // Load any saved settings
+  loadSettings();
+  
+  // Initialize tooltips if Bootstrap is available
+  if (typeof bootstrap !== 'undefined') {
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(t => new bootstrap.Tooltip(t));
+  }
+  
+  // Update UI based on current selections
+  updateTroops();
+  
+  // Refresh profile list
+  refreshProfileList();
 });
