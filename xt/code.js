@@ -13341,52 +13341,37 @@ function ug(o, g) {
     }
 }
 async function sg(o, g, j) {
-    const r = {
-            attackBonuses: {},
-            healthBonuses: {},
-            epicMonsterStrengthBonus: o.bonuses.epicMonsterStrengthBonus,
-            armyOffsetStrength: o.bonuses.armyOffsetStrength,
-            armyOffsetHealth: o.bonuses.armyOffsetHealth,
-            epicMonsterHunterStrength: o.bonuses.epicMonsterHunterStrength,
-            epicMonsterHunterHealth: o.bonuses.epicMonsterHunterHealth
-        },
-        E = ["GUARDSMAN", "SPECIALIST", "MERCENARY", "MONSTER"],
-        M = ["MELEE", "RANGED", "MOUNTED", "FLYING"];
-    E.forEach(ie => {
-        r.attackBonuses[ie] = {}, r.healthBonuses[ie] = {}, M.forEach(L => {
-            const G = o.bonuses.attackBonuses[ie]?.[L] || 0,
-                T = o.bonuses.healthBonuses[ie]?.[L] || 0;
-            r.attackBonuses[ie][L] = G, r.healthBonuses[ie][L] = T
-        })
-    });
-    const D = qh(),
-        O = g ? Jd(D, g, j) : D,
-        {
-            leadershipStats: b,
-            monsterStats: y,
-            mercenaryStats: R
-        } = Ph(O, r),
-        _ = lg(b, o.leadershipLimit) || {},
-        {
-            strength: W,
-            health: le
-        } = Yd(_, b);
-    let se = {},
-        K = W,
-        $ = le;
-    if (y.length > 0 && W > 0) {
-        se = ag(y, W, le);
-        const ie = Yd(se, y);
-        ie.strength > 0 && (K = ie.strength, $ = ie.health)
+    try {
+        // Create the request data
+        const requestData = {
+            leadershipLimit: o,
+            bonuses: g,
+            troopSelector: j,
+            selectedMercenaries: window.selectedMercenaries || []
+        };
+        
+        // Call the worker
+        const response = await calculateWithWorker(requestData);
+        
+        // Format the response to match what the app expects
+        return {
+            troops: response.troops.map(troop => ({
+                id: troop.id,
+                name: troop.name,
+                quantity: troop.quantity,
+                baseStrength: troop.baseStrength,
+                baseHealth: troop.baseHealth,
+                totalHealth: troop.totalHealth,
+                totalStrength: troop.totalStrength,
+                totalStrengthWithFeatureBonus: troop.totalStrengthWithFeatureBonus,
+                stackNumber: troop.stackNumber || 1
+            }))
+        };
+    } catch (error) {
+        console.error('Worker calculation failed, using fallback:', error);
+        // Optional: Add a fallback local calculation here if you want
+        return { troops: [] };
     }
-    let w = {};
-    R.length > 0 && K > 0 && (w = ng(R, K, $));
-    const ee = {},
-        U = [_, se, w];
-    for (const ie of U)
-        for (const [L, G] of Object.entries(ie)) G > 0 && (ee[L] = (ee[L] || 0) + G);
-    const X = [...b, ...y, ...R];
-    return ug(ee, X)
 }
 
 function ig(o) {
@@ -14000,6 +13985,31 @@ function hg() {
         })]
     })
 }
+const WORKER_URL = 'https://calc3.t3li.workers.dev';
+
+async function calculateWithWorker(data) {
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      credentials: 'omit'
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Calculation failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Worker calculation failed:', error);
+    throw error;
+  }
+}
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
+
 }));
