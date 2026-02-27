@@ -1,3 +1,70 @@
+const WORKER_URL = 'https://calc3.t3li.workers.dev';
+async function getUnitPower(unit) {
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'calculateUnitPower',
+        data: {
+          baseAttack: unit.baseAttack,
+          baseHealth: unit.baseHealth,
+          level: unit.level,
+          category: unit.category,
+          unitType: unit.unitType
+        }
+      })
+    });
+    
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// Function 2: Validate stacking (replaces local validation)
+async function validateStack(selected, stack, unitTypes) {
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'validateStacking',
+        data: { selected, stack, unitTypes }
+      })
+    });
+    
+    if (!response.ok) return { valid: true, maxAllowed: stack };
+    return await response.json();
+  } catch {
+    return { valid: true, maxAllowed: stack };
+  }
+}
+
+// Function 3: Get session signature for sensitive operations
+async function getSessionSignature(configId, captainCount) {
+  try {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'generateSignature',
+        data: {
+          timestamp: Date.now(),
+          configId,
+          captainCount
+        }
+      })
+    });
+    
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
 (function() {
     const g = document.createElement("link").relList;
     if (g && g.supports && g.supports("modulepreload")) return;
@@ -14002,4 +14069,5 @@ function hg() {
 }
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
+
 }));
