@@ -13852,7 +13852,7 @@ function hg() {
         return () => clearTimeout(oe)
     }, [o, W, j, E, D, b, R, se, $]), i.jsxs("div", {
         className: "min-h-screen bg-background text-foreground p-4 md:p-8",
-        children: [i.jsx(Rh, {}), i.jsxs("div", {
+        children: [ , i.jsxs("div", {
             className: "max-w-6xl mx-auto",
             children: [i.jsx("header", {
                 className: "mb-10 md:mb-16",
@@ -14013,3 +14013,4 @@ Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 
 }));
+
