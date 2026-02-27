@@ -9616,14 +9616,17 @@ function Rh(o) {
         var g;
         o.beforeSend && ((g = window.va) == null || g.call(window, "beforeSend", o.beforeSend))
     }, [o.beforeSend]), ue.useEffect(() => {
-        zh({
+       /* zh({
             framework: o.framework || "react",
             basePath: o.basePath ?? _h(),
             ...o.route !== void 0 && {
                 disableAutoTrack: !0
             },
             ...o
-        })
+        })  */
+        if (window.va) {
+            window.va('beforeSend', o.beforeSend);
+        }
     }, []), ue.useEffect(() => {
         o.route && o.path && Hh({
             route: o.route,
@@ -14013,4 +14016,5 @@ Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 
 }));
+
 
