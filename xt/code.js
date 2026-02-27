@@ -13344,37 +13344,15 @@ function ug(o, g) {
     }
 }
 async function sg(o, g, j) {
-    try {
-        // Create the request data
-        const requestData = {
-            leadershipLimit: o,
-            bonuses: g,
-            troopSelector: j,
-            selectedMercenaries: window.selectedMercenaries || []
-        };
-        
-        // Call the worker
-        const response = await calculateWithWorker(requestData);
-        
-        // Format the response to match what the app expects
-        return {
-            troops: response.troops.map(troop => ({
-                id: troop.id,
-                name: troop.name,
-                quantity: troop.quantity,
-                baseStrength: troop.baseStrength,
-                baseHealth: troop.baseHealth,
-                totalHealth: troop.totalHealth,
-                totalStrength: troop.totalStrength,
-                totalStrengthWithFeatureBonus: troop.totalStrengthWithFeatureBonus,
-                stackNumber: troop.stackNumber || 1
-            }))
-        };
-    } catch (error) {
-        console.error('Worker calculation failed, using fallback:', error);
-        // Optional: Add a fallback local calculation here if you want
-        return { troops: [] };
-    }
+  try {
+    const result = await calculateWithWorker(o, g, j);
+    return result;
+  } catch (error) {
+    console.error('Worker failed, using fallback:', error);
+    // If you want fallback to local calculation, keep your original sg function
+    // and rename it to sg_local, then call it here
+    return { troops: [] };
+  }
 }
 
 function ig(o) {
@@ -13988,16 +13966,18 @@ function hg() {
         })]
     })
 }
-const WORKER_URL = 'https://calc3.t3li.workers.dev';
-
-async function calculateWithWorker(data) {
+async function calculateWithWorker(leadershipLimit, bonuses, troopSelector) {
   try {
     const response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        leadershipLimit,
+        bonuses,
+        troopSelector
+      }),
       credentials: 'omit'
     });
 
@@ -14016,6 +13996,7 @@ Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 
 }));
+
 
 
 
