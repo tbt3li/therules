@@ -13342,6 +13342,26 @@ function ug(o, g) {
 }
 async function sg(o, g, j) {
     try {
+        // Validate that we have meaningful data to calculate
+        if (!o || !o.leadershipLimit || o.leadershipLimit <= 0) {
+            console.log('Skipping calculation - no leadership limit set');
+            return { troops: [] };
+        }
+        
+        // Check if any troops are selected
+        const hasTroops = g && (
+            (g.G && g.G.selected > 0) || 
+            (g.S && g.S.selected > 0) || 
+            (g.M && g.M.selected > 0)
+        );
+        
+        if (!hasTroops) {
+            console.log('Skipping calculation - no troops selected');
+            return { troops: [] };
+        }
+        
+        console.log('Sending to worker:', { leadershipLimit: o.leadershipLimit, bonuses: o.bonuses, troopSelector: g, selectedMercenaries: j });
+        
         const response = await fetch('https://calc3.t3li.workers.dev', {
             method: 'POST',
             headers: {
@@ -13350,28 +13370,30 @@ async function sg(o, g, j) {
             body: JSON.stringify({
                 leadershipLimit: o.leadershipLimit,
                 bonuses: {
-                    attackBonuses: o.bonuses.attackBonuses,
-                    healthBonuses: o.bonuses.healthBonuses,
-                    epicMonsterStrengthBonus: o.bonuses.epicMonsterStrengthBonus,
-                    armyOffsetStrength: o.bonuses.armyOffsetStrength,
-                    armyOffsetHealth: o.bonuses.armyOffsetHealth,
-                    epicMonsterHunterStrength: o.bonuses.epicMonsterHunterStrength,
-                    epicMonsterHunterHealth: o.bonuses.epicMonsterHunterHealth
+                    attackBonuses: o.bonuses?.attackBonuses || {},
+                    healthBonuses: o.bonuses?.healthBonuses || {},
+                    epicMonsterStrengthBonus: o.bonuses?.epicMonsterStrengthBonus || 0,
+                    armyOffsetStrength: o.bonuses?.armyOffsetStrength || 0,
+                    armyOffsetHealth: o.bonuses?.armyOffsetHealth || 0,
+                    epicMonsterHunterStrength: o.bonuses?.epicMonsterHunterStrength || 0,
+                    epicMonsterHunterHealth: o.bonuses?.epicMonsterHunterHealth || 0
                 },
                 troopSelector: g,
-                selectedMercenaries: j
+                selectedMercenaries: j || []
             })
         });
         
         if (!response.ok) {
-            throw new Error('Calculation failed');
+            const errorText = await response.text();
+            console.error('Worker error:', errorText);
+            return { troops: [] };
         }
         
         const result = await response.json();
         return result;
     } catch (error) {
         console.error('Worker calculation failed:', error);
-        throw error;
+        return { troops: [] };
     }
 }
 
@@ -13989,4 +14011,5 @@ function hg() {
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 }));
+
 
