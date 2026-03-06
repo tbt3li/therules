@@ -1462,10 +1462,10 @@
         .md\:right-6 {
             right: calc(var(--spacing)*6)
         }
-
+        /*
         .md\:mb-16 {
             margin-bottom: calc(var(--spacing)*16)
-        }
+        }   */
 
         .md\:w-64 {
             width: calc(var(--spacing)*64)
