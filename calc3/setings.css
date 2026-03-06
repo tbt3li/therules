@@ -951,7 +951,7 @@
 
     @supports (color:color-mix(in lab, red, red)) {
         .bg-card\/50 {
-            background-color: color-mix(in oklab, #52796f 50%, #0000007a);
+            background-color: color-mix(in oklab, #83a199 50%, #00000052);
         }
     }
 
