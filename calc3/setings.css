@@ -946,7 +946,7 @@
 
     .bg-card,
     .bg-card\/50 {
-        background-color: #84a98c;
+        background-color: #2b3d2f;
     }
 
     @supports (color:color-mix(in lab, red, red)) {
