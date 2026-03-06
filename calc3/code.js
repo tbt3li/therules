@@ -13714,7 +13714,7 @@ function Xd(o) {
     const g = Tc();
     g.lastSessionId = o, Nc(g)
 }
-const mg = "logo.png";
+const mg = "calc3/logo.png";
 
 function hg() {
     const [o, g] = ue.useState(() => fl().leadership), [j, r] = ue.useState(() => fl().epicMonsterStrength), [E, M] = ue.useState(() => fl().armyOffsetStrength), [D, O] = ue.useState(() => fl().armyOffsetHealth), [b, y] = ue.useState(() => fl().epicMonsterHunterStrength || 0), [R, _] = ue.useState(() => fl().epicMonsterHunterHealth || 0), [W, le] = ue.useState(() => fl().troopStats), [se, K] = ue.useState(() => fl().troopSelector), [$, w] = ue.useState(() => fl().selectedMercenaries || []), [ee, U] = ue.useState([]), [X, ie] = ue.useState(!1), [L, G] = ue.useState(null), [T, Ee] = ue.useState(void 0), [Y, F] = ue.useState(void 0), [te, ce] = ue.useState(() => ls()), [re, je] = ue.useState(!1), [p, H] = ue.useState(null), [J, he] = ue.useState(null), [q, d] = ue.useState(!1), N = ["guardsman-melee", "guardsman-ranged", "guardsman-mounted", "guardsman-flying", "specialist-melee", "specialist-ranged", "specialist-mounted", "specialist-flying", "monster-melee", "monster-ranged", "monster-mounted", "monster-flying"], Q = (ne, oe, Ce, Me, ot) => {
@@ -14011,6 +14011,7 @@ function hg() {
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 }));
+
 
 
 
