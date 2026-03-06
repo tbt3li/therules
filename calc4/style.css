@@ -1,0 +1,30 @@
+body {
+    background-color: #222;
+    color: white;
+}
+
+header {
+    background-color: #333;
+    padding: 10px 0;
+}
+
+h1 {
+    color: #fff;
+}
+
+.troop-card {
+    background-color: #444;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.troop-card img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
