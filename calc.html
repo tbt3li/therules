@@ -40,6 +40,114 @@
   .goog-te-banner-frame.skiptranslate { display: none !important; }
   body { top: 0px !important; }
   body > .skiptranslate { display: none !important; }
+
+	.buttons-container{
+display:flex;
+flex-direction:column;
+gap:25px;
+width:260px;
+margin:auto;
+align-items:flex-start;
+}
+
+.buttons-containers{
+display:flex;
+flex-direction:column;
+gap:25px;
+width:auto;
+}
+
+/* Base Button */
+
+.btn-custom{
+position:relative;
+text-decoration:none;
+padding:15px 35px 15px 55px;
+border:none;
+border-radius:40px;
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Icon */
+
+.icon{
+background: white;
+position:absolute;
+left:-20px;
+top:50%;
+transform:translateY(-50%);
+width:52px;
+height:52px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+color:#333;
+box-shadow:0 5px 12px rgba(0,0,0,0.3);
+}
+
+/* Color Themes */
+
+.btn-orange{
+background:linear-gradient(45deg,#ff7a18,#ffb347);
+}
+
+.btn-blue{
+background:linear-gradient(45deg, #0072ff, #00c6ff);
+}
+
+.btn-purple{
+background:linear-gradient(45deg,#8e2de2,#ff416c);
+}
+
+/* Hover */
+
+.btn-custom:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 28px rgba(0,0,0,0.4);
+color:black;
+
+}
+.home-box{
+font-family:Arial;
+padding:50px;
+border-radius:15px;
+}
+
+
+.bi {
+  transition: 0.3s;
+}
+
+.btn-orange:hover .icon i {
+  color: black;
+  text-shadow: 
+    0 0 10px #ff7a18,
+    0 0 20px #ff7a18,
+    0 0 40px #ff7a18;
+}
+
+.btn-blue:hover .icon i {
+  color: black;
+  text-shadow: 
+    0 0 10px #0072ff,
+    0 0 20px #0072ff,
+    0 0 40px #0072ff;
+}
+
+.btn-purple:hover .icon i {
+  color: black;
+  text-shadow: 
+    0 0 10px #8e2de2,
+    0 0 20px #8e2de2,
+    0 0 40px #8e2de2;
+}
 </style>
 <body class="index-page">
 
@@ -107,34 +215,21 @@
         
       </div><!-- End Section Title -->
 
-      <div class="container">
-		<div clas="row gy-3">
-		<div class="container-fluid mb-5">
-			<div class="row justify-content-md-center">
-
-			
-				<div class="col-md-4">
-				<a href="calc1.html">
-					<div class="box">
-						<div class="our-services speedup">
-							<div class="icon"> <img src="assets/img/calc1.png"> </div>
-							<h4>Troops<br>Calculator</h4>
-							<p>Maximize troop deployment efficiency</p>
-						</div>
-					</div></a>
-				</div>
-				<div class="col-md-4">
-				<a href="calc2">
-					<div class="box">
-						<div class="our-services privacy">
-							<div class="icon"> <img src="assets/img/calc2.png"> </div>
-							<h4>Stack<br>Calculator</h4>
-							<p>Strategize troop combinations</p>
-						</div>
-					</div></a>
-				</div>
-				
-			</div>
+      <div class="container" style="display:flex;justify-content:center;align-items:center;">
+		<div class="home-box">
+		<div class="buttons-containers">
+			<a href="/calc1.html" class="btn-custom btn-orange">
+				<span class="icon"><i class="bi bi-layers"></i></span>
+				Stack Calculator
+			</a>
+			<a href="/calc2.html" class="btn-custom btn-blue">
+				<span class="icon"><i class="bi bi-shield-shaded"></i></span>
+				Troops Calculator
+			</a>
+			<a href="/calc3.html" class="btn-custom btn-purple">
+				<span class="icon" style="background:"><i class="bi bi-crosshair"></i></span>
+				Epic Hunter Calc
+			</a>
 		</div>
 		
 		</div>
