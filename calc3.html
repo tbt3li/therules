@@ -19,12 +19,17 @@
   <script>
   window.addEventListener('DOMContentLoaded', function() {
     // Select the div containing the image
-    const imageDiv = document.querySelector('header .flex > div');
+    const imageDiv = document.querySelector('header .flex div');
     
-    // Insert HTML after the image
-    imageDiv.insertAdjacentHTML('beforeend', 
-      '<div class="text-center mt-2 font-bold text-gray-800">Troops Calculator for Epic Hunting</div>'
-    );
+    // Create a new text element
+    const textElement = document.createElement('span');
+    textElement.textContent = 'Troops Calculator for Epic Hunting';
+    
+    // Add classes for styling (optional)
+    textElement.className = 'text-lg font-semibold mt-2 block';
+    
+    // Append the text after the image
+    imageDiv.appendChild(textElement);
   });
 </script>
   </body>
