@@ -13889,7 +13889,7 @@ function hg() {
                                 className: "max-w-full mb-4"
                             }),
                             i.jsx("h1", {
-                            className: "text-2xl md:text-3xl font-bold text-foreground mb-2",
+                            className: "text-2xl md:text-3xl font-bold text-black dark:text-white mb-2",
                             children: "Epic Monster Hunters Calculator"
                             })
                         ]
@@ -14017,6 +14017,7 @@ function hg() {
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 }));
+
 
 
 
