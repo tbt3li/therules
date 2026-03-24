@@ -13890,7 +13890,7 @@ function hg() {
                             }),
                             i.jsx("h1", {
                             className: "text-2xl md:text-3xl font-bold text-foreground mb-2",
-                            children: "Total Battle Troop Calculator"
+                            children: "Epic Monster Hunters Calculator"
                             })
                         ]
                     })
