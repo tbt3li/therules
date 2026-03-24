@@ -13885,7 +13885,6 @@ function hg() {
                          children: [
                             i.jsx("a", {
                                 href: "/",
-                                target: "_blank",
                                 rel: "noopener noreferrer",
                                 className: "inline-block",
                                 children: i.jsx("img", {
@@ -14023,6 +14022,7 @@ function hg() {
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 }));
+
 
 
 
