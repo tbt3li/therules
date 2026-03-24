@@ -17,21 +17,15 @@
     <!-- Only keep Cloudflare Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "dc8b8994cabb4e468884c0f9950ff5dc"}'></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-  const container = document.querySelector("header div div");
-
-  const text = document.createElement("p");
-  text.textContent = "Troops Calculator for Epic Hunting";
-
-  text.style.fontSize = "20px";
-  text.style.fontWeight = "600";
-  text.style.marginTop = "10px";
-  text.style.textAlign = "center";
-text.style.color = "#ff8c00";
-text.style.textShadow = "0 0 5px #ff8c00";
-
-  container.appendChild(text);
-});
-  </script>
+  window.addEventListener('DOMContentLoaded', function() {
+    // Select the div containing the image
+    const imageDiv = document.querySelector('header .flex > div');
+    
+    // Insert HTML after the image
+    imageDiv.insertAdjacentHTML('beforeend', 
+      '<div class="text-center mt-2 font-bold text-gray-800">Troops Calculator for Epic Hunting</div>'
+    );
+  });
+</script>
   </body>
 </html>
