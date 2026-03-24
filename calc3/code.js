@@ -13883,11 +13883,17 @@ function hg() {
                      className: "flex flex-col items-center text-center",
                     children: i.jsx("div", {
                          children: [
-                            i.jsx("img", {
-                                src: mg,
-                                alt: "Total Battle Troop Calculator",
-                                className: "max-w-full mb-4"
-                            }),
+                            i.jsx("a", {
+    href: "http://thefamily.pages.dev",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "inline-block",
+    children: i.jsx("img", {
+        src: mg,
+        alt: "Total Battle Troop Calculator",
+        className: "max-w-full mb-4 cursor-pointer hover:opacity-80 transition-opacity"
+    })
+}),
                             i.jsx("h1", {
                             className: "text-2xl md:text-3xl font-bold text-black dark:text-white mb-2",
                             children: "Epic Monster Hunters Calculator"
@@ -14017,6 +14023,7 @@ function hg() {
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 }));
+
 
 
 
