@@ -13880,17 +13880,17 @@ function hg() {
             children: [i.jsx("header", {
                 className: "mb-10 md:mb-16",
                 children: i.jsx("div", {
-                    className: "flex flex-col items-start",
+                     className: "flex flex-col items-center text-center",
                     children: i.jsx("div", {
                          children: [
                             i.jsx("img", {
                                 src: mg,
                                 alt: "Total Battle Troop Calculator",
-                                className: "max-w-full"
+                                className: "max-w-full mb-4"
                             }),
-                            i.jsx("p", {
-                                className: "text-sm text-muted-foreground mt-2",
-                                children: "Troops Calculator for Epic Hunting"
+                            i.jsx("h1", {
+                            className: "text-2xl md:text-3xl font-bold text-foreground mb-2",
+                            children: "Total Battle Troop Calculator"
                             })
                         ]
                     })
@@ -14017,6 +14017,7 @@ function hg() {
 Ah.createRoot(document.getElementById("root")).render(i.jsx(ue.StrictMode, {
     children: i.jsx(hg, {})
 }));
+
 
 
 
