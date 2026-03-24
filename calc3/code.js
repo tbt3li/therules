@@ -13882,11 +13882,17 @@ function hg() {
                 children: i.jsx("div", {
                     className: "flex flex-col items-start",
                     children: i.jsx("div", {
-                        children: i.jsx("img", {
-                            src: mg,
-                            alt: "Total Battle Troop Calculator",
-                            className: "max-w-full"
-                        })
+                         children: [
+                            i.jsx("img", {
+                                src: mg,
+                                alt: "Total Battle Troop Calculator",
+                                className: "max-w-full"
+                            }),
+                            i.jsx("p", {
+                                className: "text-sm text-muted-foreground mt-2",
+                                children: "Troops Calculator for Epic Hunting"
+                            })
+                        ]
                     })
                 })
             }), i.jsxs("div", {
