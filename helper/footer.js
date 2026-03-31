@@ -16,7 +16,7 @@ document.write(`
 	  </div>
       <div class="container">
         <div class="copyright">
-          <span>Copyright 2025 All Rights Reserved</span>
+          <span>Copyright 2026 All Rights Reserved</span>
         </div>
         <div class="credits">
           Designed by <a href="\"><text style="font-size:16px; font-style:italic;">웃T3li</text></a> Distributed By <a href="\">THE</a>
