@@ -8,7 +8,7 @@ document.write(`
 
 			<!-- Left 25% -->
 			<div class="col-md-3 text-md-start text-center mb-3 mb-md-0">
-			  <img src="assets/img/wlogo.png" class="img-fluid" style="max-height:150px;">
+			  <img src="../assets/img/wlogo.png" class="img-fluid" style="max-height:150px;">
 			</div>
 
 			<!-- Center 50% -->
