@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>[THE] Family Gangsta</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet"><!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+<style>
+.menubtn { line-height: 1.2;border: 2px solid var(--accent-color);}
+ui { text-decoration: underline; font-style: italic; }
+cr {color: #ff0000de;}
+
+
+/* card soft light theme — clean, elevated, rounded */
+.hero-card {
+    background: #ffffffdd;
+    backdrop-filter: blur(2px);
+    border: none;
+    border-radius: 7px;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    box-shadow: 0px 0px 5px 1px rgb(238 26 26 / 38%), 0 4px 12px rgb(122 92 92 / 2%);
+    overflow: hidden;
+}
+
+.hero-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0px 0px 5px 1px rgb(48 134 32 / 53%), 0 4px 12px rgb(46 67 166 / 26%);
+    background: #fffffff2;
+}
+
+/* Image wrapper - maintains 792:920 aspect ratio */
+.card-img-top-wrapper {
+    position: relative;
+    width: 100%;
+    background: #f0f0f0;
+    overflow: hidden;
+}
+
+/* Creates the exact aspect ratio */
+.card-img-top-wrapper::before {
+    content: "";
+    display: block;
+    padding-bottom: 116.16%; /* 920/792 = 1.1616 */
+}
+
+/* Image styling - fits perfectly */
+.hero-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.hero-card:hover .hero-img {
+    transform: scale(1.03);
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 1.45rem;
+    color: #4b2e21;
+    letter-spacing: -0.2px;
+    border-left: 4px solid #e2a45e;
+    padding-left: 12px;
+}
+
+.hero-desc {
+    font-size: 0.9rem;
+    color: #5e3e2c;
+    line-height: 1.45;
+    font-weight: 500;
+}
+
+.hero-stats {
+    font-size: 0.75rem;
+    background: #fff1e4;
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 40px;
+    color: #b45f2b;
+    font-weight: 600;
+}
+
+.badge-role {
+    background: #e9dfd3;
+    color: #8b5a2e;
+    font-weight: 600;
+    padding: 0.35rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-img-top-wrapper {
+        max-width: 100%;
+    }
+}
+</style>
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center">
+		<img src="assets/img/logo.png" class="img-fluid" alt="">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html#hero" >Home</a></li>
+          <li><a href="index.html#team">Team</a></li>
+          <li><a href="calendar.html" class="menubtn">TB Calendar</a></li>
+          <li><a href="/helper/index.html" class="menubtn">TB Helper</a></li>
+          <li><a href="gifts.html" class="menubtn">TB Gifts</a></li>
+	  <li><a href="calc.html" class="menubtn">TB Calc</a></li>
+          <li class="dropdown"><a href="rules.html"><span>Rules</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="roek280.html">ROE K280</a></li>
+	      <li><a href="therules.html" class="active">Clan Rules</a></li>
+	      <li><a href="cprules.html">CP Run / Rules</a></li>
+            </ul>
+          </li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+	<li class="login-btn"><a href="login.html" class="rules-cp" style="color: white;">Login</a></li>
+    </div>
+  </header>
+
+  <main class="main">
+
+<!-- Page Title -->
+    <div class="page-title dark-background" style="position: relative;">
+	  <div class="container position-relative">
+		<div class="container rimg" style="position: absolute; top: 0; left: 0; max-width: 800px; z-index: 10;margin-top: 3rem;">
+		  <div class="row">
+			<div class="col-4">
+			  <!-- Use pointer-events: none; on the parent container for extra assurance -->
+		<!--	  <img src="assets/img/chats.png" class="img-fluid" style="pointer-events: none;"> -->
+			</div>
+		  </div>
+		</div>
+		<h1>[THE] Clan Chats</h1>
+		<nav class="breadcrumbs" style="position: relative; z-index: 20;">
+		  <ol>
+			<li><a href="index.html" style="z-index: 20; position: relative;">Home</a></li>
+			<li class="current">Join Chats</li>
+		  </ol>
+		</nav>
+	  </div>
+	</div><!-- End Page Title -->
+
+    <section id="starter-section" class="starter-section section" style="padding: 25px 0;">
+
+          <div class="container py-4" id="heroes">
+		  <div class="row g-4">
+		
+			<!-- Hero 1 - Aelar, Dawnblade -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/JuliaGravel.png" class="hero-img card-img-top" alt="JuliaGravel">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Julia / Gravel</h5>
+				  <p class="hero-desc"><strong>FIRST HERO:</strong>
+First, choose your hero.
+<br>
+You will be able to change them later on. Gravel and Julia don’t give you any special abilities yet.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-shield-check"></i> Starter Guardians</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 2 - Morgrim, Ironfist -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Alrick.jpg" class="hero-img" alt="Morgrim Ironfist">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Alrick</h5>
+				  <p class="hero-desc">Evil gaze and a popular hero in the Total Battle universe.
+With Alrick, a march to your city takes at least 4 hours.
+<br><strong>Please note:</strong>
+– A march to a city in the kingdom (from edge to edge) takes approximately 2 hours.
+– With boosters, the duration can be reduced to just 7.5 minutes.
+
+<br><strong>Recommendation:</strong> If you are often online, then this hero might be just right for you. But if you are asleep, you will certainly not wake up in 7.5 minutes 😉</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-hourglass-split"></i> Time Lock Master</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 3 - Sylvara, Wind Whisper -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Thaddeus.jpg" class="hero-img" alt="Thaddeus">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Thaddeus</h5>
+				  <p class="hero-desc">A Caesar-like hero for your attacks.
+<br>
+Thaddeus gives you +25% leadership.
+This means you can take more guards/specialists with you on an attack or march.
+<br>This hero is very useful at the beginning. However, over time, he becomes an expensive companion in events such as Armageddon.
+
+<br><strong>Please note:</strong> As an attacker, you cannot take as many troops with you as you can produce as a defender until you fall into a red food zone.<br>
+Thaddeus is therefore not as popular with larger players.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-people-fill"></i> Army Commander</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 4 - Thorne, Emberlord -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Mathemhain.jpg" class="hero-img" alt="Mathemhain">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Mathemhain</h5>
+				  <p class="hero-desc">
+An unused engineer booster
+<br>
+With this hero, your engineers receive a +200% boost to strength and health. The delay in restoring walls is also reduced by 30 seconds.
+<br>
+When are engineers needed? Fortress attacks and player attacks.
+The wall takes 30 minutes to rebuild. Does 30 seconds really matter? 😉</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-gear-fill"></i> Engineer Booster</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 5 - Valdris, Frostheart -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Haemon.jpg" class="hero-img" alt="Haemon">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Haemon</h5>
+				  <p class="hero-desc">Haemon is a hero you don’t see very often.
+<br>
+He doubles all active clan bonuses. Why is he often forgotten?
+Most clans simply activate bonuses across the board. This can be useful at first, but later on, players usually prefer strength or superiority.
+<br>
+<strong>But note:</strong> the clan can levy a bonus for 1 day, during which +25 army strength is effective. If you double this strength, Haemon is indeed a weapon.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-graph-up-arrow"></i> Bonus Amplifier</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 6 - Seraphine, Lightweaver -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Meriones.jpg" class="hero-img" alt="Meriones">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Meriones</h5>
+				  <p class="hero-desc">Not very popular, but very practical
+<br>
+This hero gives you bonuses for your equipment. Once you can equip this hero with very good equipment, he can give you strength. The equipment is improved by 1.5 times. So you get 50% more out of your equipment 😉
+<br>
+<strong>But note:</strong> as soon as this hero’s equipment is of poor quality, you will most likely want to change him.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-tools"></i> Gear Enhancer</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 7 - Draven, Shadowblade -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Faron.jpg" class="hero-img" alt="Faron">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Faron</h5>
+				  <p class="hero-desc">A hated hero in the Total Battle universe. But why?
+<br>
+In many kingdoms, this hero is even banned by the ROE. That’s because he gives you an extreme boost in the battle for the throne. If you are in the Senate, your vote counts 10 times! This means you have an enormous influence on the election! That’s why this hero is so unpopular!</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-bank"></i> Throne Influencer</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 8 - Brunhilda, Shield-Maiden -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Thelensia.jpg" class="hero-img" alt="Thelensia">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Thelensia</h5>
+				  <p class="hero-desc">Want to enjoy gifts like it’s Christmas? Here’s Thelensia
+<br>
+With this Hero, you’ll receive a box of random gifts every 20 hours. With a little luck, these could be Mercenaries & Gold gifts. Or they could just be resources.
+<br>
+<strong>Please note:</strong> The gifts become more expensive and better the higher your hero level is. The division is in 50-level increments.
+<br>
+<strong>Recommendation:</strong> So you want to try your luck? And would you like to be gifted like a king? Then this might be a good choice for you.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-gift-fill"></i> Gifts Queen</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 9 - Zephyrion, Stormcaller -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Ayrin.jpg" class="hero-img" alt="Ayrin">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Ayrin</h5>
+				  <p class="hero-desc">Are you in a kingdom with ROE that does not allow attacks? Then Ayrin is your opportunity.
+<br>
+She enables you to march into all kingdoms.
+<br>
+She does not come with any additional bonuses.
+It accompanies you on every march. It doesn’t matter how long it lasts.
+<br>
+ 
+
+<strong>Recommendation:</strong>  However, if you simply want to go exploring from time to time, she is the best choice.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-globe"></i> Kingdoms Explorer</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 10 - Kassandra, Fate's Edge -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Svyatogor.jpg" class="hero-img" alt="Svyatogor">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Svyatogor</h5>
+				  <p class="hero-desc">Want strength and health? But beware!
+<br>
+With this hero, your entire army will receive a strength and health boost. But why beware? This bonus does not apply to every attack, because the fine print should not be overlooked here.
+<br>
+Therefore, please note: Under Svyatogor’s command, the bonus is ONLY active when he is marching without captains. What does that mean?
+In the case of a rare monster squad, Armageddon, arena runs</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-lightning-charge-fill"></i> Solo Powerhouse</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 11 - Gorath, Earthshaker -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Ryjong.jpg" class="hero-img" alt="Ryjong">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Ryjong</h5>
+				  <p class="hero-desc">As fast as Speedy Gonzales?
+<br>
+This hero lets you dart across the world map and quickly carry out your explorations and attacks. He doubles your marching speed.
+This can be useful in Battle of Kingdoms.
+<br>
+But when facing a strong opponent, wouldn’t you rather have security through strength?</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-speedometer2"></i> Speed Master</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 12 - Lyra, Moonsong -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/GuanYu.jpg" class="hero-img" alt="GuanYu">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">GuanYu</h5>
+				  <p class="hero-desc">Unpopular due to low strength
+<br>
+This hero can give you an overall advantage. As soon as you attack a player who has the same level of guards, specialists, or monsters, your troops can strike first. This means that your troops may kill his strongest units before they get to you.
+<br>
+<strong>But note:</strong> as soon as the attacker has guards or specialists that are one level better, the first strike is not yours.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-crosshair"></i> First Strike</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 12 - Lyra, Moonsong -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Yamato.jpg" class="hero-img" alt="Yamato">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Yamato</h5>
+				  <p class="hero-desc">A hero for double attacks
+<br>
+This hero may be somewhat underestimated or even somewhat disliked.
+If you go on a spy attack and are successful, you will kill the enemy’s captain. They will not be able to revive them for 20 minutes.
+<br>
+But is it only the hero who makes the difference? Because there are also captains with far better skills.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-eye-slash"></i> Silent Assassin</span></div>
+				</div>
+			  </div>
+			</div>
+			
+			<!-- Hero 12 - Lyra, Moonsong -->
+			<div class="col-sm-6 col-md-4 col-lg-3">
+			  <div class="hero-card card h-100">
+				<div class="card-img-top-wrapper">
+				  <img src="img/hero/Nectarius.jpg" class="hero-img" alt="Nectarius">
+				</div>
+				<div class="card-body">
+				  <h5 class="card-title">Nectarius</h5>
+				  <p class="hero-desc">Often chosen—then changed after all.
+<br>
+This hero sounds really great at first glance. He boosts your holy potions
+The production of potions is increased and you can produce a few more potions in your city yourself. Is that enough? It may be a good bonus at first. But even here, the potions will not be enough for you.
+
+<br><strong>But note:</strong> Once the temple has reached 1500, production will stop here as well. This bonus is therefore inactive.</p>
+				  <div class="mt-2"><span class="badge-role"><i class="bi bi-droplet-fill"></i> Potion Maker</span></div>
+				</div>
+			  </div>
+			</div>
+			
+		  </div> <!-- end row -->
+		</div> <!-- end container -->
+      
+    </section><!-- /Starter Section Section -->
+
+  </main>
+
+  <script src="footer.js"></script>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
