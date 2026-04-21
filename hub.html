@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>[THE] Family Gangsta</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet"><!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+<style>
+.menubtn { line-height: 1.2;border: 2px solid var(--accent-color);}
+ui { text-decoration: underline; font-style: italic; }
+cr {color: #ff0000de;}
+
+ body {
+        background: linear-gradient(135deg, #eef2f7, #f8fbff);
+        min-height: 100vh;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .main-title {
+        font-weight: 700;
+        color: #2c3e50;
+    }
+	
+    .custom-list {
+        max-width: 460px;
+        margin: auto;
+        counter-reset: item;
+    }
+
+    .custom-list li {
+        list-style: none;
+        position: relative;
+        background: #fff;
+        margin-bottom: 14px;
+        border-radius: 14px;
+        padding: 14px 18px 14px 55px;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+        transition: all 0.25s ease;
+    }
+
+    .custom-list li:hover {
+        transform: translateX(6px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        background: linear-gradient(90deg, #c1f1dbba, #f3f8ff);
+    }
+
+    /* Custom Beautiful Bullet Number */
+    .custom-list li::before {
+        counter-increment: item;
+        content: counter(item);
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+    }
+
+    .custom-list a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .text-wrap {
+        display: flex;
+        align-items: center;
+    }
+
+    .icon-left {
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    .sub-text {
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 3px;
+    }
+
+    .arrow {
+        font-size: 14px;
+        color: #6c757d;
+    }
+	
+	.list-link {
+    display: block;      /* full area cover کرے گا */
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    padding: 0;          /* padding li پر already ہے */
+}
+
+.custom-item {
+    cursor: pointer;
+}
+</style>
+  
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center">
+		<img src="assets/img/logo.png" class="img-fluid" alt="">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html#hero" >Home</a></li>
+          <li><a href="index.html#team">Team</a></li>
+          <li><a href="calendar.html" class="menubtn">TB Calendar</a></li>
+          <li><a href="/helper/index.html" class="menubtn">TB Helper</a></li>
+          <li><a href="gifts.html" class="menubtn">TB Gifts</a></li>
+	  <li><a href="calc.html" class="menubtn">TB Calc</a></li>
+          <li class="dropdown"><a href="rules.html"><span>Rules</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="roek280.html">ROE K280</a></li>
+	      <li><a href="therules.html" class="active">Clan Rules</a></li>
+	      <li><a href="cprules.html">CP Run / Rules</a></li>
+            </ul>
+          </li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+	<li class="login-btn"><a href="login.html" class="rules-cp" style="color: white;">Login</a></li>
+    </div>
+  </header>
+
+  <main class="main">
+
+<!-- Page Title -->
+    <div class="page-title dark-background" style="position: relative;">
+	  <div class="container position-relative">
+		<div class="container rimg" style="position: absolute; top: 0; left: 0; max-width: 800px; z-index: 10;margin-top: 3rem;">
+		  <div class="row">
+			<div class="col-4">
+			  <!-- Use pointer-events: none; on the parent container for extra assurance -->
+		<!--	  <img src="assets/img/chats.png" class="img-fluid" style="pointer-events: none;"> -->
+			</div>
+		  </div>
+		</div>
+		<h1>TOTAL BATTLE HUB</h1>
+		<nav class="breadcrumbs" style="position: relative; z-index: 20;">
+		  <ol>
+			<li><a href="index.html" style="z-index: 20; position: relative;">Home</a></li>
+			<li class="current">Quick Information Navigation</li>
+		  </ol>
+		</nav>
+	  </div>
+	</div><!-- End Page Title -->
+
+    <section id="starter-section" class="starter-section section" style="padding: 25px 0;">
+
+      <ol class="custom-list text-start p-0">
+
+        <!-- Item 1 -->
+		<li class="custom-item">
+			<a href="tb-heroes.html" class="list-link">
+
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="text-wrap">
+						<i class="bi bi-person-badge-fill text-warning icon-left"></i>
+						TB Hero's Information
+					</div>
+				</div>
+				<div class="sub-text">Stats, abilities & guides</div>
+				<i class="bi bi-chevron-right arrow"></i>
+			</a>
+		</li>
+
+        <li class="custom-item">
+			<a href="tb-heroes.html" class="list-link">
+
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="text-wrap">
+						<i class="bi bi-person-badge-fill text-warning icon-left"></i>
+						Captains Information
+					</div>
+				</div>
+				<div class="sub-text">Skills, builds & best usage</div>
+				<i class="bi bi-chevron-right arrow"></i>
+			</a>
+		</li>
+		
+		<li class="custom-item">
+			<a href="tb-heroes.html" class="list-link">
+
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="text-wrap">
+						<i class="bi bi-person-badge-fill text-warning icon-left"></i>
+						TB Events
+					</div>
+				</div>
+				<div class="sub-text">Events, rewards & strategies</div>
+				<i class="bi bi-chevron-right arrow"></i>
+			</a>
+		</li>
+		
+		<li class="custom-item">
+			<a href="tb-heroes.html" class="list-link">
+
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="text-wrap">
+						<i class="bi bi-person-badge-fill text-warning icon-left"></i>
+						TB Hero's Information
+					</div>
+				</div>
+				<div class="sub-text">Stats, abilities & guides</div>
+				<i class="bi bi-chevron-right arrow"></i>
+			</a>
+		</li>
+		
+
+    </ol>
+
+      
+    </section><!-- /Starter Section Section -->
+
+  </main>
+
+  <script src="footer.js"></script>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
