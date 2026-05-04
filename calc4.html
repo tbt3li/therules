@@ -656,16 +656,17 @@ const monsterMultipliers = {
 };
 
 async function calculate() {
-  const leaderka = parseFloat(document.getElementById("leaderka").value) || 0;
-  const attacks = parseInt(document.getElementById("attacks").value) || 1;
+
+  const leaderka = document.getElementById("leaderka").value;
+  const attacks = document.getElementById("attacks").value;
 
   let selected = [];
 
   document.querySelectorAll("input[type='checkbox']:checked").forEach(cb => {
     selected.push({
       name: cb.value,
-      type: cb.getAttribute("data-type"),
-      coef: parseFloat(cb.getAttribute("data-coef"))
+      coef: Number(cb.getAttribute("data-coef")),
+      type: cb.getAttribute("data-type")
     });
   });
 
@@ -683,51 +684,47 @@ async function calculate() {
 
   const data = await res.json();
 
-  if (!data.success) {
-    alert("Calculation failed");
+  if (data.error) {
+    alert(data.error);
     return;
   }
 
-  const results = data.result;
-
   let html = `
     <div class="results-summary">
-      <p><strong>Fits: ${data.sumUnits.toLocaleString()} / ${data.totalLeaderka.toLocaleString()}</strong></p>
+      <p><strong>Total Units: ${(data.totalUnits || 0).toLocaleString()}</strong></p>
     </div>
     <div class="results-grid">
   `;
 
-  function renderTable(title, items, color) {
-    if (!items.length) return "";
+  if (data.guardians?.length) {
+    html += `<div class="result-card"><div class="result-block-title">🛡️ Guardians</div><table class="result-table">`;
 
-    let out = `
-      <div class="result-card">
-        <div class="result-block-title" style="color:${color}">${title}</div>
-        <table class="result-table">
-          <tr><th>Army</th><th>Quantity</th></tr>
-    `;
-
-    items.forEach(r => {
-      out += `<tr>
+    data.guardians.forEach(r => {
+      html += `<tr>
         <td>${r.name}</td>
-        <td>${r.count.toLocaleString()} units</td>
+        <td>${(r.count || 0).toLocaleString()}</td>
       </tr>`;
     });
 
-    out += `</table></div>`;
-    return out;
+    html += `</table></div>`;
   }
 
-  html += renderTable("🛡️ Guardsmen", results.guardians, "#8e44ad");
-  html += renderTable("⚔️ Specialists", results.specialists, "#e67e22");
-  html += renderTable("🏹 Mercenaries", results.mercenaries, "#27ae60");
-  html += renderTable("🐉 Monsters", results.monsters, "#c0392b");
+  if (data.specialists?.length) {
+    html += `<div class="result-card"><div class="result-block-title">⚔️ Specialists</div><table class="result-table">`;
 
-  html += "</div>";
+    data.specialists.forEach(r => {
+      html += `<tr>
+        <td>${r.name}</td>
+        <td>${(r.count || 0).toLocaleString()}</td>
+      </tr>`;
+    });
+
+    html += `</table></div>`;
+  }
+
+  html += `</div>`;
 
   document.getElementById("results").innerHTML = html;
-
-  document.getElementById("results").scrollIntoView({ behavior: "smooth" });
 }
 
 document.addEventListener("change", saveState);
