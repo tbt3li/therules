@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troop Calculator — The Family</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #2a2f45;
+    --accent: #e8a030;
+    --accent2: #4fc3f7;
+    --guardian: #7c3aed;
+    --specialist: #e67e22;
+    --merc: #27ae60;
+    --monster: #e74c3c;
+    --text: #d0d6e8;
+    --text-muted: #6b7394;
+    --success: #4fc3f7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  header {
+    background: linear-gradient(135deg, #0a0c10 0%, #141720 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  header .logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  header .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 65px);
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    max-height: calc(100vh - 65px);
+    position: sticky;
+    top: 0;
+  }
+
+  .panel-header {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .controls-block {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .field-label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 8px 12px;
+    font-size: 1.1rem;
+    font-family: 'Share Tech Mono', monospace;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input[type="number"]:focus {
+    border-color: var(--accent);
+  }
+
+  .btn-calc {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent);
+    color: #0d0f14;
+    border: none;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-calc:hover { background: #f0b040; }
+  .btn-calc:active { transform: scale(0.98); }
+
+  /* TROOP SECTIONS */
+  .section-title {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Share Tech Mono', monospace;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .category-group {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .category-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 8px 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: left;
+    transition: background 0.15s;
+  }
+
+  .category-toggle:hover { background: var(--surface2); }
+
+  .category-toggle .tier-badge {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .category-items {
+    display: none;
+    padding: 4px 1.2rem 8px;
+    background: var(--bg);
+  }
+
+  .category-items.open { display: block; }
+
+  .troop-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: color 0.15s;
+  }
+
+  .troop-label:hover { color: var(--text); }
+  .troop-label input[type="checkbox"] { display: none; }
+
+  .custom-cb {
+    width: 14px; height: 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .troop-label input:checked + .custom-cb {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .troop-label input:checked + .custom-cb::after {
+    content: '✓';
+    position: absolute;
+    top: -2px; left: 1px;
+    font-size: 11px;
+    color: #0d0f14;
+    font-weight: 700;
+  }
+
+  .troop-label input:checked ~ .troop-name { color: var(--accent); }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .stat-pill span { color: var(--accent); font-weight: 700; }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .result-card-header {
+    padding: 10px 14px;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Share Tech Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-card-header.guardian { color: #a78bfa; border-bottom-color: var(--guardian); }
+  .result-card-header.specialist { color: #fbb86a; border-bottom-color: var(--specialist); }
+  .result-card-header.merc { color: #6ee7b7; border-bottom-color: var(--merc); }
+  .result-card-header.monster { color: #fca5a5; border-bottom-color: var(--monster); }
+
+  .result-table { width: 100%; border-collapse: collapse; }
+
+  .result-table tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .result-table tr:last-child { border-bottom: none; }
+
+  .result-table td {
+    padding: 7px 14px;
+    font-size: 0.9rem;
+  }
+
+  .result-table td:first-child { color: var(--text-muted); }
+  .result-table td:last-child {
+    text-align: right;
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--text-muted);
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .empty-state .big { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+  .empty-state p { font-size: 0.8rem; letter-spacing: 2px; line-height: 2; }
+
+  .loading-bar {
+    height: 2px;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.4s ease;
+    margin-bottom: 1rem;
+    border-radius: 2px;
+  }
+
+  .error-msg {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid var(--monster);
+    padding: 10px 14px;
+    border-radius: 4px;
+    color: #fca5a5;
+    font-size: 0.85rem;
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* Tier colors */
+  .tier-ix { background: rgba(78, 126, 52, 0.3); color: #86efac; }
+  .tier-viii { background: rgba(100, 116, 139, 0.3); color: #cbd5e1; }
+  .tier-vii { background: rgba(250, 200, 50, 0.3); color: #fde68a; }
+  .tier-vi { background: rgba(185, 28, 28, 0.3); color: #fca5a5; }
+  .tier-v { background: rgba(180, 83, 9, 0.3); color: #fcd34d; }
+  .tier-iv { background: rgba(109, 40, 217, 0.3); color: #c4b5fd; }
+
+  @media (max-width: 800px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .left-panel { max-height: none; position: relative; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">⚔ The Family</div>
+    <div class="subtitle">Troop Optimization Calculator</div>
+  </div>
+</header>
+
+<div class="main-layout">
+
+  <!-- LEFT: Selector Panel -->
+  <aside class="left-panel">
+    <div class="panel-header">// Configuration</div>
+
+    <div class="controls-block">
+      <div>
+        <div class="field-label">Leadership (per march)</div>
+        <input type="number" id="leaderka" value="100000" min="1">
+      </div>
+      <div>
+        <div class="field-label">Number of marches</div>
+        <input type="number" id="attacks" value="1" min="1">
+      </div>
+      <button class="btn-calc" onclick="runCalculation()">▶ Calculate</button>
+    </div>
+
+    <div id="troop-selector">
+      <div class="empty-state" style="height:120px">
+        <p>Loading troop data...</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT: Results Panel -->
+  <main class="right-panel">
+    <div class="error-msg" id="error-msg"></div>
+    <div class="loading-bar" id="loading-bar"></div>
+    <div id="results">
+      <div class="empty-state">
+        <div class="big">⚔</div>
+        <p>Select troops from the left panel<br>Set leadership & marches<br>Press CALCULATE</p>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+const WORKER = "https://calc4.t3li.workers.dev";
+let troopsData = null;
+
+function getTierClass(cat) {
+  if (cat.includes("IX") || cat.includes(" 2")) return "tier-ix";
+  if (cat.includes("VIII") || cat.includes(" 1")) return "tier-viii";
+  if (cat.includes("VII")) return "tier-vii";
+  if (cat.includes("VI")) return "tier-vi";
+  if (cat.includes(" V")) return "tier-v";
+  return "tier-iv";
+}
+
+function getTierLabel(cat) {
+  if (cat.includes("IX")) return "IX";
+  if (cat.includes("VIII")) return "VIII";
+  if (cat.includes("VII")) return "VII";
+  if (cat.includes("VI")) return "VI";
+  if (cat.includes(" V")) return "V";
+  if (cat.includes("IV")) return "IV";
+  return "";
+}
+
+async function loadTroops() {
+  try {
+    const res = await fetch(WORKER + "/troops");
+    if (!res.ok) throw new Error("Failed to load");
+    troopsData = await res.json();
+    renderSelector();
+    loadState();
+  } catch (e) {
+    document.getElementById("troop-selector").innerHTML =
+      `<div class="empty-state" style="height:120px;color:#fca5a5"><p>Error loading troop data.<br>${e.message}</p></div>`;
+  }
+}
+
+function renderSelector() {
+  const container = document.getElementById("troop-selector");
+  container.innerHTML = "";
+
+  // Guardians
+  container.innerHTML += `<div class="section-title"><div class="dot" style="background:#7c3aed"></div>Guardsmen</div>`;
+  renderTroopGroup(container, troopsData.guardians, "guardians");
+
+  // Specialists
+  container.innerHTML += `<div class="section-title"><div class="dot" style="background:#e67e22"></div>Specialists</div>`;
+  renderTroopGroup(container, troopsData.specialists, "specialists");
+
+  // Mercenaries
+  container.innerHTML += `<div class="section-title"><div class="dot" style="background:#27ae60"></div>Mercenaries</div>`;
+  renderFlatGroup(container, troopsData.mercenaries, "mercenaries");
+
+  // Monsters
+  container.innerHTML += `<div class="section-title"><div class="dot" style="background:#e74c3c"></div>Monsters</div>`;
+  renderFlatGroup(container, troopsData.monsters, "monsters");
+}
+
+function renderTroopGroup(container, groups, type) {
+  groups.forEach(group => {
+    const tierClass = getTierClass(group.category);
+    const tierLabel = getTierLabel(group.category);
+    const div = document.createElement("div");
+    div.className = "category-group";
+    div.innerHTML = `
+      <button class="category-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+        <span>${group.category}</span>
+        <span class="tier-badge ${tierClass}">${tierLabel}</span>
+      </button>
+      <div class="category-items">
+        ${group.troops.map(t => `
+          <label class="troop-label">
+            <input type="checkbox" data-type="${type}" data-name="${t.name}" id="cb_${type}_${encodeURIComponent(t.name)}">
+            <div class="custom-cb"></div>
+            <span class="troop-name">${t.name}</span>
+          </label>
+        `).join("")}
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function renderFlatGroup(container, troops, type) {
+  const div = document.createElement("div");
+  div.className = "category-group";
+  div.innerHTML = `
+    <button class="category-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+      <span>Select ${type}</span>
+      <span>▼</span>
+    </button>
+    <div class="category-items">
+      ${troops.map(t => `
+        <label class="troop-label">
+          <input type="checkbox" data-type="${type}" data-name="${t.name}" id="cb_${type}_${encodeURIComponent(t.name)}">
+          <div class="custom-cb"></div>
+          <span class="troop-name">${t.name}</span>
+        </label>
+      `).join("")}
+    </div>`;
+  container.appendChild(div);
+  document.addEventListener("change", saveState);
+}
+
+async function runCalculation() {
+  const leaderka = parseFloat(document.getElementById("leaderka").value) || 0;
+  const attacks = parseInt(document.getElementById("attacks").value) || 1;
+
+  const selected = [];
+  document.querySelectorAll("input[type='checkbox']:checked").forEach(cb => {
+    selected.push({ name: cb.dataset.name, type: cb.dataset.type });
+  });
+
+  if (selected.length === 0) {
+    showError("Please select at least one troop type.");
+    return;
+  }
+
+  showError("");
+  setLoading(true);
+
+  try {
+    const res = await fetch(WORKER + "/calculate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ leadership: leaderka, trips: attacks, selected })
+    });
+
+    const data = await res.json();
+    if (data.error) { showError(data.error); setLoading(false); return; }
+    renderResults(data);
+  } catch (e) {
+    showError("Connection error: " + e.message);
+  }
+
+  setLoading(false);
+  saveState();
+}
+
+function renderResults(data) {
+  const { results, totalLeaderka } = data;
+
+  let sumUnits = [...(results.guardians||[]), ...(results.specialists||[])].reduce((s, r) => s + r.count, 0);
+  let totalMerc = (results.mercenaries||[]).reduce((s, r) => s + r.count, 0);
+  let totalMons = (results.monsters||[]).reduce((s, r) => s + r.count, 0);
+
+  const statsHTML = `
+    <div class="results-header">
+      <div class="stat-pill">Capacity: <span>${sumUnits.toLocaleString()} / ${totalLeaderka.toLocaleString()}</span></div>
+      <div class="stat-pill">Mercenaries: <span>${totalMerc.toLocaleString()}</span></div>
+      <div class="stat-pill">Monsters: <span>${totalMons.toLocaleString()}</span></div>
+    </div>`;
+
+  const cards = [];
+
+  if (results.guardians && results.guardians.length) {
+    cards.push(`<div class="result-card">
+      <div class="result-card-header guardian">🛡 Guardsmen</div>
+      <table class="result-table">${results.guardians.map(r =>
+        `<tr><td>${r.name}</td><td>${r.count.toLocaleString()}</td></tr>`
+      ).join("")}</table>
+    </div>`);
+  }
+
+  if (results.specialists && results.specialists.length) {
+    cards.push(`<div class="result-card">
+      <div class="result-card-header specialist">⚔ Specialists</div>
+      <table class="result-table">${results.specialists.map(r =>
+        `<tr><td>${r.name}</td><td>${r.count.toLocaleString()}</td></tr>`
+      ).join("")}</table>
+    </div>`);
+  }
+
+  if (results.monsters && results.monsters.length) {
+    cards.push(`<div class="result-card">
+      <div class="result-card-header monster">🐉 Monsters</div>
+      <table class="result-table">${results.monsters.map(r =>
+        `<tr><td>${r.name}</td><td>${r.count.toLocaleString()}</td></tr>`
+      ).join("")}</table>
+    </div>`);
+  }
+
+  if (results.mercenaries && results.mercenaries.length) {
+    cards.push(`<div class="result-card">
+      <div class="result-card-header merc">🏹 Mercenaries</div>
+      <table class="result-table">${results.mercenaries.map(r =>
+        `<tr><td>${r.name}</td><td>${r.count.toLocaleString()}</td></tr>`
+      ).join("")}</table>
+    </div>`);
+  }
+
+  document.getElementById("results").innerHTML =
+    statsHTML + `<div class="results-grid">${cards.join("")}</div>`;
+}
+
+function showError(msg) {
+  const el = document.getElementById("error-msg");
+  el.textContent = msg;
+  el.style.display = msg ? "block" : "none";
+}
+
+function setLoading(on) {
+  const bar = document.getElementById("loading-bar");
+  bar.style.width = on ? "80%" : "0%";
+  document.querySelector(".btn-calc").disabled = on;
+  document.querySelector(".btn-calc").textContent = on ? "▶ Calculating..." : "▶ Calculate";
+}
+
+function saveState() {
+  const checked = [];
+  document.querySelectorAll("input[type='checkbox']:checked").forEach(cb => checked.push(cb.id));
+  localStorage.setItem("calcState", JSON.stringify({
+    leaderka: document.getElementById("leaderka").value,
+    attacks: document.getElementById("attacks").value,
+    checked
+  }));
+}
+
+function loadState() {
+  const raw = localStorage.getItem("calcState");
+  if (!raw) return;
+  const s = JSON.parse(raw);
+  if (s.leaderka) document.getElementById("leaderka").value = s.leaderka;
+  if (s.attacks) document.getElementById("attacks").value = s.attacks;
+  if (s.checked) s.checked.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = true;
+  });
+}
+
+document.getElementById("leaderka").addEventListener("input", saveState);
+document.getElementById("attacks").addEventListener("input", saveState);
+
+loadTroops();
+</script>
+</body>
+</html>
