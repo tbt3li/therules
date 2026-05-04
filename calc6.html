@@ -464,10 +464,10 @@ async function calculate() {
     return;
   }
   
-  // Collect selected troops
-  const selectedTroops = [];
-  const selectedMercenaries = [];
-  const selectedMonsters = [];
+  // Collect selected troops - EXACT same as original
+  let selectedTroops = [];
+  let selectedMercenaries = [];
+  let selectedMonsters = [];
   
   document.querySelectorAll("input[type='checkbox']:checked").forEach(cb => {
     const type = cb.getAttribute("data-type");
@@ -493,7 +493,7 @@ async function calculate() {
   resultsDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Calculating...</div>';
   
   try {
-    const response = await fetch('https://calc5.t3li.workers.dev', {
+    const response = await fetch('https://calc4.t3li.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -527,21 +527,29 @@ async function calculate() {
 function displayResults(data) {
   const { guardians, specialists, mercenaries, monsters, summary } = data;
   
+  // Calculate sums exactly like original
+  let sumUnits = 0;
+  guardians.forEach(r => sumUnits += r.originalCount);
+  specialists.forEach(r => sumUnits += r.originalCount);
+  const totalMerc = mercenaries.reduce((s, r) => s + r.count, 0);
+  const totalMons = monsters.reduce((s, r) => s + r.count, 0);
+  
   let html = `
     <div class="results-summary">
-      <p><strong>Fits: ${summary.totalUnits.toLocaleString()} / ${summary.totalLeaderka.toLocaleString()}</strong></p>
-      <p>Total number of mercenaries: ${summary.totalMercenaries.toLocaleString()} units</p>
-      <p>Total Monsters: ${summary.totalMonsters.toLocaleString()} units</p>
+      <p><strong>Fits: ${sumUnits.toLocaleString()} / ${summary.totalLeaderka.toLocaleString()}</strong></p>
+      <p>Total number of mercenaries: ${totalMerc.toLocaleString()} units</p>
+      <p>Total Monsters: ${totalMons.toLocaleString()} units</p>
     </div>
     <div class="results-grid">
   `;
   
-  if (guardians.length) {
+  if (guardians && guardians.length) {
     html += `
       <div class="result-card">
         <div class="result-block-title guardians">🛡️ Guardsmen</div>
         <table class="result-table">
-          <tr><th>Army</th><th>Quantity</th></tr>
+          <thead><tr><th>Army</th><th>Quantity</th></tr></thead>
+          <tbody>
     `;
     guardians.forEach(r => {
       html += `<tr style="background-color:${r.color}22;">
@@ -549,15 +557,16 @@ function displayResults(data) {
         <td style="color:#222;">${r.count.toLocaleString()} units</td>
       </tr>`;
     });
-    html += `</table></div>`;
+    html += `</tbody></table></div>`;
   }
   
-  if (specialists.length) {
+  if (specialists && specialists.length) {
     html += `
       <div class="result-card">
         <div class="result-block-title specialists">⚔️ Specialists</div>
         <table class="result-table">
-          <tr><th>Army</th><th>Quantity</th></tr>
+          <thead><tr><th>Army</th><th>Quantity</th></tr></thead>
+          <tbody>
     `;
     specialists.forEach(r => {
       html += `<tr style="background-color:${r.color}22;">
@@ -565,37 +574,41 @@ function displayResults(data) {
         <td style="color:#222;">${r.count.toLocaleString()} units</td>
       </tr>`;
     });
-    html += `</table></div>`;
+    html += `</tbody></table></div>`;
   }
   
-  if (monsters.length) {
+  if (monsters && monsters.length) {
     html += `
       <div class="result-card">
         <div class="result-block-title monsters">🐉 Monsters</div>
         <table class="result-table">
-          <tr><th>Army</th><th>Quantity</th></tr>
+          <thead><tr><th>Army</th><th>Quantity</th></tr></thead>
+          <tbody>
     `;
     monsters.forEach(r => {
-      html += `<tr><td style="color:#333; font-weight:600;">${r.name}</td>
+      html += `<tr>
+        <td style="color:#333; font-weight:600;">${r.name}</td>
         <td style="color:#222;">${r.count.toLocaleString()} units</td>
       </tr>`;
     });
-    html += `</table></div>`;
+    html += `</tbody></table></div>`;
   }
   
-  if (mercenaries.length) {
+  if (mercenaries && mercenaries.length) {
     html += `
       <div class="result-card">
         <div class="result-block-title mercenaries">🏹 Mercenaries</div>
         <table class="result-table">
-          <tr><th>Army</th><th>Quantity</th></tr>
+          <thead><tr><th>Army</th><th>Quantity</th></tr></thead>
+          <tbody>
     `;
     mercenaries.forEach(r => {
-      html += `<tr><td style="color:#333; font-weight:600;">${r.name}</td>
+      html += `<tr>
+        <td style="color:#333; font-weight:600;">${r.name}</td>
         <td style="color:#222;">${r.count.toLocaleString()} units</td>
       </tr>`;
     });
-    html += `</table></div>`;
+    html += `</tbody></table></div>`;
   }
   
   html += `</div>`;
