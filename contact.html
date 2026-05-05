@@ -32,19 +32,19 @@
       min-height: 100vh;
     }
 
-      /* Fixed logo - completely stable, no scroll movement */
+
     .site-logo {
-      position: absolute; /* Changed from fixed */
+      position: absolute;
       top: 72px;
       left: 82px;
       z-index: 9999;
       display: block;
     }
     
-    /* Responsive positioning for smaller screens */
+
     @media (max-width: 768px) {
       .site-logo {
-        position: absolute; /* Ensure this is absolute */
+        position: absolute;
         top: 20px;
         left: 20px;
       }
@@ -222,6 +222,11 @@
       text-transform: none;
       margin: 0;
       padding: 0;
+      text-shadow:
+        1px 1px 0 #333,
+       -1px 1px 0 #333,
+        1px -1px 0 #333,
+       -1px -1px 0 #333;
     }
 
     .stars input:checked ~ label,
@@ -346,7 +351,7 @@
     <div class="field-row">
       <div class="field-group">
         <label>Your Name *</label>
-        <input type="text" id="f-name" placeholder="e.g. John Doe" maxlength="100">
+        <input type="text" id="f-name" placeholder="e.g. Seo-jun" maxlength="100">
       </div>
       <div class="field-group">
         <label>Email Address *</label>
