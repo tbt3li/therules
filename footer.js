@@ -19,7 +19,7 @@ document.write(`
 
 			  <div class="social-links d-flex justify-content-center">
 				<a href="https://discord.com/users/cut3mimi"><i class="bi bi-discord"></i></a>
-				<a href="https://thefamily.pages.dev/contact"><i class="bi bi-envelope-heart-fill"></i></a>
+				<a href="https://thefamily.pages.dev/contact"><i class="bi bi-envelope"></i></a>
 			  </div>
 			</div>
 
