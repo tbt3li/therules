@@ -29,19 +29,17 @@
 
       /* Fixed logo - completely stable, no scroll movement */
     .site-logo {
-      position: fixed;
+      position: absolute; /* Changed from fixed */
       top: 72px;
       left: 82px;
       z-index: 9999;
       display: block;
-      transition: none;
-      transform: translateZ(0);
-      backface-visibility: hidden;
     }
     
     /* Responsive positioning for smaller screens */
     @media (max-width: 768px) {
       .site-logo {
+        position: absolute; /* Ensure this is absolute */
         top: 20px;
         left: 20px;
       }
@@ -324,7 +322,7 @@
 <body>
 
 <!-- Fixed Logo -->
-<a href="https://thefamily.pages.dev" class="site-logo" aria-label="The Family Home">
+<a href="https://thefamily.pages.dev" class="site-logo" aria-label="The Family Home" >
   <img src="assets/img/logo.png" alt="The Family" onerror="this.style.display='none'; console.warn('Logo image not found at assets/img/logo.png');">
 </a>
 
