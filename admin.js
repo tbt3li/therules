@@ -1,85 +1,92 @@
-const WORKER_URL = 'https://contact.t3li.workers.dev';
+const API_BASE = "https://contact.t3li.workers.dev/contacts";
+const SECRET_KEY = "X9mK2vQpL7nR4wZ8jF"; // Your provided key
 
-// Simple check on page load
-window.onload = () => {
-    if (localStorage.getItem('isAdmin') === 'true') {
-        showAdmin();
-    }
-};
+// Check session on load
+if (sessionStorage.getItem("authenticated")) {
+    showDashboard();
+}
 
-function login() {
-    const pass = document.getElementById('admin-password').value;
-    // Replace 'your_secure_password' with your actual desired password
-    if (pass === 'admin123') { 
-        localStorage.setItem('isAdmin', 'true');
-        showAdmin();
+function attemptLogin() {
+    const input = document.getElementById("admin-pass").value;
+    // Hardcoded simple login for the UI layer
+    if (input === "admin123") { 
+        sessionStorage.setItem("authenticated", "true");
+        showDashboard();
     } else {
-        alert('Invalid Credentials');
+        alert("Access Denied");
     }
 }
 
 function logout() {
-    localStorage.removeItem('isAdmin');
+    sessionStorage.clear();
     location.reload();
 }
 
-function showAdmin() {
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('admin-section').classList.remove('hidden');
-    fetchMessages();
+function showDashboard() {
+    document.getElementById("login-section").classList.add("hidden");
+    document.getElementById("admin-section").classList.remove("hidden");
+    loadMessages();
 }
 
-async function fetchMessages() {
+async function loadMessages() {
+    const container = document.getElementById("messages-list");
+    const loader = document.getElementById("loader");
+
     try {
-        const response = await fetch(WORKER_URL, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        });
+        // Fetching data using your specific secret key
+        const response = await fetch(`${API_BASE}?secret=${SECRET_KEY}`);
         const data = await response.json();
-        renderMessages(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        document.getElementById('messages-container').innerHTML = 
-            `<div class="alert alert-danger">Failed to load messages. Ensure CORS is allowed for this domain.</div>`;
-    }
-}
 
-function renderMessages(messages) {
-    const container = document.getElementById('messages-container');
-    if (!messages || messages.length === 0) {
-        container.innerHTML = '<p class="text-center">No messages found.</p>';
-        return;
-    }
+        loader.classList.add("hidden");
+        container.innerHTML = "";
 
-    container.innerHTML = messages.map(msg => `
-        <div class="card card-message shadow-sm" id="msg-${msg.id}">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <h5 class="card-title">${msg.name || 'Anonymous'}</h5>
-                    <small class="text-muted">${msg.date || ''}</small>
+        if (data.length === 0) {
+            container.innerHTML = '<div class="text-center p-5"><h5>No messages yet!</h5></div>';
+            return;
+        }
+
+        data.forEach(msg => {
+            const card = `
+                <div class="col-12 mb-3" id="msg-row-${msg.id || msg.timestamp}">
+                    <div class="card msg-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title mb-1">${msg.name || 'New Inquiry'}</h5>
+                                    <span class="badge badge-date mb-3">${new Date(msg.timestamp).toLocaleString()}</span>
+                                </div>
+                                <button onclick="deleteMsg('${msg.id || msg.timestamp}')" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </div>
+                            <p class="mb-1"><strong>Email:</strong> ${msg.email}</p>
+                            <p class="card-text text-secondary mt-2">${msg.message}</p>
+                        </div>
+                    </div>
                 </div>
-                <h6 class="card-subtitle mb-2 text-muted">${msg.email}</h6>
-                <p class="card-text">${msg.message}</p>
-                <button onclick="deleteMessage('${msg.id}')" class="btn btn-sm btn-danger">Delete</button>
-            </div>
-        </div>
-    `).join('');
+            `;
+            container.innerHTML += card;
+        });
+    } catch (err) {
+        loader.innerHTML = `<div class="alert alert-danger">Error: ${err.message}. Check CORS settings on Worker.</div>`;
+    }
 }
 
-async function deleteMessage(id) {
-    if (!confirm('Are you sure you want to delete this message?')) return;
+async function deleteMsg(id) {
+    if (!confirm("Remove this message permanently?")) return;
 
     try {
-        const response = await fetch(`${WORKER_URL}?id=${id}`, {
+        // Note: Your worker must be set up to handle DELETE requests at this endpoint
+        const response = await fetch(`${API_BASE}/${id}?secret=${SECRET_KEY}`, {
             method: 'DELETE'
         });
 
         if (response.ok) {
-            document.getElementById(`msg-${id}`).remove();
+            document.getElementById(`msg-row-${id}`).fadeOut(300, function() { $(this).remove(); });
+            // Simple removal if not using jQuery:
+            document.getElementById(`msg-row-${id}`).style.display = 'none';
         } else {
-            alert('Failed to delete message.');
+            alert("Delete failed. Ensure your Worker supports DELETE methods.");
         }
-    } catch (error) {
-        alert('Error connecting to worker.');
+    } catch (err) {
+        console.error("Delete Error:", err);
     }
 }
