@@ -27,19 +27,46 @@
       min-height: 100vh;
     }
 
-    /* Fixed logo */
+      /* Fixed logo - completely stable, no scroll movement */
     .site-logo {
       position: fixed;
-      top: 0px;
-      left: 76px;
+      top: 32px;
+      left: 32px;
       z-index: 9999;
-      padding-top: 120px;
+      display: block;
+      transition: none;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    
+    /* Responsive positioning for smaller screens */
+    @media (max-width: 768px) {
+      .site-logo {
+        top: 20px;
+        left: 20px;
+      }
+      .site-logo img {
+        height: 60px !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .site-logo {
+        top: 16px;
+        left: 16px;
+      }
+      .site-logo img {
+        height: 50px !important;
+      }
     }
     
     .site-logo img {
       height: 85px;
       width: auto;
+      display: block;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }
+    
     /* Hero banner */
     .contact-hero {
       background: var(--brand-bg);
