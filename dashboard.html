@@ -281,7 +281,7 @@
                 
                 // Inside the loadMessages function, replace the reply status cell with:
                 row.innerHTML = `
-                    <tr>${msg.id}</td>
+                    <td>${msg.id}</td>
                     <td><strong>${escapeHtml(msg.name)}</strong></td>
                     <td><a href="mailto:${escapeHtml(msg.email)}" class="small">${escapeHtml(msg.email)}</a></td>
                     <td class="small" title="${escapeHtml(msg.subject)}">${escapeHtml(msg.subject).substring(0, 30)}${escapeHtml(msg.subject).length > 30 ? '...' : ''}</td>
