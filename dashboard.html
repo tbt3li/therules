@@ -256,9 +256,9 @@
                     <td class="reply-status-cell">
                         <div class="reply-status-container">
                             <span class="reply-badge ${replyClass}">${statusText}</span>
-                            <button onclick="updateReplyStatus(${msg.id}, 'Yes')" class="btn btn-reply" title="Yes">Y</button>
-                            <button onclick="updateReplyStatus(${msg.id}, 'No')" class="btn btn-reply" title="No">N</button>
-                            <button onclick="updateReplyStatus(${msg.id}, 'Process')" class="btn btn-reply" title="Process">P</button>
+                            <button onclick="updateReplyStatus(${msg.id}, 'Yes')" class="btn btn-reply btn-reply-yes" title="Yes">Y</button>
+                            <button onclick="updateReplyStatus(${msg.id}, 'No')" class="btn btn-reply btn-reply-no" title="No">N</button>
+                            <button onclick="updateReplyStatus(${msg.id}, 'Process')" class="btn btn-reply btn-reply-process" title="Process">P</button>
                         </div>
                     </td>
                     <td>${formatDate(msg.created_at)}</td>
