@@ -131,10 +131,9 @@
             const data = await response.json();
 
             if (data.success) {
-                // Store session
-                sessionStorage.setItem('admin_token', data.token);
-                // Redirect to the dashboard page
-                window.location.href = '/dashboard.html';
+                // We use 'authenticated' as the key and 'true' as the value
+                sessionStorage.setItem('authenticated', 'true');
+                window.location.href = '/dashboard.html'; 
             } else {
                 showError(data.message || 'Invalid username or password.');
             }
