@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | The Family</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; }
+        .navbar { background: #212529; }
+        .msg-card { border: none; border-radius: 10px; transition: 0.2s; border-left: 4px solid #0d6efd; }
+        .msg-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .rating-star { color: #ffc107; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark mb-4">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">Admin Dashboard</span>
+        <button onclick="logout()" class="btn btn-outline-light btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>User Inquiries</h3>
+        <button onclick="loadMessages()" class="btn btn-primary btn-sm">Refresh Data</button>
+    </div>
+
+    <div id="loader" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div id="messages-container" class="row"></div>
+</div>
+
+<script>
+    // Security Check
+    if (sessionStorage.getItem('authenticated') !== 'true') {
+        window.location.href = "/admin"; 
+    }
+
+    const WORKER_URL = "https://contact.t3li.workers.dev/contacts";
+    const SECRET = "X9mK2vQpL7nR4wZ8jF";
+
+    async function loadMessages() {
+        const container = document.getElementById('messages-container');
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
+        container.innerHTML = '';
+
+        try {
+            const response = await fetch(`${WORKER_URL}?secret=${SECRET}`);
+            const data = await response.json();
+            loader.style.display = 'none';
+
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-center">No messages found.</p>';
+                return;
+            }
+
+            data.forEach(msg => {
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-4 mb-4" id="card-${msg.id}">
+                        <div class="card h-100 msg-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="fw-bold mb-0">${msg.name}</h6>
+                                    <span class="rating-star">★ ${msg.rating || 0}</span>
+                                </div>
+                                <small class="text-muted d-block mb-2">${msg.email}</small>
+                                <hr>
+                                <p class="card-text"><strong>${msg.subject}</strong></p>
+                                <p class="card-text small text-secondary">${msg.message}</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 d-flex justify-content-between">
+                                <small class="text-muted">${msg.created_at || ''}</small>
+                                <button onclick="deleteMsg(${msg.id})" class="btn btn-sm btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            container.innerHTML = `<div class="alert alert-danger w-100">Error loading data: ${err.message}</div>`;
+        }
+    }
+
+    async function deleteMsg(id) {
+        if (!confirm("Are you sure you want to delete this message?")) return;
+
+        try {
+            const response = await fetch(`${WORKER_URL}?secret=${SECRET}&id=${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                document.getElementById(`card-${id}`).remove();
+            } else {
+                alert("Failed to delete.");
+            }
+        } catch (err) {
+            alert("Network error.");
+        }
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "/admin";
+    }
+
+    // Initial Load
+    loadMessages();
+</script>
+
+</body>
+</html>
