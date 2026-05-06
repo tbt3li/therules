@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon">
-    <title>Dashboard | The Family | User Inquiries</title>
+    <title>Dashboard | The Family</title>
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <style>
@@ -58,7 +56,7 @@
             margin-bottom: 15px;
         }
         .badge-rating {
-            background-color: #ffc1072e;
+            background-color: #ffc107;
             color: #000;
             padding: 3px 8px;
             border-radius: 20px;
@@ -117,6 +115,11 @@
         .reply-cell {
             min-width: 140px;
             white-space: nowrap;
+        }
+        
+        /* Hide buttons class */
+        .hide-buttons {
+            display: none !important;
         }
     </style>
 </head>
@@ -227,7 +230,7 @@
                     dataTable.destroy();
                     dataTable = null;
                 }
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="text-center small">No messages found.</td></tr>';
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="text-center small">No messages found.></td></tr>';
                 return;
             }
             
@@ -247,6 +250,9 @@
                 const statusClass = currentStatus === 'Yes' ? 'status-yes' : 
                                    (currentStatus === 'Process' ? 'status-process' : 'status-no');
                 
+                // Hide buttons if status is "Yes"
+                const hideButtonsClass = currentStatus === 'Yes' ? 'hide-buttons' : '';
+                
                 row.innerHTML = `
                     <td>${msg.id}</td>
                     <td><strong>${escapeHtml(msg.name)}</strong></td>
@@ -256,13 +262,13 @@
                     <td class="text-center"><span class="badge-rating">★ ${msg.rating || 0}</span></td>
                     <td class="reply-cell">
                         <span class="status-badge ${statusClass}">${currentStatus}</span>
-                        <div class="btn-group btn-group-xs" role="group" style="margin-left: 5px;">
+                        <div class="btn-group btn-group-xs ${hideButtonsClass}" role="group" style="display: inline-block; margin-left: 5px;" id="btn-group-${msg.id}">
                             <button type="button" class="btn btn-yes" onclick="updateReplyStatus(${msg.id}, 'Yes')">Y</button>
                             <button type="button" class="btn btn-no" onclick="updateReplyStatus(${msg.id}, 'No')">N</button>
                             <button type="button" class="btn btn-process" onclick="updateReplyStatus(${msg.id}, 'Process')">P</button>
                         </div>
                     </td>
-                    <td class="small" style="white-space: nowrap;">${formatDateShort(msg.created_at)}</td>
+                    <td class="small" style="white-space: nowrap;">${formatDateLong(msg.created_at)}</td>
                     <td class="text-center">
                         <button onclick="deleteMsg(${msg.id})" class="btn btn-danger btn-delete">🗑️</button>
                     </td>
@@ -337,9 +343,12 @@
                     const statusClass = newStatus === 'Yes' ? 'status-yes' : 
                                        (newStatus === 'Process' ? 'status-process' : 'status-no');
                     
+                    // Hide buttons if newStatus is "Yes"
+                    const hideButtonsClass = newStatus === 'Yes' ? 'hide-buttons' : '';
+                    
                     statusCell.innerHTML = `
                         <span class="status-badge ${statusClass}">${newStatus}</span>
-                        <div class="btn-group btn-group-xs" role="group" style="display: inline-block; margin-left: 5px;">
+                        <div class="btn-group btn-group-xs ${hideButtonsClass}" role="group" style="display: inline-block; margin-left: 5px;" id="btn-group-${id}">
                             <button type="button" class="btn btn-yes" onclick="updateReplyStatus(${id}, 'Yes')">Y</button>
                             <button type="button" class="btn btn-no" onclick="updateReplyStatus(${id}, 'No')">N</button>
                             <button type="button" class="btn btn-process" onclick="updateReplyStatus(${id}, 'Process')">P</button>
@@ -439,11 +448,19 @@
         });
     }
     
-    function formatDateShort(dateString) {
+    function formatDateLong(dateString) {
         if (!dateString) return 'N/A';
         try {
             const date = new Date(dateString);
-            return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+            const day = date.getDate();
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear().toString().slice(-2);
+            let hours = date.getHours();
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
         } catch(e) {
             return dateString;
         }
