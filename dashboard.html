@@ -254,7 +254,7 @@
                     <td class="text-center"><span class="badge-rating">★ ${msg.rating || 0}</span></td>
                     <td class="reply-cell">
                         <span class="status-badge ${statusClass}">${currentStatus}</span>
-                        <div class="btn-group btn-group-xs" role="group" style="display: inline-block; margin-left: 5px;">
+                        <div class="btn-group btn-group-xs" role="group" style="margin-left: 5px;">
                             <button type="button" class="btn btn-yes" onclick="updateReplyStatus(${msg.id}, 'Yes')">Y</button>
                             <button type="button" class="btn btn-no" onclick="updateReplyStatus(${msg.id}, 'No')">N</button>
                             <button type="button" class="btn btn-process" onclick="updateReplyStatus(${msg.id}, 'Process')">P</button>
