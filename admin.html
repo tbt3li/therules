@@ -132,7 +132,7 @@
 
             if (data.success) {
                 // We use 'authenticated' as the key and 'true' as the value
-                sessionStorage.setItem('authenticated', 'true');
+                sessionStorage.setItem('authenticated', 'true'); //old one
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 window.location.href = '/dashboard.html'; 
             } else {
