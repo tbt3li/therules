@@ -133,6 +133,7 @@
             if (data.success) {
                 // We use 'authenticated' as the key and 'true' as the value
                 sessionStorage.setItem('authenticated', 'true');
+                sessionStorage.setItem('adminLoggedIn', 'true');
                 window.location.href = '/dashboard.html'; 
             } else {
                 showError(data.message || 'Invalid username or password.');
