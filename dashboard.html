@@ -39,9 +39,9 @@
             margin-bottom: 20px;
         }
         .badge-rating {
-            background-color: #ffc1072e;
+            background-color: #ffc107;
             color: #000;
-            padding: 2px 10px;
+            padding: 5px 10px;
             border-radius: 20px;
             font-weight: bold;
         }
@@ -51,13 +51,41 @@
         .btn-refresh:active {
             transform: rotate(180deg);
         }
+        .reply-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .reply-yes {
+            background-color: #28a745;
+            color: white;
+        }
+        .reply-no {
+            background-color: #dc3545;
+            color: white;
+        }
+        .reply-process {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .btn-group-xs .btn {
+            padding: 2px 8px;
+            font-size: 11px;
+            margin: 0 2px;
+        }
+        .reply-status-cell {
+            min-width: 120px;
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-dark mb-4">
     <div class="container-fluid px-4">
-        <span class="navbar-brand mb-0 h1">Admin Dashboard - Contact US inquiries</span>
+        <span class="navbar-brand mb-0 h1">Admin Dashboard - User Inquiries</span>
         <div>
             <button onclick="refreshTable()" class="btn btn-outline-light btn-sm me-2 btn-refresh" id="refreshBtn">
                 🔄 Refresh
@@ -87,6 +115,7 @@
                             <th>Subject</th>
                             <th>Message</th>
                             <th>Rating</th>
+                            <th>Reply Status</th>
                             <th>Date</th>
                             <th>Action</th>
                         </tr>
@@ -165,7 +194,7 @@
                     dataTable.destroy();
                     dataTable = null;
                 }
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="text-center">No messages found.</td></tr>';
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="text-center">No messages found.</td></tr>';
                 return;
             }
             
@@ -182,6 +211,11 @@
             data.forEach(msg => {
                 const row = tbody.insertRow();
                 row.id = `row-${msg.id}`;
+                
+                // Get reply status class
+                const replyClass = msg.reply_status === 'Yes' ? 'reply-yes' : 
+                                  (msg.reply_status === 'Process' ? 'reply-process' : 'reply-no');
+                
                 row.innerHTML = `
                     <td>${msg.id}</td>
                     <td><strong>${escapeHtml(msg.name)}</strong></td>
@@ -189,6 +223,16 @@
                     <td><strong>${escapeHtml(msg.subject)}</strong></td>
                     <td class="message-preview" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message)}</td>
                     <td class="text-center"><span class="badge-rating">★ ${msg.rating || 0}</span></td>
+                    <td class="reply-status-cell">
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="reply-badge ${replyClass} mb-2">${msg.reply_status || 'No'}</span>
+                            <div class="btn-group btn-group-xs" role="group">
+                                <button onclick="updateReplyStatus(${msg.id}, 'Yes')" class="btn btn-success btn-sm">Yes</button>
+                                <button onclick="updateReplyStatus(${msg.id}, 'No')" class="btn btn-danger btn-sm">No</button>
+                                <button onclick="updateReplyStatus(${msg.id}, 'Process')" class="btn btn-warning btn-sm">Process</button>
+                            </div>
+                        </div>
+                    </td>
                     <td>${formatDate(msg.created_at)}</td>
                     <td class="text-center">
                         <button onclick="deleteMsg(${msg.id})" class="btn btn-danger btn-delete">
@@ -219,16 +263,14 @@
                 columnDefs: [
                     { width: "5%", targets: 0 },  // ID
                     { width: "10%", targets: 1 }, // Name
-                    { width: "15%", targets: 2 }, // Email
-                    { width: "12%", targets: 3 }, // Subject
-                    { width: "25%", targets: 4 }, // Message
-                    { width: "8%", targets: 5 },  // Rating
-                    { width: "15%", targets: 6 }, // Date
-                    { width: "10%", targets: 7 }   // Action
-                ],
-                drawCallback: function() {
-                    // Re-attach any event handlers if needed
-                }
+                    { width: "12%", targets: 2 }, // Email
+                    { width: "10%", targets: 3 }, // Subject
+                    { width: "20%", targets: 4 }, // Message
+                    { width: "6%", targets: 5 },  // Rating
+                    { width: "15%", targets: 6 }, // Reply Status
+                    { width: "12%", targets: 7 }, // Date
+                    { width: "10%", targets: 8 }   // Action
+                ]
             });
             
         } catch (err) {
@@ -237,7 +279,7 @@
                 loader.style.display = 'none';
                 tableWrapper.style.display = 'block';
             }
-            document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" class="text-center alert alert-danger">Error loading data: ${err.message}</td></tr>`;
+            document.getElementById('tableBody').innerHTML = `<tr><td colspan="9" class="text-center alert alert-danger">Error loading data: ${err.message}</td></tr>`;
         } finally {
             isLoading = false;
             // Re-enable refresh button
@@ -245,6 +287,50 @@
                 refreshBtn.disabled = false;
                 refreshBtn.innerHTML = '🔄 Refresh';
             }
+        }
+    }
+
+    async function updateReplyStatus(id, status) {
+        try {
+            const response = await fetch(`${WORKER_URL}/contacts`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${ADMIN_SECRET}`
+                },
+                body: JSON.stringify({ id: id, reply_status: status })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.ok) {
+                // Update the row in the table without reloading all data
+                const row = document.getElementById(`row-${id}`);
+                if (row && dataTable) {
+                    // Update the reply status cell
+                    const replyCell = row.cells[6];
+                    const replyClass = status === 'Yes' ? 'reply-yes' : 
+                                      (status === 'Process' ? 'reply-process' : 'reply-no');
+                    
+                    replyCell.innerHTML = `
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="reply-badge ${replyClass} mb-2">${status}</span>
+                            <div class="btn-group btn-group-xs" role="group">
+                                <button onclick="updateReplyStatus(${id}, 'Yes')" class="btn btn-success btn-sm">Yes</button>
+                                <button onclick="updateReplyStatus(${id}, 'No')" class="btn btn-danger btn-sm">No</button>
+                                <button onclick="updateReplyStatus(${id}, 'Process')" class="btn btn-warning btn-sm">Process</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    showTempMessage(`Reply status updated to "${status}"!`, "success");
+                }
+            } else {
+                alert("Error: " + (result.error || "Could not update reply status."));
+            }
+        } catch (err) {
+            console.error("Update Error:", err);
+            alert("Network Error: Could not update reply status.");
         }
     }
 
@@ -269,7 +355,6 @@
                         dataTable.row(row).remove().draw(false);
                     }
                 }
-                // Show success message
                 showTempMessage("Message deleted successfully!", "success");
             } else {
                 alert("Error: " + (result.error || "Could not delete message."));
@@ -367,52 +452,5 @@
     // Load messages when page loads
     loadMessages(true);
 </script>
-
-<style>
-    /* Additional responsive styles */
-    @media (max-width: 768px) {
-        .table-container {
-            padding: 10px;
-        }
-        .btn-delete {
-            padding: 2px 6px;
-            font-size: 11px;
-        }
-        .badge-rating {
-            font-size: 12px;
-            padding: 3px 8px;
-        }
-    }
-    
-    /* DataTable custom styles */
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        padding: 0.375rem 0.75rem;
-    }
-    
-    .dataTables_wrapper .dataTables_filter input {
-        margin-left: 0.5rem;
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.25rem;
-        border: 1px solid #ced4da;
-    }
-    
-    .dataTables_wrapper .dataTables_length select {
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.25rem;
-        border: 1px solid #ced4da;
-    }
-    
-    /* Disabled button style */
-    button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-    
-    /* Animation for refresh */
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-</style>
 </body>
 </html>
