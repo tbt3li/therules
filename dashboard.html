@@ -39,11 +39,17 @@
             margin-bottom: 20px;
         }
         .badge-rating {
-            background-color: #ffc10752;
+            background-color: #ffc107;
             color: #000;
             padding: 5px 10px;
             border-radius: 20px;
             font-weight: bold;
+        }
+        .btn-refresh {
+            transition: transform 0.3s ease;
+        }
+        .btn-refresh:active {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -53,7 +59,9 @@
     <div class="container-fluid px-4">
         <span class="navbar-brand mb-0 h1">Admin Dashboard - User Inquiries</span>
         <div>
-            <button onclick="refreshTable()" class="btn btn-outline-light btn-sm me-2">Refresh</button>
+            <button onclick="refreshTable()" class="btn btn-outline-light btn-sm me-2 btn-refresh" id="refreshBtn">
+                🔄 Refresh
+            </button>
             <button onclick="logout()" class="btn btn-outline-light btn-sm">Logout</button>
         </div>
     </div>
@@ -103,6 +111,7 @@
     const WORKER_URL = "https://contact.t3li.workers.dev";
     
     let dataTable = null;
+    let isLoading = false;
     
     // Check if user is logged in
     const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
@@ -110,12 +119,26 @@
         window.location.href = "/admin.html";
     }
 
-    async function loadMessages() {
+    async function loadMessages(showLoader = true) {
+        // Prevent multiple simultaneous loads
+        if (isLoading) return;
+        
+        isLoading = true;
+        
         const loader = document.getElementById('loader');
         const tableWrapper = document.getElementById('table-wrapper');
+        const refreshBtn = document.getElementById('refreshBtn');
         
-        loader.style.display = 'block';
-        tableWrapper.style.display = 'none';
+        if (showLoader) {
+            loader.style.display = 'block';
+            tableWrapper.style.display = 'none';
+        }
+        
+        // Disable refresh button and show loading state
+        if (refreshBtn) {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '⏳ Loading...';
+        }
 
         try {
             const response = await fetch(`${WORKER_URL}/contacts`, {
@@ -131,10 +154,17 @@
             }
             
             const data = await response.json();
-            loader.style.display = 'none';
-            tableWrapper.style.display = 'block';
+            
+            if (showLoader) {
+                loader.style.display = 'none';
+                tableWrapper.style.display = 'block';
+            }
             
             if (!data || data.length === 0) {
+                if (dataTable) {
+                    dataTable.destroy();
+                    dataTable = null;
+                }
                 document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="text-center">No messages found.</td></tr>';
                 return;
             }
@@ -142,6 +172,7 @@
             // Destroy existing DataTable if it exists
             if (dataTable) {
                 dataTable.destroy();
+                dataTable = null;
             }
             
             // Populate table body
@@ -176,6 +207,8 @@
                     search: "Search:",
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
                     paginate: {
                         first: "First",
                         last: "Last",
@@ -192,14 +225,26 @@
                     { width: "8%", targets: 5 },  // Rating
                     { width: "15%", targets: 6 }, // Date
                     { width: "10%", targets: 7 }   // Action
-                ]
+                ],
+                drawCallback: function() {
+                    // Re-attach any event handlers if needed
+                }
             });
             
         } catch (err) {
-            loader.style.display = 'none';
-            tableWrapper.style.display = 'block';
-            document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" class="text-center alert alert-danger">Error loading data: ${err.message}</td></tr>`;
             console.error("Load error:", err);
+            if (showLoader) {
+                loader.style.display = 'none';
+                tableWrapper.style.display = 'block';
+            }
+            document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" class="text-center alert alert-danger">Error loading data: ${err.message}</td></tr>`;
+        } finally {
+            isLoading = false;
+            // Re-enable refresh button
+            if (refreshBtn) {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Refresh';
+            }
         }
     }
 
@@ -224,7 +269,8 @@
                         dataTable.row(row).remove().draw(false);
                     }
                 }
-                alert("Message deleted successfully!");
+                // Show success message
+                showTempMessage("Message deleted successfully!", "success");
             } else {
                 alert("Error: " + (result.error || "Could not delete message."));
             }
@@ -234,11 +280,53 @@
         }
     }
     
-    function refreshTable() {
+    async function refreshTable() {
+        // Show refresh indicator on button
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.innerHTML = '⏳ Loading...';
+            refreshBtn.disabled = true;
+        }
+        
+        // Clear current table data
         if (dataTable) {
             dataTable.destroy();
+            dataTable = null;
         }
-        loadMessages();
+        
+        // Clear table body
+        document.getElementById('tableBody').innerHTML = '';
+        
+        // Show loader
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('table-wrapper').style.display = 'none';
+        
+        // Reload messages
+        await loadMessages(true);
+        
+        // Reset button
+        if (refreshBtn) {
+            refreshBtn.innerHTML = '🔄 Refresh';
+            refreshBtn.disabled = false;
+        }
+    }
+    
+    function showTempMessage(message, type = "success") {
+        // Create temporary alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+        alertDiv.style.zIndex = "9999";
+        alertDiv.style.minWidth = "300px";
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
     }
     
     function logout() {
@@ -277,7 +365,7 @@
     }
 
     // Load messages when page loads
-    loadMessages();
+    loadMessages(true);
 </script>
 
 <style>
@@ -312,6 +400,18 @@
         padding: 0.375rem 0.75rem;
         border-radius: 0.25rem;
         border: 1px solid #ced4da;
+    }
+    
+    /* Disabled button style */
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    /* Animation for refresh */
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
     }
 </style>
 </body>
