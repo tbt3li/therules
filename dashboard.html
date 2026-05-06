@@ -93,23 +93,37 @@
     }
 
     async function deleteMsg(id) {
-        if (!confirm("Are you sure you want to delete this message?")) return;
+    if (!confirm("Are you sure you want to delete this message?")) return;
 
-        try {
-            const response = await fetch(`${WORKER_URL}?secret=${SECRET}&id=${id}`, {
-                method: 'DELETE'
-            });
+    const WORKER_URL = "https://contact.t3li.workers.dev/contacts";
+    const SECRET = "X9mK2vQpL7nR4wZ8jF";
 
-            if (response.ok) {
-                document.getElementById(`card-${id}`).remove();
-            } else {
-                alert("Failed to delete.");
+    try {
+        const response = await fetch(`${WORKER_URL}?secret=${SECRET}&id=${id}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.ok) {
+            // 1. Show the success message
+            alert("Message deleted successfully!");
+
+            // 2. Animate the card removal
+            const card = document.getElementById(`card-${id}`);
+            if (card) {
+                card.style.transition = "opacity 0.5s ease";
+                card.style.opacity = "0";
+                setTimeout(() => card.remove(), 500);
             }
-        } catch (err) {
-            alert("Network error.");
+        } else {
+            alert("Error: " + (result.error || "Could not delete message."));
         }
+    } catch (err) {
+        console.error("Delete Error:", err);
+        alert("Network Error: Could not connect to the server.");
     }
-
+}
     function logout() {
         sessionStorage.clear();
         window.location.href = "/admin";
