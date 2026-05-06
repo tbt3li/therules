@@ -105,6 +105,39 @@
         .reply-status-cell {
             min-width: 180px;
         }
+
+
+
+        /* Button group styles */
+.btn-group-xs .btn {
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: bold;
+}
+.btn-group .btn-yes {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+.btn-group .btn-no {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+.btn-group .btn-process {
+    background-color: #ffc107;
+    color: #000;
+    border-color: #ffc107;
+}
+.btn-group .btn-yes:hover,
+.btn-group .btn-no:hover,
+.btn-group .btn-process:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+.btn-group .btn:active {
+    transform: translateY(0);
+}
     </style>
 </head>
 <body>
@@ -246,22 +279,22 @@
                 const statusText = msg.reply_status === 'Yes' ? 'Yes' : 
                                   (msg.reply_status === 'Process' ? 'Proc' : 'No');
                 
+                // Inside the loadMessages function, replace the reply status cell with:
                 row.innerHTML = `
-                    <td>${msg.id}</td>
+                    <tr>${msg.id}</td>
                     <td><strong>${escapeHtml(msg.name)}</strong></td>
-                    <td><a href="mailto:${escapeHtml(msg.email)}">${escapeHtml(msg.email)}</a></td>
-                    <td><strong>${escapeHtml(msg.subject)}</strong></td>
-                    <td class="message-preview" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message)}</td>
+                    <td><a href="mailto:${escapeHtml(msg.email)}" class="small">${escapeHtml(msg.email)}</a></td>
+                    <td class="small" title="${escapeHtml(msg.subject)}">${escapeHtml(msg.subject).substring(0, 30)}${escapeHtml(msg.subject).length > 30 ? '...' : ''}</td>
+                    <td class="message-preview" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message).substring(0, 50)}${escapeHtml(msg.message).length > 50 ? '...' : ''}</td>
                     <td class="text-center"><span class="badge-rating">★ ${msg.rating || 0}</span></td>
-                    <td class="reply-status-cell">
-                        <div class="reply-status-container">
-                            <span class="reply-badge ${replyClass}">${statusText}</span>
-                            <button onclick="updateReplyStatus(${msg.id}, 'Yes')" class="btn btn-reply btn-reply-yes" title="Yes">Y</button>
-                            <button onclick="updateReplyStatus(${msg.id}, 'No')" class="btn btn-reply btn-reply-no" title="No">N</button>
-                            <button onclick="updateReplyStatus(${msg.id}, 'Process')" class="btn btn-reply btn-reply-process" title="Process">P</button>
+                    <td>
+                        <div class="btn-group btn-group-xs" role="group" aria-label="Reply options">
+                            <button type="button" class="btn btn-yes" onclick="updateReplyStatus(${msg.id}, 'Yes')">Y</button>
+                            <button type="button" class="btn btn-no" onclick="updateReplyStatus(${msg.id}, 'No')">N</button>
+                            <button type="button" class="btn btn-process" onclick="updateReplyStatus(${msg.id}, 'Process')">P</button>
                         </div>
                     </td>
-                    <td>${formatDate(msg.created_at)}</td>
+                    <td class="small" style="white-space: nowrap;">${formatDate(msg.created_at)}</td>
                     <td class="text-center">
                         <button onclick="deleteMsg(${msg.id})" class="btn btn-danger btn-delete">
                             🗑️
