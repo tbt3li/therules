@@ -44,6 +44,7 @@
             padding: 5px 10px;
             border-radius: 20px;
             font-weight: bold;
+            font-size: 12px;
         }
         .btn-refresh {
             transition: transform 0.3s ease;
@@ -51,13 +52,19 @@
         .btn-refresh:active {
             transform: rotate(180deg);
         }
+        .reply-status-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
         .reply-badge {
-            padding: 5px 10px;
+            padding: 3px 10px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 5px;
+            font-size: 11px;
+            min-width: 60px;
+            text-align: center;
         }
         .reply-yes {
             background-color: #28a745;
@@ -71,13 +78,34 @@
             background-color: #ffc107;
             color: #000;
         }
-        .btn-group-xs .btn {
+        .btn-reply {
             padding: 2px 8px;
             font-size: 11px;
+            font-weight: bold;
             margin: 0 2px;
+            min-width: 32px;
+        }
+        .btn-reply-yes {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .btn-reply-no {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-reply-process {
+            background-color: #ffc107;
+            color: #000;
+            border: none;
+        }
+        .btn-reply:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
         }
         .reply-status-cell {
-            min-width: 120px;
+            min-width: 180px;
         }
     </style>
 </head>
@@ -115,7 +143,7 @@
                             <th>Subject</th>
                             <th>Message</th>
                             <th>Rating</th>
-                            <th>Reply Status</th>
+                            <th>Reply</th>
                             <th>Date</th>
                             <th>Action</th>
                         </tr>
@@ -216,6 +244,10 @@
                 const replyClass = msg.reply_status === 'Yes' ? 'reply-yes' : 
                                   (msg.reply_status === 'Process' ? 'reply-process' : 'reply-no');
                 
+                // Get status display text
+                const statusText = msg.reply_status === 'Yes' ? 'Yes' : 
+                                  (msg.reply_status === 'Process' ? 'Proc' : 'No');
+                
                 row.innerHTML = `
                     <td>${msg.id}</td>
                     <td><strong>${escapeHtml(msg.name)}</strong></td>
@@ -224,19 +256,17 @@
                     <td class="message-preview" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message)}</td>
                     <td class="text-center"><span class="badge-rating">★ ${msg.rating || 0}</span></td>
                     <td class="reply-status-cell">
-                        <div class="d-flex flex-column align-items-center">
-                            <span class="reply-badge ${replyClass} mb-2">${msg.reply_status || 'No'}</span>
-                            <div class="btn-group btn-group-xs" role="group">
-                                <button onclick="updateReplyStatus(${msg.id}, 'Yes')" class="btn btn-success btn-sm">Yes</button>
-                                <button onclick="updateReplyStatus(${msg.id}, 'No')" class="btn btn-danger btn-sm">No</button>
-                                <button onclick="updateReplyStatus(${msg.id}, 'Process')" class="btn btn-warning btn-sm">Process</button>
-                            </div>
+                        <div class="reply-status-container">
+                            <span class="reply-badge ${replyClass}">${statusText}</span>
+                            <button onclick="updateReplyStatus(${msg.id}, 'Yes')" class="btn btn-reply btn-reply-yes" title="Yes">Y</button>
+                            <button onclick="updateReplyStatus(${msg.id}, 'No')" class="btn btn-reply btn-reply-no" title="No">N</button>
+                            <button onclick="updateReplyStatus(${msg.id}, 'Process')" class="btn btn-reply btn-reply-process" title="Process">P</button>
                         </div>
                     </td>
                     <td>${formatDate(msg.created_at)}</td>
                     <td class="text-center">
                         <button onclick="deleteMsg(${msg.id})" class="btn btn-danger btn-delete">
-                            🗑️ Delete
+                            🗑️
                         </button>
                     </td>
                 `;
@@ -312,18 +342,19 @@
                     const replyClass = status === 'Yes' ? 'reply-yes' : 
                                       (status === 'Process' ? 'reply-process' : 'reply-no');
                     
+                    const statusText = status === 'Yes' ? 'Yes' : 
+                                      (status === 'Process' ? 'Proc' : 'No');
+                    
                     replyCell.innerHTML = `
-                        <div class="d-flex flex-column align-items-center">
-                            <span class="reply-badge ${replyClass} mb-2">${status}</span>
-                            <div class="btn-group btn-group-xs" role="group">
-                                <button onclick="updateReplyStatus(${id}, 'Yes')" class="btn btn-success btn-sm">Yes</button>
-                                <button onclick="updateReplyStatus(${id}, 'No')" class="btn btn-danger btn-sm">No</button>
-                                <button onclick="updateReplyStatus(${id}, 'Process')" class="btn btn-warning btn-sm">Process</button>
-                            </div>
+                        <div class="reply-status-container">
+                            <span class="reply-badge ${replyClass}">${statusText}</span>
+                            <button onclick="updateReplyStatus(${id}, 'Yes')" class="btn btn-reply btn-reply-yes" title="Yes">Y</button>
+                            <button onclick="updateReplyStatus(${id}, 'No')" class="btn btn-reply btn-reply-no" title="No">N</button>
+                            <button onclick="updateReplyStatus(${id}, 'Process')" class="btn btn-reply btn-reply-process" title="Process">P</button>
                         </div>
                     `;
                     
-                    showTempMessage(`Reply status updated to "${status}"!`, "success");
+                    showTempMessage(`Updated to "${status}"!`, "success");
                 }
             } else {
                 alert("Error: " + (result.error || "Could not update reply status."));
@@ -401,17 +432,18 @@
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
         alertDiv.style.zIndex = "9999";
-        alertDiv.style.minWidth = "300px";
+        alertDiv.style.minWidth = "250px";
+        alertDiv.style.textAlign = "center";
         alertDiv.innerHTML = `
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         document.body.appendChild(alertDiv);
         
-        // Auto remove after 3 seconds
+        // Auto remove after 2 seconds
         setTimeout(() => {
             alertDiv.remove();
-        }, 3000);
+        }, 2000);
     }
     
     function logout() {
