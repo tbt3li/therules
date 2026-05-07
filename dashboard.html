@@ -6,8 +6,21 @@
     <!-- Favicons -->
     <link href="assets/img/favicon.png" rel="icon">
     <title>Dashboard | The Family</title>
+    
+    <!-- CRITICAL: Authentication check BEFORE any content loads -->
+    <script>
+        // This runs immediately in the head before body renders
+        const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+        if (!isLoggedIn) {
+            // Redirect immediately - no body will render
+            window.location.replace("/admin.html");
+        }
+    </script>
+    
+    <!-- Only load these if not redirected (prevents unnecessary loading) -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
     <style>
         body { background: #f4f7f6; }
         .navbar { background: #212529; }
@@ -178,16 +191,16 @@
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    // Double-check authentication (in case of any race condition)
+    if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+        window.location.replace("/admin.html");
+    }
+
     const ADMIN_SECRET = "your-simple-secret-token-here-change-this";
     const WORKER_URL = "https://contact.t3li.workers.dev";
     
     let dataTable = null;
     let isLoading = false;
-    
-    const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
-    if (!isLoggedIn) {
-        window.location.href = "/admin.html";
-    }
 
     async function loadMessages(showLoader = true) {
         if (isLoading) return;
@@ -216,6 +229,7 @@
             
             if (response.status === 401) {
                 alert("Unauthorized access!");
+                sessionStorage.removeItem('adminLoggedIn');
                 window.location.href = "/admin.html";
                 return;
             }
@@ -232,7 +246,7 @@
                     dataTable.destroy();
                     dataTable = null;
                 }
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="text-center small">No messages found.></td></tr>';
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="text-center small">No messages found.</td></tr>';
                 return;
             }
             
@@ -252,7 +266,6 @@
                 const statusClass = currentStatus === 'Yes' ? 'status-yes' : 
                                    (currentStatus === 'Process' ? 'status-process' : 'status-no');
                 
-                // Hide buttons if status is "Yes"
                 const hideButtonsClass = currentStatus === 'Yes' ? 'hide-buttons' : '';
                 
                 row.innerHTML = `
@@ -269,7 +282,7 @@
                             <button type="button" class="btn btn-no" onclick="updateReplyStatus(${msg.id}, 'No')">N</button>
                             <button type="button" class="btn btn-process" onclick="updateReplyStatus(${msg.id}, 'Process')">P</button>
                         </div>
-                    </td>
+                    </div>
                     <td class="small" style="white-space: nowrap;">${formatDateLong(msg.created_at)}</td>
                     <td class="text-center">
                         <button onclick="deleteMsg(${msg.id})" class="btn btn-danger btn-delete">🗑️</button>
@@ -337,15 +350,12 @@
             const result = await response.json();
 
             if (response.ok && result.ok) {
-                // Update the row display
                 const row = document.getElementById(`row-${id}`);
                 if (row) {
-                    // Update the status badge
                     const statusCell = row.cells[6];
                     const statusClass = newStatus === 'Yes' ? 'status-yes' : 
                                        (newStatus === 'Process' ? 'status-process' : 'status-no');
                     
-                    // Hide buttons if newStatus is "Yes"
                     const hideButtonsClass = newStatus === 'Yes' ? 'hide-buttons' : '';
                     
                     statusCell.innerHTML = `
@@ -468,7 +478,10 @@
         }
     }
 
-    loadMessages(true);
+    // Load messages only if authenticated
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        loadMessages(true);
+    }
 </script>
 </body>
 </html>
