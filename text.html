@@ -26,9 +26,11 @@
 
 
 <script>
-// Add this to your main JavaScript file
+// Updated client-side code with better error handling
 async function verifyOrigin() {
     try {
+        console.log('Starting verification...'); // Debug log
+        
         const response = await fetch('https://test.t3li.workers.dev/verify', {
             method: 'POST',
             headers: {
@@ -41,18 +43,22 @@ async function verifyOrigin() {
             })
         });
         
+        console.log('Response status:', response.status); // Debug log
+        
         const data = await response.json();
+        console.log('Response data:', data); // Debug log
         
         if (!data.verified) {
             // Disable critical functionality
-            document.body.innerHTML = '<h1>Unauthorized Access</h1>';
+            document.body.innerHTML = '<h1>Unauthorized Access</h1><p>Reason: ' + (data.reason || 'Unknown') + '</p>';
             return false;
         }
         
         return true;
     } catch (error) {
-        // If verification fails, disable the site
-        document.body.innerHTML = '<h1>Connection Error</h1>';
+        // Show more specific error
+        console.error('Verification error:', error);
+        document.body.innerHTML = '<h1>Connection Error</h1><p>' + error.message + '</p>';
         return false;
     }
 }
@@ -69,6 +75,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 function initializeApp() {
     // Your main application logic goes here
     console.log('App initialized successfully');
+    // Add your actual app code here
 }
 </script>
 	
