@@ -86,7 +86,839 @@ cr {color: #ff0000de;}
 
     <section id="starter-section" class="starter-section section" style="padding: 25px 0;">
 
-      
+      <div class="container py-4 text-center">
+	
+	
+	<!-- Category Buttons -->
+<div class="d-flex justify-content-center flex-wrap mb-3" id="categoryGroup">
+
+    <button class="btn btn-outline-primary btn-custom"
+        onclick="showCategory(this,'reg')"><i class="bi bi-star-fill text-warning"></i> Regular Tournaments</button>
+
+    <button class="btn btn-outline-success btn-custom"
+        onclick="showCategory(this,'rev')"><i class="bi bi-heart-pulse-fill text-danger"></i> Troop Revival Events</button>
+		
+	<button class="btn btn-outline-info btn-custom"
+        onclick="showCategory(this,'glo')"><i class="bi bi-globe text-primary"></i> Global Events</button>
+		
+	<button class="btn btn-outline-danger btn-custom"
+        onclick="showCategory(this,'epi')"><i class="bi bi-fire" style="color:#46f700 !important;"></i> Epic Monster Battles</button>
+	
+	<button class="btn btn-outline-warning btn-custom"
+        onclick="showCategory(this,'fes')"><i class="bi bi-moon-stars-fill text-dark"></i> Festivals</button>
+	
+	<button class="btn btn-outline-dark btn-custom"
+        onclick="showCategory(this,'oth')"><i class="bi bi-grid-3x3-gap-fill text-info"></i> Others</button>
+	
+</div>
+
+
+
+    <!-- Heading -->
+    <h2 class="main-title">Tournaments</h2>
+    <p class="subtitle">Select your desire tournaments</p>
+
+    <!-- Buttons -->
+    <div class="d-flex flex-wrap justify-content-center mt-3" id="btnGroup">
+
+		<!-- REGULAR -->
+		<button data-category="reg" class="btn btn-outline-primary btn-custom"
+			onclick="showContent(this,'reg1')">Two Hours Tournaments</button>
+		<button data-category="reg" class="btn btn-outline-primary btn-custom"
+			onclick="showContent(this,'reg2')">Three and a Half Hours Tournaments</button>
+		<button data-category="reg" class="btn btn-outline-primary btn-custom"
+			onclick="showContent(this,'reg3')">Five Hours Tournaments</button>
+
+		<!-- TROOPS REVIVAL -->
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev1')">Sacred Rituals</button>
+
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev2')">Ruthless Slaughter</button>
+
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev3')">Thirst of Battle</button>
+		
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev4')">Authority Rush</button>
+		
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev5')">Immportal Essence</button>
+		
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev6')">Conquerors' Revival</button>
+		
+		<button data-category="rev" class="btn btn-outline-success btn-custom"
+			onclick="showContent(this,'rev7')">Blessing of Gods</button>
+			
+		<!-- GLOBAL EVENTS -->
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo1')">Clash of Kingdoms</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo2')">Clash of Throne</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo3')">Trade Routes</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo4')">Ragnarök</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo5')">Great Hunt</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo6')">Trials of Olympus</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo7')">Rise of the Ancients</button>
+		
+		<button data-category="glo" class="btn btn-outline-info btn-custom"
+			onclick="showContent(this,'glo8')">Dark Omens</button>
+		
+		
+		<!-- EPIC MONSTER BATTLES -->
+		<button data-category="epi" class="btn btn-outline-danger btn-custom"
+			onclick="showContent(this,'epi1')">Doomsday</button>
+		
+		<button data-category="epi" class="btn btn-outline-danger btn-custom"
+			onclick="showContent(this,'epi2')">Armageddon</button>
+		
+		<button data-category="epi" class="btn btn-outline-danger btn-custom"
+			onclick="showContent(this,'epi3')">Arachne's Swarm</button>
+		
+		<button data-category="epi" class="btn btn-outline-danger btn-custom"
+			onclick="showContent(this,'epi4')">Hellforge</button>
+		
+		<button data-category="epi" class="btn btn-outline-danger btn-custom"
+			onclick="showContent(this,'epi5')">Shadow Invasion</button>
+		
+		
+		<!-- FESTIVALS -->
+		<button data-category="fes" class="btn btn-outline-warning btn-custom"
+			onclick="showContent(this,'fes1')">Festivals</button>
+		
+		<!-- OTHERS -->
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth1')">Pursuit of Evolution</button>
+		
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth2')">Pursuit of Experience</button>
+		
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth3')">Summon Mastery</button>
+		
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth4')">Bazaars & Fairs</button>
+		
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth5')">Triumphal Challange</button>
+		
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth6')">Union of Triumph</button>
+		
+		<button data-category="oth" class="btn btn-outline-dark btn-custom"
+			onclick="showContent(this,'oth7')">Seasional Kingdom</button>
+		
+		
+	</div>
+
+    <!-- Content Area -->
+    <div class="container py-4 text-center">
+    <!-- Content Area -->
+		<div class="content-box mt-4 text-start">
+			<h6 class="fst-italic" style="color:#d7d7d7;">Event Detail:</h6><hr style="color:#d7d7d7 !important;">
+			<div id="defaultMessage">
+				<h5>Select a tournament</h5>
+				<p class="text-muted fst-italic">Click any button above to view details.</p>
+			</div>
+			
+			<!-- Regular Tournaments -->
+			<div class="content-item d-none" id="reg1">
+				<h4>Tournaments that last two hours:</h4>
+				<ul>
+					  <li>Scientific Progress — Unlock and research technologies.</li>
+					  <li>Hammer and Anvil — Craft equipment in the Forge.</li>
+					  <li>King's Mercy — Send Gold Ingots to the Royal Treasury.</li>
+					  <li>Capital Challenge — Send resources to the Clan Capital.</li>
+					  <li>The Quest for Chests — Open Clan chests, Crypt chests, and chests from package offers.</li>
+				</ul>
+			</div>
+			<div class="content-item d-none" id="reg2">
+				<h4>Tournaments that last three and a half hours:</h4>
+				<ul>
+					  <li>Castle Development — Build and upgrade buildings in your City.</li>
+					  <li>Call of Duty — Train troops in the Barracks.</li>
+					  <li>Regular Decrees — Complete daily quests.</li>
+					  <li>Silver Rush — Collect Silver.&nbsp;</li>
+					  <li>War Tools — Collect resources on the Kingdom Map.</li>
+					  <li>Power Points — Add VIP points.</li>
+					  <li>Battle Training — Hire monsters in the Barracks.</li> 
+				  </ul>
+			</div>
+			<div class="content-item d-none" id="reg3">
+				<h4>Tournaments that last five hours:</h4>
+				<ul>
+					  <li>Gold Rush — Obtain Gold.</li>
+					  <li>Beastslayer — Defeat monsters.</li>
+					  <li>Crypt Raiders — Explore Crypts and search for rare items.</li>
+					  <li>Wargames — Defeat other players' troops.&nbsp;</li>
+					  <li>Officer Academy — Earn experience points with your Hero and Captains.</li>
+					  <li>Tar Mastery — Collect Tar.&nbsp;</li>
+					  <li>Blessing of the Gods — Revive fallen troops in the Temple.</li>
+				</ul>
+			</div>
+			
+			<!-- TROOPS REVIVAL Tournaments -->
+			<div class="content-item d-none" id="rev1">
+				<h4>Sacred Rituals</h4>
+				<div class="accordion-body">You can recover fallen troops using Sacred Potions.
+				<br><br>
+				If you use Sacred Potions to revive troops, you'll get a portion of the Potions spent refunded back to you at the end of the tournament. The more Potions you spend during the tournament, the higher the percentage of Potions that'll get refunded.
+				<br><br>
+				In the event window, you can see how many Potions you've spent and how many you'll get back.</div>
+			</div>
+			
+			<div class="content-item d-none" id="rev2">
+				<h4>Ruthless Slaughter</h4>
+				<div class="accordion-body">The currency for reviving troops changes from Gold to Silver. 
+				<br><br>
+				During this event, fallen troops can be revived in the Temple using Silver, regardless of whether the unit died while conducting scouting, during an attack, or while defending.
+				<br><br>
+				<ul><li>Troops who died before the event started can only be restored using Gold.</li>
+				<li>Troops who die during the event can be restored for Silver after the event ends.</li></ul>
+				Event points are awarded based on how many troops were revived. The higher the level and rarity of the revived troops, the more points you will get. Monsters and mercenaries yield more points than regular troops.
+				<br><br>
+				<strong>Note:</strong> Troops that died during some specific events (e.g., the Trial of Briareus) may be excluded from this rule.</div>
+			</div>
+			
+			<div class="content-item d-none" id="rev3">
+				<h4>Thirst for Battle</h4>
+				<div class="accordion-body">During this event, there is a 50% discount on the Gold cost of reviving troops who die during <strong>an attack on other players.</strong>
+				<br><br>
+				Event points are awarded for reviving troops who died during an attack on other players, including during attacks on Cities and resource points that are occupied by opponents.
+				<br><br>
+				The discount does not apply to Sacred Potions.</div>
+			</div>
+			
+			<div class="content-item d-none" id="rev4">
+				<h4>Authority Rush</h4>
+				<div class="accordion-body">During this tournament, players get Authority Coins when they revive mercenaries. These Coins can be used in the tournament window to purchase new mercenaries, resources, Clan chests, speedups, etc.
+				<br><br>
+				There are always three offers available for purchase, and the list of items can be refreshed. When you refresh the list, all the offers will be replaced with new ones.
+				<br><br>
+				<strong>Note</strong> that some offers do not include mercenaries. You can see the contents of the offer in the tournament interface.
+				<br><br>You get rank points when you spend Authority Coins to purchase or refresh offers, at a rate of 1:1. 
+				<br><br>
+				Authority Coins are not transferred from one event to the next.</div>
+			</div>
+			
+			<div class="content-item d-none" id="rev5">
+				<h4>Immortal Essence</h4>
+				<div class="accordion-body">You can earn event points by reviving troops who died either in battles against monsters or in battles against other players. Only troops who die while the event is active are taken into account. Troops can be revived both in exchange for Gold and by using Sacred Potions.
+				<br><br>
+				By completing personal goals, you'll get Essence of the Immortals, which can be used to increase the star level of your Captains.</div>
+			</div>
+			
+			<div class="content-item d-none" id="rev6">
+				<h4>Conquerors' Revival</h4>
+				<div class="accordion-body">You can earn tournament points by reviving troops who were killed during attacks on other players.  Troops can be revived both in exchange for Gold and by using Sacred Potions.
+				<br><br>
+				By completing personal goals, you'll get Trophy chests and Conquest Points. </div>
+			</div>
+			
+			<div class="content-item d-none" id="rev7">
+				<h4>Blessing of the Gods</h4>
+				<div class="accordion-body">Blessing of the Gods is a recurring 5-hour tournament in Total Battle where players earn rewards by resurrecting fallen troops in the Temple, often using Sacred Potions to maximize progress. Participants can gain Essence of the Immortals to upgrade captains and compete for top spots on the leaderboard, with special rewards often awarded. 
+				<br><br>
+				Key details regarding the tournament include:
+				<br><strong>Goal:</strong> Focus on reviving as many troops as possible during the event timeframe.
+				<br><strong>Rewards:</strong> Players can earn Essence of the Immortals (for captain stars), along with other potential rewards like titles, Tar of various qualities, and Dragon Coins.
+				<br><strong>Mechanism:</strong> It is one of the regular tournaments designed to manage army losses efficiently.</div>
+			</div>
+			
+			<!-- Global Tournaments -->
+			<div class="content-item d-none" id="glo1">
+				<h4>Clash of Kingdoms</h4>
+				<div class="accordion-body">
+				During the Clash of Kingdoms, players from different Kingdoms do battle against one another. The goal is to capture and hold the banners of players from other Kingdoms.
+				<br><br>
+				At the end of the event, the best Kingdoms will receive Gold Ingots for their Royal Treasury, as well as Golden Mountains for the players.
+
+				<br><br>
+				Leagues
+				All Kingdoms are divided into leagues. Kingdoms can only fight each other if they're in the same league. 
+				<br><br>
+				The current league and the available opposing Kingdoms can be viewed in the event window or on the Global Map.
+				<br><br>
+
+
+				Based on the event results, the top two Kingdoms in the event ranking are promoted to the next league, and the bottom two are relegated to the league below. The higher the league, the more personal goals players can have and the more rewards they can earn. 
+				<br><br>
+				There is no Might limit within the same league during the event. 
+				<br><br>
+				Note that attacking kingdoms out of your league won’t bring you tournament points.
+				 <br><br>
+
+				Capturing and holding banners
+				During the event, players can open portals to other Kingdoms, attack their opponents' Cities, and capture their banners. 
+				<br><br>
+				There are two colors of banners: 
+				<ul><li>
+				 - Enemy banners</li><li>
+				 - Home Kingdom banners 
+				</li></ul><br>
+				By opening any City on the map, you can see the banners that are being held within it.
+				<br><br>
+				The higher the level of a banner, the more points you get for holding it. The level of a banner is equal to the level of the City's Capitol. Banners appear in Cities when their Capitol reaches level 10.
+				<br><br>
+				With each successful attack you perform, your City will acquire more banners. They can be viewed in the event window or by clicking on your City:
+				<br><br>
+				 
+
+				A player can't use the Shield of Peace if they are holding an enemy banner.  Banners are held until a successful attack is carried out by a player from another Kingdom.
+				<br><br>
+				Stealing banners from players from your own Kingdom is not allowed. 
+				<br><br>
+				If another player captures a banner from a player in your own Kingdom, the banner can be stolen back! After conducting a successful attack on another player, any Home Kingdom banner will return to their original owner in your Kingdom.
+				<br><br>
+				Note: You cannot attack portals opened by players from kingdoms other than yours or the kingdom you're visiting.
+				<br><br>
+				If you send a march to such a portal, you will not receive any battle report, and the attack won’t happen.</div>
+			</div>
+			
+			<div class="content-item d-none" id="glo2">
+				<h4>Clash for the Throne</h4>
+				<div class="accordion-body">The Clash for the Throne is held roughly every two weeks. It lasts for two days and is one of the most important events in the game. The main goal of this event is to choose a new King for the Kingdom.
+				<br><br>
+				The first day
+				On the first day, players accumulate Conquest points, and at the end of the day, the top 100 players receive the title of Senator, which gives them the right to vote in the Senate.
+				<br><br>
+				To get into the top 100, players need to score as many Conquest points as possible. These points can be obtained either by defeating other players' armies or participating in the Shadow Invasion event. They can also be acquired by collecting rewards that contain these points or other sources of Conquest points.
+				<br><br>
+				The higher the level of the enemy troops killed, the more points you will score.
+				Defeating enemy troops in other Kingdoms also earns you points.<br>
+				<strong>Note:</strong> if you are in the top 100 players in the ranking during this event, you won't be able to activate Shield of Peace. Remember that defending your City also grants you Conquest points if you manage to kill at least one enemy unit.<br>
+				At the end of the first day, the top player in the event receives the title of Princeps and gets 25 delegates, while the players in 2nd–99th places receive the title of Senator and get 10 delegates each.
+				<br><br>
+				Delegates (votes) are required in order to elect a King.
+				<br><br>
+				The Hero Faron grants a +900% bonus to the number of delegates received.
+				<br><br>
+				The second day
+				On the second day, a new King is elected. Only players with the titles of Princeps and Senator take part in this process.
+				<br><br>
+				Each Senator can vote for himself/herself or for another player.<br>
+				Only one Senator can become King, the one who gets the most votes.<br>
+				The King and Senator titles are active until the results of the next election have been counted.<br>
+				If multiple Senators have received the same number of votes after the final tally has been counted, a King will not be elected. The results of the vote are sent to all players' Journals.
+				<br><br>
+				If you use the Faron avatar to receive more delegates, make sure the Hero is active and alive during the voting process.
+				<br><br>
+				To vote, you need to open the tournament window and find the Vote option.<br><br>
+				<h6>The King's powers:</h6>
+				The King has access to the Royal Treasury, where bonuses can be purchased for personal use or for the benefit (or misfortune) of the entire Kingdom.
+				<br><br>
+				The Royal Treasury can be accessed at any time via the Clash for the Throne tournament menu by selecting the Palace option.
+				<br><br>
+				The King can assign positive and negative titles to any player in the Kingdom. These titles can either strengthen the player or weaken them.
+				<br><br>
+				A player can have only one title from this event. If a player has the title of Senator, that title will be replaced by whichever title the King assigns to the player.
+				When the King changes, players' titles remain in effect until the new King demotes them or assigns them a new title.<br>
+				The King can change players' titles an unlimited number of times.<br>
+				<strong>Note:</strong> If you teleport your City to another Kingdom while having a Royal title (including Senator), it will be removed in the new Kingdom.</div>
+			</div>
+			
+			<div class="content-item d-none" id="glo3">
+				<h4>Trade Routes</h4>
+				<div class="accordion-body">During the tournament, Mercenary Exchanges will appear in all Kingdoms. Players will be able to send their Captains to Exchanges in other Kingdoms to buy mercenaries in exchange for Silver.  
+				<br><br>
+				<p class="fst-italic text-muted">It is not possible to trade on the exchanges in your own Kingdom.<br>
+				If your Kingdom is currently closed, you will not be able to participate in this tournament.</p>
+
+				You can only send marches to an Exchange if your City has a Caravan building. The maximum march time to an exchange is two hours — any march that would take longer cannot be sent. This limit does not apply to marches if you're using Ayrin as your Hero.
+				<br><br>
+				Finding an Exchange on the map is no easy task: Join player-created chats about Exchanges and get the coordinates from them, and don't forget to share the coordinates if an Exchange appears near your City.
+				<br><br>
+				Each Exchange has several offers available for purchase, which are unique for each player. The selection of available offers refreshes every seven hours. Clicking on the Exchange building will show the progress bar:
+				<br><br>
+				Progress is added after each purchase made by any player.<br>
+				When the progress bar has been filled completely, the player who made the last purchase receives a chest for their Clan.<br>
+				Exchanges that have sold out disappear from the Kingdom Map.<br>
+				Each player gets unique offers, but progress in terms of purchases made at the Exchange is shared.
+				 <br><br>
+				<h6>The purchasing process:</h6>
+				The player sends a Captain with Silver to the Exchange. The Silver is deducted as soon as the Captain starts the march. 
+				<br><br>
+				The new troops are hired at the moment the Captain arrives at the Exchange, and a notification of the purchase will appear in the Journal, showing the number of mercenaries and event points that were acquired. 
+				<br><br>
+				The Captain returns to the City with the new mercenaries.<br><br>
+				<p class="fst-italic text-muted">
+				If, for whatever reason, the purchase at the Exchange fails, the Silver will be returned to the City when the Captain returns.
+				</p>
+				<h6>Ranking:</h6>
+				Next to each item in the Exchange, you can see the points that you'll get if you make the relevant purchase. The player's ranking will be calculated based on these points at the end of the event.
+				<br><br>
+				The more valuable offers you get, the more tournament points you will receive.</div>
+			</div>
+			
+			<div class="content-item d-none" id="glo4">
+				<h4>Ragnarök</h4>
+				<div class="accordion-body">Ragnarök is the epic monsters tournament that lasts for two days and includes two separate events — Jörmungandr's Invasion and Fenrir's Invasion. Earn Jörmungandr Scales and Fenrir's Fangs to exchange them for Jörmungandr and Fenrir Coins. Earn Ragnarök Medals and contribute to your Clan's ranking!
+				<br><br>
+				<h6>Tournament monsters:</h6>
+				In <strong>Fenrir's Invasion,</strong> epic Fenrir squads can be attacked by only one Captain.
+				<br>
+				In <strong>Jörmungandr's Invasion,</strong> epic Jörmungandr squads can be attacked as part of a Raid.<br><br>
+				<p class="fst-italic text-muted">
+				The amount of rewards you will receive depends on your contribution to the Raid.</p>
+				
+				The difficulty of the personal goals and the rewards you can get depend on the level of your troops.
+				<br><br>
+				<h6>Tournament shop:</h6>
+				The tournament store is available at any time, and the coins are saved between event launches.
+				<br>
+				The available offers in the store depend on the level of your troops and are updated when the Ragnarök event launches.
+				<br><br><p class="fst-italic text-muted">
+				If you upgrade your troops' level during the event while it is active, this won't affect the current store options or personal goals.</p>
+				
+				The shop has three tabs: Jörmungandr, Fenrir, and Equipment. In the first two, you can acquire different valuable rewards, and in the Equipment tab, you can get Rune Stones, which are required for crafting the special Warrior of Ragnarök equipment set.</div>
+			</div>
+			
+			<div class="content-item d-none" id="glo5">
+				<h4>Great Hunt</h4>
+				<div class="accordion-body">The Great Hunt is a Clan tournament in which players need to complete contracts involving killing monsters in order to earn tournament points for their Clan. Based on the results of the tournament, rewards are given to the 100 best Clans. If two Clans earn the same number of points, the Clan that scored the given number of points first wins.
+				<br><br>
+				The difficulty of contracts depends on the level of your Hero. At the beginning of the event, each player receives 10 contracts, which show:
+				<br><br>
+				<ul><li>A description of the squad that needs to be eliminated. You can defeat any squad that fits the description; it doesn't necessarily have to be the one specified in the contract. Example: A common undead squad of level 17.</li>
+				<li>The number of points that can be earned by completing the contract.</li>
+				<li>The difficulty of the contract.</li></ul>
+				Contracts are divided into different difficulty levels:
+				<br><br>
+				<ul><li>Easy — Two contracts, 100 points each, one for your Hero, and one for a Captain.</li>
+				<li>Medium — Four contracts, 200 points each , two for your Hero, and two for a Captain.</li>
+				<li>Hard — Four contracts, 300 points each, two for your Hero, and two for a Captain.</li></ul>
+				The difficulty of contracts can be increased. The reward increases with the difficulty of the contract.
+				<br><br>
+				When a contract's level increases, it is replaced with a new one of the next highest difficulty. The level increases by one step: Easy -> Medium -> Hard -> Expert.
+				<br><br>
+				The entire list of contracts can be refreshed three times per tournament. All outstanding contracts will be replaced with 10 new ones. The points that you earned by completing contracts will be saved.
+				<br><br>
+				In battles against monsters that players need to destroy for a contract, there is a personal bonus that will allow you to earn additional Valor and Experience points. The effect of the bonus increases as more contracts are completed.
+				<br><br>
+				Clan Leaders can activate an additional bonus for their entire Clan once per tournament. The bonus doubles the effect of the individual player bonus.</div>
+			</div>
+			
+			<div class="content-item d-none" id="glo6">
+				<h4>Trials of Olympus</h4>
+				<div class="accordion-body">The Trials of Olympus allow you and your Clanmates to embark on an Epic tournament spanning multiple days.
+				<br><br>
+				A new stage of the tournament will take place each day, with its own activity on the World Map.
+				This is a Clan tournament, and to participate, a Clan must be player-created, have at least 55 members, and possess its own Clan Capital.
+				<br><br>
+				At the start of the tournament, Clans are divided into Divisions. Each Division consists of three Clans. Matchmaking is based on the total might of the Clan, the number of Clan members, and the level of their troops. The higher these indicators, the stronger the opponents in the group.
+				<br><br>
+				If you are not in a Clan, or your Clan does not participate in the rankings, you can still complete your Battle Pass and purchase items from the Hermes Store, but some rewards and parts of the event will be unavailable to you.
+				<br><br>
+				The new tournament is unavailable in newly created Kingdoms protected by the Shield of Peace and do not participate in cross-realm interactions. In these Kingdoms, the tournament will not appear in the list.
+				<br><br>
+				Different Stages of the Tournament: <ul>
+				<li>Trial of the Chimera - defeat epic Chimera squads on Clan Raids.</li>
+				<li>Trial of the Basilisk - defeat epic Basilisk squads with your Hero.</li>
+				<li>Lava Fountain Trial - place and capture Lava Fountains to extract Lava Oil.</li>
+				<li>Trial of Tartaros - use Lava Oil to explore the unique Tartaros Crypts.</li>
+				<li>Trial of Briareus - defeat epic Briareus squads with three Captains of your choice.</li></ul>
+				<strong>Note:</strong> any unclaimed personal rewards from each trial will disappear after the Trial ends. </div>
+			</div>
+			
+			<div class="content-item d-none" id="glo7">
+				<h4>Rise of the Ancients</h4>
+				<div class="accordion-body">This is a Clan tournament in which players join forces to raid Vaults, upgrade Clan artifacts, and then defeat an epic Ancient squad.
+				<br>
+				The event consists of two parts: <strong>"Ancients' Treasure"</strong> and <strong>"Rise of the Ancients."</strong> 
+				<br>
+				It is available to players who have been in a Clan for at least one day. 
+				<br><br>
+				<p class="fst-italic text-muted">Remember that teleporting a clan to another kingdom will reset your clan membership, effectively restricting your participation in the Ancients' Treasure.</p>
+				Furthermore, you must remain a clan member for 24 hours to participate in the Rise of the Ancients, so rejoining the same clan will still reset your membership time. To avoid these, make sure to teleport your clan before or after either event. 
+				<br><br>
+				<h6>Ancients' Treasure:</h6>
+				<strong>-> Map completion</strong>
+				The first day begins with players seeking to complete the map. Map fragments can only be obtained by completing daily quests. You can claim the reward for a completed quest by clicking on the relevant chest:
+				<br><br>
+				Once you have six fragments, you can combine them into one map by selecting Complete on the event screen. The map shows the image of the Vault and a button for locating it.
+				<br>
+				The button for locating the Vault gives you the option to select its level. The highest available level is determined by the level of your guardsmen.
+				<br>
+				Vaults of level 15 and higher contain Scientific Tractates, which, after a successful Raid, will be added to your Clan Capital.
+				<br><br>
+				<strong>-> Creating a Raid</strong><br>
+				The Find button opens the Kingdom Map and shows you the location of your Vault. You can create a Raid by clicking the Vault:
+				<br>
+				<ul><li>Reviving troops that died in Vault Raids is 10 times cheaper than normal.</li>
+				<li>Irretrievable losses of units that die in Vault Raids are reduced by half.</li></ul>
+				After the Raid is over, all participants receive Ancients' Coins, which can be used to upgrade Clan artifacts.
+				<br><br>
+				<strong>-> Upgrading Clan artifacts</strong><br>
+				The main outcome of the first day of the event is the upgraded Clan Artifacts.
+				<br>
+				The artifacts determine the epic monster squad that will be summoned on the second day. 
+				<br><br>
+				<ul><li>Tome of Knowledge (book): Increases the number of Valor, Experience, and tournament points that you can earn by fighting the epic monster squad.</li> 
+				<li>Enchanted Figurine: Increases the number of creatures summoned.</li>
+				<li>Mysterious Clock (hourglass): Increases the time for which the epic squad will be present on the map.</li></ul>
+				<strong>-> Rise of the Ancients</strong>
+				<br>
+				The second day of the event is when the fight against the epic Ancient squad occurs.
+				<br>
+				The Ancient Squad can only be summoned by a Clan's Leader and Superiors. The Ancient Squad occupies four free tiles on the Kingdom Map.
+				<br>
+				The number of summons and the time for which the squad is present on the map depend on the clan artifacts that were obtained on the first day.
+				<br>
+				For new clans, the Ancient Squad starts at level 1. In subsequent events, the level you reach is saved between each event and only increases after players have defeated the previous squad.
+				<br><br>
+				<p class="fst-italic text-muted">You can lower the Ancient Squad level by using the Seal of Suppressions that can be obtained from the Dark Omens event.</p>
+				Attacking the Ancient Squad grants players Golden Guardian points, which count toward personal goals in the event as well as toward quests in the Triumphal Challenge.
+				<br>
+				Based on the results of the tournament, the 100 best Clans receive a reward.</div>
+			</div>
+			
+			<div class="content-item d-none" id="glo8">
+				<h4>Dark Omens</h4>
+				<div class="accordion-body">Dark Omens is a two-day Clan tournament in which four Clans face off in the same division. Earn points, summon monsters, and outplay your rivals to climb the rankings.
+				<h6>How to Participate:</h6>
+				You must be in a <strong>player-created Clan</strong> that has a <strong>Clan Capital</strong> and <strong>55+ members</strong> with <strong>level 20+ Heroes.</strong> If you join an eligible Clan after the event starts, you can do missions and progress through the Battle Pass, but you won't be able to contribute Essence or summon/attack Dark Omen monsters.
+				<br><br>
+				<strong>Please note:</strong> Only available in Kingdoms with Cross-kingdom interactions enabled.
+				<br><br>
+				<h6>How to get Clan Rank Points:</h6>
+				Clans generate rank points automatically. Contribute Omen Essence to raise your Flame level and speed up the production of rank points.
+				<br><br>
+				Contributions to the Clan Chalice to boost your Clan's rank point production are only available during specific scheduled time intervals, so plan your Clan's activity accordingly. When an interval ends, your ongoing production will continue — it is only the ability to make Essence contributions that will be temporarily disabled.
+				<br><br>
+				There are seven intervals in total throughout the tournament.
+				<br><br>
+				— The intervals (hours relative to day one tournament start and day two reset):
+				<br><br><ul>
+				<li>> 1. Day 1 — +0h    |  05:00–06:00 PM UTC</li> 
+				<li>> 2. Day 1 — +8h    |  01:00–02:00 AM UTC</li> 
+				<li>> 3. Day 1 — +16h  |  09:00–10:00 AM UTC </li>
+				<li>> 4. Day 1 — +22h  |  03:00–06:00 PM UTC </li>
+				<li>> 5. Day 2 — +8h    |  01:00–02:00 AM UTC </li>
+				<li>> 6. Day 2 — +16h  |  09:00–10:00 AM UTC </li>
+				<li>> 7. Day 2 — +22h  |  03:00–05:00 PM UTC </li></ul>
+				These intervals are also indicated in the Production tab.
+				<br><br>
+				<h6>How to fight other Clans:</h6>
+				<ul><li>Summon Dark Omen monsters onto rival Clans' Grounds using Spawn Cards, which can be obtained from daily missions.</li>
+				<li>Monsters spawned suppress point production (up to -95%).</li>
+				<li>The effect stays active until the monsters are defeated or their lifetime expires.</li></ul>
+				The limit on Dark Omen monsters tracks the number of summons sent to a Clan by all enemy Clans in the division, not the number of monsters that are currently alive on its Clan Grounds. Random summons can still exceed the limit.
+				<br><br>
+				- The limit refreshes every hour, starting from when the tournament launches. 
+				<br><br>
+				- Monsters already present when the limit refreshes continue to apply Suppression, but they don't count toward the next hour's limit.</div>
+			</div>
+			
+			<!-- EPIC MONSTER BATTLES -->
+			<div class="content-item d-none" id="epi1">
+				<h4>Doomsday</h4>
+				<div class="accordion-body"><strong>Only a captain can attack.</strong>
+				The event grants you a greater number of bravery and experience points.<br>
+				Not only the Ancestral Treasure but also Doomsday is the right event to get as many Valor Points as possible. The right strategy here is to attack the epic monster with as many different troops as possible.<br>
+				A stack attack (see /LOS/attack-guide ) is again necessary here to increase efficiency.<br>Take 3 different guard levels and 2 different specialist levels with you to the monster. Mercenaries and monsters also significantly increase the amount of bravery points you receive!<br>
+				Most people use this event to raise their captains to the next level. Because here you also get a lot of XP like with Archania’s Swarm.<br>
+				ATTENTION: Do not attack the epic monster if it has been newly created. Go for a monster that already has less than 1T bravery points.
+				</div>
+			</div>
+			<div class="content-item d-none" id="epi2">
+				<h4>Armageddon</h4>
+				<div class="accordion-body">
+				<strong>Only the hero can attack.</strong>
+				The event grants you a greater number of bravery and experience points.<br>
+				Want to take your hero to the next level? No problem, here at Armageddon you can put this into practice.<br>
+				The right strategy here is to attack the epic monster with as many different troops as possible.<br>
+				A stack attack is again necessary here to increase efficiency.<br>Take 3 different guard levels and 2 different specialist levels with you to the monster. Mercenaries and monsters also significantly increase the amount of bravery points you receive! Flying monsters have the least damage against the epic monster. Therefore, keep these types of troops low.<br>
+				<strong>ATTENTION:</strong> Do not attack the epic monster if it has been newly created. Go for a monster that already has less than 1T bravery points.
+				</div>
+			</div>
+			<div class="content-item d-none" id="epi3">
+				<h4>Arachne's Swarm</h4>
+				<div class="accordion-body">
+				<strong>All three captains can be sent on an attack.</strong>
+				The event is very expensive.<br>
+				If you want to level up a single hero better, then you’re better off participating in the End of the World event.<br>
+				This event is only for extremely fast leveling up of a hero from level 1.<br>
+				The event grants you a greater number of bravery and experience points.<br>
+				Would you like to level up a captain with Level1? No problem here at Arachanias is the right time!<br>
+				The right strategy here is to attack the epic monster with as many different troops as possible.<br>
+				A stack attack is again necessary here to increase efficiency.<br>
+				Should I go with 1 captain or 3 captains? That is a legitimate question.<br>
+				Both ways are not wrong. If you send all captains, you must have enough troops to fill the entire force.<br>
+				However, do not attack with your 3 strongest captains. This will only increase the level of the three minimally and will cost you a lot of gold/silver etc. in return.<br>
+				Instead, make sure that you take your favorite captain with you, then a middle captain and one that you would like to bring higher (new captain that you have received or similar).<br>
+				If you want to take Stror, Aurora, Farhad, Helena with you. Be sure to bring lots of monsters and specialists to this event. It’s best to go to the swarm with 3 different levels.
+				</div>
+			</div>
+			<div class="content-item d-none" id="epi4">
+				<h4>Hellforge</h4>
+				<div class="accordion-body">
+				<ul>
+					<li>During Hellforge you can quickly earn a lot of equipment items.</li>
+					<li>Kill monsters in epic squads to earn tournament points and experience.</li>
+					<li>Receive coins by completing personal goals in the Hellforge tournament.</li>
+					<li>Exchange coins for equipment items in the special shop that is available during the Hellforge tournament.</li>
+					<li>Accumulated coins will be saved in between tournaments.</li>
+					<li>The rewards for and difficulty of personal goals depend on the level of your troops.</li>
+					<li>All unclaimed personal goals will disappear after the tournament ends.</li>
+				</ul>
+				</div>
+			</div>
+			<div class="content-item d-none" id="epi5">
+				<h4>Shadow Invasion</h4>
+				<div class="accordion-body">
+				<strong>Your Hero and Captains can attack the monster together.</strong><br>
+				This is a major 2-day event for gaining massive Conquest Points (CP) by attacking Shadow Cities and Cities of Shadow, which function as AI targets rather than other players. Focus on high-level targets, use a balanced troop mix with your best heroes/captains, and maximize damage to earn top-tier rewards like dragon coins, epic tar, and rare tar.<br>
+				This event offers a unique opportunity to earn a substantial number of Conquest points.
+				</div>
+			</div>
+			
+			<!-- FESTIVALS -->
+			<div class="content-item d-none" id="fes1">
+				<h4>Festivals Tournaments:</h4>
+				<div class="accordion-body">There are four seasonal festivals in the game, one for each season:<br>
+				<ul><li>Springfest</li> 
+				<li>Summerfest</li>
+				<li>Autumnfest </li>
+				<li>Winterfest</li></ul></div>
+			</div>
+			
+			<!-- OTHERS -->
+			<div class="content-item d-none" id="oth1">
+				<h4>Pursuit of Evolution</h4>
+				<ul>
+					<li>This is a special event designed to upgrade your Dragon and increase its power. Players participate by hunting monsters on the kingdom map to earn event rewards.</li>
+					<li>The main activity of the event is defeating common, rare, and epic monsters. The stronger the monster, the better the rewards you receive for progression.</li>
+					<li>By defeating monsters, players earn Dragon Seals, which act as the main event currency. These seals are essential for progression during the event.</li>
+					<li>Dragon Seals can be exchanged for Dragon Orbs, which are required to evolve and upgrade your Dragon. Without Dragon Orbs, dragon evolution is not possible.</li>
+					<li>The cost of Dragon Orbs increases with each evolution stage, meaning higher-level dragon upgrades require significantly more resources.</li>
+					<li>The difficulty of the event depends on the level of your Hero and Captains, so stronger accounts will face tougher monsters but also have better progression potential.</li>
+					<li>Overall, the event focuses on strengthening your Dragon, improving its combat abilities, and unlocking higher evolution stages for long-term power growth.</li>
+				</ul>
+			</div>
+			
+			<div class="content-item d-none" id="oth2">
+				<h4>Pursuit of Experience</h4>
+				<div class="accordion-body">This event takes your artifacts for your captains to the next level.
+				In this event, you can compete against rune squads. Either as a clan or you attack the regular rune squads.
+				Advantage of clan runes:
+				Your clan receives red books for research in the clan. Here, too, raids can be carried out together. However, the points for this are rather high compared to the normal runes for those who have large troops. Smaller raid participants will have few or no casualties after the attack. However, they will not receive many points for the event.
+				Therefore, make sure that the troop strength is roughly the same.
+				Advantage of normal runes:
+				These give you the most points for the event. However, as a small player, you can still have a lot of casualties here.
+
+				Therefore, recommendation: Small players fight together as a team – large players fight for the normal runes.
+				You have 6 personal goals to complete in the event.
+
+				Goals 1, 2, 4, 5, and 6 will earn you essence.
+				Goal 3 will earn you keys for the new artifacts.
+
+				Create a raid
+				Best offensive tactics
+				Captains:
+				-Animatore
+				-Cleo
+				-Aydae
+				Troops:
+				Take the best troops with you for the attack.
+				Flyers, horsemen, archers, spearmen.</div>
+			</div>
+			
+			<div class="content-item d-none" id="oth3">
+				<h4>Summon Mastery</h4>
+				<div class="accordion-body">The Summon Mastery event in Total Battle allows you to earn bonus fragments for a specific featured captain by using Summoning Scrolls in the Summoning Circle. The event focuses on gathering fragments through both the circle and event milestones. It is highly recommended to save your scrolls for this event to maximize rewards and to focus on key captains like Carter.
+				Key Aspects of Summon Mastery:
+				<ul>
+					  <li><strong>Optimal Strategy:</strong> Save your Elite Summoning Scrolls and use them in batches of 10 during this event to get the best results.</li>
+					  <li><strong>Targeted Rewards:</strong> The event highlights a specific captain, offering extra fragments for them, and you can achieve 1200+ points to maximize rewards.</li>
+					  <li><strong>Accumulation:</strong> Players advise saving scrolls from daily quests, Triumphal Challenge shops, and Ragnarok to use during this event.</li>
+					  <li><strong>Important Captains:</strong> Players often focus on getting Carter and Cleopatra fragments.</li>
+					  <li><strong>Event Mechanics:</strong> The event usually runs for a limited time and is part of the regular events schedule.</li>
+				</ul></div>
+			</div>
+			
+			<div class="content-item d-none" id="oth4">
+				<h4>Bazaars & Fairs</h4>
+				<div class="accordion-body"><strong>General description</strong><br>
+				There are currently three types of Bazaar event in the game with similar mechanics.
+
+				During each Bazaar event, players will need to collect tokens to play and win prizes. You'll also have the option to use more tokens to increase the size of the reward.
+
+				If you use more tokens and obtain rarer rewards, you will gain more rank points.
+
+				The event tokens can be received from:
+				<ul>
+					  <li>Completing daily quests (click on the chest to claim the reward).</li>
+					  <li>The accompanying events — complete the personal goals and receive the tokens as rewards.</li>
+					  <li>Purchasing special offers.</li>
+				</ul>
+				Three type of Bazaar:
+				<ol>
+					  <li>Dragon Fair</li>
+					  <li>Lucky Bazaar</li>
+					  <li>Pharaoh's Bazaar</li>
+				</ol>
+				
+				<h5>Dragon Fair Bazaar:</h5>
+				<ul><li>A recurring event to upgrade your Dragon using Lizard Tokens.</li>
+				<li>Spin the wheel to earn rewards, mainly Dragon Orbs.</li>
+				<li>More tokens used = better rewards and higher ranking points.</li>
+				<li>Orbs are used for Dragon leveling and evolution.</li>
+				<li>Tokens can be saved or earned from daily tasks.</li>
+				<li>Top 100 players get extra rewards like Tar and Dragon Coins.</li>
+				<li>Best strategy: save tokens and use them during the event.</li></ul>
+				
+				<h5>Lucky Bazaar:</h5>
+				<ul><li>Get Lucky Coins from daily quests, Lucky Bazaar sales, and the Pursuit of Fortune event.</li>
+				<li>Spend Lucky Coins at the Lucky Bazaar at receive prizes.</li>
+				<li>Among the prizes, you can find progress points for your Lucky bonus.</li>
+				<li>For each stage of your progress, you will receive a bonus to Valor and Experience points in fights against monsters.</li>
+				<li>Don't miss out on this unique opportunity! The bonus is also active in fights against Epic monsters.</li>
+				<li>Earn rank points by participating in the Lucky Bazaar.</li>
+				<li>The higher the bet and the rarity of the reward, the more points you will earn.</li></ul>
+				
+				<h5>Pharaoh's Bazaar:</h5>
+				
+				Earn Ramses Coins from daily quests, Pharaoh's Bazaar sales, and the Pharaoh's Hunt event. Spend Ramses Coins in the Pharaoh's Bazaar and earn prizes. Earn rank points by participating in the Pharaoh's Bazaar. The higher the bet and the rarity of the reward, the more points you will earn.
+				<ul>
+				<li></li></ul>
+				
+				
+				</div>
+			</div>
+			
+			<div class="content-item d-none" id="oth5">
+				<h4>Triumphal Challenge</h4>
+				<ul>
+					  <li>Coming soon.</li>
+				</ul>
+			</div>
+			
+			<div class="content-item d-none" id="oth6">
+				<h4>Union of Triumph</h4>
+				<ul>
+					  <li>Coming soon.</li>
+				</ul>
+			</div>
+			
+			<div class="content-item d-none" id="oth7">
+				<h4>Seasonal Kingdom</h4>
+				<ul>
+					  <li>Coming soon.</li>
+				</ul>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+function showContent(btn, id) {
+	
+	// 1. Hide default message
+    let defaultMsg = document.getElementById("defaultMessage");
+    if (defaultMsg) defaultMsg.style.display = "none";
+
+    // 2. Hide all event content
+    document.querySelectorAll(".content-item").forEach(div => {
+        div.classList.add("d-none");
+    });
+
+    // 3. Show selected content
+    let target = document.getElementById(id);
+    if (target) {
+        target.classList.remove("d-none");
+    } else {
+        console.warn("Content not found for:", id);
+        return;
+    }
+
+    // Button logic
+    let buttons = document.querySelectorAll("#btnGroup .btn");
+
+    buttons.forEach(b => {
+        b.classList.remove("active");
+
+        if (b.classList.contains("btn-primary")) b.classList.replace("btn-primary","btn-outline-primary");
+        if (b.classList.contains("btn-danger")) b.classList.replace("btn-danger","btn-outline-danger");
+        if (b.classList.contains("btn-dark")) b.classList.replace("btn-dark","btn-outline-dark");
+        if (b.classList.contains("btn-warning")) b.classList.replace("btn-warning","btn-outline-warning");
+        if (b.classList.contains("btn-success")) b.classList.replace("btn-success","btn-outline-success");
+        if (b.classList.contains("btn-info")) b.classList.replace("btn-info","btn-outline-info");
+        if (b.classList.contains("btn-secondary")) b.classList.replace("btn-secondary","btn-outline-secondary");
+    });
+
+    btn.classList.add("active");
+
+    if (btn.classList.contains("btn-outline-primary")) btn.classList.replace("btn-outline-primary","btn-primary");
+    if (btn.classList.contains("btn-outline-danger")) btn.classList.replace("btn-outline-danger","btn-danger");
+    if (btn.classList.contains("btn-outline-dark")) btn.classList.replace("btn-outline-dark","btn-dark");
+    if (btn.classList.contains("btn-outline-warning")) btn.classList.replace("btn-outline-warning","btn-warning");
+    if (btn.classList.contains("btn-outline-success")) btn.classList.replace("btn-outline-success","btn-success");
+    if (btn.classList.contains("btn-outline-info")) btn.classList.replace("btn-outline-info","btn-info");
+    if (btn.classList.contains("btn-outline-secondary")) btn.classList.replace("btn-outline-secondary","btn-secondary");
+}
+
+
+function showCategory(btn, category) {
+
+    let buttons = document.querySelectorAll("#categoryGroup .btn");
+
+    // Reset all buttons
+    buttons.forEach(b => {
+        b.classList.remove("active");
+
+        // back to outline
+        if (b.classList.contains("btn-dark")) {
+            b.classList.replace("btn-dark", "btn-outline-dark");
+        }
+    });
+
+    // Activate clicked button
+    btn.classList.add("active");
+
+    if (btn.classList.contains("btn-outline-dark")) {
+        btn.classList.replace("btn-outline-dark", "btn-dark");
+    }
+
+    // Show only related event buttons
+    document.querySelectorAll("#btnGroup button").forEach(b => {
+        if (b.getAttribute("data-category") === category) {
+            b.style.display = "inline-block";
+        } else {
+            b.style.display = "none";
+        }
+    });
+
+    // Hide all content
+    document.querySelectorAll(".content-item").forEach(div => {
+        div.classList.add("d-none");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Hide all subcategory buttons initially
+    document.querySelectorAll("#btnGroup button").forEach(b => {
+        b.style.display = "none";
+    });
+
+});
+</script>
 
       
     </section><!-- /Starter Section Section -->
