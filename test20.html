@@ -920,7 +920,7 @@
                 this.level = level;
                 this.name = `${unitType}(${level})`;
                 this.leadership = UNIT_STATS[unitType].leadership;
-                this.strength = UNIT_STATS[unitType].strength_by_level[level] || 0;
+                this.strength = UNIT_STATS?.[unitType]?.strength_by_level?.[level] ?? 0;
                 this.hp = this.strength * 3;
                 this.hpPerLead = Math.floor(this.hp / this.leadership);
                 this.count = 0;
@@ -933,8 +933,8 @@
                 this.monsterType = monsterType;
                 this.level = level;
                 this.name = `${monsterType}(${level})`;
-                this.dominance = UNIT_STATS[monsterType].dominance_by_level[level] || 0;
-                this.strength = UNIT_STATS[monsterType].strength_by_level[level] || 0;
+                this.dominance = UNIT_STATS?.[monsterType]?.dominance_by_level?.[level] ?? 0;
+                this.strength = UNIT_STATS?.[monsterType]?.strength_by_level?.[level] ?? 0;
                 this.hp = this.strength * 3;
                 this.hpPerDom = Math.floor(this.hp / this.dominance);
                 this.count = 0;
@@ -978,8 +978,8 @@
 
         // Validate inputs
         function validateInputs() {
-            const leadership = document.getElementById('leadership').value;
-            const dominance = document.getElementById('dominance').value;
+            const leadership = Number(document.getElementById('leadership').value) || 0;
+            const dominance = Number(document.getElementById('dominance').value) || 0;
             const validationMessage = document.getElementById('validationMessage');
             
             if (leadership && parseInt(leadership) < 0) {
@@ -1147,8 +1147,8 @@
 
         // Save configuration
         function saveConfiguration() {
-            const leadership = document.getElementById('leadership').value;
-            const dominance = document.getElementById('dominance').value;
+            const leadership = Number(document.getElementById('leadership').value) || 0;
+            const dominance = Number(document.getElementById('dominance').value) || 0;
             
             const guards = [];
             document.querySelectorAll('#guardList .unit-row').forEach(row => {
@@ -1358,8 +1358,8 @@
         // Function to calculate army composition
         async function calculateArmy() {
 
-          const leadership = parseInt(document.getElementById('leadership').value);
-          const dominance = parseInt(document.getElementById('dominance').value);
+          const leadership = Number(document.getElementById('leadership').value) || 0;
+            const dominance = Number(document.getElementById('dominance').value) || 0;
       
           const units = [];
           const monsters = [];
@@ -1400,10 +1400,17 @@
             const numMonsters = monsters.length;
             const leadershipPerUnit = numUnits > 0 ? Math.floor(totalLeadership / numUnits) : 0;
             const dominancePerMonster = numMonsters > 0 ? Math.floor(totalDominance / numMonsters) : 0;
-            const avgHpPerLead = numUnits > 0 ? Math.floor(units.reduce((sum, unit) => sum + unit.hpPerLead, 0) / numUnits) : 0;
-            const avgHpPerDom = numMonsters > 0 ? Math.floor(monsters.reduce((sum, monster) => sum + monster.hpPerDom, 0) / numMonsters) : 0;
+            const avgHpPerLead = numUnits > 0
+  ? Math.floor(units.reduce((sum, unit) => sum + (unit.hpPerLead || 0), 0) / numUnits)
+  : 0;
+            const avgHpPerDom = numMonsters > 0
+  ? Math.floor(monsters.reduce((sum, m) => sum + (m.hpPerDom || 0), 0) / numMonsters)
+  : 0;
             const avgHpPerSquad = Math.min(avgHpPerLead, avgHpPerDom) - step;            
-            const squadHp = avgHpPerLead < avgHpPerDom ? avgHpPerSquad * leadershipPerUnit : avgHpPerSquad * dominancePerMonster;
+            const safeAvgHpPerSquad = isNaN(avgHpPerSquad) ? 0 : avgHpPerSquad;
+const squadHp = avgHpPerLead < avgHpPerDom
+  ? safeAvgHpPerSquad * leadershipPerUnit
+  : safeAvgHpPerSquad * dominancePerMonster;
 
             let requiredLeadership = 0;
             let requiredDominance = 0;            
