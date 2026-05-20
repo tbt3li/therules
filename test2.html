@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Army Composition Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            margin-top: 10px;
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        .btn-load {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+            color: white;
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+        }
+
+        .btn-preset {
+            background: linear-gradient(135deg, #ecc94b 0%, #d69e2e 100%);
+            color: white;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #2d3748;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+            font-weight: normal;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #2d3748 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-header h2 {
+            color: #2d3748;
+            font-size: 1.5em;
+        }
+
+        .close {
+            color: #a0aec0;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #2d3748;
+        }
+
+        .modal-body {
+            margin: 20px 0;
+        }
+
+        .preset-option {
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .preset-option:hover {
+            background: #f7fafc;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .preset-option h4 {
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .preset-option p {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .validation-message {
+            background: #feb2b2;
+            color: #742a2a;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            animation: shake 0.5s;
+        }
+
+        .success-message {
+            background: #9ae6b4;
+            color: #22543d;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9em;
+            color: #718096;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card p {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .unit-counter {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-title h3 {
+            font-size: 1.3em;
+            color: #2d3748;
+        }
+
+        .section-icon {
+            font-size: 1.5em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+        }
+
+        .progress-indicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+        }
+
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95em;
+        }
+
+        .input-group input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .unit-selector {
+            margin-top: 20px;
+        }
+
+        .unit-selector > h3 {
+            font-size: 1.5em;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .unit-lists {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .unit-category {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e2e8f0;
+        }
+
+        .unit-category h4 {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .unit-list {
+            min-height: 100px;
+            margin-bottom: 15px;
+        }
+
+        .unit-row {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .unit-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .unit-row select {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .unit-row select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+            color: white;
+            padding: 10px 16px;
+        }
+
+        .btn-remove:hover {
+            background: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
+        }
+
+        .btn-add {
+            width: 100%;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 12px 20px;
+        }
+
+        .btn-add:hover {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+        }
+
+        .btn-calc {
+            width: 100%;
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+            padding: 18px 30px;
+            font-size: 1.2em;
+            margin: 30px 0;
+        }
+
+        .btn-calc:hover {
+            background: linear-gradient(135deg, #dd6b20 0%, #c05621 100%);
+        }
+
+        .output {
+            background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+
+        .output p {
+            margin: 12px 0;
+            font-size: 1.05em;
+            color: #2d3748;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .output p strong {
+            color: #667eea;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.05em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+
+        tbody tr {
+            background: white;
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background: #edf2f7;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .unit-lists {
+                grid-template-columns: 1fr;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .unit-row {
+                flex-direction: column;
+            }
+
+            .unit-row select,
+            .btn-remove {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ Army Composition Calculator ⚔️</h1>
+            <p>Strategic unit planning and optimization tool</p>
+        </div>
+
+        <div class="content">
+            <!-- Validation Messages -->
+            <div class="validation-message" id="validationMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button class="action-btn btn-preset tooltip" onclick="openPresetsModal()">
+                    <span>⚡</span> Load Preset
+                    <span class="tooltiptext">Quick start with pre-configured army setups</span>
+                </button>
+                <button class="action-btn btn-save tooltip" onclick="saveConfiguration()">
+                    <span>💾</span> Save Config
+                    <span class="tooltiptext">Save your current army configuration</span>
+                </button>
+                <button class="action-btn btn-load tooltip" onclick="loadConfiguration()">
+                    <span>📂</span> Load Config
+                    <span class="tooltiptext">Load a previously saved configuration</span>
+                </button>
+                <button class="action-btn btn-export tooltip" onclick="exportResults()">
+                    <span>📊</span> Export
+                    <span class="tooltiptext">Export results to CSV or JSON</span>
+                </button>
+                <button class="action-btn btn-clear tooltip" onclick="clearAll()">
+                    <span>🗑️</span> Clear All
+                    <span class="tooltiptext">Reset all inputs and units</span>
+                </button>
+            </div>
+
+            <!-- Stats Summary -->
+            <div class="stats-summary" id="statsSummary" style="display: none;">
+                <div class="stat-card">
+                    <h3>Total Units Added</h3>
+                    <p id="totalUnitsAdded">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Guards</h3>
+                    <p id="totalGuards">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Specialists</h3>
+                    <p id="totalSpecialists">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Monsters</h3>
+                    <p id="totalMonsters">0</p>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    <h3>Army Parameters</h3>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group tooltip">
+                        <label for="leadership">Total Leadership Value:</label>
+                        <input type="number" id="leadership" name="leadership" min="1" placeholder="Enter leadership value" oninput="validateInputs()">
+                        <span class="tooltiptext">Total leadership capacity available for regular units</span>
+                    </div>
+                    <div class="input-group tooltip">
+                        <label for="dominance">Total Dominance Value:</label>
+                        <input type="number" id="dominance" name="dominance" min="1" placeholder="Enter dominance value" oninput="validateInputs()">
+                        <span class="tooltiptext">Total dominance capacity available for monster units</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unit Selector -->
+            <div class="unit-selector">
+                <div class="section-title">
+                    <span class="section-icon">🛡️</span>
+                    <h3>Build Your Army</h3>
+                </div>
+                <div class="unit-lists">
+                    <div class="unit-category">
+                        <h4>Guards <span class="unit-counter" id="guardCounter">0</span></h4>
+                        <div class="unit-list" id="guardList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🛡️</div>
+                                <p>No guards added yet</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-add" onclick="addGuard()">+ Add Guard</button>
+                    </div>
+                    <div class="unit-category">
+                        <h4>Specialists <span class="unit-counter" id="specialistCounter">0</span></h4>
+                        <div class="unit-list" id="specialistList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">⚔️</div>
+                                <p>No specialists added yet</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-add" onclick="addSpecialist()">+ Add Specialist</button>
+                    </div>
+                    <div class="unit-category">
+                        <h4>Monsters <span class="unit-counter" id="monsterCounter">0</span></h4>
+                        <div class="unit-list" id="monsterList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🐉</div>
+                                <p>No monsters added yet</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-add" onclick="addMonster()">+ Add Monster</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-calc" onclick="calculateArmy()">Calculate Army Composition</button>
+
+            <div class="output" id="output" style="display:none;"></div>
+
+            <table id="armyTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Unit Type</th>
+                        <th>Quantity</th>
+                        <th>Total HP</th>
+                        <th>Total Strength</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Presets Modal -->
+    <div id="presetsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚡ Army Presets</h2>
+                <span class="close" onclick="closePresetsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="preset-option" onclick="loadPreset('balanced')">
+                    <h4>⚖️ Balanced Army</h4>
+                    <p>Mix of guards, specialists, and monsters for versatile combat</p>
+                </div>
+                <div class="preset-option" onclick="loadPreset('heavy')">
+                    <h4>💪 Heavy Assault</h4>
+                    <p>High-level monsters and battle units for maximum damage</p>
+                </div>
+                <div class="preset-option" onclick="loadPreset('economy')">
+                    <h4>💰 Economy Build</h4>
+                    <p>Cost-effective lower-level units for efficient battles</p>
+                </div>
+                <div class="preset-option" onclick="loadPreset('elite')">
+                    <h4>⭐ Elite Forces</h4>
+                    <p>Top-tier specialists and legendary monsters</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div id="progressIndicator" class="progress-indicator">
+        <div class="spinner"></div>
+        <p>Calculating optimal composition...</p>
+    </div>
+
+    <script>
+        // Unit data
+        const UNIT_STATS = {
+            "Archer": {
+                "leadership": 1,
+                "strength_by_level": { 1: 50, 2: 90, 3: 160, 4: 290, 5: 520, 6: 940, 7: 1700, 8: 3060, 9: 5510 }
+            },
+            "Spearman": {
+                "leadership": 1,
+                "strength_by_level": { 1: 50, 2: 90, 3: 160, 4: 290, 5: 520, 6: 940, 7: 1700, 8: 3060, 9: 5510 }
+            },
+            "Rider": {
+                "leadership": 2,
+                "strength_by_level": { 1: 100, 2: 180, 3: 320, 4: 580, 5: 1050, 6: 1900, 7: 3400, 8: 6120, 9: 11020 }
+            },
+            "BattleGriffin": {
+                "leadership": 20,
+                "strength_by_level": { 5: 10000, 6: 19000, 7: 34000, 8: 61200, 9: 110200 }
+            },
+            "Deadshot": {
+                "leadership": 1,
+                "strength_by_level": { 5: 520, 6: 940, 7: 1700, 8: 3060, 9: 5510 }
+            },
+            "Swordsman": {
+                "leadership": 1,
+                "strength_by_level": { 1: 50, 2: 90, 3: 160, 4: 290, 5: 520, 6: 940, 7: 1700, 8: 3060, 9: 5510 }
+            },
+            "LionRider": {
+                "leadership": 2,
+                "strength_by_level": { 5: 1050, 6: 1900, 7: 3400 }
+            },                        
+            "Vulture": {
+                "leadership": 2,
+                "strength_by_level": { 5: 520, 6: 940, 7: 1700 }
+            },
+            "RoyalLion": {
+                "leadership": 2,
+                "strength_by_level": { 1: 61200, 2: 110200 }
+            },
+            "Dragon": {
+                "dominance_by_level": { 3: 7, 4: 13, 5: 20, 6: 33, 7: 44, 8: 53, 9: 53 },
+                "strength_by_level": { 3: 4500, 4: 15000, 5: 42000, 6: 120000, 7: 300000, 8: 650000, 9: 1170000  }
+            },
+            "Elemental": {
+                "dominance_by_level": { 3: 3, 4: 15, 5: 21, 6: 35, 7: 45, 8: 54, 9: 54 },
+                "strength_by_level": { 3: 1900, 4: 17000, 5: 44000, 6: 130000, 7: 310000, 8: 660000, 9: 1190000 }
+            },
+            "Giant": {
+                "dominance_by_level": { 3: 8, 4: 11, 5: 23, 6: 30, 7: 43, 8: 55, 9: 55 },
+                "strength_by_level": { 3: 5200, 4: 13000, 5: 48000, 6: 110000, 7: 290000, 8: 670000, 9: 1210000 }
+            },
+            "Beast": {
+                "dominance_by_level": { 3: 6, 4: 10, 5: 22, 6: 34, 7: 41, 8: 52, 9: 52 },
+                "strength_by_level": { 3: 3900, 4: 12000, 5: 46000, 6: 130000, 7: 280000, 8: 640000, 9: 1150000 }
+            },            
+        };
+
+        // Presets configuration
+        const PRESETS = {
+            balanced: {
+                leadership: 1000,
+                dominance: 200,
+                guards: [
+                    { type: 'Archer', level: 5 },
+                    { type: 'Spearman', level: 5 },
+                    { type: 'Rider', level: 5 }
+                ],
+                specialists: [
+                    { type: 'Swordsman', level: 5 },
+                    { type: 'Deadshot', level: 6 }
+                ],
+                monsters: [
+                    { type: 'Dragon', level: 5 },
+                    { type: 'Giant', level: 5 }
+                ]
+            },
+            heavy: {
+                leadership: 2000,
+                dominance: 400,
+                guards: [
+                    { type: 'BattleGriffin', level: 8 },
+                    { type: 'Rider', level: 9 }
+                ],
+                specialists: [
+                    { type: 'RoyalLion', level: 2 },
+                    { type: 'Deadshot', level: 9 }
+                ],
+                monsters: [
+                    { type: 'Dragon', level: 9 },
+                    { type: 'Elemental', level: 9 },
+                    { type: 'Giant', level: 9 }
+                ]
+            },
+            economy: {
+                leadership: 500,
+                dominance: 100,
+                guards: [
+                    { type: 'Archer', level: 3 },
+                    { type: 'Spearman', level: 3 },
+                    { type: 'Rider', level: 3 }
+                ],
+                specialists: [
+                    { type: 'Swordsman', level: 3 }
+                ],
+                monsters: [
+                    { type: 'Dragon', level: 3 },
+                    { type: 'Beast', level: 3 }
+                ]
+            },
+            elite: {
+                leadership: 1500,
+                dominance: 300,
+                guards: [
+                    { type: 'BattleGriffin', level: 9 }
+                ],
+                specialists: [
+                    { type: 'RoyalLion', level: 2 },
+                    { type: 'LionRider', level: 7 },
+                    { type: 'Deadshot', level: 9 }
+                ],
+                monsters: [
+                    { type: 'Dragon', level: 8 },
+                    { type: 'Elemental', level: 8 },
+                    { type: 'Giant', level: 8 }
+                ]
+            }
+        };
+
+        // Unit class
+        class Unit {
+            constructor(unitType, level) {
+                this.unitType = unitType;
+                this.level = level;
+                this.name = `${unitType}(${level})`;
+                this.leadership = UNIT_STATS[unitType].leadership;
+                this.strength = UNIT_STATS[unitType].strength_by_level[level] || 0;
+                this.hp = this.strength * 3;
+                this.hpPerLead = Math.floor(this.hp / this.leadership);
+                this.count = 0;
+            }
+        }
+
+        // Monster class
+        class Monster {
+            constructor(monsterType, level) {
+                this.monsterType = monsterType;
+                this.level = level;
+                this.name = `${monsterType}(${level})`;
+                this.dominance = UNIT_STATS[monsterType].dominance_by_level[level] || 0;
+                this.strength = UNIT_STATS[monsterType].strength_by_level[level] || 0;
+                this.hp = this.strength * 3;
+                this.hpPerDom = Math.floor(this.hp / this.dominance);
+                this.count = 0;
+            }
+        }
+
+        // Update counters
+        function updateCounters() {
+            const guardCount = document.querySelectorAll('#guardList .unit-row').length;
+            const specialistCount = document.querySelectorAll('#specialistList .unit-row').length;
+            const monsterCount = document.querySelectorAll('#monsterList .unit-row').length;
+            const totalCount = guardCount + specialistCount + monsterCount;
+
+            document.getElementById('guardCounter').textContent = guardCount;
+            document.getElementById('specialistCounter').textContent = specialistCount;
+            document.getElementById('monsterCounter').textContent = monsterCount;
+            document.getElementById('totalUnitsAdded').textContent = totalCount;
+            document.getElementById('totalGuards').textContent = guardCount;
+            document.getElementById('totalSpecialists').textContent = specialistCount;
+            document.getElementById('totalMonsters').textContent = monsterCount;
+
+            // Show/hide stats summary
+            document.getElementById('statsSummary').style.display = totalCount > 0 ? 'grid' : 'none';
+
+            // Remove empty states when units are added
+            removeEmptyStates();
+        }
+
+        // Remove empty state messages
+        function removeEmptyStates() {
+            const lists = ['guardList', 'specialistList', 'monsterList'];
+            lists.forEach(listId => {
+                const list = document.getElementById(listId);
+                const emptyState = list.querySelector('.empty-state');
+                const hasUnits = list.querySelectorAll('.unit-row').length > 0;
+                if (emptyState) {
+                    emptyState.style.display = hasUnits ? 'none' : 'block';
+                }
+            });
+        }
+
+        // Validate inputs
+        function validateInputs() {
+            const leadership = document.getElementById('leadership').value;
+            const dominance = document.getElementById('dominance').value;
+            const validationMessage = document.getElementById('validationMessage');
+            
+            if (leadership && parseInt(leadership) < 0) {
+                showMessage('validationMessage', 'Leadership value cannot be negative!');
+                return false;
+            }
+            if (dominance && parseInt(dominance) < 0) {
+                showMessage('validationMessage', 'Dominance value cannot be negative!');
+                return false;
+            }
+            validationMessage.style.display = 'none';
+            return true;
+        }
+
+        // Show message
+        function showMessage(elementId, message, duration = 3000) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, duration);
+        }
+
+        // Function to add a new guard
+        function addGuard() {
+            const guardList = document.getElementById('guardList');
+            const newUnitRow = document.createElement('div');
+            newUnitRow.classList.add('unit-row');
+            newUnitRow.innerHTML = `
+                <select class="unit-type" onchange="updateLevelOptions(this)">
+                    <option value="Archer">Archer</option>
+                    <option value="Spearman">Spearman</option>
+                    <option value="Rider">Rider</option>
+                    <option value="BattleGriffin">Battle Griffin</option>
+                </select>
+                <select class="unit-level">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+                <button class="btn btn-remove" onclick="removeUnit(this)">Remove</button>
+            `;
+            guardList.appendChild(newUnitRow);
+            updateLevelOptions(newUnitRow.querySelector('.unit-type'));
+            updateCounters();
+        }
+
+        // Function to add a new specialist
+        function addSpecialist() {
+            const specialistList = document.getElementById('specialistList');
+            const newUnitRow = document.createElement('div');
+            newUnitRow.classList.add('unit-row');
+            newUnitRow.innerHTML = `
+                <select class="unit-type" onchange="updateLevelOptions(this)">
+                    <option value="Swordsman">Swordsman</option>
+                    <option value="Deadshot">Elite Crossbowman</option>
+                    <option value="LionRider">Lion Rider</option>
+                    <option value="Vulture">Vulture</option>
+                    <option value="RoyalLion">Royal Lion</option>
+                </select>
+                <select class="unit-level">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+                <button class="btn btn-remove" onclick="removeUnit(this)">Remove</button>
+            `;
+            specialistList.appendChild(newUnitRow);
+            updateLevelOptions(newUnitRow.querySelector('.unit-type'));
+            updateCounters();
+        }
+
+        // Function to add a new monster
+        function addMonster() {
+            const monsterList = document.getElementById('monsterList');
+            const newUnitRow = document.createElement('div');
+            newUnitRow.classList.add('unit-row');
+            newUnitRow.innerHTML = `
+                <select class="unit-type">
+                    <option value="Dragon">Dragon</option>
+                    <option value="Elemental">Elemental</option>
+                    <option value="Giant">Giant</option>
+                    <option value="Beast">Beast</option>
+                </select>
+                <select class="unit-level">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+                <button class="btn btn-remove" onclick="removeUnit(this)">Remove</button>
+            `;
+            monsterList.appendChild(newUnitRow);
+            updateCounters();
+        }
+
+        // Function to update available levels
+        function updateLevelOptions(selectElement) {
+            const unitType = selectElement.value;
+            const levelSelect = selectElement.closest('.unit-row').querySelector('.unit-level');
+
+            levelSelect.innerHTML = '';
+
+            if (unitType === "BattleGriffin" || unitType === "LionRider" || unitType === "Vulture" || unitType === "Deadshot") {
+                for (let i = 5; i <= 9; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    levelSelect.appendChild(option);
+                }
+            } else if (unitType === "RoyalLion") {
+                for (let i = 1; i <= 2; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    levelSelect.appendChild(option);
+                }
+            } else {
+                for (let i = 1; i <= 9; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    levelSelect.appendChild(option);
+                }
+            }
+        }
+
+        // Function to remove a unit
+        function removeUnit(button) {
+            const unitRow = button.closest('.unit-row');
+            unitRow.remove();
+            updateCounters();
+        }
+
+        // Clear all inputs and units
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all units and reset the calculator?')) {
+                document.getElementById('leadership').value = '';
+                document.getElementById('dominance').value = '';
+                document.getElementById('guardList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛡️</div><p>No guards added yet</p></div>';
+                document.getElementById('specialistList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚔️</div><p>No specialists added yet</p></div>';
+                document.getElementById('monsterList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🐉</div><p>No monsters added yet</p></div>';
+                document.getElementById('output').style.display = 'none';
+                document.getElementById('armyTable').style.display = 'none';
+                updateCounters();
+                showMessage('successMessage', 'All data cleared successfully!');
+            }
+        }
+
+        // Save configuration
+        function saveConfiguration() {
+            const leadership = document.getElementById('leadership').value;
+            const dominance = document.getElementById('dominance').value;
+            
+            const guards = [];
+            document.querySelectorAll('#guardList .unit-row').forEach(row => {
+                guards.push({
+                    type: row.querySelector('.unit-type').value,
+                    level: parseInt(row.querySelector('.unit-level').value)
+                });
+            });
+
+            const specialists = [];
+            document.querySelectorAll('#specialistList .unit-row').forEach(row => {
+                specialists.push({
+                    type: row.querySelector('.unit-type').value,
+                    level: parseInt(row.querySelector('.unit-level').value)
+                });
+            });
+
+            const monsters = [];
+            document.querySelectorAll('#monsterList .unit-row').forEach(row => {
+                monsters.push({
+                    type: row.querySelector('.unit-type').value,
+                    level: parseInt(row.querySelector('.unit-level').value)
+                });
+            });
+
+            const config = {
+                leadership,
+                dominance,
+                guards,
+                specialists,
+                monsters,
+                savedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('armyConfig', JSON.stringify(config));
+            showMessage('successMessage', 'Configuration saved successfully!');
+        }
+
+        // Load configuration
+        function loadConfiguration() {
+            const config = localStorage.getItem('armyConfig');
+            if (!config) {
+                showMessage('validationMessage', 'No saved configuration found!');
+                return;
+            }
+
+            const data = JSON.parse(config);
+            document.getElementById('leadership').value = data.leadership || '';
+            document.getElementById('dominance').value = data.dominance || '';
+
+            // Clear existing units
+            document.getElementById('guardList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛡️</div><p>No guards added yet</p></div>';
+            document.getElementById('specialistList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚔️</div><p>No specialists added yet</p></div>';
+            document.getElementById('monsterList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🐉</div><p>No monsters added yet</p></div>';
+
+            // Load guards
+            data.guards?.forEach(guard => {
+                addGuard();
+                const lastRow = document.querySelector('#guardList .unit-row:last-child');
+                lastRow.querySelector('.unit-type').value = guard.type;
+                updateLevelOptions(lastRow.querySelector('.unit-type'));
+                lastRow.querySelector('.unit-level').value = guard.level;
+            });
+
+            // Load specialists
+            data.specialists?.forEach(specialist => {
+                addSpecialist();
+                const lastRow = document.querySelector('#specialistList .unit-row:last-child');
+                lastRow.querySelector('.unit-type').value = specialist.type;
+                updateLevelOptions(lastRow.querySelector('.unit-type'));
+                lastRow.querySelector('.unit-level').value = specialist.level;
+            });
+
+            // Load monsters
+            data.monsters?.forEach(monster => {
+                addMonster();
+                const lastRow = document.querySelector('#monsterList .unit-row:last-child');
+                lastRow.querySelector('.unit-type').value = monster.type;
+                lastRow.querySelector('.unit-level').value = monster.level;
+            });
+
+            updateCounters();
+            showMessage('successMessage', 'Configuration loaded successfully!');
+        }
+
+        // Open presets modal
+        function openPresetsModal() {
+            document.getElementById('presetsModal').style.display = 'block';
+        }
+
+        // Close presets modal
+        function closePresetsModal() {
+            document.getElementById('presetsModal').style.display = 'none';
+        }
+
+        // Load preset
+        function loadPreset(presetName) {
+            const preset = PRESETS[presetName];
+            if (!preset) return;
+
+            document.getElementById('leadership').value = preset.leadership;
+            document.getElementById('dominance').value = preset.dominance;
+
+            // Clear existing units
+            document.getElementById('guardList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛡️</div><p>No guards added yet</p></div>';
+            document.getElementById('specialistList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚔️</div><p>No specialists added yet</p></div>';
+            document.getElementById('monsterList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">🐉</div><p>No monsters added yet</p></div>';
+
+            // Load preset units
+            preset.guards?.forEach(guard => {
+                addGuard();
+                const lastRow = document.querySelector('#guardList .unit-row:last-child');
+                lastRow.querySelector('.unit-type').value = guard.type;
+                updateLevelOptions(lastRow.querySelector('.unit-type'));
+                lastRow.querySelector('.unit-level').value = guard.level;
+            });
+
+            preset.specialists?.forEach(specialist => {
+                addSpecialist();
+                const lastRow = document.querySelector('#specialistList .unit-row:last-child');
+                lastRow.querySelector('.unit-type').value = specialist.type;
+                updateLevelOptions(lastRow.querySelector('.unit-type'));
+                lastRow.querySelector('.unit-level').value = specialist.level;
+            });
+
+            preset.monsters?.forEach(monster => {
+                addMonster();
+                const lastRow = document.querySelector('#monsterList .unit-row:last-child');
+                lastRow.querySelector('.unit-type').value = monster.type;
+                lastRow.querySelector('.unit-level').value = monster.level;
+            });
+
+            updateCounters();
+            closePresetsModal();
+            showMessage('successMessage', `${presetName.charAt(0).toUpperCase() + presetName.slice(1)} preset loaded!`);
+        }
+
+        // Export results
+        function exportResults() {
+            const output = document.getElementById('output');
+            if (output.style.display === 'none') {
+                showMessage('validationMessage', 'Please calculate army composition first!');
+                return;
+            }
+
+            const format = prompt('Export format (csv or json):', 'csv');
+            if (!format || !['csv', 'json'].includes(format.toLowerCase())) {
+                return;
+            }
+
+            const units = [];
+            const monsters = [];
+
+            // Collect data from table
+            document.querySelectorAll('#armyTable tbody tr').forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const data = {
+                    unitType: cells[0].textContent,
+                    quantity: cells[1].textContent,
+                    totalHP: cells[2].textContent.replace(/,/g, ''),
+                    totalStrength: cells[3].textContent.replace(/,/g, '')
+                };
+                
+                if (data.unitType.includes('Dragon') || data.unitType.includes('Elemental') || 
+                    data.unitType.includes('Giant') || data.unitType.includes('Beast')) {
+                    monsters.push(data);
+                } else {
+                    units.push(data);
+                }
+            });
+
+            let exportData;
+            let filename;
+            let mimeType;
+
+            if (format.toLowerCase() === 'csv') {
+                exportData = 'Unit Type,Quantity,Total HP,Total Strength\n';
+                [...units, ...monsters].forEach(item => {
+                    exportData += `${item.unitType},${item.quantity},${item.totalHP},${item.totalStrength}\n`;
+                });
+                filename = 'army_composition.csv';
+                mimeType = 'text/csv';
+            } else {
+                exportData = JSON.stringify({
+                    leadership: document.getElementById('leadership').value,
+                    dominance: document.getElementById('dominance').value,
+                    units,
+                    monsters,
+                    exportedAt: new Date().toISOString()
+                }, null, 2);
+                filename = 'army_composition.json';
+                mimeType = 'application/json';
+            }
+
+            // Download file
+            const blob = new Blob([exportData], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showMessage('successMessage', `Results exported as ${filename}!`);
+        }
+
+        // Function to calculate army composition
+        function calculateArmy() {
+            const leadership = parseInt(document.getElementById('leadership').value);
+            const dominance = parseInt(document.getElementById('dominance').value);
+            
+            if (isNaN(leadership) || leadership <= 0) {
+                showMessage('validationMessage', 'Please enter a valid leadership value.');
+                return;
+            }
+            if (isNaN(dominance) || dominance <= 0) {
+                showMessage('validationMessage', 'Please enter a valid dominance value.');
+                return;
+            }
+
+            const units = [];
+            const monsters = [];
+
+            // Get all units from guards list
+            const guardRows = document.querySelectorAll('#guardList .unit-row');
+            guardRows.forEach(row => {
+                const unitType = row.querySelector('.unit-type').value;
+                const unitLevel = parseInt(row.querySelector('.unit-level').value);
+                units.push(new Unit(unitType, unitLevel));
+            });
+
+            // Get all units from specialists list
+            const specialistRows = document.querySelectorAll('#specialistList .unit-row');
+            specialistRows.forEach(row => {
+                const unitType = row.querySelector('.unit-type').value;
+                const unitLevel = parseInt(row.querySelector('.unit-level').value);
+                units.push(new Unit(unitType, unitLevel));
+            });
+
+            // Get all monsters
+            const monsterRows = document.querySelectorAll('#monsterList .unit-row');
+            monsterRows.forEach(row => {
+                const unitType = row.querySelector('.unit-type').value;
+                const unitLevel = parseInt(row.querySelector('.unit-level').value);
+                monsters.push(new Monster(unitType, unitLevel));
+            });
+
+            if (units.length === 0 && monsters.length === 0) {
+                showMessage('validationMessage', 'Please add at least one unit or monster!');
+                return;
+            }
+
+            // Show progress indicator
+            document.getElementById('progressIndicator').style.display = 'block';
+
+            // Simulate calculation delay for better UX
+            setTimeout(() => {
+                // Perform calculations
+                const army = getUnitCounts(leadership, dominance, units, monsters);
+
+                // Hide progress indicator
+                document.getElementById('progressIndicator').style.display = 'none';
+
+                // Display results
+                displayResults(army[0], army[1], leadership, dominance);
+
+                // Scroll to results
+                document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        // Function to calculate unit counts
+        function getUnitCounts(totalLeadership, totalDominance, units, monsters, step = 0, recursionDepth = 0) {
+            const numUnits = units.length;
+            const numMonsters = monsters.length;
+            const leadershipPerUnit = numUnits > 0 ? Math.floor(totalLeadership / numUnits) : 0;
+            const dominancePerMonster = numMonsters > 0 ? Math.floor(totalDominance / numMonsters) : 0;
+            const avgHpPerLead = numUnits > 0 ? Math.floor(units.reduce((sum, unit) => sum + unit.hpPerLead, 0) / numUnits) : 0;
+            const avgHpPerDom = numMonsters > 0 ? Math.floor(monsters.reduce((sum, monster) => sum + monster.hpPerDom, 0) / numMonsters) : 0;
+            const avgHpPerSquad = Math.min(avgHpPerLead, avgHpPerDom) - step;            
+            const squadHp = avgHpPerLead < avgHpPerDom ? avgHpPerSquad * leadershipPerUnit : avgHpPerSquad * dominancePerMonster;
+
+            let requiredLeadership = 0;
+            let requiredDominance = 0;            
+
+            units.forEach(unit => {
+                unit.count = Math.floor(squadHp / unit.hp);
+                requiredLeadership += unit.count * unit.leadership;
+            });
+
+            monsters.forEach(monster => {
+                monster.count = Math.floor(squadHp / monster.hp);
+                requiredDominance += monster.count * monster.dominance;
+            });
+
+            if (requiredLeadership > totalLeadership || requiredDominance > totalDominance) {
+                return getUnitCounts(totalLeadership, totalDominance, units, monsters, step + 10, recursionDepth + 1);
+            }
+
+            return [units, monsters];
+        }
+
+        // Function to display results
+        function displayResults(units, monsters, leadership, dominance) {
+            const output = document.getElementById('output');
+            const armyTable = document.getElementById('armyTable');
+            const tbody = armyTable.querySelector('tbody');
+
+            tbody.innerHTML = '';
+
+            let totalRequiredLeadership = 0;
+            let totalRequiredDominance = 0;
+            let totalWarriors = 0;
+
+            units.forEach(unit => {
+                const totalHp = unit.count * unit.hp;
+                const totalStrength = unit.count * unit.strength;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${unit.name}</td>
+                    <td>${unit.count}</td>
+                    <td>${totalHp.toLocaleString()}</td>
+                    <td>${totalStrength.toLocaleString()}</td>
+                `;
+                tbody.appendChild(row);
+
+                totalRequiredLeadership += unit.count * unit.leadership;
+                totalWarriors += unit.count;
+            });
+            
+            monsters.forEach(monster => {
+                const totalHp = monster.count * monster.hp;
+                const totalStrength = monster.count * monster.strength;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${monster.name}</td>
+                    <td>${monster.count}</td>
+                    <td>${totalHp.toLocaleString()}</td>
+                    <td>${totalStrength.toLocaleString()}</td>
+                `;
+                tbody.appendChild(row);
+
+                totalRequiredDominance += monster.count * monster.dominance;
+                totalWarriors += monster.count;
+            });
+
+            armyTable.style.display = 'table';
+            output.style.display = 'block';
+
+            const avgHpRegular = units.length > 0 ? Math.floor(units.reduce((sum, unit) => sum + unit.hpPerLead, 0) / units.length) : 0;
+            const avgHpMonster = monsters.length > 0 ? Math.floor(monsters.reduce((sum, monster) => sum + monster.hpPerDom, 0) / monsters.length) : 0;
+            const expectedLeadership = units.length > 0 ? Math.floor(totalRequiredLeadership / units.length) : 0;
+            const expectedDominance = monsters.length > 0 ? Math.floor(totalRequiredDominance / monsters.length) : 0;
+
+            output.innerHTML = `
+                <p><span>Average HP per regular squad:</span> <strong>${avgHpRegular.toLocaleString()}</strong></p>
+                <p><span>Average HP per monster squad:</span> <strong>${avgHpMonster.toLocaleString()}</strong></p>
+                <p><span>Total number of fighters:</span> <strong>${totalWarriors.toLocaleString()}</strong></p>
+                <p><span>Total leadership consumption:</span> <strong>${totalRequiredLeadership.toLocaleString()}</strong></p>
+                <p><span>Total dominance consumption:</span> <strong>${totalRequiredDominance.toLocaleString()}</strong></p>
+                <p><span>Expected leadership per regular squad:</span> <strong>${expectedLeadership.toLocaleString()}</strong></p>
+                <p><span>Expected dominance per monster squad:</span> <strong>${expectedDominance.toLocaleString()}</strong></p>
+            `;
+
+            showMessage('successMessage', 'Army composition calculated successfully!');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('presetsModal');
+            if (event.target === modal) {
+                closePresetsModal();
+            }
+        }
+
+        // Initialize counters on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounters();
+        });
+    </script>
+</body>
+</html>
