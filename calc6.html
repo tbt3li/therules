@@ -4,298 +4,300 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stacking Calculator</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #10131a;
-      color: #f1f5f9;
-      line-height: 1.5;
-      padding: 24px;
-    }
-
-    .app {
-      max-width: 960px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-    }
-
-    .intro {
-      margin: 0;
-      color: #cbd5f5;
-    }
-
-    .card {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.3);
-    }
-
-    .controls .control-row {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .controls .control-row:last-child {
-      margin-bottom: 0;
-    }
-
-    label {
-      font-weight: 500;
-      color: #94a3b8;
-    }
-
-    input[type="number"], select {
-      background: #0f172a;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      color: #f1f5f9;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 1rem;
-      width: 100%;
-      max-width: 320px;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    input[type="number"]:focus, select:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }
-
-    .branch-section {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    .branch-section h3 {
-      margin: 0 0 12px;
-      font-size: 1.1rem;
-      color: #3b82f6;
-    }
-
-    .branch-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .branch-card {
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      border-radius: 8px;
-      padding: 12px;
-    }
-
-    .branch-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .branch-header label {
-      color: #f1f5f9;
-      cursor: pointer;
-    }
-
-    .tier-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .tier-checkbox-label {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.85rem;
-      color: #cbd5e1;
-      cursor: pointer;
-      background: #0f172a;
-      padding: 4px 6px;
-      border-radius: 4px;
-      border: 1px solid rgba(148, 163, 184, 0.05);
-    }
-
-    .branch-summary {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin-top: 4px;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .section-header h2 {
-      margin: 0;
-      font-size: 1.3rem;
-    }
-
-    .clear-checked-btn {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #ef4444;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.15s ease;
-    }
-
-    .clear-checked-btn:hover {
-      background: #ef4444;
-      color: #ffffff;
-    }}
-
-    .summary {
-      color: #cbd5f5;
-    }
-
-    .summary strong {
-      color: #f8fafc;
-    }
-
-    .army-progress {
-      margin: 16px 0;
-      padding: 16px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .army-progress-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      color: #e2e8f0;
-      white-space: nowrap;
-      font-size: 0.95rem;
-    }
-
-    .army-icon {
-      font-size: 1.2rem;
-    }
-
-    .army-progress-bar {
-      flex: 1;
-      height: 32px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .army-progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #10b981);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    .army-progress-text {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-      z-index: 2;
-    }
-
-    .warning {
-      background: rgba(245, 158, 11, 0.1);
-      border-left: 4px solid #f59e0b;
-      color: #f59e0b;
-      padding: 12px;
-      border-radius: 4px;
-      margin-bottom: 16px;
-      font-size: 0.9rem;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    }
-
-    th {
-      background: #1e293b;
-      color: #94a3b8;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-    }
-
-    tr:hover td {
-      background: rgba(30, 41, 59, 0.3);
-    }
-
-    .include-column, .check-column {
-      width: 50px;
-      text-align: center;
-    }
-
-    input[type="checkbox"] {
-      cursor: pointer;
-      width: 16px;
-      height: 16px;
-    }
-
-    .text-muted {
-      color: #64748b;
-    }
-  </style>
+  
 </head>
+<style>
+  /* Core Styling Rules & Application Resets */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #10131a;
+  color: #f1f5f9;
+  line-height: 1.5;
+  padding: 24px;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+}
+
+.intro {
+  margin: 0;
+  color: #cbd5f5;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.3);
+}
+
+.controls .control-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.controls .control-row:last-child {
+  margin-bottom: 0;
+}
+
+label {
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+input[type="number"], select {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 320px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="number"]:focus, select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.branch-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.branch-section h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #3b82f6;
+}
+
+.branch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.branch-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.branch-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.branch-header label {
+  color: #f1f5f9;
+  cursor: pointer;
+}
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tier-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  background: #0f172a;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.05);
+}
+
+.branch-summary {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.clear-checked-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.clear-checked-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.summary {
+  color: #cbd5f5;
+}
+
+.summary strong {
+  color: #f8fafc;
+}
+
+.army-progress {
+  margin: 16px 0;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.army-progress-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.army-icon {
+  font-size: 1.2rem;
+}
+
+.army-progress-bar {
+  flex: 1;
+  height: 32px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.army-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.army-progress-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  z-index: 2;
+}
+
+.warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 4px solid #f59e0b;
+  color: #f59e0b;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+th {
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+tr:hover td {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.include-column, .check-column {
+  width: 50px;
+  text-align: center;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.text-muted {
+  color: #64748b;
+}
+</style>
 <body>
   <div class="app">
     <header>
@@ -303,34 +305,286 @@
         <div>
           <h1>Total Battle Stacking Calculator</h1>
           <p class="intro">
-            Set your limits below to compute your frontline layout profiles. All configurations dynamically adapt and query external nodes securely.
+            Tell the calculator what your hero can field, set the leadership cap, and decide how much
+            extra health lower tiers should carry. Higher tiers stay lean while lower tiers get padded
+            so their total health stays tight together.
           </p>
         </div>
+        <a href="death-order.html" style="color: #60a5fa; text-decoration: none; font-size: 14px; padding: 10px 16px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.3); white-space: nowrap; margin-left: 20px;">
+          ☠️ Death Order Calculator →
+        </a>
       </div>
     </header>
 
     <section class="controls card">
       <div class="control-row">
-        <label for="leadership-input">Dominance Cap Limit</label>
-        <input id="leadership-input" type="number" value="10000000" min="1000">
+        <label for="leadership-input">Leadership cap</label>
+        <input id="leadership-input" type="number" min="0" value="50000" step="1000">
       </div>
 
-      <div class="branch-section">
-        <h3>Monsters Setup Configuration</h3>
-        <div id="monster-controls" class="branch-grid"></div>
+      <div class="control-row">
+        <label for="cushion-input">Tier health padding (%)</label>
+        <div class="control-stack">
+          <input id="cushion-input" type="number" value="10" step="1" min="0" max="100">
+          <span class="hint">Lower tiers get MORE health and die first. Example: 10% means S5 has 20% more than S7. Higher health = attacked first.</span>
+        </div>
       </div>
+
+      <div class="control-row">
+        <label for="branch-cushion-input">Branch health padding (%)</label>
+        <div class="control-stack">
+          <input id="branch-cushion-input" type="number" value="0" step="0.5" min="0" max="10">
+          <span class="hint">Specialists get MORE health than Guards (within tier) and die first. Higher health = attacked first. 0% = even distribution.</span>
+        </div>
+      </div>
+
+      <div class="control-row role-padding-section">
+        <label>Role health padding (%)</label>
+        <div class="control-stack">
+          <div class="role-padding-grid">
+            <div class="role-padding-item">
+              <label for="melee-cushion-input" class="role-label">
+                <span class="role-badge role-melee">melee</span>
+              </label>
+              <input id="melee-cushion-input" type="number" value="3" step="0.5" min="0" max="20">
+            </div>
+            <div class="role-padding-item">
+              <label for="mounted-cushion-input" class="role-label">
+                <span class="role-badge role-mounted">mounted</span>
+              </label>
+              <input id="mounted-cushion-input" type="number" value="2" step="0.5" min="0" max="20">
+            </div>
+            <div class="role-padding-item">
+              <label for="ranged-cushion-input" class="role-label">
+                <span class="role-badge role-ranged">ranged</span>
+              </label>
+              <input id="ranged-cushion-input" type="number" value="1" step="0.5" min="0" max="20">
+            </div>
+            <div class="role-padding-item">
+              <label for="flying-cushion-input" class="role-label">
+                <span class="role-badge role-flying">flying</span>
+              </label>
+              <input id="flying-cushion-input" type="number" value="0" step="0.5" min="0" max="20">
+            </div>
+          </div>
+          <div class="role-padding-controls">
+            <button type="button" id="reset-role-padding-btn" class="role-padding-btn">Reset to Standard</button>
+            <button type="button" id="clear-role-padding-btn" class="role-padding-btn">Clear All (0%)</button>
+          </div>
+          <span class="hint">Higher % = MORE health = dies FIRST. Lower % = LESS health = most protected. Independent control lets you tune each role based on game mechanics.</span>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <label for="target-health-input">Reference health target</label>
+        <input id="target-health-input" type="number" value="1000000" step="100000" min="100000">
+        <span class="hint">Used for per-tier ratios; does not cap total health.</span>
+      </div>
+
+      <div class="control-row experimental-feature">
+        <label class="checkbox-label">
+          <input id="death-order-mode" type="checkbox">
+          <span>☠️ Death Order Mode</span>
+        </label>
+        <span class="hint">Calculates composition to achieve exact death sequence: S5→G5→S6→G6→S7→G7 (Melee→Mounted→Ranged→Flying within each tier). Guarantees correct attack order.</span>
+      </div>
+
+      <div class="control-row inverse-mode-settings" id="inverse-mode-settings" style="display: none;">
+        <label for="unit-padding-input">Health padding between units (%)</label>
+        <div class="control-stack">
+          <input id="unit-padding-input" type="number" value="0.5" step="0.1" min="0.1" max="10">
+          <span class="hint">% health difference between consecutive units in death order. Higher = larger gaps for safety margin. Recommended: 0.5-1.0%</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="units card stat-bonuses-section">
+      <div class="section-header collapsible-header" id="stat-bonuses-header">
+        <h2>
+          <span class="collapse-icon">▼</span>
+          Unit Stat Bonuses (In-Game Multipliers)
+          <span class="bonus-status-badge" id="bonus-status-badge">⚠️ Configure</span>
+        </h2>
+      </div>
+      <div class="stat-bonuses-content" id="stat-bonuses-content">
+        <p class="section-blurb">Enter your actual in-game health bonuses (from hero skills, research, etc). Format: 1000% = 10.0x. These multiply base unit health BEFORE padding calculations, ensuring accurate relative health values.</p>
+        
+        <div class="bonus-grid">
+          <div class="bonus-group">
+            <h3 class="bonus-group-title">Specialists</h3>
+            <div class="bonus-item">
+              <label for="s-melee-bonus">
+                <span class="role-badge role-melee">melee</span>
+              </label>
+              <input id="s-melee-bonus" type="number" value="10.18" step="0.01" min="1" max="50" placeholder="10.18">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-mounted-bonus">
+                <span class="role-badge role-mounted">mounted</span>
+              </label>
+              <input id="s-mounted-bonus" type="number" value="10.18" step="0.01" min="1" max="50" placeholder="10.18">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-ranged-bonus">
+                <span class="role-badge role-ranged">ranged</span>
+              </label>
+              <input id="s-ranged-bonus" type="number" value="10.18" step="0.01" min="1" max="50" placeholder="10.18">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-flying-bonus">
+                <span class="role-badge role-flying">flying</span>
+              </label>
+              <input id="s-flying-bonus" type="number" value="9.51" step="0.01" min="1" max="50" placeholder="9.51">
+              <span class="bonus-suffix">x</span>
+            </div>
+          </div>
+
+          <div class="bonus-group">
+            <h3 class="bonus-group-title">Guards</h3>
+            <div class="bonus-item">
+              <label for="g-melee-bonus">
+                <span class="role-badge role-melee">melee</span>
+              </label>
+              <input id="g-melee-bonus" type="number" value="10.2" step="0.01" min="1" max="50" placeholder="10.2">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-mounted-bonus">
+                <span class="role-badge role-mounted">mounted</span>
+              </label>
+              <input id="g-mounted-bonus" type="number" value="10.21" step="0.01" min="1" max="50" placeholder="10.21">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-ranged-bonus">
+                <span class="role-badge role-ranged">ranged</span>
+              </label>
+              <input id="g-ranged-bonus" type="number" value="10.2" step="0.01" min="1" max="50" placeholder="10.2">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-flying-bonus">
+                <span class="role-badge role-flying">flying</span>
+              </label>
+              <input id="g-flying-bonus" type="number" value="9.74" step="0.01" min="1" max="50" placeholder="9.74">
+              <span class="bonus-suffix">x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bonus-controls">
+          <button type="button" id="reset-bonuses-btn" class="bonus-btn">Reset to 1.0x (No Bonuses)</button>
+          <button type="button" id="apply-bonuses-btn" class="bonus-btn bonus-btn-primary">✓ Apply Bonuses</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="units card">
+      <div class="section-header">
+        <h2>Troop Access</h2>
+      </div>
+      <p class="section-blurb">Enable each branch your hero can field, select the highest tier unlocked, then choose which specific tiers to include in your stack. Your selections are saved automatically.</p>
+      <div id="branch-controls" class="branch-grid"></div>
     </section>
 
     <section class="results card">
       <div class="section-header">
-        <h2>🐉 Monster Stack Allocations</h2>
-        <button id="clear-monsters-btn" class="clear-checked-btn" title="Clear selections">Clear Checked</button>
+        <h2>🛡️ Hero Stack Recommendation (Leadership)</h2>
+        <div class="header-controls">
+          <div class="display-order-group">
+            <label class="display-order-toggle">
+              <input type="radio" name="display-order" id="death-order" value="death">
+              <span>Death Order</span>
+            </label>
+            <label class="display-order-toggle">
+              <input type="radio" name="display-order" id="default-order" value="default" checked>
+              <span>Tier Order</span>
+            </label>
+            <label class="display-order-toggle">
+              <input type="radio" name="display-order" id="game-ui-order" value="game">
+              <span>Game UI Order</span>
+            </label>
+          </div>
+          <button id="clear-checked-btn" class="clear-checked-btn" title="Clear all checkmarks">Clear Checked</button>
+        </div>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="army-progress" id="army-progress">
+        <div class="army-progress-label">
+          <span class="army-icon">⚔️</span>
+          <span>Army Built:</span>
+        </div>
+        <div class="army-progress-bar">
+          <div class="army-progress-fill" id="army-progress-fill"></div>
+          <div class="army-progress-text" id="army-progress-text">0 / 0</div>
+        </div>
+      </div>
+      <div id="warning" class="warning hidden"></div>
+      <div class="table-wrapper">
+        <table id="result-table">
+          <thead>
+            <tr>
+              <th class="include-column">Use</th>
+              <th class="check-column">✓</th>
+              <th>Unit</th>
+              <th>Role</th>
+              <th>Units</th>
+              <th>Leadership</th>
+              <th>Total Health</th>
+              <th>Health Share</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>🐉 Monster Configuration</h2>
+      </div>
+      <div class="control-row">
+        <label for="dominance-input">Hero Dominance Cap</label>
+        <div class="control-stack">
+          <input id="dominance-input" type="number" value="0" step="1" min="0">
+          <span class="hint">Maximum dominance your hero can command for monsters</span>
+        </div>
+      </div>
+      <div class="control-row">
+        <label for="monster-mode">Monster Stack Mode</label>
+        <div class="control-stack">
+          <select id="monster-mode">
+            <option value="max">Maximize Dominance</option>
+            <option value="match">Match Troop Health</option>
+          </select>
+          <span class="hint">Maximize: Use full dominance cap. Match: Scale monsters to match lowest troop health pool (prevents monsters dying first).</span>
+        </div>
+      </div>
+      <div class="control-row">
+        <label for="monster-cushion-input">Lower-tier health padding (%)</label>
+        <div class="control-stack">
+          <input id="monster-cushion-input" type="number" value="2.5" step="0.5" min="0" max="100">
+          <span class="hint">Gives lower tiers extra HP to protect elite monsters. Start at 0% for even distribution, increase as needed.</span>
+        </div>
+      </div>
+      <p class="section-blurb">Enable monsters, select the highest tier unlocked, then choose which tiers to include. Unlocking a tier gives you all 4 monster types (Dragons, Elementals, Giants, Beasts) at that tier.</p>
+      <div id="monster-controls" class="branch-grid"></div>
+    </section>
+
+    <section class="results card">
+      <div class="section-header">
+        <h2>🐉 Monster Stack Recommendation (Dominance)</h2>
+        <button id="clear-monsters-btn" class="clear-checked-btn" title="Clear all checkmarks">Clear Checked</button>
       </div>
       <div class="summary" id="monster-summary"></div>
       <div class="army-progress" id="monster-progress">
         <div class="army-progress-label">
           <span class="army-icon">🐉</span>
-          <span>Dominance Allocated:</span>
+          <span>Monster Army Built:</span>
         </div>
         <div class="army-progress-bar">
           <div class="army-progress-fill" id="monster-progress-fill"></div>
@@ -342,15 +596,15 @@
         <table id="monster-result-table">
           <thead>
             <tr>
-              <th class="include-column">Active</th>
+              <th class="include-column">Use</th>
               <th class="check-column">✓</th>
-              <th>Monster Identity</th>
-              <th>Classification</th>
-              <th>Computed Output</th>
-              <th>Dominance Used</th>
-              <th>Health Matrix</th>
-              <th>Share Ratio</th>
-              <th>vs Apex Tier</th>
+              <th>Monster</th>
+              <th>Type</th>
+              <th>Count</th>
+              <th>Dominance</th>
+              <th>Health Pool</th>
+              <th>Health Share</th>
+              <th>vs Top Tier</th>
             </tr>
           </thead>
           <tbody id="monster-result-table-body"></tbody>
@@ -360,352 +614,443 @@
   </div>
 
   <script>
-    // Embedded Troop Properties Engine Source Data
-    const TROOPS = [
-      { id: "M7", name: "Crypt Monster 7", tier: 7, branch: "Monsters", role: "monster", strength: 63000, health: 126000, leadership: 35 },
-      { id: "M6", name: "Crypt Monster 6", tier: 6, branch: "Monsters", role: "monster", strength: 31500, health: 63000, leadership: 25 },
-      { id: "M5", name: "Crypt Monster 5", tier: 5, branch: "Monsters", role: "monster", strength: 15120, health: 30240, leadership: 18 },
-      { id: "M4", name: "Crypt Monster 4", tier: 4, branch: "Monsters", role: "monster", strength: 6860, health: 13720, leadership: 14 },
-      { id: "M3", name: "Crypt Monster 3", tier: 3, branch: "Monsters", role: "monster", strength: 2940, health: 5880, leadership: 10 },
-      { id: "M2", name: "Crypt Monster 2", tier: 2, branch: "Monsters", role: "monster", strength: 1120, health: 2240, leadership: 7 },
-      { id: "M1", name: "Crypt Monster 1", tier: 1, branch: "Monsters", role: "monster", strength: 350, health: 700, leadership: 5 }
-    ];
+  // Complete troop database containing Specialists, Guards, and Monsters
+const TROOPS = [
+  // Specialists - Melee
+  { id: "S9-ML", name: "Specialist 9 Melee", tier: 9, branch: "Specialists", role: "melee", strength: 5510, health: 16530, leadership: 1 },
+  { id: "S8-ML", name: "Specialist 8 Melee", tier: 8, branch: "Specialists", role: "melee", strength: 3060, health: 9180, leadership: 1 },
+  { id: "S7-ML", name: "Specialist 7 Melee", tier: 7, branch: "Specialists", role: "melee", strength: 1700, health: 5100, leadership: 1 },
+  { id: "S6-ML", name: "Specialist 6 Melee", tier: 6, branch: "Specialists", role: "melee", strength: 940, health: 2820, leadership: 1 },
+  { id: "S5-ML", name: "Specialist 5 Melee", tier: 5, branch: "Specialists", role: "melee", strength: 520, health: 1560, leadership: 1 },
+  { id: "S4-ML", name: "Specialist 4 Melee", tier: 4, branch: "Specialists", role: "melee", strength: 290, health: 870, leadership: 1 },
+  { id: "S3-ML", name: "Specialist 3 Melee", tier: 3, branch: "Specialists", role: "melee", strength: 160, health: 480, leadership: 1 },
+  { id: "S2-ML", name: "Specialist 2 Melee", tier: 2, branch: "Specialists", role: "melee", strength: 90, health: 270, leadership: 1 },
+  { id: "S1-ML", name: "Specialist 1 Melee", tier: 1, branch: "Specialists", role: "melee", strength: 50, health: 150, leadership: 1 },
 
-    const MONSTER_BRANCHES = {
-      "Monsters": { label: "Crypt Monsters Elite", prefix: "M", maxTier: 7, tiers: [7, 6, 5, 4, 3, 2, 1] }
+  // Specialists - Mounted
+  { id: "S9-MT", name: "Specialist 9 Mounted", tier: 9, branch: "Specialists", role: "mounted", strength: 5510, health: 16530, leadership: 1 },
+  { id: "S8-MT", name: "Specialist 8 Mounted", tier: 8, branch: "Specialists", role: "mounted", strength: 3060, health: 9180, leadership: 1 },
+  { id: "S7-MT", name: "Specialist 7 Mounted", tier: 7, branch: "Specialists", role: "mounted", strength: 1700, health: 5100, leadership: 1 },
+  { id: "S6-MT", name: "Specialist 6 Mounted", tier: 6, branch: "Specialists", role: "mounted", strength: 940, health: 2820, leadership: 1 },
+  { id: "S5-MT", name: "Specialist 5 Mounted", tier: 5, branch: "Specialists", role: "mounted", strength: 520, health: 1560, leadership: 1 },
+  { id: "S4-MT", name: "Specialist 4 Mounted", tier: 4, branch: "Specialists", role: "mounted", strength: 290, health: 870, leadership: 1 },
+  { id: "S3-MT", name: "Specialist 3 Mounted", tier: 3, branch: "Specialists", role: "mounted", strength: 160, health: 480, leadership: 1 },
+  { id: "S2-MT", name: "Specialist 2 Mounted", tier: 2, branch: "Specialists", role: "mounted", strength: 90, health: 270, leadership: 1 },
+  { id: "S1-MT", name: "Specialist 1 Mounted", tier: 1, branch: "Specialists", role: "mounted", strength: 50, health: 150, leadership: 1 },
+
+  // Specialists - Ranged
+  { id: "S9-RG", name: "Specialist 9 Ranged", tier: 9, branch: "Specialists", role: "ranged", strength: 5510, health: 16530, leadership: 1 },
+  { id: "S8-RG", name: "Specialist 8 Ranged", tier: 8, branch: "Specialists", role: "ranged", strength: 3060, health: 9180, leadership: 1 },
+  { id: "S7-RG", name: "Specialist 7 Ranged", tier: 7, branch: "Specialists", role: "ranged", strength: 1700, health: 5100, leadership: 1 },
+  { id: "S6-RG", name: "Specialist 6 Ranged", tier: 6, branch: "Specialists", role: "ranged", strength: 940, health: 2820, leadership: 1 },
+  { id: "S5-RG", name: "Specialist 5 Ranged", tier: 5, branch: "Specialists", role: "ranged", strength: 520, health: 1560, leadership: 1 },
+  { id: "S4-RG", name: "Specialist 4 Ranged", tier: 4, branch: "Specialists", role: "ranged", strength: 290, health: 870, leadership: 1 },
+  { id: "S3-RG", name: "Specialist 3 Ranged", tier: 3, branch: "Specialists", role: "ranged", strength: 160, health: 480, leadership: 1 },
+  { id: "S2-RG", name: "Specialist 2 Ranged", tier: 2, branch: "Specialists", role: "ranged", strength: 90, health: 270, leadership: 1 },
+  { id: "S1-RG", name: "Specialist 1 Ranged", tier: 1, branch: "Specialists", role: "ranged", strength: 50, health: 150, leadership: 1 },
+
+  // Specialists - Flying
+  { id: "S9-FL", name: "Specialist 9 Flying", tier: 9, branch: "Specialists", role: "flying", strength: 6610, health: 13220, leadership: 1 },
+  { id: "S8-FL", name: "Specialist 8 Flying", tier: 8, branch: "Specialists", role: "flying", strength: 3670, health: 7340, leadership: 1 },
+  { id: "S7-FL", name: "Specialist 7 Flying", tier: 7, branch: "Specialists", role: "flying", strength: 2040, health: 4080, leadership: 1 },
+  { id: "S6-FL", name: "Specialist 6 Flying", tier: 6, branch: "Specialists", role: "flying", strength: 1130, health: 2260, leadership: 1 },
+  { id: "S5-FL", name: "Specialist 5 Flying", tier: 5, branch: "Specialists", role: "flying", strength: 630, health: 1260, leadership: 1 },
+  { id: "S4-FL", name: "Specialist 4 Flying", tier: 4, branch: "Specialists", role: "flying", strength: 350, health: 700, leadership: 1 },
+  { id: "S3-FL", name: "Specialist 3 Flying", tier: 3, branch: "Specialists", role: "flying", strength: 190, health: 380, leadership: 1 },
+  { id: "S2-FL", name: "Specialist 2 Flying", tier: 2, branch: "Specialists", role: "flying", strength: 110, health: 220, leadership: 1 },
+  { id: "S1-FL", name: "Specialist 1 Flying", tier: 1, branch: "Specialists", role: "flying", strength: 60, health: 120, leadership: 1 },
+
+  // Guards - Melee
+  { id: "G9-ML", name: "Guard 9 Melee", tier: 9, branch: "Guards", role: "melee", strength: 4240, health: 14840, leadership: 1 },
+  { id: "G8-ML", name: "Guard 8 Melee", tier: 8, branch: "Guards", role: "melee", strength: 2350, health: 8230, leadership: 1 },
+  { id: "G7-ML", name: "Guard 7 Melee", tier: 7, branch: "Guards", role: "melee", strength: 1310, health: 4590, leadership: 1 },
+  { id: "G6-ML", name: "Guard 6 Melee", tier: 6, branch: "Guards", role: "melee", strength: 730, health: 2560, leadership: 1 },
+  { id: "G5-ML", name: "Guard 5 Melee", tier: 5, branch: "Guards", role: "melee", strength: 400, health: 1400, leadership: 1 },
+  { id: "G4-ML", name: "Guard 4 Melee", tier: 4, branch: "Guards", role: "melee", strength: 220, health: 770, leadership: 1 },
+  { id: "G3-ML", name: "Guard 3 Melee", tier: 3, branch: "Guards", role: "melee", strength: 120, health: 420, leadership: 1 },
+  { id: "G2-ML", name: "Guard 2 Melee", tier: 2, branch: "Guards", role: "melee", strength: 70, health: 250, leadership: 1 },
+  { id: "G1-ML", name: "Guard 1 Melee", tier: 1, branch: "Guards", role: "melee", strength: 40, health: 140, leadership: 1 },
+
+  // Guards - Mounted
+  { id: "G9-MT", name: "Guard 9 Mounted", tier: 9, branch: "Guards", role: "mounted", strength: 4240, health: 14840, leadership: 1 },
+  { id: "G8-MT", name: "Guard 8 Mounted", tier: 8, branch: "Guards", role: "mounted", strength: 2350, health: 8230, leadership: 1 },
+  { id: "G7-MT", name: "Guard 7 Mounted", tier: 7, branch: "Guards", role: "mounted", strength: 1310, health: 4590, leadership: 1 },
+  { id: "G6-MT", name: "Guard 6 Mounted", tier: 6, branch: "Guards", role: "mounted", strength: 730, health: 2560, leadership: 1 },
+  { id: "G5-MT", name: "Guard 5 Mounted", tier: 5, branch: "Guards", role: "mounted", strength: 400, health: 1400, leadership: 1 },
+  { id: "G4-MT", name: "Guard 4 Mounted", tier: 4, branch: "Guards", role: "mounted", strength: 220, health: 770, leadership: 1 },
+  { id: "G3-MT", name: "Guard 3 Mounted", tier: 3, branch: "Guards", role: "mounted", strength: 120, health: 420, leadership: 1 },
+  { id: "G2-MT", name: "Guard 2 Mounted", tier: 2, branch: "Guards", role: "mounted", strength: 70, health: 250, leadership: 1 },
+  { id: "G1-MT", name: "Guard 1 Mounted", tier: 1, branch: "Guards", role: "mounted", strength: 40, health: 140, leadership: 1 },
+
+  // Guards - Ranged
+  { id: "G9-RG", name: "Guard 9 Ranged", tier: 9, branch: "Guards", role: "ranged", strength: 4240, health: 14840, leadership: 1 },
+  { id: "G8-RG", name: "Guard 8 Ranged", tier: 8, branch: "Guards", role: "ranged", strength: 2350, health: 8230, leadership: 1 },
+  { id: "G7-RG", name: "Guard 7 Ranged", tier: 7, branch: "Guards", role: "ranged", strength: 1310, health: 4590, leadership: 1 },
+  { id: "G6-RG", name: "Guard 6 Ranged", tier: 6, branch: "Guards", role: "ranged", strength: 730, health: 2560, leadership: 1 },
+  { id: "G5-RG", name: "Guard 5 Ranged", tier: 5, branch: "Guards", role: "ranged", strength: 400, health: 1400, leadership: 1 },
+  { id: "G4-RG", name: "Guard 4 Ranged", tier: 4, branch: "Guards", role: "ranged", strength: 220, health: 770, leadership: 1 },
+  { id: "G3-RG", name: "Guard 3 Ranged", tier: 3, branch: "Guards", role: "ranged", strength: 120, health: 420, leadership: 1 },
+  { id: "G2-RG", name: "Guard 2 Ranged", tier: 2, branch: "Guards", role: "ranged", strength: 70, health: 250, leadership: 1 },
+  { id: "G1-RG", name: "Guard 1 Ranged", tier: 1, branch: "Guards", role: "ranged", strength: 40, health: 140, leadership: 1 },
+
+  // Guards - Flying
+  { id: "G9-FL", name: "Guard 9 Flying", tier: 9, branch: "Guards", role: "flying", strength: 5080, health: 11850, leadership: 1 },
+  { id: "G8-FL", name: "Guard 8 Flying", tier: 8, branch: "Guards", role: "flying", strength: 2820, health: 6580, leadership: 1 },
+  { id: "G7-FL", name: "Guard 7 Flying", tier: 7, branch: "Guards", role: "flying", strength: 1570, health: 3660, leadership: 1 },
+  { id: "G6-FL", name: "Guard 6 Flying", tier: 6, branch: "Guards", role: "flying", strength: 870, health: 2030, leadership: 1 },
+  { id: "G5-FL", name: "Guard 5 Flying", tier: 5, branch: "Guards", role: "flying", strength: 480, health: 1120, leadership: 1 },
+  { id: "G4-FL", name: "Guard 4 Flying", tier: 4, branch: "Guards", role: "flying", strength: 270, health: 630, leadership: 1 },
+  { id: "G3-FL", name: "Guard 3 Flying", tier: 3, branch: "Guards", role: "flying", strength: 150, health: 350, leadership: 1 },
+  { id: "G2-FL", name: "Guard 2 Flying", tier: 2, branch: "Guards", role: "flying", strength: 90, health: 210, leadership: 1 },
+  { id: "G1-FL", name: "Guard 1 Flying", tier: 1, branch: "Guards", role: "flying", strength: 50, health: 120, leadership: 1 },
+
+  // Monsters
+  { id: "M7", name: "Monster 7", tier: 7, branch: "Monsters", role: "monster", strength: 63000, health: 126000, leadership: 35 },
+  { id: "M6", name: "Monster 6", tier: 6, branch: "Monsters", role: "monster", strength: 31500, health: 63000, leadership: 25 },
+  { id: "M5", name: "Monster 5", tier: 5, branch: "Monsters", role: "monster", strength: 15120, health: 30240, leadership: 18 },
+  { id: "M4", name: "Monster 4", tier: 4, branch: "Monsters", role: "monster", strength: 6860, health: 13720, leadership: 14 },
+  { id: "M3", name: "Monster 3", tier: 3, branch: "Monsters", role: "monster", strength: 2940, health: 5880, leadership: 10 },
+  { id: "M2", name: "Monster 2", tier: 2, branch: "Monsters", role: "monster", strength: 1120, health: 2240, leadership: 7 },
+  { id: "M1", name: "Monster 1", tier: 1, branch: "Monsters", role: "monster", strength: 350, health: 700, leadership: 5 }
+];
+
+const MONSTER_BRANCHES = {
+  "Monsters": { label: "Crypt Monsters", prefix: "M", maxTier: 7, tiers: [7, 6, 5, 4, 3, 2, 1] }
+};
+
+const STORAGE_KEY_CHECKED = "tb_calc_checked_monsters";
+const STORAGE_KEY_SETTINGS = "tb_calc_monster_settings_v2";
+
+let checkedMonsters = loadCheckedMonsters();
+let monsterSettings = loadMonsterSettings();
+
+const dominanceInput = document.getElementById("leadership-input"); 
+const monsterSummaryEl = document.getElementById("monster-summary");
+const monsterTableBody = document.getElementById("monster-result-table-body");
+const monsterWarningEl = document.getElementById("monster-warning");
+
+function loadCheckedMonsters() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_CHECKED);
+    return saved ? new Set(JSON.parse(saved)) : new Set(["M7"]);
+  } catch (e) {
+    return new Set(["M7"]);
+  }
+}
+
+function saveCheckedMonsters(set) {
+  localStorage.setItem(STORAGE_KEY_CHECKED, JSON.stringify([...set]));
+}
+
+function loadMonsterSettings() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_SETTINGS);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return {
+    enabled: { "Monsters": true },
+    maxTiers: { "Monsters": 7 },
+    enabledTiers: { "Monsters": [7, 6, 5, 4, 3, 2, 1] }
+  };
+}
+
+function saveMonsterSettings() {
+  localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(monsterSettings));
+}
+
+function renderMonsterControls() {
+  const container = document.getElementById("monster-controls");
+  if (!container) return;
+  container.innerHTML = "";
+
+  Object.entries(MONSTER_BRANCHES).forEach(([key, config]) => {
+    const card = document.createElement("div");
+    card.className = "branch-card";
+
+    const header = document.createElement("div");
+    header.className = "branch-header";
+
+    const mainCb = document.createElement("input");
+    mainCb.type = "checkbox";
+    mainCb.id = `branch-cb-${key}`;
+    mainCb.checked = !!monsterSettings.enabled[key];
+
+    const label = document.createElement("label");
+    label.htmlFor = mainCb.id;
+    label.textContent = config.label;
+
+    header.append(mainCb, label);
+    card.append(header);
+
+    const row = document.createElement("div");
+    row.style.marginTop = "8px";
+
+    const select = document.createElement("select");
+    select.id = `branch-select-${key}`;
+    for (let t = config.maxTier; t >= 1; t--) {
+      const opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = `Max Tier ${config.prefix}${t}`;
+      if (monsterSettings.maxTiers[key] === t) opt.selected = true;
+      select.appendChild(opt);
+    }
+
+    row.appendChild(select);
+    card.appendChild(row);
+
+    const tierGrid = document.createElement("div");
+    tierGrid.className = "tier-grid";
+    card.appendChild(tierGrid);
+
+    const summaryDiv = document.createElement("div");
+    summaryDiv.className = "branch-summary";
+    card.appendChild(summaryDiv);
+
+    container.appendChild(card);
+
+    const stateEntry = {
+      checkbox: mainCb,
+      select: select,
+      tierGrid: tierGrid,
+      summary: summaryDiv,
+      config: config,
+      enabledTiers: new Set(monsterSettings.enabledTiers[key] || config.tiers)
     };
 
-    const STORAGE_KEY_CHECKED = "tb_calc_checked_monsters";
-    const STORAGE_KEY_SETTINGS = "tb_calc_monster_settings_v2";
+    mainCb.addEventListener("change", () => {
+      monsterSettings.enabled[key] = mainCb.checked;
+      updateBranchTiersUI(key, stateEntry);
+      updateMonsterResults();
+      saveMonsterSettings();
+    });
 
-    let checkedMonsters = loadCheckedMonsters();
-    let monsterSettings = loadMonsterSettings();
+    select.addEventListener("change", () => {
+      monsterSettings.maxTiers[key] = Number(select.value);
+      updateBranchTiersUI(key, stateEntry);
+      updateMonsterResults();
+      saveMonsterSettings();
+    });
 
-    const dominanceInput = document.getElementById("leadership-input"); 
-    const monsterSummaryEl = document.getElementById("monster-summary");
-    const monsterTableBody = document.getElementById("monster-result-table-body");
-    const monsterWarningEl = document.getElementById("monster-warning");
+    updateBranchTiersUI(key, stateEntry);
+  });
+}
 
-    function loadCheckedMonsters() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY_CHECKED);
-        return saved ? new Set(JSON.parse(saved)) : new Set(["M7"]);
-      } catch (e) {
-        return new Set(["M7"]);
-      }
-    }
+function updateBranchTiersUI(key, entry) {
+  const maxTier = Number(entry.select.value);
+  const unlocked = entry.config.tiers.filter(t => t <= maxTier);
 
-    function saveCheckedMonsters(set) {
-      localStorage.setItem(STORAGE_KEY_CHECKED, JSON.stringify([...set]));
-    }
+  entry.tierGrid.innerHTML = "";
+  unlocked.forEach((tier) => {
+    const label = document.createElement("label");
+    label.className = "tier-checkbox-label";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = entry.enabledTiers.has(tier);
 
-    function loadMonsterSettings() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY_SETTINGS);
-        if (saved) return JSON.parse(saved);
-      } catch(e) {}
-      return {
-        enabled: { "Monsters": true },
-        maxTiers: { "Monsters": 7 },
-        enabledTiers: { "Monsters": [7, 6, 5, 4, 3, 2, 1] }
-      };
-    }
-
-    function saveMonsterSettings() {
-      localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(monsterSettings));
-    }
-
-    function renderMonsterControls() {
-      const container = document.getElementById("monster-controls");
-      if (!container) return;
-      container.innerHTML = "";
-
-      Object.entries(MONSTER_BRANCHES).forEach(([key, config]) => {
-        const card = document.createElement("div");
-        card.className = "branch-card";
-
-        const header = document.createElement("div");
-        header.className = "branch-header";
-
-        const mainCb = document.createElement("input");
-        mainCb.type = "checkbox";
-        mainCb.id = `branch-cb-${key}`;
-        mainCb.checked = !!monsterSettings.enabled[key];
-
-        const label = document.createElement("label");
-        label.htmlFor = mainCb.id;
-        label.textContent = config.label;
-
-        header.append(mainCb, label);
-        card.append(header);
-
-        const row = document.createElement("div");
-        row.style.marginTop = "8px";
-
-        const select = document.createElement("select");
-        select.id = `branch-select-${key}`;
-        for (let t = config.maxTier; t >= 1; t--) {
-          const opt = document.createElement("option");
-          opt.value = t;
-          opt.textContent = `Cap Tier ${config.prefix}${t}`;
-          if (monsterSettings.maxTiers[key] === t) opt.selected = true;
-          select.appendChild(opt);
-        }
-
-        row.appendChild(select);
-        card.appendChild(row);
-
-        const tierGrid = document.createElement("div");
-        tierGrid.className = "tier-grid";
-        card.appendChild(tierGrid);
-
-        const summaryDiv = document.createElement("div");
-        summaryDiv.className = "branch-summary";
-        card.appendChild(summaryDiv);
-
-        container.appendChild(card);
-
-        const stateEntry = {
-          checkbox: mainCb,
-          select: select,
-          tierGrid: tierGrid,
-          summary: summaryDiv,
-          config: config,
-          enabledTiers: new Set(monsterSettings.enabledTiers[key] || config.tiers)
-        };
-
-        mainCb.addEventListener("change", () => {
-          monsterSettings.enabled[key] = mainCb.checked;
-          updateBranchTiersUI(key, stateEntry);
-          updateMonsterResults();
-          saveMonsterSettings();
-        });
-
-        select.addEventListener("change", () => {
-          monsterSettings.maxTiers[key] = Number(select.value);
-          updateBranchTiersUI(key, stateEntry);
-          updateMonsterResults();
-          saveMonsterSettings();
-        });
-
-        updateBranchTiersUI(key, stateEntry);
-      });
-    }
-
-    function updateBranchTiersUI(key, entry) {
-      const maxTier = Number(entry.select.value);
-      const unlocked = entry.config.tiers.filter(t => t <= maxTier);
-
-      entry.tierGrid.innerHTML = "";
-      unlocked.forEach((tier) => {
-        const label = document.createElement("label");
-        label.className = "tier-checkbox-label";
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.checked = entry.enabledTiers.has(tier);
-
-        cb.addEventListener("change", () => {
-          if (cb.checked) entry.enabledTiers.add(tier);
-          else entry.enabledTiers.delete(tier);
-          monsterSettings.enabledTiers[key] = [...entry.enabledTiers];
-          updateBranchSummaryText(key, entry);
-          updateMonsterResults();
-          saveMonsterSettings();
-        });
-
-        const span = document.createElement("span");
-        span.textContent = `${entry.config.prefix}${tier}`;
-        label.append(cb, span);
-        entry.tierGrid.appendChild(label);
-      });
-
+    cb.addEventListener("change", () => {
+      if (cb.checked) entry.enabledTiers.add(tier);
+      else entry.enabledTiers.delete(tier);
+      monsterSettings.enabledTiers[key] = [...entry.enabledTiers];
       updateBranchSummaryText(key, entry);
+      updateMonsterResults();
+      saveMonsterSettings();
+    });
+
+    const span = document.createElement("span");
+    span.textContent = `${entry.config.prefix}${tier}`;
+    label.append(cb, span);
+    entry.tierGrid.appendChild(label);
+  });
+
+  updateBranchSummaryText(key, entry);
+}
+
+function updateBranchSummaryText(key, entry) {
+  if (!entry.checkbox.checked) {
+    entry.summary.textContent = "Disabled";
+    return;
+  }
+  const maxTier = Number(entry.select.value);
+  const unlocked = entry.config.tiers.filter(t => t <= maxTier);
+  const active = unlocked.filter(t => entry.enabledTiers.has(t));
+  entry.summary.textContent = active.length === 0 ? "No tiers selected" : `Active Tiers: ${active.map(t => entry.config.prefix + t).join(', ')}`;
+}
+
+function formatNumber(num) {
+  if (num === 0) return "0";
+  return Math.round(num).toLocaleString();
+}
+
+async function updateMonsterResults() {
+  const dominanceCap = parseInt(dominanceInput.value) || 0;
+  
+  // Forward runtime options directly into the Cloudflare pipeline gateway
+  const payload = {
+    dominanceCap: dominanceCap,
+    checkedMonsters: [...checkedMonsters],
+    monsterSettings: monsterSettings
+  };
+
+  try {
+    monsterSummaryEl.textContent = "Processing matrices with calc6.t3li.workers.dev gateway...";
+    
+    const response = await fetch('https://calc6.t3li.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) throw new Error("Gateway connection offline.");
+    
+    const serverResults = await response.json();
+    renderServerCalculationData(serverResults, dominanceCap);
+  } catch (err) {
+    // Elegant fallback to offline computations if connection parameters break
+    executeLocalFallbackCalculations(dominanceCap);
+  }
+}
+
+function renderServerCalculationData(data, dominanceCap) {
+  monsterTableBody.innerHTML = "";
+  
+  if (!data.rows || data.rows.length === 0) {
+    monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No setups configured</td></tr>`;
+    updateMonsterProgressBars(0, dominanceCap);
+    return;
+  }
+
+  data.rows.forEach(row => {
+    const tr = document.createElement("tr");
+    const isChecked = checkedMonsters.has(row.id);
+    
+    tr.innerHTML = `
+      <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${row.id}" ${row.included ? 'checked' : ''}></td>
+      <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${row.id}" ${isChecked ? 'checked' : ''}></td>
+      <td><strong>${row.name}</strong></td>
+      <td><span class="text-muted">${row.role}</span></td>
+      <td>${formatNumber(row.count)}</td>
+      <td>${formatNumber(row.dominanceUsed)}</td>
+      <td>${formatNumber(row.healthPool)}</td>
+      <td>${row.healthShare}%</td>
+      <td>${row.vsTopTier}</td>
+    `;
+    monsterTableBody.appendChild(tr);
+  });
+
+  attachRowInputInteractionListeners();
+
+  monsterSummaryEl.innerHTML = `
+    Hero commands <strong>${formatNumber(data.totals.usedDominance)}</strong> of <strong>${formatNumber(dominanceCap)}</strong> dominance. 
+    Total Stack Health: <strong>${formatNumber(data.totals.totalHealth)}</strong>
+  `;
+
+  if (data.totals.usedDominance > dominanceCap) {
+    monsterWarningEl.textContent = "Warning: Total layout exceeds active workspace Dominance Cap boundaries.";
+    monsterWarningEl.classList.remove("hidden");
+  } else {
+    monsterWarningEl.classList.add("hidden");
+  }
+
+  updateMonsterProgressBars(data.totals.usedDominance, dominanceCap);
+}
+
+function executeLocalFallbackCalculations(dominanceCap) {
+  const enabledTiers = new Set(monsterSettings.enabledTiers["Monsters"] || []);
+  const maxTierAllowed = monsterSettings.maxTiers["Monsters"] || 7;
+
+  let filtered = TROOPS.filter(m => {
+    return monsterSettings.enabled["Monsters"] && m.tier <= maxTierAllowed && enabledTiers.has(m.tier);
+  });
+
+  monsterTableBody.innerHTML = "";
+  let totalDominanceUsed = 0;
+  let totalHealthPool = 0;
+
+  let activeCheckCount = filtered.filter(f => checkedMonsters.has(f.id)).length;
+
+  let rowsData = filtered.map(m => {
+    const isChecked = checkedMonsters.has(m.id);
+    let count = 0;
+    if (isChecked && dominanceCap > 0 && activeCheckCount > 0) {
+      count = Math.floor((dominanceCap / activeCheckCount) / m.leadership);
     }
+    const domUsed = count * m.leadership;
+    const hPool = count * m.health;
+    totalDominanceUsed += domUsed;
+    totalHealthPool += hPool;
 
-    function updateBranchSummaryText(key, entry) {
-      if (!entry.checkbox.checked) {
-        entry.summary.textContent = "Disabled";
-        return;
-      }
-      const maxTier = Number(entry.select.value);
-      const unlocked = entry.config.tiers.filter(t => t <= maxTier);
-      const active = unlocked.filter(t => entry.enabledTiers.has(t));
-      entry.summary.textContent = active.length === 0 ? "No active profiles" : `Active: ${active.map(t => entry.config.prefix + t).join(', ')}`;
-    }
+    return {
+      id: m.id, name: m.name, role: m.role, count: count, dominanceUsed: domUsed, healthPool: hPool
+    };
+  });
 
-    function formatNumber(num) {
-      if (num === 0) return "0";
-      return Math.round(num).toLocaleString();
-    }
+  if (rowsData.length === 0) {
+    monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No matching configurations</td></tr>`;
+    updateMonsterProgressBars(0, dominanceCap);
+    return;
+  }
 
-    async function updateMonsterResults() {
-      const dominanceCap = parseInt(dominanceInput.value) || 0;
-      
-      const payload = {
-        dominanceCap: dominanceCap,
-        checkedMonsters: [...checkedMonsters],
-        monsterSettings: monsterSettings
-      };
+  rowsData.forEach(row => {
+    const tr = document.createElement("tr");
+    const isChecked = checkedMonsters.has(row.id);
+    const share = totalHealthPool > 0 ? ((row.healthPool / totalHealthPool) * 100).toFixed(1) : "0.0";
+    
+    tr.innerHTML = `
+      <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${row.id}" checked></td>
+      <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${row.id}" ${isChecked ? 'checked' : ''}></td>
+      <td><strong>${row.name}</strong></td>
+      <td><span class="text-muted">${row.role}</span></td>
+      <td>${formatNumber(row.count)}</td>
+      <td>${formatNumber(row.dominanceUsed)}</td>
+      <td>${formatNumber(row.healthPool)}</td>
+      <td>${share}%</td>
+      <td>100%</td>
+    `;
+    monsterTableBody.appendChild(tr);
+  });
 
-      try {
-        monsterSummaryEl.textContent = "Querying calc6.t3li.workers.dev gateway runtime parameters...";
-        
-        const response = await fetch('https://calc6.t3li.workers.dev', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+  attachRowInputInteractionListeners();
+  monsterWarningEl.classList.add("hidden");
+  monsterSummaryEl.innerHTML = `
+    [Local Runtime] Allocated parameters: <strong>${formatNumber(totalDominanceUsed)}</strong> / <strong>${formatNumber(dominanceCap)}</strong>.
+  `;
+  updateMonsterProgressBars(totalDominanceUsed, dominanceCap);
+}
 
-        if (!response.ok) throw new Error("Worker responded with error matrix.");
-        
-        const serverResults = await response.json();
-        renderServerCalculationData(serverResults, dominanceCap);
-      } catch (err) {
-        executeLocalFallbackCalculations(dominanceCap);
-      }
-    }
-
-    function renderServerCalculationData(data, dominanceCap) {
-      monsterTableBody.innerHTML = "";
-      
-      if (!data.rows || data.rows.length === 0) {
-        monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No selected configuration paths matched</td></tr>`;
-        updateMonsterProgressBars(0, dominanceCap);
-        return;
-      }
-
-      data.rows.forEach(row => {
-        const tr = document.createElement("tr");
-        const isChecked = checkedMonsters.has(row.id);
-        
-        tr.innerHTML = `
-          <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${row.id}" ${row.included ? 'checked' : ''}></td>
-          <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${row.id}" ${isChecked ? 'checked' : ''}></td>
-          <td><strong>${row.name}</strong></td>
-          <td><span class="text-muted">${row.role}</span></td>
-          <td>${formatNumber(row.count)}</td>
-          <td>${formatNumber(row.dominanceUsed)}</td>
-          <td>${formatNumber(row.healthPool)}</td>
-          <td>${row.healthShare}%</td>
-          <td>${row.vsTopTier}</td>
-        `;
-        monsterTableBody.appendChild(tr);
-      });
-
-      attachRowInputInteractionListeners();
-
-      monsterSummaryEl.innerHTML = `
-        Commanding <strong>${formatNumber(data.totals.usedDominance)}</strong> / <strong>${formatNumber(dominanceCap)}</strong> total capacity. 
-        Calculated Stack Pool Health: <strong>${formatNumber(data.totals.totalHealth)}</strong>
-      `;
-
-      if (data.totals.usedDominance > dominanceCap) {
-        monsterWarningEl.textContent = "Warning: Total requested allocation profile exceeds workspace capacity thresholds.";
-        monsterWarningEl.classList.remove("hidden");
-      } else {
-        monsterWarningEl.classList.add("hidden");
-      }
-
-      updateMonsterProgressBars(data.totals.usedDominance, dominanceCap);
-    }
-
-    function executeLocalFallbackCalculations(dominanceCap) {
-      const enabledTiers = new Set(monsterSettings.enabledTiers["Monsters"] || []);
-      const maxTierAllowed = monsterSettings.maxTiers["Monsters"] || 7;
-
-      let filtered = TROOPS.filter(m => {
-        return monsterSettings.enabled["Monsters"] && m.tier <= maxTierAllowed && enabledTiers.has(m.tier);
-      });
-
-      monsterTableBody.innerHTML = "";
-      let totalDominanceUsed = 0;
-      let totalHealthPool = 0;
-
-      let checkedActiveCount = filtered.filter(f => checkedMonsters.has(f.id)).length;
-
-      let rowsData = filtered.map(m => {
-        const isChecked = checkedMonsters.has(m.id);
-        let count = 0;
-        if (isChecked && dominanceCap > 0 && checkedActiveCount > 0) {
-          count = Math.floor((dominanceCap / checkedActiveCount) / m.leadership);
-        }
-        const domUsed = count * m.leadership;
-        const hPool = count * m.health;
-        totalDominanceUsed += domUsed;
-        totalHealthPool += hPool;
-
-        return {
-          id: m.id, name: m.name, role: m.role, count: count, dominanceUsed: domUsed, healthPool: hPool
-        };
-      });
-
-      if (rowsData.length === 0) {
-        monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No matching active rows found locally</td></tr>`;
-        updateMonsterProgressBars(0, dominanceCap);
-        return;
-      }
-
-      rowsData.forEach(row => {
-        const tr = document.createElement("tr");
-        const isChecked = checkedMonsters.has(row.id);
-        const share = totalHealthPool > 0 ? ((row.healthPool / totalHealthPool) * 100).toFixed(1) : "0.0";
-        
-        tr.innerHTML = `
-          <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${row.id}" checked></td>
-          <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${row.id}" ${isChecked ? 'checked' : ''}></td>
-          <td><strong>${row.name}</strong></td>
-          <td><span class="text-muted">${row.role}</span></td>
-          <td>${formatNumber(row.count)}</td>
-          <td>${formatNumber(row.dominanceUsed)}</td>
-          <td>${formatNumber(row.healthPool)}</td>
-          <td>${share}%</td>
-          <td>100.0%</td>
-        `;
-        monsterTableBody.appendChild(tr);
-      });
-
-      attachRowInputInteractionListeners();
-      monsterWarningEl.classList.add("hidden");
-      monsterSummaryEl.innerHTML = `
-        [Local Core Engine Runtime] Total Field Layout: <strong>${formatNumber(totalDominanceUsed)}</strong> / <strong>${formatNumber(dominanceCap)}</strong>.
-      `;
-      updateMonsterProgressBars(totalDominanceUsed, dominanceCap);
-    }
-
-    function attachRowInputInteractionListeners() {
-      document.querySelectorAll(".row-check-cb").forEach(cb => {
-        cb.addEventListener("change", (e) => {
-          const id = e.target.getAttribute("data-id");
-          if (e.target.checked) checkedMonsters.add(id);
-          else checkedMonsters.delete(id);
-          saveCheckedMonsters(checkedMonsters);
-          updateMonsterResults();
-        });
-      });
-    }
-
-    function updateMonsterProgressBars(used, cap) {
-      const fill = document.getElementById("monster-progress-fill");
-      const text = document.getElementById("monster-progress-text");
-      if (!fill || !text) return;
-
-      const pct = cap > 0 ? Math.min((used / cap) * 100, 100) : 0;
-      fill.style.width = `${pct}%`;
-      text.textContent = `${formatNumber(used)} / ${formatNumber(cap)}`;
-    }
-
-    document.getElementById("clear-monsters-btn").addEventListener("click", () => {
-      checkedMonsters.clear();
+function attachRowInputInteractionListeners() {
+  document.querySelectorAll(".row-check-cb").forEach(cb => {
+    cb.addEventListener("change", (e) => {
+      const id = e.target.getAttribute("data-id");
+      if (e.target.checked) checkedMonsters.add(id);
+      else checkedMonsters.delete(id);
       saveCheckedMonsters(checkedMonsters);
       updateMonsterResults();
     });
+  });
+}
 
-    dominanceInput.addEventListener("input", updateMonsterResults);
+function updateMonsterProgressBars(used, cap) {
+  const fill = document.getElementById("monster-progress-fill");
+  const text = document.getElementById("monster-progress-text");
+  if (!fill || !text) return;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      renderMonsterControls();
-      updateMonsterResults();
-    });
+  const pct = cap > 0 ? Math.min((used / cap) * 100, 100) : 0;
+  fill.style.width = `${pct}%`;
+  text.textContent = `${formatNumber(used)} / ${formatNumber(cap)}`;
+}
+
+document.getElementById("clear-monsters-btn").addEventListener("click", () => {
+  checkedMonsters.clear();
+  saveCheckedMonsters(checkedMonsters);
+  updateMonsterResults();
+});
+
+dominanceInput.addEventListener("input", updateMonsterResults);
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderMonsterControls();
+  updateMonsterResults();
+});
   </script>
 </body>
 </html>
