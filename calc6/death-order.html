@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Death Order Calculator - Total Battle</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .death-order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .back-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .back-link:hover {
+      color: #3b82f6;
+    }
+    
+    .death-order-intro {
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 3px solid #3b82f6;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    
+    .death-order-intro h3 {
+      color: #60a5fa;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    
+    .death-order-intro p {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    
+    .copy-list-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .copy-list-btn:hover {
+      background: #059669;
+    }
+    
+    .copy-list-btn.copied {
+      background: #6366f1;
+    }
+
+    .clear-btn {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .clear-btn:hover { background: #dc2626; }
+
+    /* Cross-out toggle styling */
+    .results-table tr.crossed td {
+      opacity: 0.5;
+    }
+    .results-table tr.crossed .units-value,
+    .results-table tr.crossed .leadership-value,
+    .results-table tr.crossed .health-value {
+      text-decoration: line-through;
+    }
+
+    /* Role filters */
+    .role-filter-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .role-filter-row label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 6px;
+      padding: 8px 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .role-filter-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="death-order-header">
+      <div>
+        <h1>☠️ Death Order Calculator</h1>
+        <p style="color: #94a3b8; margin-top: 5px;">Builds army composition to achieve exact death sequence</p>
+      </div>
+      <a href="index.html" class="back-link">← Back to Main Calculator</a>
+    </div>
+    
+    <div class="death-order-intro">
+      <h3>🎯 How It Works</h3>
+      <p>
+        This calculator builds your army to die in a specific order: <strong>S5→G5→S6→G6→S7→G7</strong> 
+        (Melee→Mounted→Ranged→Flying within each tier). Select your available troops, set your leadership cap, 
+        and adjust the padding between units. Higher padding = larger health gaps = more safety margin.
+      </p>
+    </div>
+
+    <section class="controls card">
+      <h2>⚙️ Settings</h2>
+      
+      <div class="control-row">
+        <label for="leadership-input">Leadership cap</label>
+        <input id="leadership-input" type="number" value="80388" step="100" min="100">
+      </div>
+      
+      <div class="control-row">
+        <label for="padding-input">Health padding between units (%)</label>
+        <div class="control-stack">
+          <input id="padding-input" type="number" value="0.5" step="0.1" min="0.1" max="10">
+          <span class="hint">% health difference between consecutive units in death order. Recommended: 0.5-1.0%</span>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <label>Include roles</label>
+        <div class="role-filter-row">
+          <label><input id="role-filter-melee" type="checkbox" checked> <span class="role-badge role-melee">melee</span></label>
+          <label><input id="role-filter-mounted" type="checkbox" checked> <span class="role-badge role-mounted">mounted</span></label>
+          <label><input id="role-filter-ranged" type="checkbox" checked> <span class="role-badge role-ranged">ranged</span></label>
+          <label><input id="role-filter-flying" type="checkbox" checked> <span class="role-badge role-flying">flying</span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="units card stat-bonuses-section">
+      <div class="section-header collapsible-header" id="stat-bonuses-header">
+        <h2>
+          <span class="collapse-icon">▼</span>
+          Unit Stat Bonuses (In-Game Multipliers)
+          <span class="bonus-status-badge" id="bonus-status-badge">⚠️ Configure</span>
+        </h2>
+      </div>
+      <div class="stat-bonuses-content" id="stat-bonuses-content">
+        <p class="section-blurb">Enter your actual in-game health bonuses (from hero skills, research, etc). Format: 1000% = 10.0x. These multiply base unit health BEFORE calculations.</p>
+        
+        <div class="bonus-grid">
+          <div class="bonus-group">
+            <h3 class="bonus-group-title">Specialists</h3>
+            <div class="bonus-item">
+              <label for="s-melee-bonus"><span class="role-badge role-melee">melee</span></label>
+              <input id="s-melee-bonus" type="number" value="10.18" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-mounted-bonus"><span class="role-badge role-mounted">mounted</span></label>
+              <input id="s-mounted-bonus" type="number" value="10.18" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-ranged-bonus"><span class="role-badge role-ranged">ranged</span></label>
+              <input id="s-ranged-bonus" type="number" value="10.18" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-flying-bonus"><span class="role-badge role-flying">flying</span></label>
+              <input id="s-flying-bonus" type="number" value="9.51" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+          </div>
+
+          <div class="bonus-group">
+            <h3 class="bonus-group-title">Guards</h3>
+            <div class="bonus-item">
+              <label for="g-melee-bonus"><span class="role-badge role-melee">melee</span></label>
+              <input id="g-melee-bonus" type="number" value="10.2" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-mounted-bonus"><span class="role-badge role-mounted">mounted</span></label>
+              <input id="g-mounted-bonus" type="number" value="10.21" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-ranged-bonus"><span class="role-badge role-ranged">ranged</span></label>
+              <input id="g-ranged-bonus" type="number" value="10.2" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-flying-bonus"><span class="role-badge role-flying">flying</span></label>
+              <input id="g-flying-bonus" type="number" value="9.74" step="0.01" min="1" max="50">
+              <span class="bonus-suffix">x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bonus-controls">
+          <button type="button" id="reset-bonuses-btn" class="bonus-btn">Reset to 1.0x (No Bonuses)</button>
+          <button type="button" id="apply-bonuses-btn" class="bonus-btn bonus-btn-primary">✓ Apply Bonuses</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="units card">
+      <h2>🎖️ Troop Access</h2>
+      <p class="section-blurb">Select which troop branches and tiers are available to you</p>
+      <div id="branch-controls" class="branch-controls"></div>
+    </section>
+
+    <section class="recommendation card">
+      <div class="header-controls" style="display:flex; align-items:center; justify-content: space-between; gap:12px;">
+        <h2>☠️ Death Order Composition</h2>
+        <div>
+          <button id="copy-all-btn" class="copy-list-btn">📋 Copy All Units</button>
+          <button id="clear-crossed-btn" class="clear-btn" style="margin-left:8px">✖ Clear checked</button>
+        </div>
+      </div>
+      <div id="summary" class="summary"></div>
+      <div id="warning" class="warning hidden"></div>
+      
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Unit</th>
+            <th>Role</th>
+            <th>Units</th>
+            <th>Leadership</th>
+            <th>Total Health</th>
+            <th>Health Share</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="result-table-body"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="death-order-standalone.js"></script>
+  <script>
+    // Death Order Calculator - Standalone implementation
+    // Uses the working algorithm from death-order-test.html
+    
+    let statBonuses = loadStatBonuses();
+    const CROSSED_KEY = 'death-order-crossed-v1';
+    const ROLE_FILTERS_KEY = 'death-order-role-filters-v1';
+    let crossedSet = new Set(JSON.parse(localStorage.getItem(CROSSED_KEY) || '[]'));
+    let roleFilters = { melee: true, mounted: true, ranged: true, flying: true };
+    try {
+      const savedFilters = JSON.parse(localStorage.getItem(ROLE_FILTERS_KEY) || 'null');
+      if (savedFilters && typeof savedFilters === 'object') {
+        roleFilters = { ...roleFilters, ...savedFilters };
+      }
+    } catch {}
+    
+    function calculate() {
+      console.log('🧮 Death Order Calculate called');
+      
+      const leadershipCap = Number(document.getElementById('leadership-input').value) || 0;
+      const unitPadding = Number(document.getElementById('padding-input').value) || 0.5;
+      
+      console.log('Leadership Cap:', leadershipCap, 'Padding:', unitPadding);
+      
+      const allUnits = getSelectedUnits().filter(u => roleFilters[u.role]);
+      console.log('Selected Units:', allUnits.length, allUnits);
+      
+      if (!leadershipCap || leadershipCap <= 0) {
+        document.getElementById('warning').textContent = 'Set a leadership cap above zero.';
+        document.getElementById('warning').classList.remove('hidden');
+        document.getElementById('result-table-body').innerHTML = '';
+        document.getElementById('summary').innerHTML = '';
+        return;
+      }
+      
+      if (allUnits.length === 0) {
+        document.getElementById('warning').textContent = 'Enable at least one troop branch and tier.';
+        document.getElementById('warning').classList.remove('hidden');
+        document.getElementById('result-table-body').innerHTML = '';
+        document.getElementById('summary').innerHTML = '';
+        return;
+      }
+      
+      document.getElementById('warning').classList.add('hidden');
+      
+      // ALGORITHM: Define death sequence (S5→G5→S6→G6→S7→G7, melee→mounted→ranged→flying)
+      const roleOrder = { melee: 0, mounted: 1, ranged: 2, flying: 3 };
+      console.log('🔍 Role order:', roleOrder);
+      console.log('🔍 BEFORE sort (first 8):', allUnits.slice(0, 8).map(u => `${u.branch.charAt(0)}${u.tier}-${u.role}`));
+      
+      const deathSequence = allUnits.slice().sort((a, b) => {
+        if (a.tier !== b.tier) return a.tier - b.tier;
+        if (a.branch !== b.branch) return a.branch === 'Specialists' ? -1 : 1;
+        const av = roleOrder[a.role];
+        const bv = roleOrder[b.role];
+        const ra = (av === undefined ? 999 : av);
+        const rb = (bv === undefined ? 999 : bv);
+        return ra - rb;
+      });
+      
+      console.log('🔍 Death sequence after sort:', deathSequence.slice(0, 8).map(u => `${u.branch.charAt(0)}${u.tier}-${u.role} (roleOrder=${roleOrder[u.role]})`));
+      
+      // Calculate actual health (base × stat bonus)
+      deathSequence.forEach(unit => {
+        const bonus = getStatBonus(unit.branch, unit.role, statBonuses);
+        unit.actualHealth = unit.health * bonus;
+      });
+      
+      // Assign target health pools (BACKWARDS from last to first)
+      const numUnits = deathSequence.length;
+      const baselineHealth = 10000000; // Baseline for last unit
+      
+      for (let i = numUnits - 1; i >= 0; i--) {
+        const stepsFromEnd = numUnits - 1 - i;
+        const targetHealthPool = baselineHealth * Math.pow(1 + unitPadding / 100, stepsFromEnd);
+        deathSequence[i].targetHealthPool = targetHealthPool;
+        deathSequence[i].unitsNeeded = targetHealthPool / deathSequence[i].actualHealth;
+        deathSequence[i].leadershipNeeded = deathSequence[i].unitsNeeded * deathSequence[i].leadership;
+      }
+      
+      console.log('🔍 First 4 target health pools:', deathSequence.slice(0, 4).map((u, i) => 
+        `[${i}] ${u.branch.charAt(0)}${u.tier}-${u.role}: target=${u.targetHealthPool.toLocaleString()}, actual=${u.actualHealth.toLocaleString()}/unit`
+      ));
+      
+      // Calculate total leadership needed and scale factor
+      const totalLeadershipNeeded = deathSequence.reduce((sum, u) => sum + u.leadershipNeeded, 0);
+      const scaleFactor = leadershipCap / totalLeadershipNeeded;
+      
+      // Calculate final units and health pools
+      deathSequence.forEach(unit => {
+        unit.finalUnits = Math.max(1, Math.round(unit.unitsNeeded * scaleFactor));
+        unit.finalLeadership = unit.finalUnits * unit.leadership;
+        unit.finalHealthPool = unit.finalUnits * unit.actualHealth;
+      });
+      
+      const totalLeadership = deathSequence.reduce((sum, u) => sum + u.finalLeadership, 0);
+      const totalHealth = deathSequence.reduce((sum, u) => sum + u.finalHealthPool, 0);
+      
+      // Order by actual total health (dies first first)
+      const orderedSequence = deathSequence.slice().sort((a, b) => b.finalHealthPool - a.finalHealthPool);
+      
+      console.log('🔍 First 8 units health pools:', deathSequence.slice(0, 8).map(u => 
+        `${u.branch.charAt(0)}${u.tier}-${u.role}: ${u.finalHealthPool.toLocaleString()} (${u.finalUnits} units)`
+      ));
+      
+      console.log('✅ Calculation complete:', {
+        totalLeadership,
+        totalHealth,
+        unitsCount: deathSequence.length
+      });
+      
+      // Display results
+      try {
+        displayResults(orderedSequence, totalLeadership, totalHealth, leadershipCap, unitPadding);
+        console.log('✅ Results displayed');
+      } catch (err) {
+        console.error('❌ Error displaying results:', err);
+        document.getElementById('warning').textContent = 'Error displaying results: ' + err.message;
+        document.getElementById('warning').classList.remove('hidden');
+      }
+    }
+    
+    function displayResults(sequence, usedLeadership, totalHealth, leadershipCap, padding) {
+      // Summary
+      const leftoverLabel = usedLeadership <= leadershipCap 
+        ? `${formatLeadership(leadershipCap - usedLeadership)} spare`
+        : `${formatLeadership(usedLeadership - leadershipCap)} over cap`;
+      
+      document.getElementById('summary').innerHTML = `
+        Hero deploys <strong>${formatLeadership(usedLeadership)}</strong> of
+        <strong>${formatLeadership(leadershipCap)}</strong> — ${leftoverLabel}.
+        Total stack health: <strong>${formatNumber(totalHealth)}</strong>.
+        Unit padding: <strong>${padding}%</strong>.
+      `;
+      
+      // Results table
+      const tbody = document.getElementById('result-table-body');
+      let html = '';
+      
+      sequence.forEach((unit, i) => {
+        const prevUnit = i > 0 ? sequence[i - 1] : null;
+        const isCorrect = !prevUnit || unit.finalHealthPool <= prevUnit.finalHealthPool;
+        const diff = prevUnit 
+          ? ((unit.finalHealthPool - prevUnit.finalHealthPool) / prevUnit.finalHealthPool * 100).toFixed(2)
+          : 'N/A';
+        
+        const healthShare = (unit.finalHealthPool / totalHealth * 100).toFixed(1);
+        const rowKey = `${unit.branch}-${unit.tier}-${unit.role}`;
+        const crossed = crossedSet.has(rowKey);
+        
+        html += `
+          <tr class="${isCorrect ? '' : 'error-row'} ${crossed ? 'crossed' : ''}" data-key="${rowKey}">
+            <td class="rank-cell">${i + 1}</td>
+            <td class="unit-id-cell">
+              <span class="unit-id tier-${unit.tier}-id">${unit.branch.charAt(0)}${unit.tier}</span>
+            </td>
+            <td><span class="role-badge role-${unit.role}">${unit.role}</span></td>
+            <td class="units-cell">
+              <span class="units-value">${formatNumber(unit.finalUnits)}</span>
+              <button class="copy-btn" data-value="${unit.finalUnits}" title="Copy to clipboard">📋</button>
+            </td>
+            <td class="leadership-cell"><span class="leadership-value">${formatLeadership(unit.finalLeadership)}</span></td>
+            <td class="health-cell"><span class="health-value">${formatNumber(Math.round(unit.finalHealthPool))}</span></td>
+            <td>${healthShare}%</td>
+            <td>
+              <span class="sequence-indicator sequence-${isCorrect ? 'ok' : 'error'}">${i + 1}</span>
+              ${diff !== 'N/A' ? diff + '% vs prev' : 'Dies first'}
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = html;
+      
+      // Toggle cross-out on row click and persist
+      tbody.onclick = (e) => {
+        const tr = e.target.closest('tr[data-key]');
+        if (!tr) return;
+        const key = tr.getAttribute('data-key');
+        if (crossedSet.has(key)) {
+          crossedSet.delete(key);
+          tr.classList.remove('crossed');
+        } else {
+          crossedSet.add(key);
+          tr.classList.add('crossed');
+        }
+        try { localStorage.setItem(CROSSED_KEY, JSON.stringify(Array.from(crossedSet))); } catch {}
+      };
+      
+      // Add copy button handlers
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const value = btn.dataset.value;
+          navigator.clipboard.writeText(value).then(() => {
+            btn.textContent = '✓';
+            setTimeout(() => btn.textContent = '📋', 1500);
+          });
+        });
+      });
+    }
+    
+    // Copy all units as formatted list
+    document.getElementById('copy-all-btn').addEventListener('click', function() {
+      const tbody = document.getElementById('result-table-body');
+      const rows = tbody.querySelectorAll('tr');
+      
+      let text = 'DEATH ORDER COMPOSITION\n';
+      text += '======================\n\n';
+      
+      rows.forEach((row, i) => {
+        const cells = row.querySelectorAll('td');
+        const rank = cells[0].textContent;
+        const unit = cells[1].textContent;
+        const role = cells[2].textContent;
+        const units = cells[3].querySelector('.units-value').textContent;
+        const leadership = cells[4].textContent;
+        
+        text += `${rank}. ${unit}-${role}: ${units} units (${leadership})\n`;
+      });
+      
+      navigator.clipboard.writeText(text).then(() => {
+        this.textContent = '✓ Copied!';
+        this.classList.add('copied');
+        setTimeout(() => {
+          this.textContent = '📋 Copy All Units';
+          this.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    
+    // Clear crossed rows
+    document.getElementById('clear-crossed-btn').addEventListener('click', function() {
+      crossedSet.clear();
+      try { localStorage.removeItem(CROSSED_KEY); } catch {}
+      const tbody = document.getElementById('result-table-body');
+      tbody.querySelectorAll('tr.crossed').forEach(tr => tr.classList.remove('crossed'));
+      this.textContent = '✓ Cleared';
+      setTimeout(() => this.textContent = '✖ Clear checked', 1200);
+    });
+    
+    // Override updateResults for branch control event listeners  
+    window.updateResults = calculate;
+    
+    // Event listeners
+    document.getElementById('leadership-input').addEventListener('input', calculate);
+    document.getElementById('padding-input').addEventListener('input', calculate);
+    ['melee','mounted','ranged','flying'].forEach((role) => {
+      const el = document.getElementById('role-filter-' + role);
+      if (el) {
+        // Load saved state
+        el.checked = !!roleFilters[role];
+        el.addEventListener('change', () => {
+          roleFilters[role] = el.checked;
+          try { localStorage.setItem(ROLE_FILTERS_KEY, JSON.stringify(roleFilters)); } catch {}
+          calculate();
+        });
+      }
+    });
+    
+    // Stat bonuses collapse/expand
+    document.getElementById('stat-bonuses-header').addEventListener('click', function() {
+      const content = document.getElementById('stat-bonuses-content');
+      const icon = this.querySelector('.collapse-icon');
+      const isExpanded = content.style.display !== 'none';
+      
+      content.style.display = isExpanded ? 'none' : 'block';
+      icon.textContent = isExpanded ? '▶' : '▼';
+    });
+    
+    // Stat bonus buttons
+    document.getElementById('reset-bonuses-btn').addEventListener('click', function() {
+      document.querySelectorAll('[id$="-bonus"]').forEach(input => {
+        input.value = '1.0';
+      });
+      updateBonusStatusBadge();
+    });
+    
+    document.getElementById('apply-bonuses-btn').addEventListener('click', function() {
+      statBonuses = {
+        'Specialists-melee': Number(document.getElementById('s-melee-bonus').value),
+        'Specialists-mounted': Number(document.getElementById('s-mounted-bonus').value),
+        'Specialists-ranged': Number(document.getElementById('s-ranged-bonus').value),
+        'Specialists-flying': Number(document.getElementById('s-flying-bonus').value),
+        'Guards-melee': Number(document.getElementById('g-melee-bonus').value),
+        'Guards-mounted': Number(document.getElementById('g-mounted-bonus').value),
+        'Guards-ranged': Number(document.getElementById('g-ranged-bonus').value),
+        'Guards-flying': Number(document.getElementById('g-flying-bonus').value),
+      };
+      saveStatBonuses(statBonuses);
+      updateBonusStatusBadge();
+      calculate();
+    });
+    
+    function updateBonusStatusBadge() {
+      const badge = document.getElementById('bonus-status-badge');
+      const bonuses = Object.values(statBonuses || {});
+      const hasCustom = bonuses.some(b => b !== 1.0);
+      
+      if (hasCustom) {
+        badge.textContent = '✓ Configured';
+        badge.style.background = '#10b981';
+      } else {
+        badge.textContent = '⚠️ Configure';
+        badge.style.background = '#f59e0b';
+      }
+    }
+    
+    // Initialize
+    console.log('🚀 Initializing Death Order Calculator');
+    renderBranchControls();
+    console.log('✅ Branch controls rendered');
+    updateBonusStatusBadge();
+    
+    // Load saved bonuses into UI
+    if (statBonuses) {
+      document.getElementById('s-melee-bonus').value = statBonuses['Specialists-melee'] || 10.18;
+      document.getElementById('s-mounted-bonus').value = statBonuses['Specialists-mounted'] || 10.18;
+      document.getElementById('s-ranged-bonus').value = statBonuses['Specialists-ranged'] || 10.18;
+      document.getElementById('s-flying-bonus').value = statBonuses['Specialists-flying'] || 9.51;
+      document.getElementById('g-melee-bonus').value = statBonuses['Guards-melee'] || 10.2;
+      document.getElementById('g-mounted-bonus').value = statBonuses['Guards-mounted'] || 10.21;
+      document.getElementById('g-ranged-bonus').value = statBonuses['Guards-ranged'] || 10.2;
+      document.getElementById('g-flying-bonus').value = statBonuses['Guards-flying'] || 9.74;
+    }
+    
+    // Delay initial calculation to ensure branch controls are ready
+    setTimeout(() => {
+      console.log('🔄 Running initial calculation...');
+      calculate();
+      console.log('✅ Page initialization complete');
+    }, 100);
+    
+    console.log('📄 Death Order Calculator script loaded');
+  </script>
+</body>
+</html>
+

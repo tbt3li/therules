@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stacking Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <h1>Total Battle Stacking Calculator</h1>
+          <p class="intro">
+            Tell the calculator what your hero can field, set the leadership cap, and decide how much
+            extra health lower tiers should carry. Higher tiers stay lean while lower tiers get padded
+            so their total health stays tight together.
+          </p>
+        </div>
+        <a href="death-order.html" style="color: #60a5fa; text-decoration: none; font-size: 14px; padding: 10px 16px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.3); white-space: nowrap; margin-left: 20px;">
+          ☠️ Death Order Calculator →
+        </a>
+      </div>
+    </header>
+
+    <section class="controls card">
+      <div class="control-row">
+        <label for="leadership-input">Leadership cap</label>
+        <input id="leadership-input" type="number" min="0" value="50000" step="1000">
+      </div>
+
+      <div class="control-row">
+        <label for="cushion-input">Tier health padding (%)</label>
+        <div class="control-stack">
+          <input id="cushion-input" type="number" value="10" step="1" min="0" max="100">
+          <span class="hint">Lower tiers get MORE health and die first. Example: 10% means S5 has 20% more than S7. Higher health = attacked first.</span>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <label for="branch-cushion-input">Branch health padding (%)</label>
+        <div class="control-stack">
+          <input id="branch-cushion-input" type="number" value="0" step="0.5" min="0" max="10">
+          <span class="hint">Specialists get MORE health than Guards (within tier) and die first. Higher health = attacked first. 0% = even distribution.</span>
+        </div>
+      </div>
+
+      <div class="control-row role-padding-section">
+        <label>Role health padding (%)</label>
+        <div class="control-stack">
+          <div class="role-padding-grid">
+            <div class="role-padding-item">
+              <label for="melee-cushion-input" class="role-label">
+                <span class="role-badge role-melee">melee</span>
+              </label>
+              <input id="melee-cushion-input" type="number" value="3" step="0.5" min="0" max="20">
+            </div>
+            <div class="role-padding-item">
+              <label for="mounted-cushion-input" class="role-label">
+                <span class="role-badge role-mounted">mounted</span>
+              </label>
+              <input id="mounted-cushion-input" type="number" value="2" step="0.5" min="0" max="20">
+            </div>
+            <div class="role-padding-item">
+              <label for="ranged-cushion-input" class="role-label">
+                <span class="role-badge role-ranged">ranged</span>
+              </label>
+              <input id="ranged-cushion-input" type="number" value="1" step="0.5" min="0" max="20">
+            </div>
+            <div class="role-padding-item">
+              <label for="flying-cushion-input" class="role-label">
+                <span class="role-badge role-flying">flying</span>
+              </label>
+              <input id="flying-cushion-input" type="number" value="0" step="0.5" min="0" max="20">
+            </div>
+          </div>
+          <div class="role-padding-controls">
+            <button type="button" id="reset-role-padding-btn" class="role-padding-btn">Reset to Standard</button>
+            <button type="button" id="clear-role-padding-btn" class="role-padding-btn">Clear All (0%)</button>
+          </div>
+          <span class="hint">Higher % = MORE health = dies FIRST. Lower % = LESS health = most protected. Independent control lets you tune each role based on game mechanics.</span>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <label for="target-health-input">Reference health target</label>
+        <input id="target-health-input" type="number" value="1000000" step="100000" min="100000">
+        <span class="hint">Used for per-tier ratios; does not cap total health.</span>
+      </div>
+
+      <div class="control-row experimental-feature">
+        <label class="checkbox-label">
+          <input id="death-order-mode" type="checkbox">
+          <span>☠️ Death Order Mode</span>
+        </label>
+        <span class="hint">Calculates composition to achieve exact death sequence: S5→G5→S6→G6→S7→G7 (Melee→Mounted→Ranged→Flying within each tier). Guarantees correct attack order.</span>
+      </div>
+
+      <div class="control-row inverse-mode-settings" id="inverse-mode-settings" style="display: none;">
+        <label for="unit-padding-input">Health padding between units (%)</label>
+        <div class="control-stack">
+          <input id="unit-padding-input" type="number" value="0.5" step="0.1" min="0.1" max="10">
+          <span class="hint">% health difference between consecutive units in death order. Higher = larger gaps for safety margin. Recommended: 0.5-1.0%</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="units card stat-bonuses-section">
+      <div class="section-header collapsible-header" id="stat-bonuses-header">
+        <h2>
+          <span class="collapse-icon">▼</span>
+          Unit Stat Bonuses (In-Game Multipliers)
+          <span class="bonus-status-badge" id="bonus-status-badge">⚠️ Configure</span>
+        </h2>
+      </div>
+      <div class="stat-bonuses-content" id="stat-bonuses-content">
+        <p class="section-blurb">Enter your actual in-game health bonuses (from hero skills, research, etc). Format: 1000% = 10.0x. These multiply base unit health BEFORE padding calculations, ensuring accurate relative health values.</p>
+        
+        <div class="bonus-grid">
+          <div class="bonus-group">
+            <h3 class="bonus-group-title">Specialists</h3>
+            <div class="bonus-item">
+              <label for="s-melee-bonus">
+                <span class="role-badge role-melee">melee</span>
+              </label>
+              <input id="s-melee-bonus" type="number" value="10.18" step="0.01" min="1" max="50" placeholder="10.18">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-mounted-bonus">
+                <span class="role-badge role-mounted">mounted</span>
+              </label>
+              <input id="s-mounted-bonus" type="number" value="10.18" step="0.01" min="1" max="50" placeholder="10.18">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-ranged-bonus">
+                <span class="role-badge role-ranged">ranged</span>
+              </label>
+              <input id="s-ranged-bonus" type="number" value="10.18" step="0.01" min="1" max="50" placeholder="10.18">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="s-flying-bonus">
+                <span class="role-badge role-flying">flying</span>
+              </label>
+              <input id="s-flying-bonus" type="number" value="9.51" step="0.01" min="1" max="50" placeholder="9.51">
+              <span class="bonus-suffix">x</span>
+            </div>
+          </div>
+
+          <div class="bonus-group">
+            <h3 class="bonus-group-title">Guards</h3>
+            <div class="bonus-item">
+              <label for="g-melee-bonus">
+                <span class="role-badge role-melee">melee</span>
+              </label>
+              <input id="g-melee-bonus" type="number" value="10.2" step="0.01" min="1" max="50" placeholder="10.2">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-mounted-bonus">
+                <span class="role-badge role-mounted">mounted</span>
+              </label>
+              <input id="g-mounted-bonus" type="number" value="10.21" step="0.01" min="1" max="50" placeholder="10.21">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-ranged-bonus">
+                <span class="role-badge role-ranged">ranged</span>
+              </label>
+              <input id="g-ranged-bonus" type="number" value="10.2" step="0.01" min="1" max="50" placeholder="10.2">
+              <span class="bonus-suffix">x</span>
+            </div>
+            <div class="bonus-item">
+              <label for="g-flying-bonus">
+                <span class="role-badge role-flying">flying</span>
+              </label>
+              <input id="g-flying-bonus" type="number" value="9.74" step="0.01" min="1" max="50" placeholder="9.74">
+              <span class="bonus-suffix">x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bonus-controls">
+          <button type="button" id="reset-bonuses-btn" class="bonus-btn">Reset to 1.0x (No Bonuses)</button>
+          <button type="button" id="apply-bonuses-btn" class="bonus-btn bonus-btn-primary">✓ Apply Bonuses</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="units card">
+      <div class="section-header">
+        <h2>Troop Access</h2>
+      </div>
+      <p class="section-blurb">Enable each branch your hero can field, select the highest tier unlocked, then choose which specific tiers to include in your stack. Your selections are saved automatically.</p>
+      <div id="branch-controls" class="branch-grid"></div>
+    </section>
+
+    <section class="results card">
+      <div class="section-header">
+        <h2>🛡️ Hero Stack Recommendation (Leadership)</h2>
+        <div class="header-controls">
+          <div class="display-order-group">
+            <label class="display-order-toggle">
+              <input type="radio" name="display-order" id="death-order" value="death">
+              <span>Death Order</span>
+            </label>
+            <label class="display-order-toggle">
+              <input type="radio" name="display-order" id="default-order" value="default" checked>
+              <span>Tier Order</span>
+            </label>
+            <label class="display-order-toggle">
+              <input type="radio" name="display-order" id="game-ui-order" value="game">
+              <span>Game UI Order</span>
+            </label>
+          </div>
+          <button id="clear-checked-btn" class="clear-checked-btn" title="Clear all checkmarks">Clear Checked</button>
+        </div>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="army-progress" id="army-progress">
+        <div class="army-progress-label">
+          <span class="army-icon">⚔️</span>
+          <span>Army Built:</span>
+        </div>
+        <div class="army-progress-bar">
+          <div class="army-progress-fill" id="army-progress-fill"></div>
+          <div class="army-progress-text" id="army-progress-text">0 / 0</div>
+        </div>
+      </div>
+      <div id="warning" class="warning hidden"></div>
+      <div class="table-wrapper">
+        <table id="result-table">
+          <thead>
+            <tr>
+              <th class="include-column">Use</th>
+              <th class="check-column">✓</th>
+              <th>Unit</th>
+              <th>Role</th>
+              <th>Units</th>
+              <th>Leadership</th>
+              <th>Total Health</th>
+              <th>Health Share</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>🐉 Monster Configuration</h2>
+      </div>
+      <div class="control-row">
+        <label for="dominance-input">Hero Dominance Cap</label>
+        <div class="control-stack">
+          <input id="dominance-input" type="number" value="0" step="1" min="0">
+          <span class="hint">Maximum dominance your hero can command for monsters</span>
+        </div>
+      </div>
+      <div class="control-row">
+        <label for="monster-mode">Monster Stack Mode</label>
+        <div class="control-stack">
+          <select id="monster-mode">
+            <option value="max">Maximize Dominance</option>
+            <option value="match">Match Troop Health</option>
+          </select>
+          <span class="hint">Maximize: Use full dominance cap. Match: Scale monsters to match lowest troop health pool (prevents monsters dying first).</span>
+        </div>
+      </div>
+      <div class="control-row">
+        <label for="monster-cushion-input">Lower-tier health padding (%)</label>
+        <div class="control-stack">
+          <input id="monster-cushion-input" type="number" value="2.5" step="0.5" min="0" max="100">
+          <span class="hint">Gives lower tiers extra HP to protect elite monsters. Start at 0% for even distribution, increase as needed.</span>
+        </div>
+      </div>
+      <p class="section-blurb">Enable monsters, select the highest tier unlocked, then choose which tiers to include. Unlocking a tier gives you all 4 monster types (Dragons, Elementals, Giants, Beasts) at that tier.</p>
+      <div id="monster-controls" class="branch-grid"></div>
+    </section>
+
+    <section class="results card">
+      <div class="section-header">
+        <h2>🐉 Monster Stack Recommendation (Dominance)</h2>
+        <button id="clear-monsters-btn" class="clear-checked-btn" title="Clear all checkmarks">Clear Checked</button>
+      </div>
+      <div class="summary" id="monster-summary"></div>
+      <div class="army-progress" id="monster-progress">
+        <div class="army-progress-label">
+          <span class="army-icon">🐉</span>
+          <span>Monster Army Built:</span>
+        </div>
+        <div class="army-progress-bar">
+          <div class="army-progress-fill" id="monster-progress-fill"></div>
+          <div class="army-progress-text" id="monster-progress-text">0 / 0</div>
+        </div>
+      </div>
+      <div id="monster-warning" class="warning hidden"></div>
+      <div class="table-wrapper">
+        <table id="monster-result-table">
+          <thead>
+            <tr>
+              <th class="include-column">Use</th>
+              <th class="check-column">✓</th>
+              <th>Monster</th>
+              <th>Type</th>
+              <th>Count</th>
+              <th>Dominance</th>
+              <th>Health Pool</th>
+              <th>Health Share</th>
+              <th>vs Top Tier</th>
+            </tr>
+          </thead>
+          <tbody id="monster-result-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

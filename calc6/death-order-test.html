@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Death Order Algorithm Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: #60a5fa;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 30px;
+    }
+    
+    .controls {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input[type="number"] {
+      width: 200px;
+      padding: 8px 12px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+    
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    
+    button:hover {
+      background: #2563eb;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .panel {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    
+    .panel h2 {
+      color: #60a5fa;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .unit-row {
+      display: grid;
+      grid-template-columns: 30px 120px 100px 120px 140px 100px;
+      gap: 10px;
+      padding: 8px;
+      margin-bottom: 4px;
+      background: #0f172a;
+      border-radius: 4px;
+      align-items: center;
+      font-size: 13px;
+    }
+    
+    .unit-row.header {
+      background: #334155;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    
+    .unit-row.correct {
+      border-left: 3px solid #10b981;
+    }
+    
+    .unit-row.incorrect {
+      border-left: 3px solid #ef4444;
+    }
+    
+    .rank {
+      text-align: center;
+      font-weight: 600;
+      color: #60a5fa;
+    }
+    
+    .unit-name {
+      font-weight: 500;
+    }
+    
+    .tier-5 { color: #fbbf24; }
+    .tier-6 { color: #f87171; }
+    .tier-7 { color: #a78bfa; }
+    
+    .number {
+      text-align: right;
+      font-family: 'Monaco', monospace;
+    }
+    
+    .status {
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .math-step {
+      background: #0f172a;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'Monaco', monospace;
+    }
+    
+    .math-step .label {
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    
+    .math-step .value {
+      color: #60a5fa;
+    }
+    
+    .summary {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .summary-stat {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding: 8px;
+      background: #0f172a;
+      border-radius: 4px;
+    }
+    
+    .summary-label {
+      color: #94a3b8;
+    }
+    
+    .summary-value {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+    
+    .success {
+      color: #10b981;
+    }
+    
+    .error {
+      color: #ef4444;
+    }
+    
+    .debug-unit {
+      background: #0f172a;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border-left: 3px solid #60a5fa;
+    }
+    
+    .debug-unit-title {
+      font-weight: 600;
+      color: #60a5fa;
+      margin-bottom: 8px;
+    }
+    
+    .debug-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 10px;
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-family: 'Monaco', monospace;
+    }
+    
+    .debug-label {
+      color: #94a3b8;
+    }
+    
+    .debug-value {
+      color: #e2e8f0;
+    }
+    
+    .highlight {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Death Order Algorithm Test</h1>
+    <p class="subtitle">First principles approach to solving the death order calculation</p>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label for="leadership-cap">Leadership Cap:</label>
+        <input type="number" id="leadership-cap" value="80000" step="1000">
+      </div>
+      <div class="control-group">
+        <label for="unit-padding">Unit Padding (%):</label>
+        <input type="number" id="unit-padding" value="0.5" step="0.1" min="0.1" max="10">
+      </div>
+      <button onclick="calculate()">Calculate</button>
+    </div>
+    
+    <div id="summary" class="summary"></div>
+    
+    <div class="grid">
+      <div class="panel">
+        <h2>📋 Test Units (Hard-coded)</h2>
+        <div id="test-units"></div>
+      </div>
+      
+      <div class="panel">
+        <h2>🧮 Algorithm Steps</h2>
+        <div id="algorithm-steps"></div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <h2>🎯 Death Order Results</h2>
+      <div id="results"></div>
+    </div>
+    
+    <div class="panel">
+      <h2>🔍 Detailed Debug Info (Per Unit)</h2>
+      <div id="debug-info"></div>
+    </div>
+  </div>
+
+  <script>
+    // Hard-coded test units with ACTUAL values from the game
+    const TEST_UNITS = [
+      // S5 - should die FIRST (highest health pools)
+      { id: 'S5-melee', tier: 5, branch: 'S', role: 'melee', baseHealth: 1560, statBonus: 10.18, leadership: 1 },
+      { id: 'S5-mounted', tier: 5, branch: 'S', role: 'mounted', baseHealth: 3120, statBonus: 10.18, leadership: 2 },
+      { id: 'S5-ranged', tier: 5, branch: 'S', role: 'ranged', baseHealth: 1560, statBonus: 10.18, leadership: 1 },
+      { id: 'S5-flying', tier: 5, branch: 'S', role: 'flying', baseHealth: 1560, statBonus: 9.51, leadership: 1 },
+      
+      // G5
+      { id: 'G5-melee', tier: 5, branch: 'G', role: 'melee', baseHealth: 1560, statBonus: 10.2, leadership: 1 },
+      { id: 'G5-mounted', tier: 5, branch: 'G', role: 'mounted', baseHealth: 3120, statBonus: 10.21, leadership: 2 },
+      { id: 'G5-ranged', tier: 5, branch: 'G', role: 'ranged', baseHealth: 1560, statBonus: 10.2, leadership: 1 },
+      { id: 'G5-flying', tier: 5, branch: 'G', role: 'flying', baseHealth: 31200, statBonus: 9.74, leadership: 20 },
+      
+      // S6
+      { id: 'S6-melee', tier: 6, branch: 'S', role: 'melee', baseHealth: 2820, statBonus: 10.18, leadership: 1 },
+      { id: 'S6-mounted', tier: 6, branch: 'S', role: 'mounted', baseHealth: 5640, statBonus: 10.18, leadership: 2 },
+      { id: 'S6-ranged', tier: 6, branch: 'S', role: 'ranged', baseHealth: 2820, statBonus: 10.18, leadership: 1 },
+      { id: 'S6-flying', tier: 6, branch: 'S', role: 'flying', baseHealth: 2820, statBonus: 9.51, leadership: 1 },
+      
+      // G6
+      { id: 'G6-melee', tier: 6, branch: 'G', role: 'melee', baseHealth: 2820, statBonus: 10.2, leadership: 1 },
+      { id: 'G6-mounted', tier: 6, branch: 'G', role: 'mounted', baseHealth: 5640, statBonus: 10.21, leadership: 2 },
+      { id: 'G6-ranged', tier: 6, branch: 'G', role: 'ranged', baseHealth: 2820, statBonus: 10.2, leadership: 1 },
+      { id: 'G6-flying', tier: 6, branch: 'G', role: 'flying', baseHealth: 56400, statBonus: 9.74, leadership: 20 },
+      
+      // S7
+      { id: 'S7-melee', tier: 7, branch: 'S', role: 'melee', baseHealth: 5100, statBonus: 10.18, leadership: 1 },
+      { id: 'S7-mounted', tier: 7, branch: 'S', role: 'mounted', baseHealth: 10200, statBonus: 10.18, leadership: 2 },
+      { id: 'S7-ranged', tier: 7, branch: 'S', role: 'ranged', baseHealth: 5100, statBonus: 10.18, leadership: 1 },
+      { id: 'S7-flying', tier: 7, branch: 'S', role: 'flying', baseHealth: 5100, statBonus: 9.51, leadership: 1 },
+      
+      // G7 - should die LAST (lowest health pools)
+      { id: 'G7-melee', tier: 7, branch: 'G', role: 'melee', baseHealth: 5100, statBonus: 10.2, leadership: 1 },
+      { id: 'G7-mounted', tier: 7, branch: 'G', role: 'mounted', baseHealth: 10200, statBonus: 10.21, leadership: 2 },
+      { id: 'G7-ranged', tier: 7, branch: 'G', role: 'ranged', baseHealth: 5100, statBonus: 10.2, leadership: 1 },
+      { id: 'G7-flying', tier: 7, branch: 'G', role: 'flying', baseHealth: 102000, statBonus: 9.74, leadership: 20 },
+    ];
+
+    function displayTestUnits() {
+      const container = document.getElementById('test-units');
+      let html = '<div class="unit-row header"><div></div><div>Unit</div><div>Base HP</div><div>Stat Bonus</div><div>Actual HP</div><div>Leadership</div></div>';
+      
+      TEST_UNITS.forEach((unit, i) => {
+        const actualHP = unit.baseHealth * unit.statBonus;
+        html += `
+          <div class="unit-row">
+            <div>${i + 1}</div>
+            <div class="unit-name tier-${unit.tier}">${unit.id}</div>
+            <div class="number">${unit.baseHealth.toLocaleString()}</div>
+            <div class="number">${unit.statBonus}x</div>
+            <div class="number">${actualHP.toLocaleString()}</div>
+            <div class="number">${unit.leadership}</div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    function calculate() {
+      const leadershipCap = Number(document.getElementById('leadership-cap').value);
+      const unitPadding = Number(document.getElementById('unit-padding').value);
+      
+      // ALGORITHM: First Principles Approach
+      const steps = [];
+      
+      // Step 1: Define death sequence (S5→G5→S6→G6→S7→G7, melee→mounted→ranged→flying)
+      const deathSequence = [...TEST_UNITS].sort((a, b) => {
+        if (a.tier !== b.tier) return a.tier - b.tier; // Lower tier dies first
+        if (a.branch !== b.branch) return a.branch === 'S' ? -1 : 1; // S before G
+        const roleOrder = { melee: 0, mounted: 1, ranged: 2, flying: 3 };
+        return roleOrder[a.role] - roleOrder[b.role];
+      });
+      
+      steps.push({
+        label: 'Step 1: Death Sequence Defined',
+        value: deathSequence.map((u, i) => `${i + 1}. ${u.id}`).join(', ')
+      });
+      
+      // Step 2: Calculate actual unit health (base × stat bonus)
+      deathSequence.forEach(unit => {
+        unit.actualHealth = unit.baseHealth * unit.statBonus;
+      });
+      
+      // Step 3: Assign target health pools working BACKWARDS
+      // Last unit (dies last) gets baseline, each earlier unit gets padding% more
+      const numUnits = deathSequence.length;
+      const baselineHealth = 10000000; // Arbitrary baseline for last unit
+      
+      for (let i = numUnits - 1; i >= 0; i--) {
+        const stepsFromEnd = numUnits - 1 - i;
+        const targetHealthPool = baselineHealth * Math.pow(1 + unitPadding / 100, stepsFromEnd);
+        deathSequence[i].targetHealthPool = targetHealthPool;
+      }
+      
+      steps.push({
+        label: 'Step 2: Target Health Pools (DESCENDING)',
+        value: `First unit: ${deathSequence[0].targetHealthPool.toLocaleString()}, Last unit: ${deathSequence[numUnits-1].targetHealthPool.toLocaleString()}`
+      });
+      
+      // Step 4: Calculate units needed for each type
+      deathSequence.forEach(unit => {
+        unit.unitsNeeded = unit.targetHealthPool / unit.actualHealth;
+        unit.leadershipNeeded = unit.unitsNeeded * unit.leadership;
+      });
+      
+      const totalLeadershipNeeded = deathSequence.reduce((sum, u) => sum + u.leadershipNeeded, 0);
+      
+      steps.push({
+        label: 'Step 3: Total Leadership Needed',
+        value: `${totalLeadershipNeeded.toLocaleString()} (before scaling)`
+      });
+      
+      // Step 5: Scale to fit leadership cap
+      const scaleFactor = leadershipCap / totalLeadershipNeeded;
+      
+      steps.push({
+        label: 'Step 4: Scale Factor',
+        value: `${scaleFactor.toFixed(4)} (to fit ${leadershipCap.toLocaleString()} leadership)`
+      });
+      
+      // Step 6: Calculate final units and health pools
+      deathSequence.forEach(unit => {
+        unit.finalUnits = Math.max(1, Math.round(unit.unitsNeeded * scaleFactor));
+        unit.finalLeadership = unit.finalUnits * unit.leadership;
+        unit.finalHealthPool = unit.finalUnits * unit.actualHealth;
+      });
+      
+      const totalLeadershipUsed = deathSequence.reduce((sum, u) => sum + u.finalLeadership, 0);
+      const totalHealth = deathSequence.reduce((sum, u) => sum + u.finalHealthPool, 0);
+      
+      // Display steps
+      displaySteps(steps);
+      
+      // Display results
+      displayResults(deathSequence, totalLeadershipUsed, totalHealth, leadershipCap);
+      
+      // Display debug info
+      displayDebugInfo(deathSequence, scaleFactor, unitPadding);
+    }
+
+    function displaySteps(steps) {
+      const container = document.getElementById('algorithm-steps');
+      let html = '';
+      steps.forEach(step => {
+        html += `
+          <div class="math-step">
+            <div class="label">${step.label}</div>
+            <div class="value">${step.value}</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function displayResults(sequence, usedLeadership, totalHealth, leadershipCap) {
+      // Check if sequence is correct
+      let isCorrect = true;
+      for (let i = 1; i < sequence.length; i++) {
+        if (sequence[i].finalHealthPool > sequence[i - 1].finalHealthPool) {
+          isCorrect = false;
+          break;
+        }
+      }
+      
+      // Summary
+      const summaryContainer = document.getElementById('summary');
+      summaryContainer.innerHTML = `
+        <h2>📊 Summary</h2>
+        <div class="summary-stat">
+          <span class="summary-label">Leadership Used:</span>
+          <span class="summary-value">${usedLeadership.toLocaleString()} / ${leadershipCap.toLocaleString()}</span>
+        </div>
+        <div class="summary-stat">
+          <span class="summary-label">Total Health:</span>
+          <span class="summary-value">${totalHealth.toLocaleString()}</span>
+        </div>
+        <div class="summary-stat">
+          <span class="summary-label">Death Order:</span>
+          <span class="summary-value ${isCorrect ? 'success' : 'error'}">${isCorrect ? '✓ CORRECT' : '✗ INCORRECT'}</span>
+        </div>
+      `;
+      
+      // Results table
+      const container = document.getElementById('results');
+      let html = '<div class="unit-row header"><div>Rank</div><div>Unit</div><div>Units</div><div>Leadership</div><div>Health Pool</div><div>Status</div></div>';
+      
+      sequence.forEach((unit, i) => {
+        const prevUnit = i > 0 ? sequence[i - 1] : null;
+        const isRowCorrect = !prevUnit || unit.finalHealthPool <= prevUnit.finalHealthPool;
+        const diff = prevUnit ? ((unit.finalHealthPool - prevUnit.finalHealthPool) / prevUnit.finalHealthPool * 100).toFixed(2) : 'First';
+        
+        html += `
+          <div class="unit-row ${isRowCorrect ? 'correct' : 'incorrect'}">
+            <div class="rank">${i + 1}</div>
+            <div class="unit-name tier-${unit.tier}">${unit.id}</div>
+            <div class="number">${unit.finalUnits.toLocaleString()}</div>
+            <div class="number">${unit.finalLeadership.toLocaleString()}</div>
+            <div class="number">${Math.round(unit.finalHealthPool).toLocaleString()}</div>
+            <div class="status">${isRowCorrect ? '✓' : '✗'} ${typeof diff === 'number' ? diff + '%' : diff}</div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    function displayDebugInfo(sequence, scaleFactor, unitPadding) {
+      const container = document.getElementById('debug-info');
+      const numUnits = sequence.length;
+      let html = '';
+      
+      sequence.forEach((unit, i) => {
+        const stepsFromEnd = numUnits - 1 - i;
+        const targetMultiplier = Math.pow(1 + unitPadding / 100, stepsFromEnd);
+        const diffFromPrev = i > 0 ? ((unit.finalHealthPool - sequence[i-1].finalHealthPool) / sequence[i-1].finalHealthPool * 100).toFixed(2) : 'N/A';
+        
+        html += `
+          <div class="debug-unit">
+            <div class="debug-unit-title">Rank ${i + 1}: ${unit.id}</div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Position in sequence:</span>
+              <span class="debug-value">${i + 1} of ${numUnits} (${stepsFromEnd} steps from end)</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Base Health:</span>
+              <span class="debug-value">${unit.baseHealth.toLocaleString()} HP</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Stat Bonus:</span>
+              <span class="debug-value">${unit.statBonus}x</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Actual Unit Health:</span>
+              <span class="debug-value highlight">${unit.actualHealth.toLocaleString()} HP</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Target Multiplier:</span>
+              <span class="debug-value">(1 + ${unitPadding}%)^${stepsFromEnd} = ${targetMultiplier.toFixed(6)}</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Target Health Pool:</span>
+              <span class="debug-value">${unit.targetHealthPool.toLocaleString()} HP</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Units Needed (raw):</span>
+              <span class="debug-value">${unit.unitsNeeded.toFixed(2)} units</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Leadership Needed (raw):</span>
+              <span class="debug-value">${unit.leadershipNeeded.toFixed(2)} leadership</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Scale Factor:</span>
+              <span class="debug-value">${scaleFactor.toFixed(6)}</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Final Units:</span>
+              <span class="debug-value highlight">${unit.finalUnits.toLocaleString()} units</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Final Leadership:</span>
+              <span class="debug-value highlight">${unit.finalLeadership.toLocaleString()} leadership</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">Final Health Pool:</span>
+              <span class="debug-value highlight">${Math.round(unit.finalHealthPool).toLocaleString()} HP</span>
+            </div>
+            
+            <div class="debug-row">
+              <span class="debug-label">% vs Previous:</span>
+              <span class="debug-value ${diffFromPrev !== 'N/A' && parseFloat(diffFromPrev) > 0 ? 'error' : 'success'}">${diffFromPrev}${diffFromPrev !== 'N/A' ? '%' : ''}</span>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    // Initialize
+    displayTestUnits();
+    calculate();
+  </script>
+</body>
+</html>
+
