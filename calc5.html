@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Total Battle Stack Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Code+Pro:wght@400;600&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+  /* ============================================================
+   Total Battle Calculator — style.css v3.0
+   Dark tactical theme · Cinzel + Raleway + Source Code Pro
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Code+Pro:wght@400;600&family=Raleway:wght@400;500;600&display=swap');
+
+:root {
+  --bg:            #0b0f18;
+  --bg-card:       #111827;
+  --bg-card-2:     #0e1520;
+  --border:        #1e2d45;
+  --border-bright: #2a3f5f;
+  --gold:          #c9a84c;
+  --amber:         #e8a838;
+  --green:         #4caf50;
+  --red:           #e05252;
+  --blue:          #4a90d9;
+  --text:          #ddd8cc;
+  --muted:         #6b7a8d;
+  --hint:          #3d4f62;
+  --leadership:    #4a90d9;
+  --dominance:     #9b59b6;
+  --authority:     #27ae60;
+  --font-display:  'Cinzel', serif;
+  --font-body:     'Raleway', sans-serif;
+  --font-mono:     'Source Code Pro', monospace;
+  --radius:        10px;
+  --radius-sm:     6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 15% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgba(74,144,217,0.05) 0%, transparent 50%);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding: 2rem 1rem 5rem;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ---- Header ---- */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 40px rgba(201,168,76,0.25);
+  margin-bottom: 0.3rem;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+
+.card h2 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--amber);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--amber);
+  color: #0b0f18;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  flex-shrink: 0;
+}
+
+.optional {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-left: auto;
+}
+
+/* ---- Forms ---- */
+.field-group { margin-bottom: 0.8rem; }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.35rem;
+}
+
+input[type="number"],
+select {
+  width: 100%;
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.55rem 0.8rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7a8d'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  padding-right: 2rem;
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--hint);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: rgba(255,255,255,0.05);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  color: var(--amber);
+}
+
+/* ---- Leader hint ---- */
+.leader-hint {
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(74,144,217,0.1);
+  border: 1px solid rgba(74,144,217,0.25);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--blue);
+}
+
+/* ---- Engineering note ---- */
+.engineering-note {
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(232,168,56,0.1);
+  border: 1px solid rgba(232,168,56,0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--amber);
+}
+
+/* ---- Resource Grid ---- */
+.resource-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.resource-block {
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+}
+
+.resource-block.leadership { border-top: 2px solid var(--leadership); }
+.resource-block.dominance  { border-top: 2px solid var(--dominance); }
+.resource-block.authority  { border-top: 2px solid var(--authority); }
+
+.resource-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.2rem;
+}
+
+.resource-block.leadership .resource-label { color: var(--leadership); }
+.resource-block.dominance  .resource-label { color: var(--dominance); }
+.resource-block.authority  .resource-label { color: var(--authority); }
+
+.resource-sub {
+  font-size: 0.68rem;
+  color: var(--hint);
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
+}
+
+.resource-block input {
+  width: 100%;
+  margin-top: 0;
+}
+
+/* ---- Calculate Button ---- */
+.btn-calculate {
+  width: 100%;
+  background: linear-gradient(135deg, #7a5c10, var(--gold) 60%, #a07820);
+  border: none;
+  border-radius: var(--radius);
+  color: #0b0f18;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 1rem;
+  text-transform: uppercase;
+  transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.2);
+}
+
+.btn-calculate:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(201,168,76,0.3);
+}
+
+.btn-calculate:active { transform: translateY(0); }
+
+/* ---- Output ---- */
+.output-card { border-color: var(--border-bright); }
+
+#output {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 0.5rem;
+}
+
+/* ---- Tier Checkboxes ---- */
+.tier-section {
+  margin-bottom: 1.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tier-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.tier-section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leadership-color { color: var(--leadership); }
+.dominance-color  { color: var(--dominance); }
+.authority-color  { color: var(--authority); }
+
+.walls-only-tag {
+  font-size: 0.65rem;
+  font-weight: 400;
+  text-transform: none;
+  background: rgba(232,168,56,0.15);
+  border: 1px solid rgba(232,168,56,0.3);
+  color: var(--amber);
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  letter-spacing: 0;
+}
+
+.tier-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cb-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.cb-label:hover {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+
+.cb-label input[type="checkbox"] {
+  width: auto;
+  accent-color: var(--gold);
+  cursor: pointer;
+  margin: 0;
+}
+
+.cb-label:has(input:checked) {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.12);
+  color: var(--gold);
+}
+
+/* ---- Button Row ---- */
+.btn-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.btn-manage {
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 1.2rem;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.btn-manage:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ---- Exclude Box ---- */
+.exclude-box {
+  background: rgba(224,82,82,0.07);
+  border: 1px solid rgba(224,82,82,0.25);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+.exclude-title {
+  font-weight: 600;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+.warning-line {
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  color: var(--text);
+}
+.warning-line.high     { color: var(--red); }
+.warning-line.moderate { color: var(--amber); }
+.exclude-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.exclude-toggle input { accent-color: var(--red); width:auto; }
+.exclude-preview {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  background: rgba(224,82,82,0.12);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: var(--red);
+}
+
+/* ---- Modal ---- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  width: 100%; max-width: 780px;
+  max-height: 88vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.modal-header h2 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--amber);
+  letter-spacing: 0.08em;
+}
+.modal-close {
+  background: none; border: none;
+  color: var(--muted); cursor: pointer;
+  font-size: 1.2rem; line-height: 1;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 1rem;
+}
+.modal-tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); cursor: pointer;
+  font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+  padding: 0.7rem 1rem;
+  transition: color 0.2s, border-color 0.2s;
+  margin-bottom: -1px;
+}
+.modal-tab:hover   { color: var(--text); }
+.modal-tab.active  { color: var(--gold); border-bottom-color: var(--gold); }
+
+.modal-content {
+  overflow-y: auto;
+  padding: 1.2rem 1.5rem 1.5rem;
+  flex: 1;
+}
+
+.modal-section h3 {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.count-badge {
+  background: rgba(201,168,76,0.2);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1em 0.5em;
+}
+
+/* ---- Data Entry Forms ---- */
+.form-group-row {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin: 0.8rem 0;
+  align-items: center;
+}
+.form-input {
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  padding: 0.45rem 0.6rem;
+  flex: 1; min-width: 100px;
+}
+.form-input.short { flex: 0 0 90px; min-width: 70px; }
+.form-input:focus { outline: none; border-color: var(--gold); }
+
+.btn-add {
+  background: rgba(201,168,76,0.15);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-sm);
+  color: var(--gold);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.82rem; font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn-add:hover { background: rgba(201,168,76,0.25); }
+.btn-add.small { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+
+.btn-delete {
+  background: rgba(224,82,82,0.1);
+  border: 1px solid rgba(224,82,82,0.3);
+  border-radius: var(--radius-sm);
+  color: var(--red);
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn-delete:hover { background: rgba(224,82,82,0.2); }
+
+.btn-export {
+  background: rgba(74,144,217,0.1);
+  border: 1px solid rgba(74,144,217,0.3);
+  border-radius: var(--radius-sm);
+  color: var(--blue);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.8rem; font-weight: 600;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  transition: background 0.15s;
+}
+.btn-export:hover { background: rgba(74,144,217,0.2); }
+
+/* ---- Unit List ---- */
+.unit-list { margin: 0.5rem 0; }
+.unit-row {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.unit-row:last-child { border-bottom: none; }
+.unit-row.sub { margin-left: 1rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); margin-bottom: 0.2rem; }
+.unit-name  { font-weight: 600; color: var(--text); flex: 1; min-width: 120px; }
+.unit-tags  { color: var(--amber); font-size: 0.75rem; }
+.unit-stats { color: var(--muted); font-size: 0.75rem; margin-left: auto; }
+.empty-hint { margin-top: 0.5rem; font-style: italic; }
+
+/* ---- Squad Block ---- */
+.squad-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  margin: 0.6rem 0;
+}
+.squad-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.85rem; font-weight: 600; color: var(--amber);
+  margin-bottom: 0.5rem;
+}
+.sub-form { margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+
+/* ---- Footer ---- */
+footer {
+  text-align: center;
+  color: var(--hint);
+  font-size: 0.72rem;
+  line-height: 2.2;
+  margin-top: 1rem;
+}
+
+footer a { color: var(--gold); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ---- Responsive ---- */
+@media (max-width: 520px) {
+  h1 { font-size: 1.6rem; }
+  .field-row { grid-template-columns: 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
+}
+
+</style>
+<div class="container">
+
+  <header>
+    <h1>⚔️ Total Battle</h1>
+    <p class="subtitle">Troop Stack Calculator · v4.1</p>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       STEP 1: ENEMY SQUAD
+  ════════════════════════════════════════════ -->
+
+  <div class="card">
+    <h2><span class="step">1</span> Enemy Squad <span class="optional">optional</span></h2>
+    <p class="hint">Select your target to enable bonus warnings and leader rules. Pre-select your heroes/captains in-game first.</p>
+
+<div class="field-row">
+  <div class="field-group">
+    <label for="enemyCategory">Category</label>
+    <select id="enemyCategory" onchange="filterSquadDropdown()">
+      <option value="all">All Categories</option>
+      <option value="common">Common</option>
+      <option value="rare">Rare</option>
+      <option value="heroic">Heroic</option>
+      <option value="citadel_elven">Citadel Elven</option>
+      <option value="citadel_cursed">Citadel Cursed</option>
+      <option value="epic">Epic</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+  <div class="field-group">
+    <label for="enemySquad">Squad</label>
+    <select id="enemySquad" onchange="onSquadSelected()">
+      <option value="">-- None / Skip --</option>
+      <optgroup label="Common">
+        <option value="common_elf_L16">Elf Squad (Lvl 16) — Elf</option>
+        <option value="common_elf_L18">Elf Squad (Lvl 18) — Elf</option>
+        <option value="common_barbarian_L18">Barbarian Squad (Lvl 18) — Barbarian</option>
+        <option value="common_cursed_L18">Cursed Squad (Lvl 18) — Cursed</option>
+      </optgroup>
+      <optgroup label="Heroic">
+        <option value="heroic_template">Heroic Squad (template)</option>
+      </optgroup>
+      <optgroup label="Citadel">
+        <option value="citadel_elven_template">Elven Citadel (template)</option>
+        <option value="citadel_cursed_template">Cursed Citadel (template)</option>
+      </optgroup>
+      <optgroup label="Epic">
+        <option value="epic_armageddon_template">Epic Armageddon (template)</option>
+        <option value="epic_arcane_swarm_template">Epic Arcane Swarm (template)</option>
+      </optgroup>
+    </select>
+  </div>
+</div>
+
+<div id="leaderHint" class="leader-hint" style="display:none;"></div>
+
+<div id="engineeringNote" class="engineering-note" style="display:none;">
+  ⚙️ <strong>Engineering Corps recommended</strong> — walls are involved in this attack. Include E-tier troops in your Leadership total.
+</div>
+
+<p class="hint" id="dbStatus">📂 Loading enemy database...</p>
+
+<!-- Auto-exclude warnings (populated dynamically when squad selected) -->
+<div id="excludeSection" style="display:none; margin-top:0.8rem;"></div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       STEP 2: RESOURCE CAPS
+  ════════════════════════════════════════════ -->
+
+  <div class="card">
+    <h2><span class="step">2</span> Resource Caps</h2>
+    <p class="hint">Pre-select your Hero &amp; Captains in-game → tap a target → hit Attack → read the totals from the bottom-left of the attack screen.</p>
+
+<div class="resource-grid">
+
+  <div class="resource-block leadership">
+    <div class="resource-label">⚔️ Leadership</div>
+    <div class="resource-sub">Guardsmen · Specialists · Engineering</div>
+    <input type="number" id="leadershipCap" placeholder="e.g. 500000" min="0" />
+  </div>
+
+  <div class="resource-block authority">
+    <div class="resource-label">🛡️ Authority</div>
+    <div class="resource-sub">Mercenaries (all classes)</div>
+    <input type="number" id="authorityCap" placeholder="0 if not using" min="0" />
+  </div>
+
+  <div class="resource-block dominance">
+    <div class="resource-label">🐲 Dominance</div>
+    <div class="resource-sub">Player Monsters (M1–M9)</div>
+    <input type="number" id="dominanceCap" placeholder="0 if not using" min="0" />
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       STEP 3: TROOP SELECTION BY TYPE
+  ════════════════════════════════════════════ -->
+
+  <div class="card">
+    <h2><span class="step">3</span> Troop Tiers to Use</h2>
+    <p class="hint">Check every tier you want to include in this march. Each troop type is independent — only checked tiers will be stacked.</p>
+
+<!-- GUARDSMEN -->
+<div class="tier-section">
+  <div class="tier-section-label leadership-color">⚔️ Guardsmen (G)</div>
+  <div class="tier-checks" id="tiers-G">
+    <label class="cb-label"><input type="checkbox" name="tierG" value="1"> G1</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="2"> G2</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="3"> G3</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="4"> G4</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="5" checked> G5</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="6" checked> G6</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="7"> G7</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="8"> G8</label>
+    <label class="cb-label"><input type="checkbox" name="tierG" value="9"> G9</label>
+  </div>
+</div>
+
+<!-- SPECIALISTS -->
+<div class="tier-section">
+  <div class="tier-section-label leadership-color">🗡️ Specialists (S)</div>
+  <div class="tier-checks" id="tiers-S">
+    <label class="cb-label"><input type="checkbox" name="tierS" value="1"> S1</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="2"> S2</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="3"> S3</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="4"> S4</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="5" checked> S5</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="6"> S6</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="7"> S7</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="8"> S8</label>
+    <label class="cb-label"><input type="checkbox" name="tierS" value="9"> S9</label>
+  </div>
+</div>
+
+<!-- ENGINEERING -->
+<div class="tier-section" id="engineeringTiers">
+  <div class="tier-section-label leadership-color">⚙️ Engineering Corps (E) <span class="walls-only-tag">citadel/PvP only</span></div>
+  <div class="tier-checks" id="tiers-E">
+    <label class="cb-label"><input type="checkbox" name="tierE" value="1"> E1</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="2"> E2</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="3"> E3</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="4"> E4</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="5"> E5</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="6"> E6</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="7"> E7</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="8"> E8</label>
+    <label class="cb-label"><input type="checkbox" name="tierE" value="9"> E9</label>
+  </div>
+</div>
+
+<!-- PLAYER MONSTERS -->
+<div class="tier-section">
+  <div class="tier-section-label dominance-color">🐲 Player Monsters (M)</div>
+  <div class="tier-checks" id="tiers-M">
+    <label class="cb-label"><input type="checkbox" name="tierM" value="1"> M1</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="2"> M2</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="3"> M3</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="4"> M4</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="5" checked> M5</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="6"> M6</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="7"> M7</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="8"> M8</label>
+    <label class="cb-label"><input type="checkbox" name="tierM" value="9"> M9</label>
+  </div>
+</div>
+
+<!-- MERCENARIES -->
+<div class="tier-section">
+  <div class="tier-section-label authority-color">🛡️ Mercenaries (Tier Equivalent)</div>
+  <div class="tier-checks" id="tiers-Merc">
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="1"> T1</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="2"> T2</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="3"> T3</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="4"> T4</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="5" checked> T5</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="6"> T6</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="7"> T7</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="8"> T8</label>
+    <label class="cb-label"><input type="checkbox" name="tierMerc" value="9"> T9</label>
+  </div>
+</div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       CALCULATE
+  ════════════════════════════════════════════ -->
+
+  <div class="btn-row">
+    <button onclick="calculate()" class="btn-calculate">⚔️ Calculate Stack</button>
+    <button onclick="openDataModal()" class="btn-manage">⚙️ Manage Data</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       OUTPUT
+  ════════════════════════════════════════════ -->
+
+  <div class="card output-card">
+    <h2>Stack Breakdown</h2>
+    <pre id="output">Your stack breakdown will appear here after you hit Calculate...</pre>
+  </div>
+
+  <footer>
+    <p>v4.0 · <a href="https://github.com/goavs4/totalbattle-calculator" target="_blank">GitHub</a></p>
+    <p class="hint">Use ⚙️ Manage Data to add mercs, monsters &amp; enemy squads · Data saved in browser</p>
+  </footer>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DATA ENTRY MODAL
+════════════════════════════════════════════ -->
+
+<div id="dataModal" style="display:none;" class="modal-overlay" onclick="if(event.target===this)closeDataModal()">
+  <div class="modal-box">
+
+<div class="modal-header">
+  <h2>⚙️ Manage Data</h2>
+  <button class="modal-close" onclick="closeDataModal()">✕</button>
+</div>
+
+<div class="modal-tabs">
+  <button id="tab-mercs"    class="modal-tab active" onclick="switchModalTab('mercs')">Mercenaries</button>
+  <button id="tab-monsters" class="modal-tab"        onclick="switchModalTab('monsters')">Player Monsters</button>
+  <button id="tab-enemies"  class="modal-tab"        onclick="switchModalTab('enemies')">Enemy Squads</button>
+</div>
+
+<div id="modalContent" class="modal-content"></div>
+
+  </div>
+</div>
+
+<script>
+  // ============================================================
+// Total Battle Stacking Calculator - v4.1
+// Frontend: calls calc5.t3li.workers.dev for data + calculation
+// Safari/iOS compatible -- no optional chaining (?.)
+// ============================================================
+
+var WORKER_URL   = "https://calc5.t3li.workers.dev";
+var COMBAT_TYPES = ["Ranged", "Melee", "Mounted", "Flying"];
+var SUBTYPES     = ["Human", "Beast", "Dragon", "Elemental", "Giant", "Guardsman", "Epic Monster Hunter"];
+var LS_KEYS = {
+  mercs:    "tb_mercs_v4",
+  monsters: "tb_monsters_v4",
+  enemies:  "tb_enemies_v4"
+};
+
+// ============================================================
+// SAFE HELPERS
+// ============================================================
+function safeVal(id) {
+  var el = document.getElementById(id);
+  return el ? el.value : "";
+}
+function safeSet(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.innerHTML = val;
+}
+function safeStyle(id, prop, val) {
+  var el = document.getElementById(id);
+  if (el) el.style[prop] = val;
+}
+function safeText(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ============================================================
+// DATA STORE
+// ============================================================
+var DB = {
+  leadership: null,
+  dominance:  null,
+  authority:  null,
+  enemy:      null,
+  local: { mercs: [], monsters: [], enemies: [] }
+};
+
+// ============================================================
+// LOCALSTORAGE
+// ============================================================
+function lsGet(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+// ============================================================
+// LOAD DATA FROM WORKER
+// ============================================================
+function loadData() {
+  DB.local.mercs    = lsGet(LS_KEYS.mercs)    || [];
+  DB.local.monsters = lsGet(LS_KEYS.monsters) || [];
+  DB.local.enemies  = lsGet(LS_KEYS.enemies)  || [];
+
+  var statusEl = document.getElementById("dbStatus");
+  if (statusEl) { statusEl.textContent = "Loading data from server..."; statusEl.style.color = ""; }
+
+  fetch(WORKER_URL + "/api/data/all")
+    .then(function(r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      DB.leadership = data.leadership || null;
+      DB.dominance  = data.dominance  || null;
+      DB.authority  = data.authority  || null;
+      DB.enemy      = data.enemy      || { squads: { common:[], rare:[], heroic:[], citadels:[], epics:[], other:[] } };
+      updateDbStatus(true);
+      populateEnemyDropdowns();
+    })
+    .catch(function(err) {
+      console.warn("Worker data load failed:", err);
+      // Fallback: mark as no base data, still functional with local squads
+      DB.enemy = { squads: { common:[], rare:[], heroic:[], citadels:[], epics:[], other:[] }, allowed_leaders_key: {} };
+      updateDbStatus(false);
+      populateEnemyDropdowns();
+    });
+}
+
+function updateDbStatus(ok) {
+  var el = document.getElementById("dbStatus");
+  if (!el) return;
+  var n = DB.local.mercs.length + DB.local.monsters.length + DB.local.enemies.length;
+  el.textContent = ok
+    ? ("Data loaded from server. " + n + " locally-added record(s).")
+    : ("Server data unavailable. " + n + " locally-added record(s). Basic squad list still works.");
+  el.style.color = ok ? "#4caf50" : "#e8a838";
+}
+
+// ============================================================
+// FALLBACK SQUADS (always available, for dropdown)
+// ============================================================
+var FALLBACK_SQUADS = [
+  { squad_id:"common_elf_L16",            squad_name:"Elf Squad",                  squad_level:16, category:"common",         faction:"elf",     allowed_leaders:"captain_only",    engineering_recommended:false,
+    units:[
+      { unit_id:"elven_archer_L1", unit_name:"Elven Archer", count:3300, combat_type:"Ranged", subtype:"Human", bonuses:[{target_type:"Melee",value:35}]},
+      { unit_id:"druid_L2",        unit_name:"Druid",         count:850,  combat_type:"Ranged", subtype:"Human", bonuses:[{target_type:"Melee",value:25}]}
+    ]},
+  { squad_id:"common_elf_L18",            squad_name:"Elf Squad",                  squad_level:18, category:"common",         faction:"elf",     allowed_leaders:"captain_only",    engineering_recommended:false, units:[] },
+  { squad_id:"common_barbarian_L18",      squad_name:"Barbarian Squad",            squad_level:18, category:"common",         faction:"barbarian",allowed_leaders:"captain_only",   engineering_recommended:false, units:[] },
+  { squad_id:"common_cursed_L18",         squad_name:"Cursed Squad",               squad_level:18, category:"common",         faction:"cursed",  allowed_leaders:"captain_only",    engineering_recommended:false, units:[] },
+  { squad_id:"heroic_template",           squad_name:"Heroic Squad (template)",    squad_level:1,  category:"heroic",         faction:"other",   allowed_leaders:"hero_plus_3_max", engineering_recommended:false, units:[] },
+  { squad_id:"citadel_elven_template",    squad_name:"Elven Citadel (template)",   squad_level:1,  category:"citadel_elven",  faction:"elf",     allowed_leaders:"hero_plus_3_max", engineering_recommended:true,  units:[] },
+  { squad_id:"citadel_cursed_template",   squad_name:"Cursed Citadel (template)",  squad_level:1,  category:"citadel_cursed", faction:"cursed",  allowed_leaders:"hero_plus_3_max", engineering_recommended:true,  units:[] },
+  { squad_id:"epic_armageddon_template",  squad_name:"Epic Armageddon (template)", squad_level:1,  category:"epic",           faction:"other",   allowed_leaders:"hero_only",       engineering_recommended:false, units:[] },
+  { squad_id:"epic_arcane_swarm_template",squad_name:"Epic Arcane Swarm (template)",squad_level:1, category:"epic",           faction:"other",   allowed_leaders:"captains_3_max",  engineering_recommended:false, units:[] }
+];
+
+function getAllSquads() {
+  var fallbackIds = {};
+  FALLBACK_SQUADS.forEach(function(s) { fallbackIds[s.squad_id] = true; });
+
+  var jsonSquads = [];
+  if (DB.enemy && DB.enemy.squads) {
+    var base = DB.enemy.squads;
+    jsonSquads = [].concat(
+      base.common||[], base.rare||[], base.heroic||[],
+      base.citadels||[], base.epics||[], base.other||[]
+    ).filter(function(s) { return s.squad_level > 0 && !fallbackIds[s.squad_id]; });
+  }
+
+  var allIds = {};
+  FALLBACK_SQUADS.forEach(function(s) { allIds[s.squad_id] = true; });
+  jsonSquads.forEach(function(s)      { allIds[s.squad_id] = true; });
+  var localSquads = DB.local.enemies.filter(function(s) { return !allIds[s.squad_id]; });
+
+  return FALLBACK_SQUADS.concat(jsonSquads).concat(localSquads);
+}
+
+function findSquad(id) {
+  if (!id) return null;
+  var all = getAllSquads();
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].squad_id === id) return all[i];
+  }
+  return null;
+}
+
+// ============================================================
+// ENEMY DROPDOWN
+// ============================================================
+function populateEnemyDropdowns() {
+  filterSquadDropdown();
+}
+
+function filterSquadDropdown() {
+  var squadEl = document.getElementById("enemySquad");
+  if (!squadEl) return;
+
+  var existing = squadEl.querySelectorAll("option[data-local]");
+  for (var i = 0; i < existing.length; i++) existing[i].parentNode.removeChild(existing[i]);
+
+  if (DB.local.enemies.length > 0) {
+    var group = document.createElement("optgroup");
+    group.label = "My Added Squads";
+    DB.local.enemies.forEach(function(s) {
+      var o = document.createElement("option");
+      o.value = s.squad_id;
+      o.textContent = s.squad_name + " (Lvl " + s.squad_level + ") -- " + formatLabel(s.faction);
+      o.setAttribute("data-local", "1");
+      group.appendChild(o);
+    });
+    squadEl.appendChild(group);
+  }
+
+  onSquadSelected();
+}
+
+function onSquadSelected() {
+  var squad = findSquad(safeVal("enemySquad"));
+
+  var engEl  = document.getElementById("engineeringNote");
+  var hintEl = document.getElementById("leaderHint");
+
+  if (engEl)  engEl.style.display  = (squad && squad.engineering_recommended) ? "block" : "none";
+  if (hintEl) {
+    if (squad) {
+      var rules = (DB.enemy && DB.enemy.allowed_leaders_key) ? DB.enemy.allowed_leaders_key : {};
+      hintEl.textContent = "Info: " + (rules[squad.allowed_leaders] || formatLabel(squad.allowed_leaders || ""));
+      hintEl.style.display = "block";
+    } else {
+      hintEl.style.display = "none";
+    }
+  }
+  buildExcludeToggle(squad);
+}
+
+// ============================================================
+// ENEMY ANALYSIS (local — for UI warnings before calculate)
+// ============================================================
+function analyzeEnemy(squad) {
+  if (!squad || !squad.units || squad.units.length === 0) return null;
+
+  var typeBonus    = { Ranged:0, Melee:0, Mounted:0, Flying:0 };
+  var subtypeBonus = {};
+
+  squad.units.forEach(function(u) {
+    (u.bonuses || []).forEach(function(b) {
+      if (b.target_type && typeBonus[b.target_type] !== undefined)
+        typeBonus[b.target_type] += b.value;
+      if (b.target_subtype)
+        subtypeBonus[b.target_subtype] = (subtypeBonus[b.target_subtype] || 0) + b.value;
+    });
+  });
+
+  var warnings = [];
+  Object.keys(typeBonus).forEach(function(t) {
+    var v = typeBonus[t];
+    if (v > 0) warnings.push({
+      target:t, kind:"type", value:v,
+      severity: v>=50?"HIGH":"MODERATE",
+      message: "["+(v>=50?"HIGH":"MOD")+"] Enemy +"+v+"% vs "+t.toUpperCase()+" troops"
+    });
+  });
+  Object.keys(subtypeBonus).forEach(function(s) {
+    var v = subtypeBonus[s];
+    if (v > 0) warnings.push({
+      target:s, kind:"subtype", value:v,
+      severity: v>=50?"HIGH":"MODERATE",
+      message: "["+(v>=50?"HIGH":"MOD")+"] Enemy +"+v+"% vs "+s+" units specifically"
+    });
+  });
+
+  var totalUnits = squad.units.reduce(function(sum,u){ return sum+(u.count||0); }, 0);
+  return { typeBonus:typeBonus, subtypeBonus:subtypeBonus, warnings:warnings, totalUnits:totalUnits };
+}
+
+function buildExcludeToggle(squad) {
+  var section  = document.getElementById("excludeSection");
+  if (!section) return;
+  var analysis = analyzeEnemy(squad);
+  if (!analysis || analysis.warnings.length === 0) {
+    section.innerHTML = "";
+    section.style.display = "none";
+    return;
+  }
+
+  var affTypes = Object.keys(analysis.typeBonus).filter(function(t) { return analysis.typeBonus[t] > 0; });
+  var affSubs  = Object.keys(analysis.subtypeBonus).filter(function(s) { return analysis.subtypeBonus[s] > 0; });
+  var affAll   = affTypes.concat(affSubs).join(", ");
+
+  var warnHtml = analysis.warnings.map(function(w) {
+    return '<div class="warning-line ' + w.severity.toLowerCase() + '">' + w.message + '</div>';
+  }).join("");
+
+  section.innerHTML =
+    '<div class="exclude-box">' +
+    '<div class="exclude-title">Enemy Bonus Warnings</div>' +
+    warnHtml +
+    '<label class="exclude-toggle">' +
+    '<input type="checkbox" id="autoExclude" onchange="updateExcludeDisplay()">' +
+    '<span>Auto-exclude all affected types from my stack</span>' +
+    '</label>' +
+    '<div id="excludePreview" class="exclude-preview" style="display:none">' +
+    'Will remove from ALL pools: <strong>' + affAll + '</strong>' +
+    '</div>' +
+    '</div>';
+  section.style.display = "block";
+}
+
+function updateExcludeDisplay() {
+  var cb = document.getElementById("autoExclude");
+  var pr = document.getElementById("excludePreview");
+  if (pr) pr.style.display = (cb && cb.checked) ? "block" : "none";
+}
+
+// ============================================================
+// TIER HELPERS
+// ============================================================
+function getCheckedTiers(name) {
+  var boxes = document.querySelectorAll('input[name="' + name + '"]:checked');
+  var tiers = [];
+  for (var i = 0; i < boxes.length; i++) tiers.push(parseInt(boxes[i].value));
+  return tiers.sort(function(a,b){ return b-a; });
+}
+
+// ============================================================
+// CALCULATE -- sends to worker, displays result
+// ============================================================
+function calculate() {
+  var leadership = parseInt(safeVal("leadershipCap")) || 0;
+  var dominance  = parseInt(safeVal("dominanceCap"))  || 0;
+  var authority  = parseInt(safeVal("authorityCap"))  || 0;
+
+  if (!leadership && !dominance && !authority) {
+    alert("Enter at least one resource cap."); return;
+  }
+
+  var tiersG    = getCheckedTiers("tierG");
+  var tiersS    = getCheckedTiers("tierS");
+  var tiersE    = getCheckedTiers("tierE");
+  var tiersM    = getCheckedTiers("tierM");
+  var tiersMerc = getCheckedTiers("tierMerc");
+
+  var squadId  = safeVal("enemySquad");
+  var squad    = findSquad(squadId);
+  var autoExcl = (function(){ var cb = document.getElementById("autoExclude"); return !!(cb && cb.checked); })();
+
+  // For local-only squads (from localStorage), send the full squad object
+  var isLocalSquad = squad && DB.local.enemies.some(function(s){ return s.squad_id === squad.squad_id; });
+
+  var payload = {
+    leadership:    leadership,
+    dominance:     dominance,
+    authority:     authority,
+    tiersG:        tiersG,
+    tiersS:        tiersS,
+    tiersE:        tiersE,
+    tiersM:        tiersM,
+    tiersMerc:     tiersMerc,
+    squadId:       squadId,
+    localSquad:    isLocalSquad ? squad : null,
+    autoExclude:   autoExcl,
+    localMercs:    DB.local.mercs,
+    localMonsters: DB.local.monsters
+  };
+
+  var outEl = document.getElementById("output");
+  if (outEl) outEl.textContent = "Calculating...";
+
+  fetch(WORKER_URL + "/api/calculate", {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify(payload)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      if (outEl) outEl.textContent = "Error: " + data.error;
+      alert(data.error);
+      return;
+    }
+    if (outEl) outEl.textContent = data.output || "(no output)";
+
+    // Update leader hint from server response
+    var hintEl = document.getElementById("leaderHint");
+    if (hintEl && data.leaderHint) {
+      hintEl.textContent = "Info: " + data.leaderHint;
+      hintEl.style.display = "block";
+    }
+    // Update engineering note
+    var engEl = document.getElementById("engineeringNote");
+    if (engEl) engEl.style.display = data.engineeringRecommended ? "block" : "none";
+  })
+  .catch(function(err) {
+    if (outEl) outEl.textContent = "Network error: " + err.message + "\n\nMake sure you are visiting from thefamily.pages.dev";
+    console.error("Worker calculate error:", err);
+  });
+}
+
+// ============================================================
+// DATA MODAL
+// ============================================================
+var modalTab = "mercs";
+
+function openDataModal() {
+  var el = document.getElementById("dataModal");
+  if (el) el.style.display = "flex";
+  switchModalTab(modalTab);
+}
+
+function closeDataModal() {
+  var el = document.getElementById("dataModal");
+  if (el) el.style.display = "none";
+}
+
+function switchModalTab(tab) {
+  modalTab = tab;
+  ["mercs","monsters","enemies"].forEach(function(t) {
+    var btn = document.getElementById("tab-" + t);
+    if (!btn) return;
+    btn.className = (t === tab) ? "modal-tab active" : "modal-tab";
+  });
+  renderModalContent();
+}
+
+function renderModalContent() {
+  var c = document.getElementById("modalContent");
+  if (!c) return;
+  if (modalTab === "mercs")    renderMercsTab(c);
+  if (modalTab === "monsters") renderMonstersTab(c);
+  if (modalTab === "enemies")  renderEnemiesTab(c);
+}
+
+function buildUnitForm(type) {
+  var id      = "new-" + type;
+  var typeOpts = COMBAT_TYPES.map(function(t){ return '<option>'+t+'</option>'; }).join("");
+  var subOpts  = SUBTYPES.map(function(s){ return '<option>'+s+'</option>'; }).join("");
+  return '<div class="form-group-row">' +
+    '<input id="'+id+'-name"  placeholder="Unit name" class="form-input" />' +
+    '<select id="'+id+'-type" class="form-input short">'+typeOpts+'</select>' +
+    '<select id="'+id+'-sub"  class="form-input short">'+subOpts+'</select>' +
+    '<input id="'+id+'-tier"  type="number" placeholder="Tier" class="form-input short" min="1" max="9"/>' +
+    '<input id="'+id+'-str"   type="number" placeholder="Strength" class="form-input short" />' +
+    '<input id="'+id+'-hp"    type="number" placeholder="Health" class="form-input short" />' +
+    '<input id="'+id+'-cost"  type="number" placeholder="Resource cost" class="form-input short" />' +
+    '<button class="btn-add" onclick="addUnit(\''+type+'s\')">+ Add</button>' +
+    '</div>';
+}
+
+function unitRowHtml(m, pool, i) {
+  return '<div class="unit-row">' +
+    '<span class="unit-name">'+m.name+'</span>' +
+    '<span class="unit-tags">'+m.combat_type+' - '+m.subtype+' - T'+(m.tier||"?")+'</span>' +
+    '<span class="unit-stats">STR:'+(m.strength||"?")+' HP:'+(m.health||"?")+' Cost:'+(m.resource_cost||"?")+'</span>' +
+    '<button class="btn-delete" onclick="deleteUnit(\''+pool+'\','+i+')">x</button>' +
+    '</div>';
+}
+
+function renderMercsTab(c) {
+  var rows = DB.local.mercs.map(function(m,i){ return unitRowHtml(m,"mercs",i); }).join("");
+  c.innerHTML = '<div class="modal-section">' +
+    '<h3>Mercenaries <span class="count-badge">'+DB.local.mercs.length+'</span></h3>' +
+    '<p class="hint">Examples: Arbalaster VII (Ranged, Guardsman), Golden Dragon VII (Flying, Dragon), Jungle King (Melee, Beast).</p>' +
+    buildUnitForm("merc") +
+    (rows ? '<div class="unit-list">'+rows+'</div>' : '<p class="hint empty-hint">No mercenaries added yet.</p>') +
+    '<button class="btn-export" onclick="exportJSON(\'mercs\')">Export mercs JSON</button>' +
+    '</div>';
+}
+
+function renderMonstersTab(c) {
+  var rows = DB.local.monsters.map(function(m,i){ return unitRowHtml(m,"monsters",i); }).join("");
+  c.innerHTML = '<div class="modal-section">' +
+    '<h3>Player Monsters <span class="count-badge">'+DB.local.monsters.length+'</span></h3>' +
+    '<p class="hint">Add your owned monsters from Barracks > Monsters.</p>' +
+    buildUnitForm("monster") +
+    (rows ? '<div class="unit-list">'+rows+'</div>' : '<p class="hint empty-hint">No player monsters added yet.</p>') +
+    '<button class="btn-export" onclick="exportJSON(\'monsters\')">Export monsters JSON</button>' +
+    '</div>';
+}
+
+function renderEnemiesTab(c) {
+  var cats     = ["common","rare","heroic","citadel_elven","citadel_cursed","epic","other"];
+  var facs     = ["barbarian","inferno","undead","elf","cursed","other"];
+  var catOpts  = cats.map(function(x){ return '<option value="'+x+'">'+formatLabel(x)+'</option>'; }).join("");
+  var facOpts  = facs.map(function(x){ return '<option value="'+x+'">'+formatLabel(x)+'</option>'; }).join("");
+  var typeOpts = COMBAT_TYPES.map(function(t){ return '<option>'+t+'</option>'; }).join("");
+  var subOpts  = SUBTYPES.map(function(s){ return '<option>'+s+'</option>'; }).join("");
+
+  var squadBlocks = DB.local.enemies.map(function(sq, si) {
+    var unitRows = (sq.units||[]).map(function(u, ui) {
+      var bt = (u.bonuses||[]).map(function(b){
+        return b.target_type ? ("+"+b.value+"% vs "+b.target_type) : ("+"+b.value+"% vs "+b.target_subtype);
+      }).join(", ");
+      return '<div class="unit-row sub">' +
+        '<span class="unit-name">'+u.unit_name+' x'+(u.count||"?")+'</span>' +
+        '<span class="unit-tags">'+(u.combat_type||"")+' - '+(u.subtype||"")+'</span>' +
+        '<span class="unit-stats">'+(bt||"no bonuses")+'</span>' +
+        '<button class="btn-delete" onclick="deleteEnemyUnit('+si+','+ui+')">x</button>' +
+        '</div>';
+    }).join("");
+    return '<div class="squad-block">' +
+      '<div class="squad-header">' +
+        '<span>'+sq.squad_name+' (Lvl '+sq.squad_level+') -- '+formatLabel(sq.faction)+' ['+formatLabel(sq.category)+']</span>' +
+        '<button class="btn-delete" onclick="deleteEnemySquad('+si+')">x Remove</button>' +
+      '</div>' +
+      unitRows +
+      '<div class="form-group-row sub-form">' +
+        '<input id="eu-name-'+si+'"  placeholder="Unit name" class="form-input" />' +
+        '<input id="eu-count-'+si+'" type="number" placeholder="Count" class="form-input short" />' +
+        '<select id="eu-type-'+si+'" class="form-input short">'+typeOpts+'</select>' +
+        '<select id="eu-sub-'+si+'"  class="form-input short">'+subOpts+'</select>' +
+        '<input id="eu-btype-'+si+'" placeholder="Type bonuses e.g. Melee:35,Mounted:20" class="form-input" />' +
+        '<input id="eu-bsub-'+si+'"  placeholder="Subtype bonuses e.g. Dragon:50" class="form-input" />' +
+        '<button class="btn-add small" onclick="addEnemyUnit('+si+')">+ Unit</button>' +
+      '</div>' +
+      '</div>';
+  }).join("");
+
+  c.innerHTML = '<div class="modal-section">' +
+    '<h3>Enemy Squads <span class="count-badge">'+DB.local.enemies.length+'</span></h3>' +
+    '<p class="hint">Add squads you encounter. Bonus format: <code>Melee:35,Mounted:20</code></p>' +
+    '<div class="form-group-row">' +
+    '<input id="ns-name"  placeholder="Squad name" class="form-input" />' +
+    '<input id="ns-level" type="number" placeholder="Level" class="form-input short" />' +
+    '<select id="ns-cat" class="form-input">'+catOpts+'</select>' +
+    '<select id="ns-fac" class="form-input">'+facOpts+'</select>' +
+    '<button class="btn-add" onclick="addEnemySquad()">+ Add Squad</button>' +
+    '</div>' +
+    (squadBlocks || '<p class="hint empty-hint">No local enemy squads yet. Server squads always available.</p>') +
+    '<button class="btn-export" onclick="exportJSON(\'enemies\')">Export enemy squads JSON</button>' +
+    '</div>';
+}
+
+// ============================================================
+// DATA CRUD
+// ============================================================
+function addUnit(pool) {
+  var type   = pool === "mercs" ? "merc" : "monster";
+  var pfx    = "new-" + type;
+  var nameEl = document.getElementById(pfx + "-name");
+  var name   = nameEl ? nameEl.value.trim() : "";
+  if (!name) { alert("Enter a unit name."); return; }
+
+  DB.local[pool].push({
+    name:          name,
+    combat_type:   safeVal(pfx + "-type"),
+    subtype:       safeVal(pfx + "-sub"),
+    tier:          parseInt(safeVal(pfx + "-tier")) || null,
+    strength:      parseInt(safeVal(pfx + "-str"))  || null,
+    health:        parseInt(safeVal(pfx + "-hp"))   || null,
+    resource_cost: parseInt(safeVal(pfx + "-cost")) || null,
+    bonuses: []
+  });
+  lsSet(LS_KEYS[pool], DB.local[pool]);
+  updateDbStatus(true);
+  renderModalContent();
+}
+
+function deleteUnit(pool, i) {
+  DB.local[pool].splice(i, 1);
+  lsSet(LS_KEYS[pool], DB.local[pool]);
+  updateDbStatus(true);
+  renderModalContent();
+}
+
+function addEnemySquad() {
+  var nameEl = document.getElementById("ns-name");
+  var name   = nameEl ? nameEl.value.trim() : "";
+  var level  = parseInt(safeVal("ns-level")) || 0;
+  var cat    = safeVal("ns-cat");
+  var fac    = safeVal("ns-fac");
+  if (!name) { alert("Enter a squad name."); return; }
+
+  var allowedMap = {
+    rare:"hero_only", common:"captain_only", heroic:"hero_plus_3_max",
+    citadel_elven:"hero_plus_3_max", citadel_cursed:"hero_plus_3_max",
+    epic:"captain_1_max", other:"captain_only"
+  };
+  DB.local.enemies.push({
+    squad_id: "local_"+cat+"_"+fac+"_L"+level+"_"+Date.now(),
+    squad_name: name, squad_level: level, category: cat, faction: fac,
+    allowed_leaders: allowedMap[cat] || "captain_only",
+    engineering_recommended: (cat === "citadel_elven" || cat === "citadel_cursed"),
+    units: []
+  });
+  lsSet(LS_KEYS.enemies, DB.local.enemies);
+  filterSquadDropdown();
+  renderModalContent();
+}
+
+function deleteEnemySquad(i) {
+  DB.local.enemies.splice(i, 1);
+  lsSet(LS_KEYS.enemies, DB.local.enemies);
+  filterSquadDropdown();
+  renderModalContent();
+}
+
+function addEnemyUnit(si) {
+  var nameEl = document.getElementById("eu-name-" + si);
+  var name   = nameEl ? nameEl.value.trim() : "";
+  var count  = parseInt(safeVal("eu-count-" + si)) || 0;
+  var ctype  = safeVal("eu-type-" + si);
+  var sub    = safeVal("eu-sub-"  + si);
+  var btRaw  = safeVal("eu-btype-" + si).trim();
+  var bsRaw  = safeVal("eu-bsub-"  + si).trim();
+  if (!name) { alert("Enter a unit name."); return; }
+
+  var bonuses = [];
+  if (btRaw) btRaw.split(",").forEach(function(p) {
+    var parts = p.split(":").map(function(s){ return s.trim(); });
+    if (parts[0] && parts[1]) bonuses.push({ target_type: parts[0], value: parseInt(parts[1]) });
+  });
+  if (bsRaw) bsRaw.split(",").forEach(function(p) {
+    var parts = p.split(":").map(function(s){ return s.trim(); });
+    if (parts[0] && parts[1]) bonuses.push({ target_subtype: parts[0], value: parseInt(parts[1]) });
+  });
+
+  DB.local.enemies[si].units.push({
+    unit_id: "lu_"+Date.now(), unit_name: name, count: count,
+    combat_type: ctype, subtype: sub,
+    strength: null, health: null, leadership: 1, initiative: null, bonuses: bonuses
+  });
+  lsSet(LS_KEYS.enemies, DB.local.enemies);
+  filterSquadDropdown();
+  renderModalContent();
+}
+
+function deleteEnemyUnit(si, ui) {
+  DB.local.enemies[si].units.splice(ui, 1);
+  lsSet(LS_KEYS.enemies, DB.local.enemies);
+  renderModalContent();
+}
+
+function exportJSON(pool) {
+  var data = pool === "enemies"
+    ? { version:"4.1", squads: DB.local.enemies }
+    : { version:"4.1", units:  DB.local[pool] };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+  var a    = document.createElement("a");
+  a.href   = URL.createObjectURL(blob);
+  a.download = "tb_local_" + pool + ".json";
+  a.click();
+}
+
+// ============================================================
+// UTILITY & INIT
+// ============================================================
+function formatLabel(str) {
+  if (!str) return "";
+  return str.replace(/_/g, " ").replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+}
+
+window.addEventListener("DOMContentLoaded", function() { loadData(); });
+
+</script>
+
+</body>
+</html>
