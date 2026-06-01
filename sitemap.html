@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Sitemap - Total Battle Calculators</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #10131a;
+      color: #f1f5f9;
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+    }
+
+    .intro {
+      margin: 0;
+      color: #cbd5f5;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.3);
+    }
+
+    .sitemap-tree {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .sitemap-item {
+      margin: 12px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    /* Tree Branch Connectors */
+    .sitemap-item::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 0;
+      width: 16px;
+      height: 1px;
+      border-top: 2px dashed rgba(148, 163, 184, 0.3);
+    }
+
+    .sitemap-item::after {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 0;
+      width: 1px;
+      height: 100%;
+      border-left: 2px dashed rgba(148, 163, 184, 0.3);
+    }
+
+    .sitemap-item:last-child::after {
+      height: 24px;
+    }
+
+    .node-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.2s ease;
+    }
+
+    .node-wrapper:hover {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+
+    .node-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .node-title {
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: #f8fafc;
+    }
+
+    .node-desc {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .node-file {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      align-self: flex-start;
+    }
+
+    .launch-btn {
+      color: #ffffff;
+      background: #3b82f6;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+
+    .launch-btn:hover {
+      background: #2563eb;
+    }
+
+    .root-node {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #60a5fa;
+    }
+
+    .search-filter {
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #f1f5f9;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-filter:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Application Navigation Map</h1>
+      <p class="intro">
+        Comprehensive overview of all built utilities and core mathematical processing nodes inside your workspace.
+      </p>
+    </header>
+
+    <main class="card">
+      <input type="text" id="map-search" class="search-filter" placeholder="Filter pages by keywords or file names...">
+
+      <div class="root-node">
+        <span>🌐</span> HTTP Root Directory Node (/)
+      </div>
+
+      <ul class="sitemap-tree" id="tree-container">
+        <li class="sitemap-item" data-search="index stacking calculator dominance monsters">
+          <div class="node-wrapper">
+            <div class="node-details">
+              <span class="node-title">Stacking Calculator</span>
+              <span class="node-desc">Frontline alignment configuration suite for balancing dominance layouts and padding monster health stacks.</span>
+              <span class="node-file">index.html</span>
+            </div>
+            <a href="index.html" class="launch-btn">Open Page →</a>
+          </div>
+        </li>
+
+        <li class="sitemap-item" data-search="death-order death order calculator specialists guards stats bonuses">
+          <div class="node-wrapper">
+            <div class="node-details">
+              <span class="node-title">Death Order Calculator</span>
+              <span class="node-desc">Computes tier sequencing hierarchies for Specialists and Guards utilizing customized profile research modifier matrices.</span>
+              <span class="node-file">death-order.html</span>
+            </div>
+            <a href="death-order.html" class="launch-btn">Open Page →</a>
+          </div>
+        </li>
+
+        <li class="sitemap-item" data-search="death-order-test algorithm test debug validation layout units">
+          <div class="node-wrapper">
+            <div class="node-details">
+              <span class="node-title">Death Order Algorithm Test</span>
+              <span class="node-desc">Diagnostic isolation workspace for raw debugging, verification calculations, and scaling-factor validation reports.</span>
+              <span class="node-file">death-order-test.html</span>
+            </div>
+            <a href="death-order-test.html" class="launch-btn">Open Page →</a>
+          </div>
+        </li>
+      </ul>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById("map-search");
+      const mapItems = document.querySelectorAll(".sitemap-item");
+
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.toLowerCase().trim();
+
+        mapItems.forEach(item => {
+          const searchKeywords = item.getAttribute("data-search").toLowerCase();
+          
+          if (!query || searchKeywords.includes(query)) {
+            item.classList.remove("hidden");
+          } else {
+            item.classList.add("hidden");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
