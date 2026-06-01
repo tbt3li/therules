@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stacking & Death Order Calculator</title>
+  <style>
+    /* CSS Variables & Reset */
+    :root {
+      --bg-main: #10131a;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --border-color: rgba(148, 163, 184, 0.2);
+      --text-main: #f1f5f9;
+      --text-muted: #cbd5f5;
+      --accent-blue: #3b82f6;
+      --accent-blue-hover: #2563eb;
+      --accent-link: #60a5fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .intro {
+      color: var(--text-muted);
+      max-width: 700px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.3);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .controls .control-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    input[type="number"], select {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    input[type="number"]:focus, select:focus {
+      outline: 2px solid var(--accent-blue);
+      border-color: transparent;
+    }
+
+    .clear-checked-btn {
+      color: var(--text-main);
+      background: #ef4444;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .clear-checked-btn:hover {
+      background: #dc2626;
+    }
+
+    .summary {
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.4);
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .summary strong {
+      color: #f8fafc;
+    }
+
+    /* Progress Indicators */
+    .army-progress {
+      margin: 16px 0;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .army-progress-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+
+    .army-progress-bar {
+      flex: 1;
+      height: 32px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .army-progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .army-progress-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      z-index: 2;
+    }
+
+    /* Table Architectures */
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:hover td {
+      background: rgba(30, 41, 59, 0.4);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>THE Clan Stacking Engine</h1>
+        <p class="intro">
+          Input configurations to adjust field sizes and deployment parameters dynamically. Calculations sync externally via secure infrastructure.
+        </p>
+      </div>
+    </header>
+
+    <section class="controls card">
+      <div class="control-row">
+        <label for="leadership-input">Leadership Cap</label>
+        <input id="leadership-input" type="number" value="500000" min="0" step="5000">
+      </div>
+      <div class="control-row">
+        <label for="dominance-input">Dominance Cap</label>
+        <input id="dominance-input" type="number" value="120000" min="0" step="1000">
+      </div>
+    </section>
+
+    <section class="results card">
+      <div class="section-header">
+        <h2>🐉 Dispatch Allocation Profile</h2>
+        <button id="clear-monsters-btn" class="clear-checked-btn">Clear Checked</button>
+      </div>
+      <div class="summary" id="monster-summary">Enter attributes above to calculate deployments.</div>
+      
+      <div class="army-progress" id="monster-progress">
+        <div class="army-progress-label">
+          <span class="army-icon">🐉</span>
+          <span>Deployment Usage:</span>
+        </div>
+        <div class="army-progress-bar">
+          <div class="army-progress-fill" id="monster-progress-fill"></div>
+          <div class="army-progress-text" id="monster-progress-text">0 / 0</div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="monster-result-table">
+          <thead>
+            <tr>
+              <th>Use</th>
+              <th>✓</th>
+              <th>Unit Profile</th>
+              <th>Tier Class</th>
+              <th>Calculated Volume</th>
+              <th>Dominance Footprint</th>
+              <th>Health Allocation</th>
+            </tr>
+          </thead>
+          <tbody id="monster-result-table-body">
+            </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Client-side execution script interacting with Cloudflare Worker API
+    const WORKER_ENDPOINT = 'https://calc6.t3li.workers.dev';
+
+    const leadershipInput = document.getElementById("leadership-input");
+    const dominanceInput = document.getElementById("dominance-input");
+    const monsterSummaryEl = document.getElementById("monster-summary");
+    const progressFill = document.getElementById("monster-progress-fill");
+    const progressText = document.getElementById("monster-progress-text");
+
+    async function dispatchCalculationRequest() {
+      const payload = {
+        leadership: parseInt(leadershipInput.value) || 0,
+        dominance: parseInt(dominanceInput.value) || 0
+      };
+
+      try {
+        monsterSummaryEl.textContent = "Processing calculation with network matrices...";
+        
+        const response = await fetch(WORKER_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned error status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderServerResults(data);
+      } catch (error) {
+        console.error("Worker processing failed:", error);
+        monsterSummaryEl.innerHTML = `<span style="color: #ef4444;">Calculation Sync Error: ${error.message}</span>`;
+      }
+    }
+
+    function renderServerResults(data) {
+      // Updates the dashboard with calculations returned from the backend D1 processing pipeline
+      monsterSummaryEl.innerHTML = `Active leadership limits mapped: <strong>${data.processedLeadership.toLocaleString()}</strong> units assigned.`;
+      
+      const usagePercent = Math.min((data.processedLeadership / (parseInt(leadershipInput.value) || 1)) * 100, 100);
+      progressFill.style.width = `${usagePercent}%`;
+      progressText.textContent = `${data.processedLeadership.toLocaleString()} / ${(parseInt(leadershipInput.value) || 0).toLocaleString()}`;
+    }
+
+    // Attach interaction listeners
+    leadershipInput.addEventListener("input", dispatchCalculationRequest);
+    dominanceInput.addEventListener("input", dispatchCalculationRequest);
+
+    // Run basic initialization check on ready
+    document.addEventListener("DOMContentLoaded", dispatchCalculationRequest);
+  </script>
+</body>
+</html>
