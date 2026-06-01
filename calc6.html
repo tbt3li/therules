@@ -1,67 +1,67 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stacking Calculator</title>
   <style>
-    /* styles.css contents merged directly */
-    * {{
+    * {
       box-sizing: border-box;
-    }}
+    }
 
-    body {{
+    body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #10131a;
       color: #f1f5f9;
       line-height: 1.5;
       padding: 24px;
-    }}
+    }
 
-    .app {{
+    .app {
       max-width: 960px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 24px;
-    }}
+    }
 
-    header h1 {{
+    header h1 {
       margin: 0 0 8px;
       font-size: 1.8rem;
-    }}
+    }
 
-    .intro {{
+    .intro {
       margin: 0;
       color: #cbd5f5;
-    }}
+    }
 
-    .card {{
+    .card {
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 12px 32px rgba(15, 23, 42, 0.3);
-    }}
+    }
 
-    .controls .control-row {{
+    .controls .control-row {
       display: grid;
       grid-template-columns: 200px 1fr;
       align-items: center;
       gap: 12px;
       margin-bottom: 16px;
-    }}
+    }
 
-    .controls .control-row:last-child {{
+    .controls .control-row:last-child {
       margin-bottom: 0;
-    }}
+    }
 
-    label {{
+    label {
       font-weight: 500;
       color: #94a3b8;
-    }}
+    }
 
-    input[type="number"], select {{
+    input[type="number"], select {
       background: #0f172a;
       border: 1px solid rgba(148, 163, 184, 0.2);
       color: #f1f5f9;
@@ -71,59 +71,59 @@
       width: 100%;
       max-width: 320px;
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }}
+    }
 
-    input[type="number"]:focus, select:focus {{
+    input[type="number"]:focus, select:focus {
       outline: none;
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }}
+    }
 
-    .branch-section {{
+    .branch-section {
       margin-top: 16px;
       padding-top: 16px;
       border-top: 1px solid rgba(148, 163, 184, 0.1);
-    }}
+    }
 
-    .branch-section h3 {{
+    .branch-section h3 {
       margin: 0 0 12px;
       font-size: 1.1rem;
       color: #3b82f6;
-    }}
+    }
 
-    .branch-grid {{
+    .branch-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 16px;
-    }}
+    }
 
-    .branch-card {{
+    .branch-card {
       background: rgba(30, 41, 59, 0.5);
       border: 1px solid rgba(148, 163, 184, 0.1);
       border-radius: 8px;
       padding: 12px;
-    }}
+    }
 
-    .branch-header {{
+    .branch-header {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 8px;
-    }}
+    }
 
-    .branch-header label {{
+    .branch-header label {
       color: #f1f5f9;
       cursor: pointer;
-    }}
+    }
 
-    .tier-grid {{
+    .tier-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
       margin-top: 8px;
-    }}
+    }
 
-    .tier-checkbox-label {{
+    .tier-checkbox-label {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -134,27 +134,27 @@
       padding: 4px 6px;
       border-radius: 4px;
       border: 1px solid rgba(148, 163, 184, 0.05);
-    }}
+    }
 
-    .branch-summary {{
+    .branch-summary {
       font-size: 0.8rem;
       color: #94a3b8;
       margin-top: 4px;
-    }}
+    }
 
-    .section-header {{
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
-    }}
+    }
 
-    .section-header h2 {{
+    .section-header h2 {
       margin: 0;
       font-size: 1.3rem;
-    }}
+    }
 
-    .clear-checked-btn {{
+    .clear-checked-btn {
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.3);
       color: #ef4444;
@@ -164,22 +164,22 @@
       cursor: pointer;
       font-weight: 500;
       transition: all 0.15s ease;
-    }}
+    }
 
-    .clear-checked-btn:hover {{
+    .clear-checked-btn:hover {
       background: #ef4444;
       color: #ffffff;
     }}
 
-    .summary {{
+    .summary {
       color: #cbd5f5;
-    }}
+    }
 
-    .summary strong {{
+    .summary strong {
       color: #f8fafc;
-    }}
+    }
 
-    .army-progress {{
+    .army-progress {
       margin: 16px 0;
       padding: 16px;
       background: rgba(15, 23, 42, 0.6);
@@ -188,9 +188,9 @@
       display: flex;
       align-items: center;
       gap: 16px;
-    }}
+    }
 
-    .army-progress-label {{
+    .army-progress-label {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -198,13 +198,13 @@
       color: #e2e8f0;
       white-space: nowrap;
       font-size: 0.95rem;
-    }}
+    }
 
-    .army-icon {{
+    .army-icon {
       font-size: 1.2rem;
-    }}
+    }
 
-    .army-progress-bar {{
+    .army-progress-bar {
       flex: 1;
       height: 32px;
       background: rgba(15, 23, 42, 0.8);
@@ -212,9 +212,9 @@
       border-radius: 6px;
       position: relative;
       overflow: hidden;
-    }}
+    }
 
-    .army-progress-fill {{
+    .army-progress-fill {
       position: absolute;
       top: 0;
       left: 0;
@@ -222,9 +222,9 @@
       background: linear-gradient(90deg, #3b82f6, #10b981);
       width: 0%;
       transition: width 0.3s ease;
-    }}
+    }
 
-    .army-progress-text {{
+    .army-progress-text {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -235,9 +235,9 @@
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
       z-index: 2;
-    }}
+    }
 
-    .warning {{
+    .warning {
       background: rgba(245, 158, 11, 0.1);
       border-left: 4px solid #f59e0b;
       color: #f59e0b;
@@ -245,55 +245,55 @@
       border-radius: 4px;
       margin-bottom: 16px;
       font-size: 0.9rem;
-    }}
+    }
 
-    .hidden {{
+    .hidden {
       display: none !important;
-    }}
+    }
 
-    .table-wrapper {{
+    .table-wrapper {
       overflow-x: auto;
-    }}
+    }
 
-    table {{
+    table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
       font-size: 0.95rem;
-    }}
+    }
 
-    th, td {{
+    th, td {
       padding: 10px 12px;
       border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    }}
+    }
 
-    th {{
+    th {
       background: #1e293b;
       color: #94a3b8;
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       font-weight: 600;
-    }}
+    }
 
-    tr:hover td {{
+    tr:hover td {
       background: rgba(30, 41, 59, 0.3);
-    }}
+    }
 
-    .include-column, .check-column {{
+    .include-column, .check-column {
       width: 50px;
       text-align: center;
-    }}
+    }
 
-    input[type="checkbox"] {{
+    input[type="checkbox"] {
       cursor: pointer;
       width: 16px;
       height: 16px;
-    }}
+    }
 
-    .text-muted {{
+    .text-muted {
       color: #64748b;
-    }}
+    }
   </style>
 </head>
 <body>
@@ -303,39 +303,34 @@
         <div>
           <h1>Total Battle Stacking Calculator</h1>
           <p class="intro">
-            Tell the calculator what your hero can field, set the leadership cap, and decide how much
-            extra health lower tiers should carry. Higher tiers stay lean while lower tiers get padded
-            so their total health stays tight together.
+            Set your limits below to compute your frontline layout profiles. All configurations dynamically adapt and query external nodes securely.
           </p>
         </div>
-        <a href="death-order.html" style="color: #60a5fa; text-decoration: none; font-size: 14px; padding: 10px 16px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.3); white-space: nowrap; margin-left: 20px;">
-          ☠️ Death Order Calculator →
-        </a>
       </div>
     </header>
 
     <section class="controls card">
       <div class="control-row">
-        <label for="leadership-input">Leadership cap</label>
+        <label for="leadership-input">Dominance Cap Limit</label>
         <input id="leadership-input" type="number" value="10000000" min="1000">
       </div>
 
       <div class="branch-section">
-        <h3>Monsters Configuration</h3>
+        <h3>Monsters Setup Configuration</h3>
         <div id="monster-controls" class="branch-grid"></div>
       </div>
     </section>
 
     <section class="results card">
       <div class="section-header">
-        <h2>🐉 Monster Stack Recommendation (Dominance)</h2>
-        <button id="clear-monsters-btn" class="clear-checked-btn" title="Clear all checkmarks">Clear Checked</button>
+        <h2>🐉 Monster Stack Allocations</h2>
+        <button id="clear-monsters-btn" class="clear-checked-btn" title="Clear selections">Clear Checked</button>
       </div>
       <div class="summary" id="monster-summary"></div>
       <div class="army-progress" id="monster-progress">
         <div class="army-progress-label">
           <span class="army-icon">🐉</span>
-          <span>Monster Army Built:</span>
+          <span>Dominance Allocated:</span>
         </div>
         <div class="army-progress-bar">
           <div class="army-progress-fill" id="monster-progress-fill"></div>
@@ -347,15 +342,15 @@
         <table id="monster-result-table">
           <thead>
             <tr>
-              <th class="include-column">Use</th>
+              <th class="include-column">Active</th>
               <th class="check-column">✓</th>
-              <th>Monster</th>
-              <th>Type</th>
-              <th>Count</th>
-              <th>Dominance</th>
-              <th>Health Pool</th>
-              <th>Health Share</th>
-              <th>vs Top Tier</th>
+              <th>Monster Identity</th>
+              <th>Classification</th>
+              <th>Computed Output</th>
+              <th>Dominance Used</th>
+              <th>Health Matrix</th>
+              <th>Share Ratio</th>
+              <th>vs Apex Tier</th>
             </tr>
           </thead>
           <tbody id="monster-result-table-body"></tbody>
@@ -365,15 +360,21 @@
   </div>
 
   <script>
-    // app.js contents merged directly
-    {troops_data}
+    // Embedded Troop Properties Engine Source Data
+    const TROOPS = [
+      { id: "M7", name: "Crypt Monster 7", tier: 7, branch: "Monsters", role: "monster", strength: 63000, health: 126000, leadership: 35 },
+      { id: "M6", name: "Crypt Monster 6", tier: 6, branch: "Monsters", role: "monster", strength: 31500, health: 63000, leadership: 25 },
+      { id: "M5", name: "Crypt Monster 5", tier: 5, branch: "Monsters", role: "monster", strength: 15120, health: 30240, leadership: 18 },
+      { id: "M4", name: "Crypt Monster 4", tier: 4, branch: "Monsters", role: "monster", strength: 6860, health: 13720, leadership: 14 },
+      { id: "M3", name: "Crypt Monster 3", tier: 3, branch: "Monsters", role: "monster", strength: 2940, health: 5880, leadership: 10 },
+      { id: "M2", name: "Crypt Monster 2", tier: 2, branch: "Monsters", role: "monster", strength: 1120, health: 2240, leadership: 7 },
+      { id: "M1", name: "Crypt Monster 1", tier: 1, branch: "Monsters", role: "monster", strength: 350, health: 700, leadership: 5 }
+    ];
 
-    // Config for layout setup
-    const MONSTER_BRANCHES = {{
-      "Monsters": {{ label: "Crypt Monsters", prefix: "M", maxTier: 7, tiers: [7, 6, 5, 4, 3, 2, 1] }}
-    }};
+    const MONSTER_BRANCHES = {
+      "Monsters": { label: "Crypt Monsters Elite", prefix: "M", maxTier: 7, tiers: [7, 6, 5, 4, 3, 2, 1] }
+    };
 
-    // Persistent State Map via local Storage
     const STORAGE_KEY_CHECKED = "tb_calc_checked_monsters";
     const STORAGE_KEY_SETTINGS = "tb_calc_monster_settings_v2";
 
@@ -385,41 +386,41 @@
     const monsterTableBody = document.getElementById("monster-result-table-body");
     const monsterWarningEl = document.getElementById("monster-warning");
 
-    function loadCheckedMonsters() {{
-      try {{
+    function loadCheckedMonsters() {
+      try {
         const saved = localStorage.getItem(STORAGE_KEY_CHECKED);
         return saved ? new Set(JSON.parse(saved)) : new Set(["M7"]);
-      }} catch (e) {{
+      } catch (e) {
         return new Set(["M7"]);
-      }}
-    }}
+      }
+    }
 
-    function saveCheckedMonsters(set) {{
+    function saveCheckedMonsters(set) {
       localStorage.setItem(STORAGE_KEY_CHECKED, JSON.stringify([...set]));
-    }}
+    }
 
-    function loadMonsterSettings() {{
-      try {{
+    function loadMonsterSettings() {
+      try {
         const saved = localStorage.getItem(STORAGE_KEY_SETTINGS);
         if (saved) return JSON.parse(saved);
-      }} catch(e) {{}}
-      return {{
-        enabled: {{ "Monsters": true }},
-        maxTiers: {{ "Monsters": 7 }},
-        enabledTiers: {{ "Monsters": [7, 6, 5, 4, 3, 2, 1] }}
-      }};
-    }}
+      } catch(e) {}
+      return {
+        enabled: { "Monsters": true },
+        maxTiers: { "Monsters": 7 },
+        enabledTiers: { "Monsters": [7, 6, 5, 4, 3, 2, 1] }
+      };
+    }
 
-    function saveMonsterSettings() {{
+    function saveMonsterSettings() {
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(monsterSettings));
-    }}
+    }
 
-    function renderMonsterControls() {{
+    function renderMonsterControls() {
       const container = document.getElementById("monster-controls");
       if (!container) return;
       container.innerHTML = "";
 
-      Object.entries(MONSTER_BRANCHES).forEach(([key, config]) => {{
+      Object.entries(MONSTER_BRANCHES).forEach(([key, config]) => {
         const card = document.createElement("div");
         card.className = "branch-card";
 
@@ -428,7 +429,7 @@
 
         const mainCb = document.createElement("input");
         mainCb.type = "checkbox";
-        mainCb.id = `branch-cb-${{key}}`;
+        mainCb.id = `branch-cb-${key}`;
         mainCb.checked = !!monsterSettings.enabled[key];
 
         const label = document.createElement("label");
@@ -439,18 +440,17 @@
         card.append(header);
 
         const row = document.createElement("div");
-        row.className = "control-row-inline";
         row.style.marginTop = "8px";
 
         const select = document.createElement("select");
-        select.id = `branch-select-${{key}}`;
-        for (let t = config.maxTier; t >= 1; t--) {{
+        select.id = `branch-select-${key}`;
+        for (let t = config.maxTier; t >= 1; t--) {
           const opt = document.createElement("option");
           opt.value = t;
-          opt.textContent = `Max Tier ${{config.prefix}}${{t}}`;
+          opt.textContent = `Cap Tier ${config.prefix}${t}`;
           if (monsterSettings.maxTiers[key] === t) opt.selected = true;
           select.appendChild(opt);
-        }}
+        }
 
         row.appendChild(select);
         card.appendChild(row);
@@ -465,261 +465,247 @@
 
         container.appendChild(card);
 
-        const stateEntry = {{
+        const stateEntry = {
           checkbox: mainCb,
           select: select,
           tierGrid: tierGrid,
           summary: summaryDiv,
           config: config,
           enabledTiers: new Set(monsterSettings.enabledTiers[key] || config.tiers)
-        }};
+        };
 
-        mainCb.addEventListener("change", () => {{
+        mainCb.addEventListener("change", () => {
           monsterSettings.enabled[key] = mainCb.checked;
           updateBranchTiersUI(key, stateEntry);
           updateMonsterResults();
           saveMonsterSettings();
-        }});
+        });
 
-        select.addEventListener("change", () => {{
+        select.addEventListener("change", () => {
           monsterSettings.maxTiers[key] = Number(select.value);
           updateBranchTiersUI(key, stateEntry);
           updateMonsterResults();
           saveMonsterSettings();
-        }});
+        });
 
         updateBranchTiersUI(key, stateEntry);
-      }});
-    }}
+      });
+    }
 
-    function updateBranchTiersUI(key, entry) {{
+    function updateBranchTiersUI(key, entry) {
       const maxTier = Number(entry.select.value);
       const unlocked = entry.config.tiers.filter(t => t <= maxTier);
 
       entry.tierGrid.innerHTML = "";
-      unlocked.forEach((tier) => {{
+      unlocked.forEach((tier) => {
         const label = document.createElement("label");
         label.className = "tier-checkbox-label";
         const cb = document.createElement("input");
         cb.type = "checkbox";
         cb.checked = entry.enabledTiers.has(tier);
 
-        cb.addEventListener("change", () => {{
+        cb.addEventListener("change", () => {
           if (cb.checked) entry.enabledTiers.add(tier);
           else entry.enabledTiers.delete(tier);
           monsterSettings.enabledTiers[key] = [...entry.enabledTiers];
           updateBranchSummaryText(key, entry);
           updateMonsterResults();
           saveMonsterSettings();
-        }});
+        });
 
         const span = document.createElement("span");
-        span.textContent = `${{entry.config.prefix}}${{tier}}`;
+        span.textContent = `${entry.config.prefix}${tier}`;
         label.append(cb, span);
         entry.tierGrid.appendChild(label);
-      }});
+      });
 
       updateBranchSummaryText(key, entry);
-    }}
+    }
 
-    function updateBranchSummaryText(key, entry) {{
-      if (!entry.checkbox.checked) {{
+    function updateBranchSummaryText(key, entry) {
+      if (!entry.checkbox.checked) {
         entry.summary.textContent = "Disabled";
         return;
-      }}
+      }
       const maxTier = Number(entry.select.value);
       const unlocked = entry.config.tiers.filter(t => t <= maxTier);
       const active = unlocked.filter(t => entry.enabledTiers.has(t));
-      if (active.length === 0) {{
-        entry.summary.textContent = "No tiers selected";
-      }} else {{
-        entry.summary.textContent = `Active Tiers: ${{active.map(t => entry.config.prefix + t).join(', ')}}`;
-      }}
-    }}
+      entry.summary.textContent = active.length === 0 ? "No active profiles" : `Active: ${active.map(t => entry.config.prefix + t).join(', ')}`;
+    }
 
-    function formatNumber(num) {{
+    function formatNumber(num) {
       if (num === 0) return "0";
-      if (num < 1000) return num.toFixed(0);
       return Math.round(num).toLocaleString();
-    }}
+    }
 
-    async function updateMonsterResults() {{
+    async function updateMonsterResults() {
       const dominanceCap = parseInt(dominanceInput.value) || 0;
       
-      // Post criteria configuration variables to worker backend endpoint
-      const payload = {{
+      const payload = {
         dominanceCap: dominanceCap,
         checkedMonsters: [...checkedMonsters],
         monsterSettings: monsterSettings
-      }};
+      };
 
-      try {{
-        monsterSummaryEl.textContent = "Syncing calculations with worker gateway calc6.t3li.workers.dev...";
+      try {
+        monsterSummaryEl.textContent = "Querying calc6.t3li.workers.dev gateway runtime parameters...";
         
-        const response = await fetch('https://calc6.t3li.workers.dev', {{
+        const response = await fetch('https://calc6.t3li.workers.dev', {
           method: 'POST',
-          headers: {{ 'Content-Type': 'application/json' }},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
-        }});
+        });
 
-        if (!response.ok) throw new Error("Worker responded with error metrics.");
+        if (!response.ok) throw new Error("Worker responded with error matrix.");
         
         const serverResults = await response.json();
         renderServerCalculationData(serverResults, dominanceCap);
-      }} catch (err) {{
-        // Fallback to offline execution matrix if worker endpoint is unavailable during deployment
+      } catch (err) {
         executeLocalFallbackCalculations(dominanceCap);
-      }}
-    }}
+      }
+    }
 
-    function renderServerCalculationData(data, dominanceCap) {{
+    function renderServerCalculationData(data, dominanceCap) {
       monsterTableBody.innerHTML = "";
       
-      if (!data.rows || data.rows.length === 0) {{
-        monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No active configurations matched</td></tr>`;
+      if (!data.rows || data.rows.length === 0) {
+        monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No selected configuration paths matched</td></tr>`;
         updateMonsterProgressBars(0, dominanceCap);
         return;
-      }}
+      }
 
-      data.rows.forEach(row => {{
+      data.rows.forEach(row => {
         const tr = document.createElement("tr");
         const isChecked = checkedMonsters.has(row.id);
         
         tr.innerHTML = `
-          <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${{row.id}}" ${{row.included ? 'checked' : ''}}></td>
-          <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${{row.id}}" ${{isChecked ? 'checked' : ''}}></td>
-          <td><strong>${{row.name}}</strong></td>
-          <td><span class="text-muted">${{row.role}}</span></td>
-          <td>${{formatNumber(row.count)}}</td>
-          <td>${{formatNumber(row.dominanceUsed)}}</td>
-          <td>${{formatNumber(row.healthPool)}}</td>
-          <td>${{row.healthShare}}%</td>
-          <td>${{row.vsTopTier}}</td>
+          <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${row.id}" ${row.included ? 'checked' : ''}></td>
+          <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${row.id}" ${isChecked ? 'checked' : ''}></td>
+          <td><strong>${row.name}</strong></td>
+          <td><span class="text-muted">${row.role}</span></td>
+          <td>${formatNumber(row.count)}</td>
+          <td>${formatNumber(row.dominanceUsed)}</td>
+          <td>${formatNumber(row.healthPool)}</td>
+          <td>${row.healthShare}%</td>
+          <td>${row.vsTopTier}</td>
         `;
         monsterTableBody.appendChild(tr);
-      }});
+      });
 
-      // Attach row listeners dynamically
       attachRowInputInteractionListeners();
 
       monsterSummaryEl.innerHTML = `
-        Hero commands <strong>${{formatNumber(data.totals.usedDominance)}}</strong> of <strong>${{formatNumber(dominanceCap)}}</strong> dominance. 
-        Total Stack Health: <strong>${{formatNumber(data.totals.totalHealth)}}</strong>
+        Commanding <strong>${formatNumber(data.totals.usedDominance)}</strong> / <strong>${formatNumber(dominanceCap)}</strong> total capacity. 
+        Calculated Stack Pool Health: <strong>${formatNumber(data.totals.totalHealth)}</strong>
       `;
 
-      if (data.totals.usedDominance > dominanceCap) {{
-        monsterWarningEl.textContent = "Warning: Total requested allocation profile exceeds current workspace Dominance Cap capacity thresholds.";
+      if (data.totals.usedDominance > dominanceCap) {
+        monsterWarningEl.textContent = "Warning: Total requested allocation profile exceeds workspace capacity thresholds.";
         monsterWarningEl.classList.remove("hidden");
-      }} else {{
+      } else {
         monsterWarningEl.classList.add("hidden");
-      }}
+      }
 
       updateMonsterProgressBars(data.totals.usedDominance, dominanceCap);
-    }}
+    }
 
-    function executeLocalFallbackCalculations(dominanceCap) {{
-      // Full standalone local engine matrix mapping data properties gracefully
-      const monsterPool = TROOPS.filter(t => t.branch === "Monsters");
+    function executeLocalFallbackCalculations(dominanceCap) {
       const enabledTiers = new Set(monsterSettings.enabledTiers["Monsters"] || []);
       const maxTierAllowed = monsterSettings.maxTiers["Monsters"] || 7;
 
-      let filtered = monsterPool.filter(m => {{
+      let filtered = TROOPS.filter(m => {
         return monsterSettings.enabled["Monsters"] && m.tier <= maxTierAllowed && enabledTiers.has(m.tier);
-      }});
+      });
 
       monsterTableBody.innerHTML = "";
       let totalDominanceUsed = 0;
       let totalHealthPool = 0;
 
-      let rowsData = filtered.map(m => {{
+      let checkedActiveCount = filtered.filter(f => checkedMonsters.has(f.id)).length;
+
+      let rowsData = filtered.map(m => {
         const isChecked = checkedMonsters.has(m.id);
         let count = 0;
-        if (isChecked && dominanceCap > 0) {{
-          count = Math.floor(dominanceCap / filtered.filter(f => checkedMonsters.has(f.id)).length / m.leadership);
-        }}
+        if (isChecked && dominanceCap > 0 && checkedActiveCount > 0) {
+          count = Math.floor((dominanceCap / checkedActiveCount) / m.leadership);
+        }
         const domUsed = count * m.leadership;
         const hPool = count * m.health;
         totalDominanceUsed += domUsed;
         totalHealthPool += hPool;
 
-        return {{
+        return {
           id: m.id, name: m.name, role: m.role, count: count, dominanceUsed: domUsed, healthPool: hPool
-        }};
-      }});
+        };
+      });
 
-      if (rowsData.length === 0) {{
-        monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No active parameters enabled</td></tr>`;
+      if (rowsData.length === 0) {
+        monsterTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No matching active rows found locally</td></tr>`;
         updateMonsterProgressBars(0, dominanceCap);
         return;
-      }}
+      }
 
-      rowsData.forEach(row => {{
+      rowsData.forEach(row => {
         const tr = document.createElement("tr");
         const isChecked = checkedMonsters.has(row.id);
         const share = totalHealthPool > 0 ? ((row.healthPool / totalHealthPool) * 100).toFixed(1) : "0.0";
         
         tr.innerHTML = `
-          <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${{row.id}}" checked></td>
-          <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${{row.id}}" ${{isChecked ? 'checked' : ''}}></td>
-          <td><strong>${{row.name}}</strong></td>
-          <td><span class="text-muted">${{row.role}}</span></td>
-          <td>${{formatNumber(row.count)}}</td>
-          <td>${{formatNumber(row.dominanceUsed)}}</td>
-          <td>${{formatNumber(row.healthPool)}}</td>
-          <td>${{share}}%</td>
-          <td>100%</td>
+          <td class="include-column"><input type="checkbox" class="row-include-cb" data-id="${row.id}" checked></td>
+          <td class="check-column"><input type="checkbox" class="row-check-cb" data-id="${row.id}" ${isChecked ? 'checked' : ''}></td>
+          <td><strong>${row.name}</strong></td>
+          <td><span class="text-muted">${row.role}</span></td>
+          <td>${formatNumber(row.count)}</td>
+          <td>${formatNumber(row.dominanceUsed)}</td>
+          <td>${formatNumber(row.healthPool)}</td>
+          <td>${share}%</td>
+          <td>100.0%</td>
         `;
         monsterTableBody.appendChild(tr);
-      }});
+      });
 
       attachRowInputInteractionListeners();
-
+      monsterWarningEl.classList.add("hidden");
       monsterSummaryEl.innerHTML = `
-        [Local Engine Run] Command fields: <strong>${{formatNumber(totalDominanceUsed)}}</strong> / <strong>${{formatNumber(dominanceCap)}}</strong> dominance.
+        [Local Core Engine Runtime] Total Field Layout: <strong>${formatNumber(totalDominanceUsed)}</strong> / <strong>${formatNumber(dominanceCap)}</strong>.
       `;
       updateMonsterProgressBars(totalDominanceUsed, dominanceCap);
-    }}
+    }
 
-    function attachRowInputInteractionListeners() {{
-      document.querySelectorAll(".row-check-cb").forEach(cb => {{
-        cb.addEventListener("change", (e) => {{
+    function attachRowInputInteractionListeners() {
+      document.querySelectorAll(".row-check-cb").forEach(cb => {
+        cb.addEventListener("change", (e) => {
           const id = e.target.getAttribute("data-id");
           if (e.target.checked) checkedMonsters.add(id);
           else checkedMonsters.delete(id);
           saveCheckedMonsters(checkedMonsters);
           updateMonsterResults();
-        }});
-      }});
-    }}
+        });
+      });
+    }
 
-    function updateMonsterProgressBars(used, cap) {{
+    function updateMonsterProgressBars(used, cap) {
       const fill = document.getElementById("monster-progress-fill");
       const text = document.getElementById("monster-progress-text");
       if (!fill || !text) return;
 
       const pct = cap > 0 ? Math.min((used / cap) * 100, 100) : 0;
-      fill.style.width = `${{pct}}%`;
-      text.textContent = `${{formatNumber(used)}} / ${{formatNumber(cap)}}`;
-    }}
+      fill.style.width = `${pct}%`;
+      text.textContent = `${formatNumber(used)} / ${formatNumber(cap)}`;
+    }
 
-    document.getElementById("clear-monsters-btn").addEventListener("click", () => {{
+    document.getElementById("clear-monsters-btn").addEventListener("click", () => {
       checkedMonsters.clear();
       saveCheckedMonsters(checkedMonsters);
       updateMonsterResults();
-    }});
+    });
 
     dominanceInput.addEventListener("input", updateMonsterResults);
 
-    // Initialization routine execution
-    if (document.readyState === 'loading') {{
-      document.addEventListener('DOMContentLoaded', () => {{
-        renderMonsterControls();
-        updateMonsterResults();
-      }});
-    }} else {{
+    document.addEventListener('DOMContentLoaded', () => {
       renderMonsterControls();
       updateMonsterResults();
-    }}
+    });
   </script>
 </body>
 </html>
