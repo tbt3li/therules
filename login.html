@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Construction - 3D Portal</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bf00ff;
+            --neon-pink: #ff006e;
+            --dark-bg: #0a0a0f;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            overflow-x: hidden;
+            /* perspective: 1000px; */
+            position: relative;
+        }
+        
+        /* Advanced 3D animated background */
+        .background-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(191, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 243, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 0, 110, 0.1) 0%, transparent 50%);
+        }
+        
+        /* Animated grid */
+        .grid-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+        
+        .grid-3d {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: rotateX(60deg) translateZ(-200px) translateY(0); }
+            100% { transform: rotateX(60deg) translateZ(-200px) translateY(50px); }
+        }
+        
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: floatOrb 15s infinite ease-in-out;
+            z-index: 3;
+        }
+        
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-blue), transparent);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, var(--neon-purple), transparent);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: 5s;
+        }
+        
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--neon-pink), transparent);
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(30px, 50px) scale(1.05); }
+        }
+        
+        /* Particles system */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            animation: particleFloat 10s infinite linear;
+        }
+        
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px) scale(1); opacity: 0; }
+        }
+        
+        /* Main container */
+        .main-container {
+            position: relative;
+            z-index: 100;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 0;
+        }
+        
+        /* 3D Logo section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease-out;
+            transform-style: preserve-3d;
+        }
+        
+        .logo-3d-container {
+            position: relative;
+            display: inline-block;
+            transform-style: preserve-3d;
+            animation: logo3DRotate 10s infinite ease-in-out;
+        }
+        
+        @keyframes logo3DRotate {
+            0%, 100% { transform: perspective(1000px) rotateY(0deg); }
+            50% { transform: perspective(1000px) rotateY(360deg); }
+        }
+        
+        .logo-cube {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            transform-style: preserve-3d;
+            margin: 0 auto 2rem;
+            animation: cubeSpin 20s infinite linear;
+        }
+        
+        @keyframes cubeSpin {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .cube-face {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.3), rgba(191, 0, 255, 0.3));
+            border: 2px solid rgba(0, 243, 255, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--neon-blue);
+            text-shadow: 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue);
+        }
+        
+        .cube-face.front  { transform: translateZ(70px); }
+        .cube-face.back   { transform: translateZ(-70px) rotateY(180deg); }
+        .cube-face.right  { transform: rotateY(90deg) translateZ(70px); }
+        .cube-face.left   { transform: rotateY(-90deg) translateZ(70px); }
+        .cube-face.top    { transform: rotateX(90deg) translateZ(70px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(70px); }
+        
+        .brand-name-3d {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+            animation: textGlow 3s infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            0% { filter: brightness(1) drop-shadow(0 0 10px var(--neon-blue)); }
+            100% { filter: brightness(1.3) drop-shadow(0 0 30px var(--neon-purple)); }
+        }
+        
+        /* Glassmorphic card with 3D effect */
+        .login-card-3d {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 2.5rem;
+            max-width: 550px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cardFloat 6s infinite ease-in-out, fadeInUp 1s ease-out;
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 243, 255, 0.15),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+        }
+        
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(2deg); }
+        }
+        
+        /* Holographic effect on card */
+        .login-card-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 30px;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 243, 255, 0.1) 50%, transparent 70%);
+            background-size: 200% 200%;
+            animation: holographic 8s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes holographic {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+        
+        .construction-badge-3d {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            padding: 0.6rem 2rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
+            animation: badgePulse 2s infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 0, 110, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 0, 110, 0.8); }
+        }
+        
+        .construction-title-3d {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, white, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .construction-subtitle-3d {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Futuristic form styling */
+        .form-label-3d {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--neon-blue);
+            margin-bottom: 0.7rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-control-3d {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-control-3d::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .form-control-3d:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            outline: none;
+            transform: translateY(-2px);
+        }
+        
+        .form-control-3d:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .form-check-3d {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-check-input-3d {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            cursor: not-allowed;
+        }
+        
+        .form-check-label-3d {
+            color: rgba(255, 255, 255, 0.7);
+            margin-left: 0.5rem;
+        }
+        
+        .btn-login-3d {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            width: 100%;
+            margin-top: 1.5rem;
+            cursor: not-allowed;
+            opacity: 0.6;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.3);
+        }
+        
+        .divider-3d {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .divider-3d::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+        }
+        
+        .divider-text-3d {
+            background: rgba(10, 10, 15, 0.8);
+            padding: 0 1.5rem;
+            position: relative;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .info-box-3d {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(191, 0, 255, 0.1));
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-left: 4px solid var(--neon-blue);
+            padding: 1.2rem 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .info-box-3d p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .info-box-3d strong {
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* 3D Home button */
+        .home-button-section {
+            text-align: center;
+            margin-top: 3rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+        
+        .btn-home-3d {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--neon-blue);
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            z-index: 1;
+        }
+        
+        .btn-home-3d::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+        
+        .btn-home-3d:hover {
+            color: white;
+            border-color: var(--neon-purple);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 243, 255, 0.4);
+        }
+        
+        .btn-home-3d:hover::before {
+            width: 300%;
+            height: 300%;
+        }
+        
+        /* Loading dots animation */
+        .loading-dots-3d {
+            display: inline-block;
+        }
+        
+        .loading-dots-3d span {
+            display: inline-block;
+            animation: dotPulse 1.4s infinite;
+            animation-fill-mode: both;
+            margin: 0 2px;
+        }
+        
+        .loading-dots-3d span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .loading-dots-3d span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .loading-dots-3d span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes dotPulse {
+            0%, 80%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1);
+            }
+            40% { 
+                opacity: 1; 
+                transform: scale(1.2);
+            }
+        }
+        
+        /* Scan line effect */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            z-index: 9999;
+            animation: scan 4s linear infinite;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) translateZ(0);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateZ(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-card-3d {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .construction-title-3d {
+                font-size: 1.8rem;
+            }
+            
+            .brand-name-3d {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+            
+            .logo-cube {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .cube-face {
+                width: 100px;
+                height: 100px;
+                font-size: 2rem;
+            }
+            
+            .cube-face.front, .cube-face.back,
+            .cube-face.right, .cube-face.left,
+            .cube-face.top, .cube-face.bottom {
+                transform-origin: center;
+            }
+            
+            .cube-face.front  { transform: translateZ(50px); }
+            .cube-face.back   { transform: translateZ(-50px) rotateY(180deg); }
+            .cube-face.right  { transform: rotateY(90deg) translateZ(50px); }
+            .cube-face.left   { transform: rotateY(-90deg) translateZ(50px); }
+            .cube-face.top    { transform: rotateX(90deg) translateZ(50px); }
+            .cube-face.bottom { transform: rotateX(-90deg) translateZ(50px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background elements -->
+    <div class="background-3d"></div>
+    
+    <!-- 3D Grid -->
+    <div class="grid-container">
+        <div class="grid-3d"></div>
+    </div>
+    
+    <!-- Floating orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Scan line effect -->
+    <div class="scanline"></div>
+    
+    <div class="main-container">
+        <div class="container" style="margin-top:30px;">
+            <!-- 3D Logo Section -->
+            <div class="logo-section">
+                <div class="logo-3d-container">
+                    <div class="logo-cube">
+                        <div class="cube-face front">THE</div>
+                        <div class="cube-face back">THE</div>
+                        <div class="cube-face right">THE</div>
+                        <div class="cube-face left">THE</div>
+                        <div class="cube-face top">THE</div>
+                        <div class="cube-face bottom">THE</div>
+                    </div>
+                    <div class="brand-name-3d">👉THE Family</div>
+                </div>
+            </div>
+            
+            <!-- 3D Login Card -->
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="login-card-3d">
+                        <div class="text-center">
+                            <span class="construction-badge-3d">⚡ Under Construction</span>
+                            <h1 class="construction-title-3d">Entering The Future</h1>
+                        </div>
+                        
+                        <form id="loginForm"> <!--
+                            <div class="mb-4">
+                                <label for="email" class="form-label-3d">Email Address</label>
+                                <input type="email" class="form-control form-control-3d" id="email" placeholder="your.email@nexus.com" disabled>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label-3d">Password</label>
+                                <input type="password" class="form-control form-control-3d" id="password" placeholder="••••••••••••" disabled>
+                            </div>
+                            
+                            <div class="form-check form-check-3d mb-3">
+                                <input class="form-check-input form-check-input-3d" type="checkbox" id="rememberMe" disabled>
+                                <label class="form-check-label form-check-label-3d" for="rememberMe">
+                                    Remember this device
+                                </label>
+                            </div>    -->
+                            
+                            <button type="button" class="btn btn-login-3d" disabled>
+                                Access Portal (Coming Soon)
+                            </button>
+                        </form>
+                        
+                        <div class="divider-3d">
+                            <span class="divider-text-3d">SYSTEM OFFLINE</span>
+                        </div>
+                        
+                        <div class="info-box-3d">
+                            <p><strong>🚀 Launching Soon</strong></p>
+                            <p>Our system is currently being assembled.<br>Prepare for a revolutionary experience<span class="loading-dots-3d"><span>.</span><span>.</span><span>.</span></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3D Home Button -->
+            <div class="home-button-section">
+                <a href="/" class="btn-home-3d">← Return Home</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Generate advanced particle system
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 80;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                
+                // Random colors for particles
+                const colors = ['#00f3ff', '#bf00ff', '#ff006e'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = randomColor;
+                particle.style.boxShadow = `0 0 10px ${randomColor}`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 3D tilt effect on card
+        const card = document.querySelector('.login-card-3d');
+        
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+        });
+        
+        // Interactive logo hover effect
+        const logoCube = document.querySelector('.logo-cube');
+        
+        logoCube.addEventListener('mouseenter', function() {
+            this.style.animationPlayState = 'paused';
+            this.style.transform = 'rotateX(45deg) rotateY(45deg) scale(1.1)';
+        });
+        
+        logoCube.addEventListener('mouseleave', function() {
+            this.style.animationPlayState = 'running';
+            this.style.transform = '';
+        });
+        
+        // Prevent form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+        
+        // Create glowing cursor effect
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.createElement('div');
+            glow.style.position = 'fixed';
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+            glow.style.width = '5px';
+            glow.style.height = '5px';
+            glow.style.borderRadius = '50%';
+            glow.style.background = 'rgba(0, 243, 255, 0.6)';
+            glow.style.pointerEvents = 'none';
+            glow.style.zIndex = '9999';
+            glow.style.filter = 'blur(3px)';
+            glow.style.transform = 'translate(-50%, -50%)';
+            
+            document.body.appendChild(glow);
+            
+            setTimeout(() => {
+                glow.style.transition = 'all 0.5s ease';
+                glow.style.opacity = '0';
+                glow.style.transform = 'translate(-50%, -50%) scale(2)';
+            }, 10);
+            
+            setTimeout(() => {
+                glow.remove();
+            }, 510);
+        });
+        
+        // Initialize particles on load
+        window.addEventListener('load', () => {
+            createParticles();
+        });
+        
+        // Add input focus effects
+        const inputs = document.querySelectorAll('.form-control-3d');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.boxShadow = '0 0 30px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(0, 243, 255, 0.1)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.boxShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>
