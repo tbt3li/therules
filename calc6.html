@@ -615,17 +615,64 @@
                 width: 100%;
             }
         }
+		.header {
+		    position: relative;
+		    text-align: center;
+		    /* Large left/right padding keeps text from touching the logo on medium screens */
+		    padding: 40px 120px; 
+		}
+		
+		.header-logo-link {
+		    position: absolute;
+		    left: 60px;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    z-index: 10;
+		}
+		
+		.header-logo-img {
+		    height: 80px;
+		    width: auto;
+		    filter: brightness(0) saturate(100%) invert(20%);
+		}
+		
+		
+		/* --- MOBILE RESPONSIVE VIEW (Screens under 768px) --- */
+		@media (max-width: 768px) {
+		    .header {
+		        display: flex;
+		        flex-direction: column; /* Stacks logo vertically above text */
+		        align-items: center;    /* Centers everything horizontally */
+		        padding: 20px;          /* Reduces padding for smaller screens */
+		    }
+		
+		    .header-logo-link {
+		        position: static;       /* Turns off absolute positioning completely */
+		        transform: none;        /* Clears the desktop centering offset */
+		        margin-bottom: 15px;    /* Pushes the H1 safely below the logo */
+		    }
+		
+		    .header-logo-img {
+		        height: 60px;           /* Scales the logo down slightly for mobile */
+		    }
+		
+		    .header-text h1 {
+		        font-size: 1.6rem;      /* Shrinks text slightly so it doesn't break aggressively */
+		    }
+		}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <a href="https://thefamily.pages.dev" style="position:fixed; top:26px; left:66px; z-index:9999;">
-			<img src="assets/img/logo.png" alt="Logo" style="height:80px; width:auto;">
-		    </a>
-            
+            <a href="https://thefamily.pages.dev" class="header-logo-link">
+				<img src="assets/img/logo.png" alt="Logo" class="header-logo-img">
+			</a>
+
+			<div class="header-text">
             <h1>⚔️ Army Composition Calculator ⚔️</h1>
             <p>Strategic unit planning and optimization tool (v 1.0)</p>
+			</div>
         </div>
 
         <div class="content">
