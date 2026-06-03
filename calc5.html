@@ -11,10 +11,6 @@
 </head>
 <body>
 <style>
-  /* ============================================================
-   Total Battle Calculator — style.css v3.0
-   Dark tactical theme · Cinzel + Raleway + Source Code Pro
-   ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Code+Pro:wght@400;600&family=Raleway:wght@400;500;600&display=swap');
 
@@ -628,7 +624,7 @@ footer a:hover { text-decoration: underline; }
 
   <header>
     <h1>⚔️ Total Battle</h1>
-    <p class="subtitle">Troop Stack Calculator · v4.1</p>
+    <p class="subtitle">Troop Stack Calculator · v1.1</p>
   </header>
 
   <!-- ═══════════════════════════════════════════
@@ -861,11 +857,6 @@ footer a:hover { text-decoration: underline; }
 </div>
 
 <script>
-  // ============================================================
-// Total Battle Stacking Calculator - v4.1
-// Frontend: calls calc5.t3li.workers.dev for data + calculation
-// Safari/iOS compatible -- no optional chaining (?.)
-// ============================================================
 
 var WORKER_URL   = "https://calc5.t3li.workers.dev";
 var COMBAT_TYPES = ["Ranged", "Melee", "Mounted", "Flying"];
@@ -1457,8 +1448,8 @@ function deleteEnemyUnit(si, ui) {
 
 function exportJSON(pool) {
   var data = pool === "enemies"
-    ? { version:"4.1", squads: DB.local.enemies }
-    : { version:"4.1", units:  DB.local[pool] };
+    ? { version:"1.1", squads: DB.local.enemies }
+    : { version:"1.1", units:  DB.local[pool] };
   var blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
   var a    = document.createElement("a");
   a.href   = URL.createObjectURL(blob);
