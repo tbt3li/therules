@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>[THE] Family Gangsta - TB Calculators</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+  
+  <style>
+    /* base & existing styles */
+    .menubtn { line-height: 1.2; border: 2px solid var(--accent-color);}
+    *{box-sizing: border-box;margin: 0;padding: 0}
+    .box{position: relative;width: 100%;padding-right: 15px;padding-left: 15px}
+    .our-services{margin-top: 75px;padding-bottom: 30px;padding: 0 60px;min-height: 198px;text-align: center;border-radius: 10px;background-color: #fff;transition: all .4s ease-in-out;box-shadow: 0 0 25px 0 rgba(20,27,202,.17)}
+    .our-services .icon{margin-bottom: -21px;transform: translateY(-50%);text-align: center}
+    .our-services:hover h4, .our-services:hover p{color: #fff}
+    .speedup:hover{box-shadow: 0 0 25px 0 rgba(20,27,201,.05);cursor: pointer;background-image: linear-gradient(-45deg, #fb0054e3 0%, #f55b2ae3 100%)}
+    .privacy:hover{box-shadow: 0 0 25px 0 rgba(20,27,201,.05);cursor: pointer;background-image: linear-gradient(-45deg, #3615e7e3 0%, #44a2f6e3 100%)}
+    .speedup {background-image: linear-gradient(-45deg, #fb00542f  0%, #f55b2a2f 100%); border: 2px solid lightgrey;}
+    .privacy {background-image: linear-gradient(-45deg, #3615e72f 0%, #44a2f62f 100%); border: 2px solid lightgrey;}
+    .goog-te-banner-frame.skiptranslate { display: none !important; }
+    body { top: 0px !important; }
+    body > .skiptranslate { display: none !important; }
+
+    .buttons-container{
+      display:flex;
+      flex-direction:column;
+      gap:25px;
+      width:260px;
+      margin:auto;
+      align-items:flex-start;
+    }
+
+    .buttons-containers{
+      display:flex;
+      flex-direction:column;
+      gap:25px;
+      width:auto;
+    }
+
+    /* Base Button */
+    .btn-custom{
+      position:relative;
+      text-decoration:none;
+      padding:15px 35px 15px 55px;
+      border:none;
+      border-radius:40px;
+      color:white;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s;
+      box-shadow:0 8px 20px rgba(0,0,0,0.3);
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Icon */
+    .btn-custom .icon{
+      background: white;
+      position:absolute;
+      left:-20px;
+      top:50%;
+      transform:translateY(-50%);
+      width:52px;
+      height:52px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:25px;
+      color:#333;
+      box-shadow:0 5px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Color Themes */
+    .btn-1{ background:linear-gradient(45deg, #ff7a18, #ffb347); }
+    .btn-2{ background:linear-gradient(45deg, #0072ff, #00c6ff); }
+    .btn-3{ background:linear-gradient(45deg, #8e2de2, #ff416c); }
+    .btn-4{ background:linear-gradient(45deg, #028b06, #478dff); }
+    .btn-5{ background:linear-gradient(45deg, #ff0b00, #fb9393); }
+    .btn-6{ background:linear-gradient(45deg, #140e2d, #a893fb); }
+    .btn-7{ background:linear-gradient(45deg, #00f5a0, #00d9f5, #8a2be2); }
+
+    .btn-custom:hover{
+      transform:translateY(-4px);
+      box-shadow:0 12px 28px rgba(0,0,0,0.4);
+      color:black;
+    }
+
+    .home-box{
+      font-family:Arial;
+      padding:20px 15px;
+      border-radius:15px;
+      width: 100%;
+    }
+
+    .bi {
+      transition: 0.3s;
+    }
+
+    .btn-1:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #ff7a18, 0 0 20px #ff7a18, 0 0 40px #ff7a18;
+    }
+    .btn-2:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #0072ff, 0 0 20px #0072ff, 0 0 40px #0072ff;
+    }
+    .btn-3:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #8e2de2, 0 0 20px #8e2de2, 0 0 40px #8e2de2;
+    }
+    .btn-4:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #028b06, 0 0 20px #028b06, 0 0 40px #028b06;
+    }
+    .btn-5:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #ff0b00, 0 0 20px #ff0b00, 0 0 40px #ff0b00;
+    }
+    .btn-6:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #9280dd, 0 0 20px #9280dd, 0 0 40px #9280dd;
+    }
+    .btn-7:hover .icon i {
+      color: black;
+      text-shadow: 0 0 10px #00d9f5, 0 0 20px #00d9f5, 0 0 40px #00d9f5;
+    }
+
+    /* ========== RESPONSIVE TWO-COLUMN LAYOUT (FIX) ========== */
+    .calculators-responsive-wrapper {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .two-column-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    /* each column wrapper */
+    .calc-column {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    /* make each button fill width and adapt text */
+    .calc-column .btn-custom {
+      width: 100%;
+      text-align: left;
+      white-space: normal;
+      word-break: normal;
+      padding: 15px 25px 15px 65px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    /* icon positioning inside responsive buttons */
+    .calc-column .btn-custom .icon {
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      font-size: 22px;
+    }
+
+    /* ensure text doesn't overlap icon */
+    .calc-column .btn-custom {
+      line-height: 1.3;
+      padding-left: 75px;
+    }
+
+    /* Remove extra margin / padding issues */
+    .container[style*="display:flex;justify-content:center;align-items:center;"] {
+      display: block !important;
+    }
+
+    .home-box {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Responsive design: on mobile (max-width: 768px), switch to single column */
+    @media (max-width: 768px) {
+      .two-column-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+      
+      .calc-column {
+        gap: 20px;
+      }
+      
+      .btn-custom {
+        font-size: 14px;
+        padding: 12px 20px 12px 65px;
+      }
+      
+      .calc-column .btn-custom .icon {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        left: 12px;
+      }
+      
+      .calc-column .btn-custom {
+        padding-left: 68px;
+      }
+    }
+
+    /* for very small screens */
+    @media (max-width: 480px) {
+      .calculators-responsive-wrapper {
+        padding: 15px;
+      }
+      
+      .btn-custom {
+        font-size: 13px;
+        white-space: normal;
+        text-align: left;
+      }
+    }
+
+    /* ensure proper alignment with parent container and remove conflict */
+    .container.d-flex-calc {
+      display: block !important;
+    }
+    
+    /* original .container style override to keep consistency */
+    .services .container[style*="display:flex"] {
+      display: block !important;
+    }
+    
+    /* fix login & header list items display */
+    .login-btn {
+      display: inline-block;
+      list-style: none;
+      margin-left: 15px;
+    }
+    .login-btn a {
+      text-decoration: none;
+    }
+    header .container-fluid {
+      flex-wrap: wrap;
+    }
+    @media (max-width: 992px) {
+      .login-btn {
+        margin: 5px 10px;
+      }
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" class="img-fluid" alt="">
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="index.html#team">Team</a></li>
+          <li><a href="calendar.html" class="menubtn">TB Calendar</a></li>
+          <li><a href="/helper/index.html" class="menubtn">TB Helper</a></li>
+          <li><a href="gifts.html" class="menubtn">TB Gifts</a></li>
+          <li><a href="calc.html" class="menubtn active">TB Calc</a></li>
+          <li class="dropdown"><a href="rules.html"><span>Rules</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="roek280.html">ROE K280</a></li>
+              <li><a href="therules.html">Clan Rules</a></li>
+              <li><a href="cprules.html">CP Run / Rules</a></li>
+            </ul>
+          </li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <li class="login-btn"><a href="login.html" class="rules-cp" style="color: white;">Login</a></li>
+      <li class="login-btn"><a href="contact.html" class="rules-cp" style="color: white;">Contact us</a></li>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title dark-background" style="position: relative;">
+      <div class="container position-relative">
+        <div class="container rimg" style="position: absolute; top: 0; left: 0; max-width: 900px; z-index: 10;">
+          <div class="row">
+            <div class="col-4">
+              <img src="assets/img/army.png" class="img-fluid" style="pointer-events: none;">
+            </div>
+          </div>
+        </div>
+        <h1 style="text-shadow: 3px 3px 6px rgba(245, 139, 62, 0.3), 
+                   -3px -3px 6px rgba(245, 139, 62, 0.3),
+                   3px -3px 6px rgba(245, 139, 62, 0.3),
+                   -3px 3px 6px rgba(245, 139, 62, 0.3);">TB Calculators</h1>
+        <nav class="breadcrumbs" style="position: relative; z-index: 20;">
+          <ol>
+            <li><a href="index.html" style="z-index: 20; position: relative;">Home</a></li>
+            <li class="current">Battle Calculators</li>
+          </ol>
+        </nav>
+      </div>
+    </div><!-- End Page Title -->
+
+    <!-- Services Section with responsive two-column calculator list -->
+    <section id="services" class="services section" style="padding: 5px 0 !important;">
+      <div class="container section-title" data-aos="fade-up" style="padding-bottom: 20px !important;"></div>
+
+      <!-- Responsive two column layout: fixed original two boxes but made into proper responsive columns -->
+      <div class="calculators-responsive-wrapper">
+        <div class="two-column-grid">
+          <!-- LEFT COLUMN: originally first box calculators -->
+          <div class="calc-column">
+            <a href="/calc2.html" class="btn-custom btn-1">
+              <span class="icon"><i class="bi bi-layers"></i></span>
+              Stack Calculator
+            </a>
+            <a href="/calc1.html" class="btn-custom btn-2">
+              <span class="icon"><i class="bi bi-shield-shaded"></i></span>
+              Troops Calculator
+            </a>
+            <a href="/calc4.html" class="btn-custom btn-3">
+              <span class="icon"><i class="bi bi-bar-chart-steps"></i></span>
+              Troops Optimization
+            </a>
+            <a href="/calc6.html" class="btn-custom btn-7">
+              <span class="icon"><i class="bi bi-shield-shaded"></i></span>
+              Army Composition Calculator
+            </a>
+          </div>
+
+          <!-- RIGHT COLUMN: originally second box calculators -->
+          <div class="calc-column">
+            <a href="/calc5.html" class="btn-custom btn-4">
+              <span class="icon"><i class="bi bi-diagram-3-fill"></i></span>
+              Troop Stack Calculator
+            </a>
+            <a href="/calc3.html" class="btn-custom btn-5">
+              <span class="icon"><i class="bi bi-crosshair"></i></span>
+              Epic Hunter Calc
+            </a>
+            <a href="/citadel/" class="btn-custom btn-6">
+              <span class="icon"><i class="bi bi-house-check"></i></span>
+              Citadel Calculator
+            </a>
+          </div>
+        </div>
+      </div>
+    </section><!-- /Services Section -->
+
+  </main>
+
+  <script>
+    // footer injection (keep original footer.js call but we also keep the existing script)
+    // load footer dynamically if footer.js expects a container, but original file likely does append.
+    // we keep as reference but to avoid breaking we include script.
+  </script>
+  <script src="footer.js"></script>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+  <!-- Cloudflare Pages Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "dc8b8994cabb4e468884c0f9950ff5dc"}'></script>
+  
+  <script>
+    // Ensure Google Translate init if needed
+    function googleTranslateElementInit() {
+      // optional init
+    }
+    // avoid console errors if something missing
+    if(typeof AOS !== 'undefined') {
+      AOS.init();
+    }
+  </script>
+</body>
+
+</html>
