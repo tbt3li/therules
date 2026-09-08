@@ -236,7 +236,7 @@ margin-top: 60px !important;
 
 
 
-    /* ===== Section heading ===== */
+  /* ===== Section heading ===== */
   .team-section .team-heading{
     text-align:center;
     margin-bottom: 48px;
@@ -268,11 +268,10 @@ margin-top: 60px !important;
     position: relative;
     display:flex;
     align-items:center;
-    gap: 26px;
     background: linear-gradient(120deg, var(--tm-bg-elevated) 0%, #201417 100%);
     border: 1px solid rgba(201,162,39,0.25);
     border-radius: 14px;
-    padding: 26px 30px;
+    padding: 30px 36px;
     margin-bottom: 40px;
     overflow: hidden;
   }
@@ -280,8 +279,8 @@ margin-top: 60px !important;
     content:"";
     position:absolute;
     top:0; right:0;
-    width: 220px; height: 220px;
-    background: radial-gradient(circle, rgba(201,162,39,0.16) 0%, transparent 70%);
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(201,162,39,0.14) 0%, transparent 70%);
     pointer-events:none;
   }
   .leader-avatar{
@@ -302,13 +301,31 @@ margin-top: 60px !important;
     background: var(--tm-steel);
     border: 3px solid var(--tm-bg-elevated);
   }
+
+  /* Name + badge block */
+  .leader-info{
+    position: relative;
+    flex-shrink: 0;
+    padding: 0 32px;
+    margin-right: 8px;
+  }
+  .leader-info::after{
+    content:"";
+    position:absolute;
+    top: 4px;
+    right: 0;
+    bottom: 4px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(201,162,39,0.35), transparent);
+  }
   .leader-info h3{
     font-family:'Poppins', sans-serif;
     font-size: 23px;
     font-weight: 700;
-    margin: 0 0 4px;
+    margin: 0 0 8px;
     color: var(--tm-off-white);
     letter-spacing: 0.02em;
+    white-space: nowrap;
   }
   .leader-info .leader-role{
     display:inline-block;
@@ -320,6 +337,52 @@ margin-top: 60px !important;
     border: 1px solid rgba(201,162,39,0.35);
     padding: 4px 12px;
     border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* Focus-areas block — fills the remaining blank space */
+  .leader-focus{
+    position: relative;
+    flex: 1 1 auto;
+    padding-left: 32px;
+    min-width: 0;
+  }
+  .leader-focus .focus-label{
+    display:block;
+    font-family:'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--tm-muted);
+    margin-bottom: 10px;
+  }
+  .leader-focus .focus-items{
+    display:flex;
+    flex-wrap: wrap;
+    align-items:center;
+    gap: 10px 0;
+  }
+  .leader-focus .focus-item{
+    font-family:'Poppins', sans-serif;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--tm-off-white);
+  }
+  .leader-focus .focus-item + .focus-item{
+    margin-left: 16px;
+    position: relative;
+    padding-left: 16px;
+  }
+  .leader-focus .focus-item + .focus-item::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--tm-gold);
   }
 
   /* ===== Grid of members ===== */
@@ -343,8 +406,8 @@ margin-top: 60px !important;
     box-shadow: 0 14px 26px rgba(0,0,0,0.35);
   }
   .member-card .avatar{
-    width: 120px;
-    height: 130px;
+    width: 72px;
+    height: 72px;
     margin: 0 auto 14px;
     border-radius: 50%;
     padding: 3px;
@@ -399,10 +462,25 @@ margin-top: 60px !important;
   @media (max-width: 992px){
     .team-grid{ grid-template-columns: repeat(3, 1fr); }
   }
+  @media (max-width: 768px){
+    .leader-card{ flex-direction: column; align-items: stretch; text-align:center; }
+    .leader-avatar{ margin: 0 auto 18px; }
+    .leader-info{
+      padding: 0 0 20px;
+      margin-right: 0;
+      border-bottom: 1px solid rgba(201,162,39,0.2);
+      margin-bottom: 20px;
+    }
+    .leader-info::after{ display:none; }
+    .leader-info h3{ white-space: normal; }
+    .leader-focus{ padding-left: 0; }
+    .leader-focus .focus-items{ justify-content:center; }
+  }
+
   @media (max-width: 620px){
     .team-grid{ grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .leader-card{ flex-direction: column; text-align:center; }
   }
+	
 </style>
  </style>
  <script>
@@ -717,6 +795,14 @@ margin-top: 60px !important;
       <div class="leader-info">
         <h3>WOLFICH</h3>
         <span class="leader-role">Boss / Leader</span>
+      </div>
+      <div class="leader-focus">
+        <span class="focus-label">HANDLES</span>
+        <div class="focus-items">
+          <span class="focus-item">Events</span>
+          <span class="focus-item">General Inquiries</span>
+          <span class="focus-item">Recruitment</span>
+        </div>
       </div>
     </div>
 
