@@ -1,9 +1,10 @@
-const SOURCE = "https://api.chesttracker.com/v1/chests/public/LESGFQYK6D/";
+const CLAN_CODE = "LESGFQYK6D";
+const API_BASE = "https://api.chesttracker.com/v1/chests/public/";
 
-const SLOT = 2 * 60 * 60 * 1000;      // 2 hours
+const SLOT = 2 * 60 * 60 * 1000;      // refresh every 2 hours
 const WEEK = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// Last Sunday 22:00 Pakistan time (= Sunday 17:00 UTC)
+// Last Sunday 17:00 UTC (= Sunday 10:00 PM Pakistan time)
 function lastReset(now) {
   const d = new Date(now);
   let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 17, 0, 0);
@@ -23,73 +24,71 @@ function json(body, status = 200, cc = "no-store") {
   });
 }
 
-// Shape: [ players[], chestDefinitions[], categoryMap{} ]
-function shape(raw) {
-  const players = Array.isArray(raw) && Array.isArray(raw[0]) ? raw[0] : [];
-  const cats = new Set(raw && raw[2] && typeof raw[2] === "object" ? Object.keys(raw[2]) : []);
-  const base = new Set(["name", "aliases", "joinedAt", "createdAt", "guardsLevel", "penalty", "points", "chests"]);
+async function fetchWeek(clan, startMs, endMs) {
+  const url =
+    API_BASE + encodeURIComponent(clan) +
+    "?start=" + encodeURIComponent(new Date(startMs).toISOString()) +
+    "&end=" + encodeURIComponent(new Date(endMs).toISOString()) +
+    "&duration=7";
 
-  const list = players.map((p) => {
-    const c = {};
-    for (const k of Object.keys(p)) {
-      if (!base.has(k) && p[k] && typeof p[k] === "object" && "chests" in p[k]) {
-        c[k] = Number(p[k].chests) || 0;
-        cats.add(k);
-      }
-    }
-    return {
-      name: p.name,
-      aliases: p.aliases || [],
-      joinedAt: p.joinedAt || null,
-      level: p.guardsLevel ?? null,
-      penalty: p.penalty ?? 0,
-      points: p.points ?? 0,
-      chests: p.chests ?? 0,
-      cats: c,
-    };
-  });
-  return { players: list, categories: [...cats] };
-}
-
-async function getSource(env) {
-  const url = env.CHEST_API_URL || SOURCE;
   const res = await fetch(url, {
-    headers: { Accept: "application/json", "User-Agent": "Mozilla/5.0 (compatible; ChestBoard/1.0)" },
+    headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; ChestBoard/1.0)" },
   });
-  if (!res.ok) throw new Error("Source returned HTTP " + res.status);
-  return shape(await res.json());
+  if (!res.ok) throw new Error("ChestTracker API returned HTTP " + res.status);
+
+  const raw = await res.json();
+  // Response shape: [ players[], chestDefinitions[], categories{} ]
+  const players = Array.isArray(raw) ? raw[0] : null;
+  if (!Array.isArray(players)) throw new Error("Unexpected API response format");
+  const categories = raw[2] && typeof raw[2] === "object" ? Object.keys(raw[2]) : [];
+  return { players, categories };
 }
 
 export async function onRequest(context) {
   const { request, env } = context;
   const now = Date.now();
-  const weekStart = lastReset(now);
-  const weekEnd = weekStart + WEEK;
-  const slot = Math.floor((now - weekStart) / SLOT);
-  const nextRefresh = Math.min(weekStart + (slot + 1) * SLOT, weekEnd);
+  const u = new URL(request.url);
 
-  const origin = new URL(request.url).origin;
+  // ?week=0 current week, 1 = previous week, ... (max 26)
+  const offset = Math.min(26, Math.max(0, parseInt(u.searchParams.get("week") || "0", 10) || 0));
+  const clan = env.CLAN_CODE || CLAN_CODE;
+
+  const currentStart = lastReset(now);
+  const weekStart = currentStart - offset * WEEK;
+  const weekEnd = weekStart + WEEK;
+
+  let nextRefresh, slotId;
+  if (offset === 0) {
+    slotId = Math.floor((now - weekStart) / SLOT);
+    nextRefresh = Math.min(weekStart + (slotId + 1) * SLOT, weekEnd);
+  } else {
+    slotId = Math.floor(now / 3600000);          // past weeks: refresh hourly
+    nextRefresh = now + 3600000;
+  }
+
   const cache = caches.default;
-  const slotKey = new Request(`${origin}/__cache/counts/${weekStart}/${slot}`);
-  const lastKey = new Request(`${origin}/__cache/counts/last`);
+  const origin = u.origin;
+  const slotKey = new Request(`${origin}/__cache/${clan}/${offset}/${weekStart}/${slotId}`);
+  const lastKey = new Request(`${origin}/__cache/${clan}/${offset}/last`);
 
   const hit = await cache.match(slotKey);
   if (hit) return hit;
 
   try {
-    const data = await getSource(env);
-    const body = { ok: true, data, fetchedAt: now, weekStart, weekEnd, nextRefresh, stale: false };
+    const data = await fetchWeek(clan, weekStart, weekEnd);
+    const body = { ok: true, data, offset, fetchedAt: now, weekStart, weekEnd, nextRefresh, stale: false };
     const ttl = Math.max(30, Math.floor((nextRefresh - now) / 1000));
+
     const res = json(body, 200, `public, max-age=30, s-maxage=${ttl}`);
     context.waitUntil(cache.put(slotKey, res.clone()));
-    context.waitUntil(cache.put(lastKey, json(body, 200, "public, s-maxage=604800")));
+    context.waitUntil(cache.put(lastKey, json(body, 200, "public, s-maxage=1209600")));
     return res;
   } catch (err) {
     const last = await cache.match(lastKey);
     if (last) {
       const b = await last.json();
-      return json({ ...b, stale: true, error: String(err.message || err), weekEnd, nextRefresh: now + 5 * 60000 });
+      return json({ ...b, stale: true, error: String(err.message || err), nextRefresh: now + 5 * 60000 });
     }
-    return json({ ok: false, error: String(err.message || err), weekEnd, nextRefresh: now + 60000 }, 502);
+    return json({ ok: false, error: String(err.message || err), offset, weekStart, weekEnd, nextRefresh: now + 60000 }, 502);
   }
 }
