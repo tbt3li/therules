@@ -4,10 +4,10 @@ const API_BASE = "https://api.chesttracker.com/v1/chests/public/";
 const SLOT = 2 * 60 * 60 * 1000;      // refresh every 2 hours
 const WEEK = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// Last Sunday 17:00 UTC (= Sunday 10:00 PM Pakistan time)
+// Last Sunday
 function lastReset(now) {
   const d = new Date(now);
-  let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 17, 0, 0);
+  let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0);
   t -= d.getUTCDay() * 86400000;
   if (t > now) t -= WEEK;
   return t;
