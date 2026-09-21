@@ -1,4 +1,4 @@
-const SOURCE = "https://api.chesttracker.com/chests/public/LESGFQYK6D/";
+const SOURCE = "https://api.chesttracker.com/v1/chests/public/LESGFQYK6D/";
 
 const SLOT = 2 * 60 * 60 * 1000;      // 2 hours
 const WEEK = 7 * 24 * 60 * 60 * 1000; // 7 days
