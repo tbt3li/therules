@@ -20,58 +20,56 @@
                radial-gradient(900px 500px at 100% 0%, rgba(34,211,238,.18), transparent), var(--bg);
     background-attachment:fixed; min-height:100vh;
   }
-  .wrap{max-width:1300px;margin:0 auto;padding:24px 14px 60px}
+  .wrap{max-width:1250px;margin:0 auto;padding:24px 14px 60px}
   header{text-align:center;margin-bottom:22px}
   h1{margin:0 0 6px;font-size:clamp(26px,5vw,40px);
      background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
   .sub{color:var(--muted);font-size:14px}
 
   .countdown{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0 6px}
-  .cd{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 10px;min-width:82px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.2)}
+  .cd{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 10px;min-width:84px;text-align:center;
+      box-shadow:0 8px 30px rgba(0,0,0,.2)}
   .cd b{display:block;font-size:clamp(26px,6vw,38px);font-variant-numeric:tabular-nums}
   .cd span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .cdlabel{text-align:center;color:var(--muted);font-size:13px;margin-bottom:22px}
 
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+  .weekbar{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .weeklabel{background:var(--card);border:1px solid var(--line);padding:10px 16px;border-radius:12px;font-size:14px;text-align:center}
+  .weeklabel small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-  .stat small{color:var(--muted);display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+  .stat small{color:var(--muted);display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
   .stat strong{font-size:22px}
 
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-  .toolbar input{flex:1;min-width:200px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;outline:none}
-  .toolbar input:focus{border-color:var(--accent)}
-  .btn{padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-size:14px}
-  .btn:hover{border-color:var(--accent)} .btn:disabled{opacity:.5;cursor:wait}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .toolbar input[type=search]{flex:1;min-width:200px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);
+      background:var(--card);color:var(--text);font-size:15px;outline:none}
+  .toolbar input[type=search]:focus{border-color:var(--accent)}
+  .chk{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px;cursor:pointer}
+  .btn{padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-size:14px}
+  .btn:hover:not(:disabled){border-color:var(--accent)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
 
-  .chips{display:none;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-  .chips.open{display:flex}
-  .chip{padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer}
-  .chip.on{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-
-  .tablebox{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:auto;max-height:75vh;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-  table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
-  thead th{position:sticky;top:0;background:var(--card2);padding:12px 12px;text-align:left;cursor:pointer;white-space:nowrap;
-           font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);user-select:none;z-index:2}
+  .tablebox{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:auto;
+            box-shadow:0 10px 40px rgba(0,0,0,.25);max-height:75vh}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  thead th{position:sticky;top:0;background:var(--card2);padding:13px 14px;text-align:left;cursor:pointer;
+           white-space:nowrap;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+           border-bottom:1px solid var(--line);user-select:none;z-index:2}
   thead th:hover{color:var(--text)}
   th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
-  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
-  tbody tr:hover td{background:rgba(124,92,255,.12)}
-  tbody tr:nth-child(even) td:not(.stick){background:rgba(124,92,255,.05)}
-  tbody tr:hover td:not(.stick){background:rgba(124,92,255,.14)}
-
-  .stick{position:sticky;background:var(--card);z-index:1}
-  th.stick{background:var(--card2);z-index:3}
-  .c-rank{left:0;width:52px;min-width:52px;text-align:center !important}
-  .c-name{left:52px;min-width:150px;box-shadow:2px 0 6px rgba(0,0,0,.15)}
-  .name{font-weight:600}
-  .alias{display:block;font-size:11px;color:var(--muted);font-weight:400}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody tr:nth-child(even){background:rgba(124,92,255,.05)}
+  tbody tr:hover{background:rgba(124,92,255,.14)}
+  tbody tr.zero{opacity:.55}
+  td.zero{color:var(--muted);opacity:.6}
+  td.name{font-weight:600}
+  .alias{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+  .rank{width:56px;text-align:center !important}
   .medal{font-size:18px}
-  .dim{color:var(--muted);opacity:.5}
-  .hl{font-weight:700;color:var(--accent2)}
-  .lvl{display:inline-block;min-width:26px;text-align:center;padding:2px 8px;border-radius:99px;background:rgba(124,92,255,.18);font-weight:600}
-
-  tfoot td{position:sticky;bottom:0;background:var(--card2);padding:12px;font-weight:700;border-top:1px solid var(--line);z-index:2}
-  tfoot td.stick{z-index:3;background:var(--card2)}
+  td.hl{color:var(--accent2);font-weight:700}
+  tfoot td{position:sticky;bottom:0;background:var(--card2);padding:12px 14px;font-weight:700;border-top:1px solid var(--line)}
 
   .status{margin-top:14px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
   .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;margin-left:6px}
@@ -79,9 +77,9 @@
   .stale{background:rgba(251,191,36,.15);color:var(--warn)}
   .err{background:rgba(248,113,113,.15);color:var(--bad)}
   .msg{padding:40px;text-align:center;color:var(--muted)}
-  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--accent);border-radius:50%;
+           animation:spin 1s linear infinite;margin:0 auto 12px}
   @keyframes spin{to{transform:rotate(360deg)}}
-  @media(max-width:600px){ .c-name{min-width:120px} table{font-size:13px} }
 </style>
 </head>
 <body>
@@ -99,40 +97,38 @@
   </div>
   <div class="cdlabel">until weekly reset — <span id="resetAt"></span></div>
 
+  <div class="weekbar">
+    <button class="btn" id="prevBtn">◀ Previous week</button>
+    <div class="weeklabel"><small id="weekTag">This week</small><span id="weekRange">—</span></div>
+    <button class="btn" id="nextBtn" disabled>Next week ▶</button>
+  </div>
+
   <div class="stats" id="stats"></div>
 
   <div class="toolbar">
     <input id="search" type="search" placeholder="🔍 Search player...">
-    <button class="btn" id="colsBtn">⚙ Columns</button>
+    <label class="chk"><input type="checkbox" id="hideZero"> Hide players with 0 chests</label>
     <button class="btn" id="refreshBtn">⟳ Refresh</button>
   </div>
-  <div class="chips" id="chips"></div>
 
   <div class="tablebox" id="tablebox">
     <div class="msg"><div class="spinner"></div>Loading data...</div>
   </div>
-
   <div class="status" id="status"></div>
 </div>
 
 <script>
 (() => {
-  const API = "/api/counts";
-  const WEEK = 7 * 864e5;
-  const TZ = "Asia/Karachi";
-
-  let players = [], cols = [], hidden = new Set(["joined", "penalty"]);
-  let sortKey = "points", sortDir = -1, query = "";
-  let meta = { nextRefresh: Date.now() + 6e4 };
-  let loading = false;
+  const WEEK = 7 * 864e5, TZ = "Asia/Karachi";
+  let offset = 0, players = [], cats = [], cols = [];
+  let sortKey = "points", sortDir = -1, query = "", hideZero = false;
+  let meta = { nextRefresh: Date.now() + 6e4 }, loading = false, reqId = 0;
 
   const $ = id => document.getElementById(id);
-  const fmtDate = ms => new Date(ms).toLocaleString("en-PK", { timeZone: TZ, dateStyle: "medium", timeStyle: "short" });
-  const fmtDay = iso => iso ? new Date(iso).toLocaleDateString("en-PK", { timeZone: TZ, dateStyle: "medium" }) : "—";
-  const n = v => Number(v || 0).toLocaleString();
-  const pretty = k => k.replace(/\b\w/g, c => c.toUpperCase());
+  const fmtDT = ms => new Date(ms).toLocaleString("en-PK", { timeZone: TZ, dateStyle: "medium", timeStyle: "short" });
+  const pretty = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
+  const n = v => (typeof v === "number" && isFinite(v)) ? v : 0;
 
-  // ---- Countdown to Sunday 10:00 PM PKT (17:00 UTC) ----
   function nextReset() {
     const now = Date.now(), d = new Date(now);
     let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 17, 0, 0);
@@ -140,6 +136,7 @@
     if (t <= now) t += WEEK;
     return t;
   }
+
   function tick() {
     const now = Date.now(), target = nextReset();
     const s = Math.max(0, Math.floor((target - now) / 1000));
@@ -147,135 +144,134 @@
     $("cd-h").textContent = String(Math.floor(s % 86400 / 3600)).padStart(2, "0");
     $("cd-m").textContent = String(Math.floor(s % 3600 / 60)).padStart(2, "0");
     $("cd-s").textContent = String(s % 60).padStart(2, "0");
-    $("resetAt").textContent = fmtDate(target) + " PKT";
-    if (!loading && now >= meta.nextRefresh + 3000) load();   // auto refresh
+    $("resetAt").textContent = fmtDT(target) + " PKT";
+    if (offset === 0 && !loading && now >= meta.nextRefresh + 3000) load(true);
   }
 
-  // ---- Columns ----
-  function buildCols(categories) {
+  function buildCols() {
+    const catList = [...cats];
+    players.forEach(p => Object.keys(p).forEach(k => {
+      if (p[k] && typeof p[k] === "object" && !Array.isArray(p[k]) && "chests" in p[k] && !catList.includes(k)) catList.push(k);
+    }));
     cols = [
-      { key: "name", label: "Player", type: "text", fixed: true },
-      { key: "level", label: "Level", type: "level" },
-      { key: "points", label: "Points", type: "num", hl: true },
-      { key: "chests", label: "Chests", type: "num", hl: true },
-      { key: "penalty", label: "Penalty", type: "num", id: "penalty" },
-      { key: "joined", label: "Joined", type: "date", id: "joined" },
-      ...categories.map(c => ({ key: "cat:" + c, label: pretty(c), type: "num", cat: c })),
+      { key: "name", label: "Player", num: false, get: p => p.name || "" },
+      { key: "chests", label: "Chests", num: true, get: p => n(p.chests), hl: true },
+      { key: "points", label: "Points", num: true, get: p => n(p.points), hl: true },
     ];
-    if (!players.some(p => p.penalty)) hidden.add("penalty");
-    renderChips();
-  }
-  const colId = c => c.id || c.key;
-  const val = (p, c) => c.cat ? (p.cats[c.cat] || 0) : c.key === "joined" ? (p.joinedAt ? Date.parse(p.joinedAt) : 0) : p[c.key];
-
-  function renderChips() {
-    const box = $("chips"); box.innerHTML = "";
-    cols.filter(c => !c.fixed).forEach(c => {
-      const b = document.createElement("button");
-      b.className = "chip" + (hidden.has(colId(c)) ? "" : " on");
-      b.textContent = c.label;
-      b.onclick = () => { hidden.has(colId(c)) ? hidden.delete(colId(c)) : hidden.add(colId(c)); renderChips(); render(); };
-      box.appendChild(b);
+    catList.forEach(c => {
+      if (players.some(p => n(p[c] && p[c].chests) > 0))
+        cols.push({ key: "cat:" + c, label: pretty(c), num: true, get: p => n(p[c] && p[c].chests) });
     });
-  }
-
-  // ---- Render ----
-  function cell(p, c) {
-    const td = document.createElement("td");
-    const v = val(p, c);
-    if (c.key === "name") {
-      td.className = "stick c-name";
-      const s = document.createElement("span"); s.className = "name"; s.textContent = p.name; td.appendChild(s);
-      if (p.aliases && p.aliases.length) { const a = document.createElement("span"); a.className = "alias"; a.textContent = p.aliases.join(", "); td.appendChild(a); }
-    } else if (c.type === "level") {
-      const s = document.createElement("span"); s.className = "lvl"; s.textContent = v ?? "—"; td.appendChild(s); td.style.textAlign = "center";
-    } else if (c.type === "date") {
-      td.textContent = fmtDay(p.joinedAt);
-    } else {
-      td.className = "num" + (c.hl ? " hl" : "");
-      if (!v && c.cat) { td.className = "num dim"; td.textContent = "—"; } else td.textContent = n(v);
-    }
-    return td;
+    if (players.some(p => n(p.penalty) !== 0)) cols.push({ key: "penalty", label: "Penalty", num: true, get: p => n(p.penalty) });
+    cols.push({ key: "guardsLevel", label: "Guard Lvl", num: true, get: p => n(p.guardsLevel) });
   }
 
   function render() {
     const box = $("tablebox");
-    if (!players.length) { box.innerHTML = '<div class="msg">No players found.</div>'; return; }
-    const vis = cols.filter(c => c.fixed || !hidden.has(colId(c)));
-    const sc = cols.find(c => c.key === sortKey) || cols[2];
+    if (!players.length) { box.innerHTML = '<div class="msg">No players found for this week.</div>'; $("stats").innerHTML = ""; return; }
 
-    let list = players.filter(p => !query || (p.name + " " + (p.aliases || []).join(" ")).toLowerCase().includes(query));
+    let list = players.filter(p => (!query || (p.name + " " + (p.aliases || []).join(" ")).toLowerCase().includes(query)) && (!hideZero || n(p.chests) > 0));
+    const sc = cols.find(c => c.key === sortKey) || cols[1];
     list = [...list].sort((a, b) => {
-      const x = val(a, sc), y = val(b, sc);
-      if (typeof x === "number" && typeof y === "number") return (x - y) * sortDir;
-      return String(x ?? "").localeCompare(String(y ?? "")) * sortDir;
+      const x = sc.get(a), y = sc.get(b);
+      return (sc.num ? (x - y) : String(x).localeCompare(String(y), undefined, { numeric: true, sensitivity: "base" })) * sortDir
+             || n(b.points) - n(a.points);
     });
 
     const table = document.createElement("table");
     const hr = table.createTHead().insertRow();
-    let th = document.createElement("th"); th.textContent = "#"; th.className = "stick c-rank"; hr.appendChild(th);
-    vis.forEach(c => {
+    let th = document.createElement("th"); th.textContent = "#"; th.className = "rank"; hr.appendChild(th);
+    cols.forEach(c => {
       th = document.createElement("th");
       th.textContent = c.label + (sortKey === c.key ? (sortDir > 0 ? " ▲" : " ▼") : "");
-      if (c.type === "num") th.className = "num";
-      if (c.fixed) th.className = "stick c-name";
-      th.onclick = () => { sortDir = sortKey === c.key ? -sortDir : (c.type === "text" ? 1 : -1); sortKey = c.key; render(); };
+      if (c.num) th.className = "num";
+      th.onclick = () => { sortDir = sortKey === c.key ? -sortDir : (c.num ? -1 : 1); sortKey = c.key; render(); };
       hr.appendChild(th);
     });
 
-    const medals = ["🥇", "🥈", "🥉"];
-    const tb = table.createTBody();
+    const tb = table.createTBody(), medals = ["🥇", "🥈", "🥉"];
     list.forEach((p, i) => {
       const tr = tb.insertRow();
-      const r = tr.insertCell(); r.className = "stick c-rank";
-      if (!query && sortDir < 0 && sortKey !== "name" && i < 3) r.innerHTML = '<span class="medal">' + medals[i] + '</span>'; else r.textContent = i + 1;
-      vis.forEach(c => tr.appendChild(cell(p, c)));
+      if (n(p.chests) === 0) tr.className = "zero";
+      const rc = tr.insertCell(); rc.className = "rank";
+      if (!query && sortDir < 0 && sc.num && i < 3) rc.innerHTML = '<span class="medal">' + medals[i] + "</span>";
+      else rc.textContent = i + 1;
+      cols.forEach(c => {
+        const td = tr.insertCell(), v = c.get(p);
+        if (c.key === "name") {
+          td.className = "name"; td.textContent = v;
+          if ((p.aliases || []).length) { const a = document.createElement("span"); a.className = "alias"; a.textContent = "aka " + p.aliases.join(", "); td.appendChild(a); }
+        } else {
+          td.className = "num" + (c.hl ? " hl" : "") + (v === 0 ? " zero" : "");
+          td.textContent = v === 0 && c.key.startsWith("cat:") ? "–" : v.toLocaleString();
+        }
+      });
     });
 
-    const tf = table.createTFoot().insertRow();
-    const f0 = tf.insertCell(); f0.className = "stick c-rank"; f0.textContent = "Σ";
-    vis.forEach(c => {
-      const td = tf.insertCell();
-      if (c.fixed) { td.className = "stick c-name"; td.textContent = "Total (" + list.length + ")"; }
-      else if (c.type === "num" && c.key !== "penalty") { td.className = "num"; td.textContent = n(list.reduce((s, p) => s + (val(p, c) || 0), 0)); }
+    const tr = table.createTFoot().insertRow();
+    tr.insertCell().textContent = "Σ";
+    cols.forEach(c => {
+      const td = tr.insertCell();
+      if (c.key === "name") td.textContent = "Total (" + list.length + ")";
+      else if (c.key === "guardsLevel") td.textContent = "";
+      else { td.className = "num"; td.textContent = list.reduce((s, p) => s + c.get(p), 0).toLocaleString(); }
     });
-
     box.innerHTML = ""; box.appendChild(table);
 
-    const top = [...players].sort((a, b) => b.points - a.points)[0];
+    // stat cards (all players)
     const st = $("stats"); st.innerHTML = "";
-    const add = (l, v) => { const d = document.createElement("div"); d.className = "stat"; d.innerHTML = "<small></small><strong></strong>"; d.firstChild.textContent = l; d.lastChild.textContent = v; st.appendChild(d); };
-    add("Members", players.length);
-    add("Total Points", n(players.reduce((s, p) => s + p.points, 0)));
-    add("Total Chests", n(players.reduce((s, p) => s + p.chests, 0)));
-    if (top) add("Top Player", top.name + " • " + n(top.points));
+    const add = (l, v) => { const d = document.createElement("div"); d.className = "stat";
+      d.innerHTML = "<small></small><strong></strong>"; d.firstChild.textContent = l; d.lastChild.textContent = v; st.appendChild(d); };
+    const top = [...players].sort((a, b) => n(b.points) - n(a.points))[0];
+    add("Players", players.length.toLocaleString());
+    add("Active (1+ chest)", players.filter(p => n(p.chests) > 0).length.toLocaleString());
+    add("Total Chests", players.reduce((s, p) => s + n(p.chests), 0).toLocaleString());
+    add("Total Points", players.reduce((s, p) => s + n(p.points), 0).toLocaleString());
+    if (top && n(top.points) > 0) add("Top Player", top.name + " (" + n(top.points).toLocaleString() + ")");
   }
 
-  // ---- Load ----
-  async function load() {
+  async function load(auto) {
     loading = true; $("refreshBtn").disabled = true;
+    const my = ++reqId;
     try {
-      const res = await fetch(API + "?t=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
+      const res = await fetch("/api/counts?week=" + offset + "&t=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
       const j = await res.json();
+      if (my !== reqId) return;
       meta.nextRefresh = j.nextRefresh || Date.now() + 6e4;
+      if (j.weekStart) {
+        $("weekRange").textContent = fmtDT(j.weekStart) + "  →  " + fmtDT(j.weekEnd) + " PKT";
+        $("weekTag").textContent = offset === 0 ? "This week" : offset === 1 ? "Last week" : offset + " weeks ago";
+      }
       if (!j.ok) throw new Error(j.error || "Unknown error");
-      players = j.data.players;
-      if (!cols.length) buildCols(j.data.categories);
-      render();
+      players = j.data.players || []; cats = j.data.categories || [];
+      buildCols(); render();
       const badge = j.stale ? '<span class="pill stale">showing last saved data</span>' : '<span class="pill ok">live</span>';
-      $("status").innerHTML = "Data updated: " + fmtDate(j.fetchedAt) + " PKT " + badge + "<br>Next update: " + fmtDate(j.nextRefresh) + " PKT";
+      $("status").innerHTML = "Data updated: " + fmtDT(j.fetchedAt) + " PKT " + badge +
+        (offset === 0 ? "<br>Next update: " + fmtDT(j.nextRefresh) + " PKT" : "");
     } catch (e) {
-      if (!players.length) $("tablebox").innerHTML = '<div class="msg">⚠️ Could not load data.<br><small></small></div>';
-      const sm = $("tablebox").querySelector("small"); if (sm) sm.textContent = e.message;
+      meta.nextRefresh = Date.now() + 6e4;
+      if (!players.length) { $("tablebox").innerHTML = '<div class="msg">⚠️ Could not load data.<br><small></small></div>'; $("tablebox").querySelector("small").textContent = e.message; }
       $("status").innerHTML = '<span class="pill err">error</span> Retrying automatically...';
-    } finally { loading = false; $("refreshBtn").disabled = false; }
+    } finally {
+      if (my === reqId) { loading = false; $("refreshBtn").disabled = false; }
+    }
   }
 
+  function go(o) {
+    offset = Math.max(0, Math.min(26, o));
+    $("nextBtn").disabled = offset === 0; $("prevBtn").disabled = offset >= 26;
+    players = []; $("stats").innerHTML = "";
+    $("tablebox").innerHTML = '<div class="msg"><div class="spinner"></div>Loading data...</div>';
+    load();
+  }
+
+  $("prevBtn").onclick = () => go(offset + 1);
+  $("nextBtn").onclick = () => go(offset - 1);
+  $("refreshBtn").onclick = () => load();
   $("search").addEventListener("input", e => { query = e.target.value.trim().toLowerCase(); render(); });
-  $("colsBtn").addEventListener("click", () => $("chips").classList.toggle("open"));
-  $("refreshBtn").addEventListener("click", load);
-  setInterval(tick, 1000); tick();
-  load();
+  $("hideZero").addEventListener("change", e => { hideZero = e.target.checked; render(); });
+
+  setInterval(tick, 1000); tick(); load();
 })();
 </script>
 </body>
