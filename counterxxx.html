@@ -151,6 +151,12 @@
   .rank{width:56px;text-align:center !important}
   .medal{font-size:18px}
   td.hl{color:var(--accent2);font-weight:700}
+  .percentage-cell{font-weight:800;min-width:60px}
+  td.name-red{color:#ef4444}
+  td.name-orange{color:#f59e0b}
+  td.name-light-green{color:#86efac}
+  td.name-dark-green{color:#16a34a}
+  tbody tr.zero td.name-red{color:#ef4444;opacity:1}
   tfoot td{position:sticky;bottom:0;background:var(--card2);padding:12px 14px;font-weight:700;border-top:1px solid var(--line)}
 
   .status{margin-top:14px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
@@ -168,7 +174,7 @@
 <div class="wrap">
   <header>
     <h1>🏆 Clan Chest Counts</h1>
-    <div class="sub">Live weekly data • Updates every 2 hours • Weekly reset every Sunday 10:00 PM (Pakistan Time)</div>
+    <div class="sub">Live weekly data • Updates every 2 hours • Weekly reset every Sunday 00:00 UTC</div>
   </header>
 
   <div class="countdown">
@@ -201,20 +207,27 @@
 
 <script>
 (() => {
-  const WEEK = 7 * 864e5, TZ = "Asia/Karachi";
+  const WEEK = 7 * 864e5;
   const POINTS_TARGET = 25000;
   let offset = 0, players = [], cats = [], cols = [];
   let sortKey = "points", sortDir = -1, query = "", hideZero = false;
   let meta = { nextRefresh: Date.now() + 6e4 }, loading = false, reqId = 0;
 
   const $ = id => document.getElementById(id);
-  const fmtDT = ms => new Date(ms).toLocaleString("en-PK", { timeZone: TZ, dateStyle: "medium", timeStyle: "short" });
+  const fmtDT = ms => new Date(ms).toLocaleString("en-GB", { timeZone: "UTC", dateStyle: "medium", timeStyle: "short", hour12: false }) + " UTC";
   const pretty = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
   const n = v => (typeof v === "number" && isFinite(v)) ? v : 0;
+  const compact = v => {
+    v = n(v);
+    if (Math.abs(v) >= 1000000) return (v / 1000000).toFixed(v % 1000000 ? 1 : 0) + "m";
+    if (Math.abs(v) >= 1000) return (v / 1000).toFixed(v % 1000 ? 1 : 0) + "k";
+    return String(v);
+  };
+  const pointColorClass = percentage => percentage < 50 ? "red" : percentage <= 80 ? "orange" : percentage < 100 ? "light-green" : "dark-green";
 
   function nextReset() {
     const now = Date.now(), d = new Date(now);
-    let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 17, 0, 0);
+    let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0);
     t -= d.getUTCDay() * 864e5;
     if (t <= now) t += WEEK;
     return t;
@@ -227,7 +240,7 @@
     $("cd-h").textContent = String(Math.floor(s % 86400 / 3600)).padStart(2, "0");
     $("cd-m").textContent = String(Math.floor(s % 3600 / 60)).padStart(2, "0");
     $("cd-s").textContent = String(s % 60).padStart(2, "0");
-    $("resetAt").textContent = fmtDT(target) + " PKT";
+    $("resetAt").textContent = fmtDT(target);
     if (offset === 0 && !loading && now >= meta.nextRefresh + 3000) load(true);
   }
 
@@ -238,6 +251,7 @@
     }));
     cols = [
       { key: "name", label: "Player", num: false, get: p => p.name || "" },
+      { key: "percentage", label: "%", num: true, get: p => (n(p.points) / POINTS_TARGET) * 100 },
       { key: "chests", label: "Chests", num: true, get: p => n(p.chests), hl: true },
       { key: "points", label: "Points", num: true, get: p => n(p.points), hl: true },
     ];
@@ -282,24 +296,17 @@
       cols.forEach(c => {
         const td = tr.insertCell(), v = c.get(p);
         if (c.key === "name") {
-          td.className = "name"; td.textContent = v;
+          const percentage = (n(p.points) / POINTS_TARGET) * 100;
+          const colorClass = pointColorClass(percentage);
+          td.className = "name name-" + colorClass;
+          td.textContent = v;
           if ((p.aliases || []).length) { const a = document.createElement("span"); a.className = "alias"; a.textContent = "aka " + p.aliases.join(", "); td.appendChild(a); }
         } else if (c.key === "points") {
           td.className = "num";
 
           const percentage = (v / POINTS_TARGET) * 100;
           const fillPercentage = Math.min(100, Math.max(0, percentage));
-
-          let colorClass;
-          if (percentage < 50) {
-            colorClass = "red";
-          } else if (percentage <= 80) {
-            colorClass = "orange";
-          } else if (percentage < 100) {
-            colorClass = "light-green";
-          } else {
-            colorClass = "dark-green";
-          }
+          const colorClass = pointColorClass(percentage);
 
           const bar = document.createElement("div");
           bar.className = "points-bar";
@@ -310,12 +317,16 @@
 
           const value = document.createElement("div");
           value.className = "points-value";
-          value.textContent = v.toLocaleString() + " / " + POINTS_TARGET.toLocaleString();
+          value.textContent = compact(v) + " / " + compact(POINTS_TARGET);
 
           bar.appendChild(fill);
           bar.appendChild(value);
           td.appendChild(bar);
 
+        } else if (c.key === "percentage") {
+          td.className = "num percentage-cell";
+          const percentage = (n(p.points) / POINTS_TARGET) * 100;
+          td.textContent = Math.round(percentage) + "%";
         } else {
           td.className = "num" + (c.hl ? " hl" : "") + (v === 0 ? " zero" : "");
           td.textContent = v === 0 && c.key.startsWith("cat:") ? "–" : v.toLocaleString();
@@ -329,7 +340,8 @@
       const td = tr.insertCell();
       if (c.key === "name") td.textContent = "Total (" + list.length + ")";
       else if (c.key === "guardsLevel") td.textContent = "";
-      else { td.className = "num"; td.textContent = list.reduce((s, p) => s + c.get(p), 0).toLocaleString(); }
+      else if (c.key === "percentage") { td.className = "num"; const totalPoints = list.reduce((s, p) => s + n(p.points), 0); td.textContent = list.length ? Math.round((totalPoints / (POINTS_TARGET * list.length)) * 100) + "%" : "0%"; }
+      else { td.className = "num"; td.textContent = c.key === "points" ? compact(list.reduce((s, p) => s + c.get(p), 0)) : list.reduce((s, p) => s + c.get(p), 0).toLocaleString(); }
     });
     box.innerHTML = ""; box.appendChild(table);
 
@@ -341,8 +353,8 @@
     add("Players", players.length.toLocaleString());
     add("Active (1+ chest)", players.filter(p => n(p.chests) > 0).length.toLocaleString());
     add("Total Chests", players.reduce((s, p) => s + n(p.chests), 0).toLocaleString());
-    add("Total Points", players.reduce((s, p) => s + n(p.points), 0).toLocaleString());
-    if (top && n(top.points) > 0) add("Top Player", top.name + " (" + n(top.points).toLocaleString() + ")");
+    add("Total Points", compact(players.reduce((s, p) => s + n(p.points), 0)));
+    if (top && n(top.points) > 0) add("Top Player", top.name + " (" + compact(top.points) + ")");
   }
 
   async function load(auto) {
@@ -354,15 +366,15 @@
       if (my !== reqId) return;
       meta.nextRefresh = j.nextRefresh || Date.now() + 6e4;
       if (j.weekStart) {
-        $("weekRange").textContent = fmtDT(j.weekStart) + "  →  " + fmtDT(j.weekEnd) + " PKT";
+        $("weekRange").textContent = fmtDT(j.weekStart) + "  →  " + fmtDT(j.weekEnd);
         $("weekTag").textContent = offset === 0 ? "This week" : offset === 1 ? "Last week" : offset + " weeks ago";
       }
       if (!j.ok) throw new Error(j.error || "Unknown error");
       players = j.data.players || []; cats = j.data.categories || [];
       buildCols(); render();
       const badge = j.stale ? '<span class="pill stale">showing last saved data</span>' : '<span class="pill ok">live</span>';
-      $("status").innerHTML = "Data updated: " + fmtDT(j.fetchedAt) + " PKT " + badge +
-        (offset === 0 ? "<br>Next update: " + fmtDT(j.nextRefresh) + " PKT" : "");
+      $("status").innerHTML = "Data updated: " + fmtDT(j.fetchedAt) + " " + badge +
+        (offset === 0 ? "<br>Next update: " + fmtDT(j.nextRefresh) : "");
     } catch (e) {
       meta.nextRefresh = Date.now() + 6e4;
       if (!players.length) { $("tablebox").innerHTML = '<div class="msg">⚠️ Could not load data.<br><small></small></div>'; $("tablebox").querySelector("small").textContent = e.message; }
