@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE — Clan Chest Counts</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%B0%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070911; --bg2:#0c1120; --card:#12182a; --card2:#171f36; --line:#28324f;
+    --text:#edf0fb; --muted:#8a93b8; --accent:#d9b04c; --accent-bright:#f3cf6e; --accent2:#38bdf8;
+    --good:#22c55e; --warn:#f0b429; --bad:#e5484d;
+    --font-display:"Cinzel","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --font-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f4efe0; --bg2:#efe8d4; --card:#fffdf6; --card2:#faf3e2; --line:#ddd0a8;
+      --text:#241d0f; --muted:#71613f; --accent:#a3760f; --accent-bright:#8a6209; --accent2:#0369a1;
+      --good:#15803d; --warn:#b45309; --bad:#b91c1c;
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:var(--font-body); color:var(--text);
+    background:
+      radial-gradient(900px 520px at 12% -8%, rgba(217,176,76,.14), transparent),
+      radial-gradient(1100px 620px at 105% 8%, rgba(56,189,248,.09), transparent),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    background-attachment:fixed; min-height:100vh;
+  }
+  .wrap{max-width:1250px;margin:0 auto;padding:32px 14px 60px}
+
+  header{text-align:center;margin-bottom:26px;animation:crest-rise .7s cubic-bezier(.2,.8,.2,1)}
+  @keyframes crest-rise{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+  @media (prefers-reduced-motion: reduce){ header{animation:none} }
+  .crest{width:52px;height:52px;margin:0 auto 10px;color:var(--accent);filter:drop-shadow(0 4px 14px rgba(217,176,76,.35))}
+  h1{margin:0 0 8px;font-family:var(--font-display);font-weight:700;letter-spacing:.02em;
+     font-size:clamp(30px,5.4vw,46px);color:var(--accent-bright);
+     text-shadow:0 2px 18px rgba(217,176,76,.28)}
+  h1 em{font-style:normal;color:var(--text)}
+  .sub{color:var(--muted);font-size:14px;letter-spacing:.01em}
+
+  .countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:22px 0 8px}
+  .cd{position:relative;background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+      border-radius:14px;padding:14px 12px 12px;min-width:86px;text-align:center;
+      box-shadow:0 10px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04)}
+  .cd::before{content:"";position:absolute;left:14px;right:14px;top:0;height:2px;border-radius:2px;
+      background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.7}
+  .cd b{display:block;font-family:var(--font-display);font-weight:700;font-size:clamp(26px,6vw,36px);
+        font-variant-numeric:tabular-nums;color:var(--text)}
+  .cd span{font-size:11.5px;letter-spacing:.04em;color:var(--muted)}
+  .cdlabel{text-align:center;color:var(--muted);font-size:13px;margin-bottom:26px}
+  .cdlabel span{color:var(--accent)}
+
+  .weekbar{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+  .weeklabel{background:var(--card);border:1px solid var(--line);padding:10px 18px;border-radius:12px;font-size:14px;text-align:center}
+  .weeklabel small{display:block;color:var(--accent);font-family:var(--font-display);font-weight:600;font-size:12.5px;letter-spacing:.04em}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+  .stat{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:14px;padding:15px 16px;
+        position:relative;overflow:hidden}
+  .stat::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);opacity:.75}
+  .stat small{color:var(--muted);display:block;font-size:12.5px;letter-spacing:.01em;margin-bottom:2px}
+  .stat strong{font-size:22px;font-variant-numeric:tabular-nums}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar input[type=search]{flex:1;min-width:200px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);
+      background:var(--card);color:var(--text);font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}
+  .toolbar input[type=search]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,176,76,.16)}
+  .chk{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px;cursor:pointer}
+  .btn{padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-size:14px;
+       transition:border-color .15s,color .15s}
+  .btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent-bright)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+
+  .tablebox{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:auto;
+            box-shadow:0 14px 44px rgba(0,0,0,.4);max-height:75vh}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  thead th{position:sticky;top:0;background:var(--card2);padding:13px 14px;text-align:left;cursor:pointer;
+           white-space:nowrap;font-size:13px;letter-spacing:.01em;font-weight:600;color:var(--muted);
+           border-bottom:2px solid var(--accent);box-shadow:0 1px 0 var(--line);user-select:none;z-index:2}
+  thead th:hover{color:var(--accent-bright)}
+  th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+  .points-bar{
+    position:relative;
+    width:100%;
+    min-width:190px;
+    height:22px;
+    background:
+      linear-gradient(
+        to bottom,
+        #2a2f42 0%,
+        #1c2032 45%,
+        #141724 55%,
+        #1e2233 100%
+      );
+    border:1px solid var(--line);
+    border-radius:9px;
+    overflow:hidden;
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,.4),
+      inset 0 -1px 2px rgba(255,255,255,.05),
+      0 2px 4px rgba(0,0,0,.25);
+  }
+
+  .points-fill{
+    position:relative;
+    height:100%;
+    width:0;
+    border-radius:8px;
+    transition:width .5s ease;
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.45),
+      inset 0 -3px 4px rgba(0,0,0,.25),
+      2px 0 5px rgba(0,0,0,.18);
+    overflow:hidden;
+  }
+
+  .points-fill::before{
+    content:"";
+    position:absolute;
+    top:2px;
+    left:4px;
+    right:4px;
+    height:42%;
+    border-radius:6px;
+    background:linear-gradient(
+      to bottom,
+      rgba(255,255,255,.65),
+      rgba(255,255,255,.08)
+    );
+    pointer-events:none;
+  }
+
+  .points-fill.red{
+    background:linear-gradient(to bottom,#f08a8a 0%,#e5484d 45%,#a3202b 100%);
+  }
+
+  .points-fill.orange{
+    background:linear-gradient(to bottom,#f3d488 0%,#d9b04c 45%,#a3760f 100%);
+  }
+
+  .points-fill.sky-blue{
+    background:linear-gradient(to bottom,#bae6fd 0%,#38bdf8 45%,#0369a1 100%);
+  }
+
+  .points-fill.dark-green{
+    background:linear-gradient(to bottom,#6ee0a3 0%,#22c55e 45%,#15803d 100%);
+  }
+
+  .points-value{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:13px;
+    color:#fff;
+    text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.45);
+    z-index:2;
+    font-variant-numeric:tabular-nums;
+    pointer-events:none;
+  }
+  tbody td{padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody tr:nth-child(even){background:rgba(217,176,76,.035)}
+  tbody tr:hover{background:rgba(217,176,76,.09)}
+  tbody tr.zero{opacity:.5}
+  td.zero{color:var(--muted);opacity:.6}
+  td.name{font-weight:600}
+  .alias{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+  .rank{width:56px;text-align:center !important;color:var(--muted);font-variant-numeric:tabular-nums}
+  .medal{font-size:19px}
+  td.hl{color:var(--accent2);font-weight:700}
+  .percentage-cell{font-weight:800;min-width:60px}
+  td.percentage-red{color:#e5484d}
+  td.percentage-orange{color:#d9b04c}
+  td.percentage-sky-blue{color:#38bdf8}
+  td.percentage-dark-green{color:#22c55e}
+  td.name-red{color:#e5484d}
+  td.name-orange{color:#d9b04c}
+  td.name-sky-blue{color:#38bdf8}
+  td.name-dark-green{color:#22c55e}
+  tbody tr.zero td.name-red{color:#e5484d;opacity:1}
+  tfoot td{position:sticky;bottom:0;background:var(--card2);padding:13px 14px;font-weight:700;
+           border-top:2px solid var(--accent);color:var(--text)}
+
+  .status{margin-top:16px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+  .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;margin-left:6px}
+  .ok{background:rgba(34,197,94,.14);color:var(--good)}
+  .stale{background:rgba(240,180,41,.15);color:var(--warn)}
+  .err{background:rgba(229,72,77,.15);color:var(--bad)}
+  .msg{padding:40px;text-align:center;color:var(--muted)}
+  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--accent);border-radius:50%;
+           animation:spin 1s linear infinite;margin:0 auto 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="crest" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M32 3 54 11v17c0 15-9.5 26.5-22 33C19.5 54.5 10 43 10 28V11L32 3Z" fill="currentColor" fill-opacity=".12" stroke="currentColor" stroke-width="2"/>
+      <path d="M22 30h20v14a3 3 0 0 1-3 3H25a3 3 0 0 1-3-3V30Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M20 30v-4a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="32" cy="36" r="2.6" fill="currentColor"/>
+    </svg>
+    <h1>THE — <em>Chest Counts</em></h1>
+    <div class="sub">Live weekly leaderboard • Refreshes every 2 hours • Season resets Sunday 17:00 UTC</div>
+  </header>
+
+  <div class="countdown">
+    <div class="cd"><b id="cd-d">0</b><span>Days</span></div>
+    <div class="cd"><b id="cd-h">00</b><span>Hours</span></div>
+    <div class="cd"><b id="cd-m">00</b><span>Minutes</span></div>
+    <div class="cd"><b id="cd-s">00</b><span>Seconds</span></div>
+  </div>
+  <div class="cdlabel">until weekly reset — <span id="resetAt"></span></div>
+
+  <div class="weekbar">
+    <button class="btn" id="prevBtn">◀ Previous week</button>
+    <div class="weeklabel"><small id="weekTag">This week</small><span id="weekRange">—</span></div>
+    <button class="btn" id="nextBtn" disabled>Next week ▶</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="🔍 Search player...">
+    <label class="chk"><input type="checkbox" id="hideZero"> Hide players with 0 chests</label>
+    <button class="btn" id="refreshBtn">⟳ Refresh</button>
+  </div>
+
+  <div class="tablebox" id="tablebox">
+    <div class="msg"><div class="spinner"></div>Loading data...</div>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+(() => {
+  const WEEK = 7 * 864e5;
+  const POINTS_TARGET = 25000;
+  let offset = 0, players = [], cats = [], cols = [];
+  let sortKey = "points", sortDir = -1, query = "", hideZero = false;
+  let meta = { nextRefresh: Date.now() + 6e4 }, loading = false, reqId = 0;
+
+  const $ = id => document.getElementById(id);
+  const fmtDT = ms => new Date(ms).toLocaleString("en-GB", { timeZone: "UTC", dateStyle: "medium", timeStyle: "short", hour12: false }) + " UTC";
+  const pretty = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
+  const n = v => (typeof v === "number" && isFinite(v)) ? v : 0;
+  const compact = v => {
+    v = n(v);
+    if (Math.abs(v) >= 1000000) return (v / 1000000).toFixed(v % 1000000 ? 1 : 0) + "m";
+    if (Math.abs(v) >= 1000) return (v / 1000).toFixed(v % 1000 ? 1 : 0) + "k";
+    return String(v);
+  };
+  const pointColorClass = percentage => percentage < 50 ? "red" : percentage <= 80 ? "orange" : percentage < 100 ? "sky-blue" : "dark-green";
+
+  function nextReset() {
+    const now = Date.now(), d = new Date(now);
+    let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 17, 0, 0);
+    t -= d.getUTCDay() * 864e5;
+    if (t <= now) t += WEEK;
+    return t;
+  }
+
+  function tick() {
+    const now = Date.now(), target = nextReset();
+    const s = Math.max(0, Math.floor((target - now) / 1000));
+    $("cd-d").textContent = Math.floor(s / 86400);
+    $("cd-h").textContent = String(Math.floor(s % 86400 / 3600)).padStart(2, "0");
+    $("cd-m").textContent = String(Math.floor(s % 3600 / 60)).padStart(2, "0");
+    $("cd-s").textContent = String(s % 60).padStart(2, "0");
+    $("resetAt").textContent = fmtDT(target);
+    if (offset === 0 && !loading && now >= meta.nextRefresh + 3000) load(true);
+  }
+
+  function buildCols() {
+    const catList = [...cats];
+    players.forEach(p => Object.keys(p).forEach(k => {
+      if (p[k] && typeof p[k] === "object" && !Array.isArray(p[k]) && "chests" in p[k] && !catList.includes(k)) catList.push(k);
+    }));
+    cols = [
+      { key: "name", label: "Player", num: false, get: p => p.name || "" },
+      { key: "percentage", label: "%", num: true, get: p => (n(p.points) / POINTS_TARGET) * 100 },
+      { key: "chests", label: "Chests", num: true, get: p => n(p.chests), hl: true },
+      { key: "points", label: "Points", num: true, get: p => n(p.points), hl: true },
+    ];
+    catList.forEach(c => {
+      if (players.some(p => n(p[c] && p[c].chests) > 0))
+        cols.push({ key: "cat:" + c, label: pretty(c), num: true, get: p => n(p[c] && p[c].chests) });
+    });
+    if (players.some(p => n(p.penalty) !== 0)) cols.push({ key: "penalty", label: "Penalty", num: true, get: p => n(p.penalty) });
+    cols.push({ key: "guardsLevel", label: "Guard Lvl", num: true, get: p => n(p.guardsLevel) });
+  }
+
+  function render() {
+    const box = $("tablebox");
+    if (!players.length) { box.innerHTML = '<div class="msg">No players found for this week.</div>'; $("stats").innerHTML = ""; return; }
+
+    let list = players.filter(p => (!query || (p.name + " " + (p.aliases || []).join(" ")).toLowerCase().includes(query)) && (!hideZero || n(p.chests) > 0));
+    const sc = cols.find(c => c.key === sortKey) || cols[1];
+    list = [...list].sort((a, b) => {
+      const x = sc.get(a), y = sc.get(b);
+      return (sc.num ? (x - y) : String(x).localeCompare(String(y), undefined, { numeric: true, sensitivity: "base" })) * sortDir
+             || n(b.points) - n(a.points);
+    });
+
+    const table = document.createElement("table");
+    const hr = table.createTHead().insertRow();
+    let th = document.createElement("th"); th.textContent = "#"; th.className = "rank"; hr.appendChild(th);
+    cols.forEach(c => {
+      th = document.createElement("th");
+      th.textContent = c.label + (sortKey === c.key ? (sortDir > 0 ? " ▲" : " ▼") : "");
+      if (c.num) th.className = "num";
+      th.onclick = () => { sortDir = sortKey === c.key ? -sortDir : (c.num ? -1 : 1); sortKey = c.key; render(); };
+      hr.appendChild(th);
+    });
+
+    const tb = table.createTBody(), medals = ["🥇", "🥈", "🥉"];
+    list.forEach((p, i) => {
+      const tr = tb.insertRow();
+      if (n(p.chests) === 0) tr.className = "zero";
+      const rc = tr.insertCell(); rc.className = "rank";
+      if (!query && sortDir < 0 && sc.num && i < 3) rc.innerHTML = '<span class="medal">' + medals[i] + "</span>";
+      else rc.textContent = i + 1;
+      cols.forEach(c => {
+        const td = tr.insertCell(), v = c.get(p);
+        if (c.key === "name") {
+          const percentage = (n(p.points) / POINTS_TARGET) * 100;
+          const colorClass = pointColorClass(percentage);
+          td.className = "name name-" + colorClass;
+          td.textContent = v;
+          if ((p.aliases || []).length) { const a = document.createElement("span"); a.className = "alias"; a.textContent = "aka " + p.aliases.join(", "); td.appendChild(a); }
+        } else if (c.key === "points") {
+          td.className = "num";
+
+          const percentage = (v / POINTS_TARGET) * 100;
+          const fillPercentage = Math.min(100, Math.max(0, percentage));
+          const colorClass = pointColorClass(percentage);
+
+          const bar = document.createElement("div");
+          bar.className = "points-bar";
+
+          const fill = document.createElement("div");
+          fill.className = "points-fill " + colorClass;
+          fill.style.width = fillPercentage + "%";
+
+          const value = document.createElement("div");
+          value.className = "points-value";
+          value.textContent = compact(v) + " / " + compact(POINTS_TARGET);
+
+          bar.appendChild(fill);
+          bar.appendChild(value);
+          td.appendChild(bar);
+
+        } else if (c.key === "percentage") {
+          const percentage = (n(p.points) / POINTS_TARGET) * 100;
+          const colorClass = pointColorClass(percentage);
+          td.className = "num percentage-cell percentage-" + colorClass;
+          td.textContent = Math.round(percentage) + "%";
+        } else {
+          td.className = "num" + (c.hl ? " hl" : "") + (v === 0 ? " zero" : "");
+          td.textContent = v === 0 && c.key.startsWith("cat:") ? "–" : v.toLocaleString();
+        }
+      });
+    });
+
+    const tr = table.createTFoot().insertRow();
+    tr.insertCell().textContent = "Σ";
+    cols.forEach(c => {
+      const td = tr.insertCell();
+      if (c.key === "name") td.textContent = "Total (" + list.length + ")";
+      else if (c.key === "guardsLevel") td.textContent = "";
+      else if (c.key === "percentage") { td.className = "num"; const totalPoints = list.reduce((s, p) => s + n(p.points), 0); td.textContent = list.length ? Math.round((totalPoints / (POINTS_TARGET * list.length)) * 100) + "%" : "0%"; }
+      else { td.className = "num"; td.textContent = c.key === "points" ? compact(list.reduce((s, p) => s + c.get(p), 0)) : list.reduce((s, p) => s + c.get(p), 0).toLocaleString(); }
+    });
+    box.innerHTML = ""; box.appendChild(table);
+
+    // stat cards (all players)
+    const st = $("stats"); st.innerHTML = "";
+    const add = (l, v) => { const d = document.createElement("div"); d.className = "stat";
+      d.innerHTML = "<small></small><strong></strong>"; d.firstChild.textContent = l; d.lastChild.textContent = v; st.appendChild(d); };
+    const top = [...players].sort((a, b) => n(b.points) - n(a.points))[0];
+    add("Players", players.length.toLocaleString());
+    add("Active (1+ chest)", players.filter(p => n(p.chests) > 0).length.toLocaleString());
+    add("Total Chests", players.reduce((s, p) => s + n(p.chests), 0).toLocaleString());
+    add("Total Points", compact(players.reduce((s, p) => s + n(p.points), 0)));
+    if (top && n(top.points) > 0) add("Top Player", top.name + " (" + compact(top.points) + ")");
+  }
+
+  async function load(auto) {
+    loading = true; $("refreshBtn").disabled = true;
+    const my = ++reqId;
+    try {
+      const res = await fetch("/api/counts?week=" + offset + "&t=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
+      const j = await res.json();
+      if (my !== reqId) return;
+      meta.nextRefresh = j.nextRefresh || Date.now() + 6e4;
+      if (j.weekStart) {
+        $("weekRange").textContent = fmtDT(j.weekStart) + "  →  " + fmtDT(j.weekEnd);
+        $("weekTag").textContent = offset === 0 ? "This week" : offset === 1 ? "Last week" : offset + " weeks ago";
+      }
+      if (!j.ok) throw new Error(j.error || "Unknown error");
+      players = j.data.players || []; cats = j.data.categories || [];
+      buildCols(); render();
+      const badge = j.stale ? '<span class="pill stale">showing last saved data</span>' : '<span class="pill ok">live</span>';
+      $("status").innerHTML = "Data updated: " + fmtDT(j.fetchedAt) + " " + badge +
+        (offset === 0 ? "<br>Next update: " + fmtDT(j.nextRefresh) : "");
+    } catch (e) {
+      meta.nextRefresh = Date.now() + 6e4;
+      if (!players.length) { $("tablebox").innerHTML = '<div class="msg">⚠️ Could not load data.<br><small></small></div>'; $("tablebox").querySelector("small").textContent = e.message; }
+      $("status").innerHTML = '<span class="pill err">error</span> Retrying automatically...';
+    } finally {
+      if (my === reqId) { loading = false; $("refreshBtn").disabled = false; }
+    }
+  }
+
+  function go(o) {
+    offset = Math.max(0, Math.min(26, o));
+    $("nextBtn").disabled = offset === 0; $("prevBtn").disabled = offset >= 26;
+    players = []; $("stats").innerHTML = "";
+    $("tablebox").innerHTML = '<div class="msg"><div class="spinner"></div>Loading data...</div>';
+    load();
+  }
+
+  $("prevBtn").onclick = () => go(offset + 1);
+  $("nextBtn").onclick = () => go(offset - 1);
+  $("refreshBtn").onclick = () => load();
+  $("search").addEventListener("input", e => { query = e.target.value.trim().toLowerCase(); render(); });
+  $("hideZero").addEventListener("change", e => { hideZero = e.target.checked; render(); });
+
+  setInterval(tick, 1000); tick(); load();
+})();
+</script>
+</body>
+</html>
