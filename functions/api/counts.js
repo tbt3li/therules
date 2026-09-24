@@ -1,7 +1,7 @@
 const CLAN_CODE = "LESGFQYK6D";
 const API_BASE = "https://api.chesttracker.com/v1/chests/public/";
 
-const SLOT = 2 * 60 * 60 * 1000;      // refresh every 2 hours
+const SLOT = 4 * 60 * 60 * 1000;      // refresh every 2 hours
 const WEEK = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 // Last Sunday
