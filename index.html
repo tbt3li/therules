@@ -33,6 +33,38 @@
   text-align: center;
 }
 
+/* ===== Center top navigation on desktop ===== */
+@media (min-width: 1200px) {
+  #navmenu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #navmenu > ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+/* ===== Center mobile navigation menu ===== */
+@media (max-width: 1199px) {
+  #navmenu ul {
+    text-align: center;
+  }
+
+  #navmenu ul li {
+    text-align: center;
+  }
+
+  #navmenu ul li a {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
 .badge1 {
   position: relative;
   margin: 1.0em 2em 1.5em 2em;
