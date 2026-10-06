@@ -1,0 +1,8 @@
+name = "counts"
+main = "worker-counts.js"
+compatibility_date = "2024-09-23"
+
+# Deployed name determines the *.workers.dev subdomain:
+#   name = "counts"  ->  https://counts.<your-account-subdomain>.workers.dev
+# If your account subdomain is "t3li", this becomes counts.t3li.workers.dev.
+# Check/set your subdomain at: https://dash.cloudflare.com -> Workers & Pages -> Overview
