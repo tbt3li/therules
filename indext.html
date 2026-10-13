@@ -36,27 +36,29 @@
 
 
 /* ===== header setting custom ===== */	
-	@media (max-width: 1199px) {
+@media (max-width: 1199px) {
   .header-btns {
-    gap: 4px !important;
+    gap: 3px !important;
   }
   .header-btns .btn-header-outline {
-    padding: 4px 8px;
-    font-size: 12px;
+    padding: 4px 7px;
+    font-size: 11px;
   }
 }
 
 @media (max-width: 400px) {
+  .header-btns {
+    gap: 2px !important;
+  }
   .header-btns .btn-header-outline {
-    padding: 3px 6px;
-    font-size: 10.5px;
+    padding: 3px 5px;
+    font-size: 9.5px;
   }
   .navbar-logo {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
   }
 }
-
 
 	
 /* ===== Center top navigation on desktop ===== */
@@ -562,21 +564,25 @@ margin-top: 60px !important;
     </a>
 
     <!-- Buttons: Right (always visible) -->
-    <div class="header-btns d-flex align-items-center gap-2 ms-auto flex-shrink-0">
-      <a href="counts.html" class="rules-cp btn-header-outline">Chest Counts</a>
-      <a href="contact.html" class="rules-cp btn-header-outline">Contact us</a>
-      <a href="login.html" class="rules-cp btn-header-outline">Login</a>
-    </div>
+<div class="header-btns d-flex align-items-center gap-2 ms-auto flex-shrink-0">
+  <!-- Mobile only: moved here from the menu -->
+  <a href="hub.html" class="rules-cp btn-header-outline d-xl-none">Info Hub</a>
 
-    <!-- Nav: centered on desktop, hamburger on mobile -->
-    <nav id="navmenu" class="navmenu">
-      <ul>
-        <li><a href="/" class="active">THE Home</a></li>
-        <li><a href="hub.html" class="menubtn">Information Hub</a></li>
-        <li><a href="calc.html" class="menubtn">TB Calculators</a></li>
-      </ul>
-      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-    </nav>
+  <a href="counts.html" class="rules-cp btn-header-outline">Chest Counts</a>
+  <a href="contact.html" class="rules-cp btn-header-outline">Contact us</a>
+  <a href="login.html" class="rules-cp btn-header-outline">Login</a>
+</div>
+
+<!-- Nav -->
+<nav id="navmenu" class="navmenu">
+  <ul>
+    <li><a href="/" class="active">THE Home</a></li>
+    <!-- Desktop only -->
+    <li class="d-none d-xl-block"><a href="hub.html" class="menubtn">Information Hub</a></li>
+    <li><a href="calc.html" class="menubtn">TB Calculators</a></li>
+  </ul>
+  <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+</nav>
 
   </div>
 </header>
