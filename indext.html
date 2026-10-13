@@ -33,20 +33,32 @@
   text-align: center;
 }
 
+
+
+/* ===== header setting custom ===== */	
 	@media (max-width: 1199px) {
-  #navmenu ul {
-    max-height: calc(100vh - 80px);
-    overflow-y: auto;
+  .header-btns {
+    gap: 4px !important;
+  }
+  .header-btns .btn-header-outline {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-btns .btn-header-outline {
+    padding: 3px 6px;
+    font-size: 10.5px;
+  }
+  .navbar-logo {
+    width: 45px;
+    height: 45px;
   }
 }
 
 
-
-	@media (max-width: 1199px) {
-  .menubtn {
-    margin: 4px 20px;
-  }
-}
+	
 /* ===== Center top navigation on desktop ===== */
 @media (min-width: 1200px) {
   #navmenu {
@@ -549,19 +561,22 @@ margin-top: 60px !important;
       <img src="assets/img/logo.png" class="img-fluid navbar-logo" alt="">
     </a>
 
-<nav id="navmenu" class="navmenu">
-  <ul>
-    <li><a href="/" class="active">THE Home</a></li>
-    <li><a href="hub.html" class="menubtn">Information Hub</a></li>
-    <li><a href="calc.html" class="menubtn">TB Calculators</a></li>
+    <!-- Buttons: Right (always visible) -->
+    <div class="header-btns d-flex align-items-center gap-2 ms-auto flex-shrink-0">
+      <a href="counts.html" class="rules-cp btn-header-outline">Chest Counts</a>
+      <a href="contact.html" class="rules-cp btn-header-outline">Contact us</a>
+      <a href="login.html" class="rules-cp btn-header-outline">Login</a>
+    </div>
 
-    <!-- Mobile-only links -->
-    <li class="d-xl-none"><a href="counts.html">Chest Counts</a></li>
-    <li class="d-xl-none"><a href="contact.html">Contact us</a></li>
-    <li class="d-xl-none"><a href="login.html">Login</a></li>
-  </ul>
-  <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-</nav>
+    <!-- Nav: centered on desktop, hamburger on mobile -->
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/" class="active">THE Home</a></li>
+        <li><a href="hub.html" class="menubtn">Information Hub</a></li>
+        <li><a href="calc.html" class="menubtn">TB Calculators</a></li>
+      </ul>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
 
   </div>
 </header>
