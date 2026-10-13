@@ -237,6 +237,13 @@ details .body ul{padding-left:20px;margin-top:6px}
 .top-right{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:14px}
 #chipName{display:none}            /* name now lives in the center, so keep only the avatar in the chip */
 @media(max-width:900px){.top-center{display:none}}
+
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
 </style>
 </head>
 <body>
@@ -250,7 +257,7 @@ details .body ul{padding-left:20px;margin-top:6px}
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <div class="brand-icon"><i class="fas fa-crown"></i></div>
+      <div class="brand-icon"><img src="assets/img/logo.png" class="img-fluid navbar-logo" alt=""></div>
       <div><h1>THE Family Gang</h1><small>Kingdom 34 · Total Battle</small></div>
     </div>
     <nav class="nav" id="nav">
