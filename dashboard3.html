@@ -215,6 +215,12 @@ details .body ul{padding-left:20px;margin-top:6px}
   .bar-row{grid-template-columns:90px 1fr 70px}
 }
 @media print{.sidebar,.topbar,.toolbar,.btn,.overlay{display:none!important}.main{margin:0}}
+
+.top-center{display:flex;align-items:center;justify-content:center;gap:10px;flex:0 1 auto;min-width:0}
+.top-center b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.top-right{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:14px}
+#chipName{display:none}            /* name now lives in the center, so keep only the avatar in the chip */
+@media(max-width:900px){.top-center{display:none}}
 </style>
 </head>
 <body>
@@ -258,10 +264,18 @@ details .body ul{padding-left:20px;margin-top:6px}
     <header class="topbar">
       <button class="icon-btn" id="menuBtn" aria-label="Menu"><i class="fas fa-bars"></i></button>
       <h2 id="pageTitle">Overview</h2>
-      <div class="utc">Server time (UTC)<br><b id="utcClock">--:--:--</b></div>
-      <button class="icon-btn" id="themeBtn" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
-      <div class="user-chip" id="userChip" title="My account"><div class="avatar" id="avatar">?</div><span id="chipName">...</span></div>
-      <button class="icon-btn" id="logoutTop" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
+    
+      <div class="top-center">
+        <b id="topName">...</b>
+        <span id="topRole"></span>
+      </div>
+    
+      <div class="top-right">
+        <div class="utc">Server time (UTC)<br><b id="utcClock">--:--:--</b></div>
+        <button class="icon-btn" id="themeBtn" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        <div class="user-chip" id="userChip" title="My account"><div class="avatar" id="avatar">?</div><span id="chipName">...</span></div>
+        <button class="icon-btn" id="logoutTop" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
+      </div>
     </header>
 
     <main class="content">
@@ -1072,6 +1086,8 @@ function startApp() {
   $('heroName').textContent = name;
   $('chipName').textContent = name;
   $('avatar').textContent = name.charAt(0).toUpperCase();
+  $('topName').textContent = name;
+  $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
 
   $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
   applyPermissions();
