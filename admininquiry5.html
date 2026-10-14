@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Inquiry Management</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .header h1 { font-size: 20px; }
+    .header .actions { display: flex; gap: 12px; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .toolbar input, .toolbar select {
+      padding: 10px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .toolbar input:focus, .toolbar select:focus { border-color: #0f3460; }
+    .toolbar input { flex: 1; min-width: 200px; }
+    .btn-refresh {
+      padding: 10px 20px;
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .btn-refresh:hover { opacity: 0.9; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .stat-card .number { font-size: 28px; font-weight: 700; color: #0f3460; }
+    .stat-card .label { font-size: 13px; color: #666; margin-top: 4px; }
+
+    .table-wrapper {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      background: #f8f9fa;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      border-bottom: 2px solid #e9ecef;
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+    tr:hover td { background: #fafbfc; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-replied { background: #d1fae5; color: #065f46; }
+
+    .rating-stars { color: #f59e0b; font-size: 14px; letter-spacing: 2px; }
+
+    .btn-reply {
+      padding: 6px 14px;
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .btn-reply:hover { opacity: 0.9; }
+    .btn-reply:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #0f3460;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal h3 { margin-bottom: 16px; color: #1a1a2e; }
+    .modal .form-group { margin-bottom: 16px; }
+    .modal label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+    .modal textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      font-family: inherit;
+    }
+    .modal textarea:focus { border-color: #0f3460; }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .btn-cancel {
+      padding: 10px 20px;
+      background: #e5e7eb;
+      color: #333;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-send {
+      padding: 10px 20px;
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📬 Inquiry Management</h1>
+    <div class="actions">
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Stats -->
+    <div class="stats" id="statsContainer">
+      <div class="stat-card">
+        <div class="number" id="statTotal">—</div>
+        <div class="label">Total Messages</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="statPending">—</div>
+        <div class="label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="statReplied">—</div>
+        <div class="label">Replied</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="statAvgRating">—</div>
+        <div class="label">Avg Rating</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search by name, email, or subject..." />
+      <select id="statusFilter">
+        <option value="">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="replied">Replied</option>
+      </select>
+      <button class="btn-refresh" id="refreshBtn">Refresh</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <div id="loadingIndicator" class="loading">
+        <div class="spinner"></div>
+        <div>Loading inquiries...</div>
+      </div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="icon">📭</div>
+        <div>No inquiries found.</div>
+      </div>
+      <table id="inquiryTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Rating</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="inquiryBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Reply Modal -->
+  <div class="modal-overlay" id="replyModal">
+    <div class="modal">
+      <h3>Reply to Inquiry</h3>
+      <div class="form-group">
+        <label>To:</label>
+        <div id="replyTo" style="padding:8px 0;color:#555;font-size:14px;"></div>
+      </div>
+      <div class="form-group">
+        <label for="replyMessage">Reply Message</label>
+        <textarea id="replyMessage" placeholder="Type your reply..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelReplyBtn">Cancel</button>
+        <button class="btn-send" id="sendReplyBtn">Send Reply</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const INQUIRY_WORKER_URL = 'https://admininquiry.t3li.workers.dev';
+    const AUTH_WORKER_URL = 'https://admin.t3li.workers.dev';
+
+    let inquiries = [];
+    let currentReplyId = null;
+
+    // ─── Auth Check ─────────────────────────────────────────────
+    async function checkAuth() {
+      const token = sessionStorage.getItem('admin_token');
+      if (!token) {
+        window.location.href = 'admin.html';
+        return null;
+      }
+
+      try {
+        const res = await fetch(`${AUTH_WORKER_URL}/api/verify`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Invalid session');
+        const data = await res.json();
+        return data.user;
+      } catch {
+        sessionStorage.clear();
+        window.location.href = 'admin.html';
+        return null;
+      }
+    }
+
+    // ─── Get Auth Token ─────────────────────────────────────────
+    function getToken() {
+      return sessionStorage.getItem('admin_token') || '';
+    }
+
+    // ─── API Calls ──────────────────────────────────────────────
+    async function fetchInquiries(search = '', status = '') {
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (status) params.set('status', status);
+
+      const res = await fetch(
+        `${INQUIRY_WORKER_URL}/api/inquiries?${params.toString()}`,
+        {
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        }
+      );
+
+      if (res.status === 401) {
+        sessionStorage.clear();
+        window.location.href = 'admin.html';
+        return [];
+      }
+
+      const data = await res.json();
+      return data.inquiries || [];
+    }
+
+    async function markAsReplied(id, replyText) {
+      const res = await fetch(`${INQUIRY_WORKER_URL}/api/inquiries/${id}/reply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify({ reply_message: replyText })
+      });
+
+      if (res.status === 401) {
+        sessionStorage.clear();
+        window.location.href = 'admin.html';
+        return false;
+      }
+
+      return res.ok;
+    }
+
+    // ─── Render ─────────────────────────────────────────────────
+    function renderStars(rating) {
+      const r = Math.round(rating || 0);
+      return '★'.repeat(r) + '☆'.repeat(5 - r);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderTable(items) {
+      const tbody = document.getElementById('inquiryBody');
+      const table = document.getElementById('inquiryTable');
+      const loading = document.getElementById('loadingIndicator');
+      const empty = document.getElementById('emptyState');
+
+      loading.style.display = 'none';
+
+      if (!items.length) {
+        table.style.display = 'none';
+        empty.style.display = 'block';
+        tbody.innerHTML = '';
+        return;
+      }
+
+      empty.style.display = 'none';
+      table.style.display = 'table';
+
+      tbody.innerHTML = items.map((item) => `
+        <tr>
+          <td>${item.id}</td>
+          <td>${escapeHtml(item.name)}</td>
+          <td>${escapeHtml(item.email)}</td>
+          <td>${escapeHtml(item.subject)}</td>
+          <td style="max-width:260px;word-break:break-word;">
+            ${escapeHtml(item.message).substring(0, 120)}${item.message && item.message.length > 120 ? '…' : ''}
+          </td>
+          <td><span class="rating-stars">${renderStars(item.rating)}</span></td>
+          <td>${formatDate(item.created_at)}</td>
+          <td>
+            <span class="badge ${item.reply_status === 'replied' ? 'badge-replied' : 'badge-pending'}">
+              ${item.reply_status === 'replied' ? 'Replied' : 'Pending'}
+            </span>
+          </td>
+          <td>
+            <button class="btn-reply"
+              data-id="${item.id}"
+              data-email="${escapeHtml(item.email)}"
+              data-name="${escapeHtml(item.name)}"
+              ${item.reply_status === 'replied' ? 'disabled' : ''}>
+              ${item.reply_status === 'replied' ? 'Done' : 'Reply'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Bind reply buttons
+      tbody.querySelectorAll('.btn-reply:not(:disabled)').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentReplyId = btn.dataset.id;
+          document.getElementById('replyTo').textContent =
+            `${btn.dataset.name} <${btn.dataset.email}>`;
+          document.getElementById('replyMessage').value = '';
+          document.getElementById('replyModal').classList.add('show');
+        });
+      });
+    }
+
+    function updateStats(items) {
+      document.getElementById('statTotal').textContent = items.length;
+      document.getElementById('statPending').textContent =
+        items.filter((i) => i.reply_status !== 'replied').length;
+      document.getElementById('statReplied').textContent =
+        items.filter((i) => i.reply_status === 'replied').length;
+
+      const rated = items.filter((i) => i.rating);
+      const avg = rated.length
+        ? (rated.reduce((s, i) => s + i.rating, 0) / rated.length).toFixed(1)
+        : '—';
+      document.getElementById('statAvgRating').textContent = avg;
+    }
+
+    // ─── Load ───────────────────────────────────────────────────
+    async function loadInquiries() {
+      const search = document.getElementById('searchInput').value.trim();
+      const status = document.getElementById('statusFilter').value;
+
+      document.getElementById('loadingIndicator').style.display = 'block';
+      document.getElementById('inquiryTable').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'none';
+
+      inquiries = await fetchInquiries(search, status);
+      renderTable(inquiries);
+      updateStats(inquiries);
+    }
+
+    // ─── Event Listeners ────────────────────────────────────────
+    document.getElementById('refreshBtn').addEventListener('click', loadInquiries);
+
+    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') loadInquiries();
+    });
+
+    document.getElementById('statusFilter').addEventListener('change', loadInquiries);
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch(`${AUTH_WORKER_URL}/api/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      sessionStorage.clear();
+      window.location.href = 'admin5.html';
+    });
+
+    // Reply modal
+    document.getElementById('cancelReplyBtn').addEventListener('click', () => {
+      document.getElementById('replyModal').classList.remove('show');
+      currentReplyId = null;
+    });
+
+    document.getElementById('sendReplyBtn').addEventListener('click', async () => {
+      const text = document.getElementById('replyMessage').value.trim();
+      if (!text) return;
+
+      const btn = document.getElementById('sendReplyBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const ok = await markAsReplied(currentReplyId, text);
+
+      btn.disabled = false;
+      btn.textContent = 'Send Reply';
+
+      if (ok) {
+        document.getElementById('replyModal').classList.remove('show');
+        currentReplyId = null;
+        await loadInquiries();
+      } else {
+        alert('Failed to send reply. Please try again.');
+      }
+    });
+
+    // Close modal on overlay click
+    document.getElementById('replyModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        e.currentTarget.classList.remove('show');
+        currentReplyId = null;
+      }
+    });
+
+    // ─── Init ───────────────────────────────────────────────────
+    (async () => {
+      const user = await checkAuth();
+      if (!user) return;
+      await loadInquiries();
+    })();
+  </script>
+</body>
+</html>
