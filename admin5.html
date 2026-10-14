@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    }
+    .login-container {
+      background: #fff; padding: 40px; border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%; max-width: 400px;
+    }
+    .login-container h1 {
+      text-align: center; margin-bottom: 8px; color: #1a1a2e; font-size: 24px;
+    }
+    .subtitle {
+      text-align: center; margin-bottom: 26px; color: #666; font-size: 13px;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; margin-bottom: 6px; font-weight: 600; color: #333; font-size: 14px;
+    }
+    .form-group input {
+      width: 100%; padding: 12px 14px; border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 15px; outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #0f3460; }
+    .btn {
+      width: 100%; padding: 14px; color: #fff; border: none; border-radius: 8px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .error-msg, .ok-msg {
+      padding: 10px 14px; border-radius: 8px; font-size: 14px;
+      margin-bottom: 16px; display: none;
+    }
+    .error-msg { background: #fee2e2; color: #991b1b; }
+    .ok-msg    { background: #d1fae5; color: #065f46; }
+    .error-msg.show, .ok-msg.show { display: block; }
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+      margin-right: 8px; vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+    .hint { font-size: 12px; color: #777; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1 id="pageTitle">🔐 Admin Login</h1>
+    <p class="subtitle" id="pageSubtitle">Sign in to manage inquiries</p>
+
+    <div id="errorMsg" class="error-msg"></div>
+    <div id="okMsg" class="ok-msg"></div>
+
+    <!-- Login Form -->
+    <form id="loginForm" autocomplete="off" class="hidden">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required autocomplete="username" placeholder="Enter admin username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required autocomplete="current-password" placeholder="Enter password" />
+      </div>
+      <button type="submit" class="btn" id="loginBtn">Sign In</button>
+    </form>
+
+    <!-- Setup Form (only shown when no admin exists yet) -->
+    <form id="setupForm" autocomplete="off" class="hidden">
+      <div class="form-group">
+        <label for="setupUsername">Create Admin Username</label>
+        <input type="text" id="setupUsername" required autocomplete="username" placeholder="Choose a username" />
+      </div>
+      <div class="form-group">
+        <label for="setupPassword">Create Admin Password</label>
+        <input type="password" id="setupPassword" required autocomplete="new-password" placeholder="Choose a strong password" />
+        <div class="hint">Minimum 8 characters. Use letters, numbers, and symbols.</div>
+      </div>
+      <div class="form-group">
+        <label for="setupPassword2">Confirm Password</label>
+        <input type="password" id="setupPassword2" required autocomplete="new-password" placeholder="Re-enter password" />
+      </div>
+      <button type="submit" class="btn" id="setupBtn">Create Admin Account</button>
+    </form>
+
+    <div id="loadingBox" class="hidden" style="text-align:center;padding:20px;color:#666;">
+      <div class="spinner" style="border-color:#ddd;border-top-color:#0f3460;"></div>
+      <div>Checking setup…</div>
+    </div>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://admin.t3li.workers.dev';
+    const errorMsg = document.getElementById('errorMsg');
+    const okMsg = document.getElementById('okMsg');
+    const loginForm = document.getElementById('loginForm');
+    const setupForm = document.getElementById('setupForm');
+    const loadingBox = document.getElementById('loadingBox');
+    const pageTitle = document.getElementById('pageTitle');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+
+    function showError(msg) {
+      errorMsg.textContent = msg; errorMsg.classList.add('show'); okMsg.classList.remove('show');
+    }
+    function showOk(msg) {
+      okMsg.textContent = msg; okMsg.classList.add('show'); errorMsg.classList.remove('show');
+    }
+    function clearMsgs() { errorMsg.classList.remove('show'); okMsg.classList.remove('show'); }
+
+    // ── Decide which form to show ──
+    (async () => {
+      try {
+        const res = await fetch(`${WORKER_URL}/api/setup-status`);
+        const data = await res.json();
+        loadingBox.classList.add('hidden');
+
+        if (data.needs_setup) {
+          pageTitle.textContent = '⚙️ First-Time Setup';
+          pageSubtitle.textContent = 'Create your admin account to get started';
+          setupForm.classList.remove('hidden');
+        } else {
+          loginForm.classList.remove('hidden');
+        }
+      } catch {
+        loadingBox.classList.add('hidden');
+        loginForm.classList.remove('hidden');
+      }
+    })();
+
+    // ── Login ──
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); clearMsgs();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      if (!username || !password) return showError('Please fill in all fields.');
+
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Signing in...';
+
+      try {
+        const res = await fetch(`${WORKER_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (!res.ok) return showError(data.error || 'Login failed.');
+
+        sessionStorage.setItem('admin_token', data.token);
+        sessionStorage.setItem('admin_user', JSON.stringify(data.user));
+        window.location.href = 'admininquiry.html';
+      } catch {
+        showError('Network error. Try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    });
+
+    // ── First-Time Setup ──
+    setupForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); clearMsgs();
+      const username = document.getElementById('setupUsername').value.trim();
+      const password = document.getElementById('setupPassword').value;
+      const password2 = document.getElementById('setupPassword2').value;
+
+      if (!username || !password) return showError('Please fill in all fields.');
+      if (password.length < 8) return showError('Password must be at least 8 characters.');
+      if (password !== password2) return showError('Passwords do not match.');
+
+      const btn = document.getElementById('setupBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Creating account...';
+
+      try {
+        const res = await fetch(`${WORKER_URL}/api/setup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (!res.ok) return showError(data.error || 'Setup failed.');
+
+        showOk('Admin account created! You can now sign in.');
+        setupForm.classList.add('hidden');
+        pageTitle.textContent = '🔐 Admin Login';
+        pageSubtitle.textContent = 'Sign in to manage inquiries';
+        loginForm.classList.remove('hidden');
+        document.getElementById('setupUsername').value = '';
+        document.getElementById('setupPassword').value = '';
+        document.getElementById('setupPassword2').value = '';
+      } catch {
+        showError('Network error. Try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Admin Account';
+      }
+    });
+  </script>
+</body>
+</html>
