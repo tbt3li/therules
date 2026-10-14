@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>
+
+(function () {
+  var t = localStorage.getItem('family_token') || sessionStorage.getItem('family_token');
+  if (!t) {
+    document.documentElement.style.display = 'none';
+    location.replace('login.html');
+    return;
+  }
+  window.__AUTH = fetch('https://login.t3li.workers.dev/api/check', { headers: { Authorization: 'Bearer ' + t } })
+    .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); });
+  window.__AUTH.catch(function () {});
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE Family Gang | Member Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --primary:#0078d4; --primary-dark:#005a9e; --accent:#7c4dbd; --gold:#d9a400;
+  --bg:#f3f2f1; --card:#ffffff; --text:#323130; --muted:#605e5c; --border:#e1dfdd;
+  --sidebar:#201f1e; --sidebar-text:#c8c6c4; --input:#faf9f8;
+  --ok:#28a745; --warn:#f0a500; --bad:#dc3545;
+  --shadow:0 2px 8px rgba(0,0,0,.08); --radius:12px;
+}
+[data-theme="dark"]{
+  --bg:#141413; --card:#1f1e1d; --text:#f3f2f1; --muted:#a19f9d; --border:#3b3a39;
+  --sidebar:#0f0f0e; --input:#2b2a29; --shadow:0 2px 8px rgba(0,0,0,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--sidebar);color:var(--sidebar-text);display:flex;flex-direction:column;
+  position:fixed;inset:0 auto 0 0;z-index:200;transition:transform .25s ease;overflow-y:auto}
+.brand{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px}
+.brand-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0}
+.brand h1{font-size:16px;color:#fff;line-height:1.2}
+.brand small{font-size:12px;color:#8a8886}
+.nav{padding:12px 10px;flex:1}
+.nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#6e6c6a;padding:14px 12px 6px}
+.nav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;color:var(--sidebar-text);
+  text-decoration:none;font-size:14.5px;margin-bottom:2px;transition:.15s}
+.nav a i{width:20px;text-align:center;font-size:15px}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.active{background:var(--primary);color:#fff}
+.nav a .pill{margin-left:auto;font-size:10px;background:var(--gold);color:#201f1e;padding:2px 7px;border-radius:20px;font-weight:700}
+.side-foot{padding:14px 18px;font-size:12px;color:#6e6c6a;border-top:1px solid rgba(255,255,255,.08)}
+.main{flex:1;margin-left:260px;min-width:0;display:flex;flex-direction:column}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;
+  gap:14px;position:sticky;top:0;z-index:100}
+.topbar h2{font-size:19px;flex:1}
+.icon-btn{background:none;border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:8px;font-size:15px}
+.icon-btn:hover{background:var(--input)}
+#menuBtn{display:none}
+.utc{font-size:13px;color:var(--muted);text-align:right;line-height:1.3}
+.utc b{color:var(--text);font-size:15px;font-variant-numeric:tabular-nums}
+.user-chip{display:flex;align-items:center;gap:10px;padding:5px 12px 5px 5px;border:1px solid var(--border);border-radius:30px;
+  background:var(--input);cursor:pointer}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.user-chip span{font-size:13px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.content{padding:26px;max-width:1250px;width:100%;margin:0 auto}
+.section{display:none}
+.section.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150}
+
+/* ---------- components ---------- */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.card h3{font-size:17px;margin-bottom:12px}
+.card h3 i{color:var(--primary);margin-right:8px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.page-head{margin-bottom:20px}
+.page-head h1{font-size:26px;margin-bottom:4px}
+.page-head p{color:var(--muted)}
+.hero{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:var(--radius);padding:30px;margin-bottom:20px;
+  box-shadow:0 6px 18px rgba(0,120,212,.25)}
+.hero h1{font-size:28px;margin-bottom:6px}
+.hero p{opacity:.92;max-width:640px}
+.hero .btns{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:none;background:var(--primary);color:#fff;padding:10px 18px;border-radius:8px;font-weight:600;font-size:14px;transition:.15s}
+.btn:hover{background:var(--primary-dark)}
+.btn.ghost{background:rgba(255,255,255,.18);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.3)}
+.btn.outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.btn.outline:hover{background:var(--primary);color:#fff}
+.btn.danger{background:var(--bad)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.stat{display:flex;align-items:center;gap:14px}
+.stat .ico{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+.stat b{font-size:24px;display:block;line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+.b-prem{background:#fff3cd;color:#8a6500}
+.b-free{background:#e1f5fe;color:#01579b}
+.b-lvl{background:var(--input);color:var(--muted);border:1px solid var(--border)}
+.b-role{background:#ede7f6;color:#5e35b1}
+[data-theme="dark"] .b-prem{background:#4a3b00;color:#ffd75e}
+[data-theme="dark"] .b-free{background:#0b3a56;color:#8fd3ff}
+[data-theme="dark"] .b-role{background:#2f2150;color:#c9b3ff}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1px solid var(--border);background:var(--card);color:var(--text);padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.chip.active,.chip:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.input,select.input,textarea.input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--input);
+  color:var(--text);font-size:14px}
+.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,120,212,.2)}
+label.l{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.toolbar .input{max-width:340px}
+.muted{color:var(--muted)}
+.note{background:#fff8e1;border-left:4px solid var(--warn);padding:12px 15px;border-radius:8px;font-size:13px;color:#5d4a00;margin-bottom:18px}
+[data-theme="dark"] .note{background:#3a3000;color:#ffe69c}
+
+/* tutorials */
+.tut{display:flex;flex-direction:column;gap:10px;transition:.2s;cursor:pointer}
+.tut:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.tut .top{display:flex;justify-content:space-between;align-items:center}
+.tut .icon{width:44px;height:44px;border-radius:10px;background:var(--input);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px}
+.tut h4{font-size:16px}
+.tut p{font-size:13.5px;color:var(--muted);flex:1}
+.tut .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted)}
+
+/* tables */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);cursor:pointer;user-select:none}
+th:hover{color:var(--primary)}
+tr:hover td{background:var(--input)}
+.rank{font-weight:700;color:var(--muted)}
+.bar{height:10px;border-radius:6px;background:var(--input);overflow:hidden;border:1px solid var(--border)}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:6px}
+.bar-row{display:grid;grid-template-columns:130px 1fr 90px;gap:12px;align-items:center;margin-bottom:12px;font-size:14px}
+.bar-row span:last-child{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* lists */
+.list{list-style:none}
+.list li{padding:11px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.list li:last-child{border-bottom:none}
+.list li i{color:var(--primary);margin-top:3px}
+.ann h4{font-size:15px;margin-bottom:3px}
+.ann small{color:var(--muted)}
+.ann p{font-size:14px;color:var(--muted);margin-top:4px}
+details{border:1px solid var(--border);border-radius:10px;background:var(--card);margin-bottom:10px;overflow:hidden}
+summary{padding:15px 18px;font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary i.chev{margin-left:auto;transition:.2s;color:var(--muted)}
+details[open] summary i.chev{transform:rotate(180deg)}
+details .body{padding:0 18px 16px;font-size:14px;color:var(--muted);line-height:1.65}
+details .body ul{padding-left:20px;margin-top:6px}
+
+/* events */
+.event{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.event:last-child{border-bottom:none}
+.event .date{width:62px;text-align:center;border-radius:10px;background:var(--input);border:1px solid var(--border);padding:7px 0;flex-shrink:0}
+.event .date b{display:block;font-size:20px;line-height:1}
+.event .date small{font-size:11px;text-transform:uppercase;color:var(--muted)}
+.event .info{flex:1;min-width:180px}
+.event .info h4{font-size:15px}
+.event .info p{font-size:13px;color:var(--muted)}
+.countdown{font-variant-numeric:tabular-nums;font-weight:700;color:var(--primary);font-size:15px;text-align:right}
+.countdown small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+
+/* checklist */
+.check{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;
+  cursor:pointer;background:var(--card);transition:.15s}
+.check:hover{border-color:var(--primary)}
+.check input{width:18px;height:18px;accent-color:var(--primary)}
+.check.done span{text-decoration:line-through;color:var(--muted)}
+.progress{height:12px;border-radius:8px;background:var(--input);border:1px solid var(--border);overflow:hidden;margin:8px 0 16px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--ok),#7bd88f);transition:width .3s}
+
+/* locked (premium) menu items */
+.nav a.locked{opacity:.55;cursor:not-allowed}
+.nav a.locked:hover{background:rgba(255,255,255,.04);color:var(--sidebar-text)}
+.nav a .pill.lock{background:linear-gradient(135deg,#f5c542,#d9a400);display:inline-flex;align-items:center;gap:4px}
+.mini{width:32px;height:32px;font-size:13px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)}
+.mini:hover:not(:disabled){background:var(--primary);color:#fff;border-color:var(--primary)}
+.mini.bad:hover:not(:disabled){background:var(--bad);border-color:var(--bad)}
+.mini:disabled{opacity:.35;cursor:not-allowed}
+.act{display:flex;gap:6px}
+.st-on{background:#dff6dd;color:#107c10}.st-off{background:#fde7e9;color:#c62828}
+[data-theme="dark"] .st-on{background:#12361a;color:#7bd88f}[data-theme="dark"] .st-off{background:#4a1a1f;color:#ff9aa4}
+.matrix th{cursor:default;text-align:center}.matrix th:first-child{text-align:left}
+.matrix input[type=checkbox]{width:18px;height:18px;accent-color:var(--primary)}
+.matrix input:disabled{opacity:.5}
+.pw-row{display:flex;gap:8px;align-items:center}
+/* modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:var(--card);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;position:relative}
+.modal .x{position:absolute;top:14px;right:14px}
+.modal h2{margin-bottom:6px;padding-right:40px}
+.modal ol{padding-left:22px;margin:12px 0;line-height:1.7;font-size:14.5px}
+.result{margin-top:14px;padding:14px;border-radius:10px;background:var(--input);border:1px solid var(--border);font-size:14px;line-height:1.6}
+.result b{color:var(--primary)}
+
+/* toast + loading */
+.toast{position:fixed;bottom:24px;right:24px;background:#323130;color:#fff;padding:13px 20px;border-radius:10px;z-index:900;
+  box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:14px;animation:fade .2s}
+.toast.ok{background:#1e7e34}.toast.err{background:#b02a37}
+#loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px}
+.spinner{border:4px solid var(--border);border-top:4px solid var(--primary);border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .overlay.show{display:block}
+  .main{margin-left:0}
+  #menuBtn{display:inline-block}
+  .content{padding:16px}
+  .topbar{padding:10px 16px}
+  .utc{display:none}
+  .user-chip span{display:none}
+  .user-chip{padding:5px}
+  .bar-row{grid-template-columns:90px 1fr 70px}
+}
+@media print{.sidebar,.topbar,.toolbar,.btn,.overlay{display:none!important}.main{margin:0}}
+
+.top-center{display:flex;align-items:center;justify-content:center;gap:10px;flex:0 1 auto;min-width:0}
+.top-center b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.top-right{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:14px}
+#chipName{display:none}
+@media(max-width:900px){.top-center{display:none}}
+
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* ---------- Guide Library ---------- */
+.lib-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.lib-stat{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+.lib-stat .ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0}
+.lib-stat b{font-size:20px;display:block;line-height:1.1}
+.lib-stat span{font-size:12.5px;color:var(--muted)}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+.lib-card{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.lib-head{display:flex;align-items:center;gap:14px;padding:18px 20px 12px}
+.lib-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+.lib-head h3{font-size:16px;margin:0 0 3px;line-height:1.25}
+.lib-head small{color:var(--muted);font-size:12px}
+.lib-desc{padding:0 20px 14px;font-size:13px;color:var(--muted);line-height:1.55;border-bottom:1px solid var(--border)}
+.lib-files{list-style:none;padding:8px 12px 12px;margin:0;max-height:320px;overflow-y:auto}
+.lib-files::-webkit-scrollbar{width:8px}
+.lib-files::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+.lib-files li{border-bottom:1px dashed var(--border)}
+.lib-files li:last-child{border-bottom:none}
+.lib-files a{display:flex;align-items:center;gap:10px;padding:8px 10px;color:var(--text);text-decoration:none;font-size:13.5px;border-radius:8px;transition:.15s}
+.lib-files a:hover{background:var(--input);color:var(--primary);transform:translateX(2px)}
+.lib-files a i{color:var(--primary);font-size:13px;flex-shrink:0;width:16px;text-align:center}
+.lib-files a .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-files a .ext{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.05em}
+.lib-empty{padding:40px 20px;text-align:center;color:var(--muted)}
+.lib-empty i{font-size:36px;margin-bottom:12px;color:var(--border)}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p id="loadingText" class="muted">Loading your dashboard...</p>
+  <button class="btn" id="retryBtn" style="display:none" onclick="location.reload()">Retry</button>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><img src="assets/img/logo.png" class="img-fluid navbar-logo" alt=""></div>
+      <div><h1>THE Family Gang</h1><small>Kingdom 34 · Total Battle</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-label">Main</div>
+      <a href="#overview" data-s="overview"><i class="fas fa-house"></i> Overview</a>
+      <a href="#events" data-s="events"><i class="fas fa-calendar-days"></i> Events &amp; Calendar</a>
+      <a href="#members" data-s="members"><i class="fas fa-users"></i> Clan Members</a>
+      <div class="nav-label">Premium Resources</div>
+      <a href="#library" data-s="library"><i class="fas fa-book-open-reader"></i> Guide Library</a>
+      <a href="#tutorials" data-s="tutorials"><i class="fas fa-graduation-cap"></i> Premium Tutorials</a>
+      <a href="#loadouts" data-s="loadouts"><i class="fas fa-shield-halved"></i> Equipment Loadouts</a>
+      <a href="#strategies" data-s="strategies"><i class="fas fa-chess"></i> Pro Strategies</a>
+      <a href="#cheatsheets" data-s="cheatsheets"><i class="fas fa-file-lines"></i> Cheat Sheets</a>
+      <div class="nav-label">Tools</div>
+      <a href="#checklist" data-s="checklist"><i class="fas fa-list-check"></i> Daily Checklist</a>
+      <a href="#tools" data-s="tools"><i class="fas fa-calculator"></i> Calculators</a>
+      <div class="nav-label">Clan</div>
+      <a href="#rules" data-s="rules"><i class="fas fa-scroll"></i> Clan Rules &amp; Contact</a>
+      <a href="#account" data-s="account"><i class="fas fa-user-gear"></i> My Account</a>
+      <div class="nav-label" id="adminLabel" style="display:none">Administration</div>
+      <a href="#roles" data-s="roles" id="navRoles" style="display:none"><i class="fas fa-user-shield"></i> User Roles</a>
+    </nav>
+    <div class="side-foot">&copy; 2026 THE Family Gang<br>웃 T3li · Members only</div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+        <button class="icon-btn" id="menuBtn" aria-label="Menu"><i class="fas fa-bars"></i></button>
+        <h2 id="pageTitle">Overview</h2>
+      
+        <div class="top-center">
+          <b id="topName">...</b>
+          <span id="topRole"></span>
+        </div>
+      
+        <div class="top-right">
+          <div class="utc">Server time (UTC)<br><b id="utcClock">--:--:--</b></div>
+          <button class="icon-btn" id="themeBtn" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+          <div class="user-chip" id="userChip" title="My account"><div class="avatar" id="avatar">?</div><span id="chipName">...</span></div>
+          <button class="icon-btn" id="logoutTop" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+    <main class="content">
+
+      <!-- OVERVIEW -->
+      <section class="section" id="s-overview">
+        <div class="hero">
+          <h1>Welcome back, <span id="heroName">Member</span>! ⚔️</h1>
+          <p style="margin-bottom:10px"><span class="badge" id="heroRole" style="background:rgba(255,255,255,.22);color:#fff"></span></p>
+          <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34): premium tutorials, loadouts, strategies, cheat sheets and clan stats, all in one place.</p>
+          <div class="btns">
+            <button class="btn ghost" data-go="library"><i class="fas fa-book-open-reader"></i> Guide Library</button>
+            <button class="btn ghost" data-go="tutorials"><i class="fas fa-graduation-cap"></i> Browse Tutorials</button>
+            <button class="btn ghost" data-go="events"><i class="fas fa-calendar-days"></i> Upcoming Events</button>
+            <button class="btn ghost" data-go="checklist"><i class="fas fa-list-check"></i> Daily Checklist</button>
+          </div>
+        </div>
+        <div class="grid g4" id="statCards" style="margin-bottom:20px"></div>
+        <div class="grid g2">
+          <div class="card"><h3><i class="fas fa-bullhorn"></i> Clan Announcements</h3><div id="announcements"></div></div>
+          <div class="grid" style="align-content:start">
+            <div class="card"><h3><i class="fas fa-clock"></i> Next Events</h3><div id="nextEvents"></div></div>
+            <div class="card"><h3><i class="fas fa-list-check"></i> Today's Progress</h3><div id="overviewProgress"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GUIDE LIBRARY (NEW) -->
+      <section class="section" id="s-library">
+        <div class="page-head">
+          <h1>📚 Clan Guide Library</h1>
+          <p>Every clan guide, organized into <b>8 main categories</b>. Click any file to open it in a new tab. Use the search box to find something fast.</p>
+        </div>
+        <div class="lib-stats" id="libStats"></div>
+        <div class="toolbar">
+          <input class="input" id="libSearch" placeholder="Search all guides by name...">
+          <div class="chips" id="libChips" style="margin:0"></div>
+        </div>
+        <div class="lib-grid" id="libGrid"></div>
+      </section>
+
+      <!-- TUTORIALS -->
+      <section class="section" id="s-tutorials">
+        <div class="page-head"><h1>🎓 Premium Tutorials</h1><p>Step-by-step guides written by clan leaders and veterans. Click a card to open it.</p></div>
+        <div class="toolbar"><input class="input" id="tutSearch" placeholder="Search tutorials..."></div>
+        <div class="chips" id="tutChips"></div>
+        <div class="grid g3" id="tutGrid"></div>
+      </section>
+
+      <!-- LOADOUTS -->
+      <section class="section" id="s-loadouts">
+        <div class="page-head"><h1>🛡️ Equipment Loadout Optimizer</h1><p>Pick your goal and priority to get the recommended build approach.</p></div>
+        <div class="grid g2">
+          <div class="card">
+            <h3><i class="fas fa-sliders"></i> Optimizer</h3>
+            <label class="l">What are you gearing for?</label>
+            <select class="input" id="loGoal"></select>
+            <label class="l">Priority</label>
+            <select class="input" id="loPrio"><option>Damage</option><option>Survivability</option><option>Balanced</option></select>
+            <div class="result" id="loResult"></div>
+          </div>
+          <div class="card"><h3><i class="fas fa-table-list"></i> Recommended Slots</h3><div class="table-wrap"><table id="loTable"></table></div></div>
+        </div>
+      </section>
+
+      <!-- STRATEGIES -->
+      <section class="section" id="s-strategies">
+        <div class="page-head"><h1>♟️ Pro Strategies &amp; Tactics</h1><p>Tried and tested approaches from our top players.</p></div>
+        <div id="stratList"></div>
+      </section>
+
+      <!-- CHEAT SHEETS -->
+      <section class="section" id="s-cheatsheets">
+        <div class="page-head"><h1>📄 Exclusive Cheat Sheets</h1><p>Quick references you can copy and share with your squad.</p></div>
+        <div class="grid g3" id="cheatGrid"></div>
+      </section>
+
+      <!-- EVENTS -->
+      <section class="section" id="s-events">
+        <div class="page-head"><h1>📅 Events &amp; Calendar</h1><p>All times are shown in UTC and your local time. Countdowns update live.</p></div>
+        <div class="card" id="eventList"></div>
+      </section>
+
+      <!-- MEMBERS -->
+      <section class="section" id="s-members">
+        <div class="page-head"><h1>👥 Clan Member Statistics</h1><p>Roster, roles and rankings for THE Family Gang.</p></div>
+        <div class="grid g4" id="memberStats" style="margin-bottom:20px"></div>
+        <div class="grid g2" style="margin-bottom:20px">
+          <div class="card"><h3><i class="fas fa-trophy"></i> Top 5 by Power</h3><div id="topPower"></div></div>
+          <div class="card"><h3><i class="fas fa-skull"></i> Top 5 by Kills</h3><div id="topKills"></div></div>
+        </div>
+        <div class="card">
+          <div class="toolbar"><input class="input" id="memSearch" placeholder="Search members..."></div>
+          <div class="table-wrap"><table id="memTable"></table></div>
+        </div>
+      </section>
+
+      <!-- CHECKLIST -->
+      <section class="section" id="s-checklist">
+        <div class="page-head"><h1>✅ Daily &amp; Weekly Checklist</h1><p>Your progress is saved on this device. Dailies reset at 00:00 UTC, weeklies on Monday.</p></div>
+        <div class="grid g2">
+          <div class="card"><h3><i class="fas fa-sun"></i> Daily Tasks</h3><div class="progress"><div id="dailyBar"></div></div><div id="dailyList"></div></div>
+          <div class="card"><h3><i class="fas fa-calendar-week"></i> Weekly Tasks</h3><div class="progress"><div id="weeklyBar"></div></div><div id="weeklyList"></div></div>
+        </div>
+      </section>
+
+      <!-- TOOLS -->
+      <section class="section" id="s-tools">
+        <div class="page-head"><h1>🧮 Calculators</h1><p>Handy tools for planning upgrades and resources.</p></div>
+        <div class="grid g2">
+          <div class="card">
+            <h3><i class="fas fa-hourglass-half"></i> Time with Speed Bonus</h3>
+            <p class="muted" style="font-size:13px">Enter the base duration and your total speed bonus to see the real time.</p>
+            <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:10px">
+              <div><label class="l">Days</label><input type="number" min="0" class="input" id="tcD" value="0"></div>
+              <div><label class="l">Hours</label><input type="number" min="0" class="input" id="tcH" value="0"></div>
+              <div><label class="l">Minutes</label><input type="number" min="0" class="input" id="tcM" value="0"></div>
+            </div>
+            <label class="l">Speed bonus (%)</label><input type="number" min="0" class="input" id="tcB" value="0">
+            <div class="result" id="tcRes">Enter a duration above.</div>
+          </div>
+          <div class="card">
+            <h3><i class="fas fa-boxes-stacked"></i> Resource Gap Planner</h3>
+            <p class="muted" style="font-size:13px">See how much you still need to gather.</p>
+            <div class="table-wrap"><table id="rgTable"></table></div>
+            <div class="result" id="rgRes"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RULES -->
+      <section class="section" id="s-rules">
+        <div class="page-head"><h1>📜 Clan Rules &amp; Contact</h1><p>Keep Kingdom 34 strong by following the clan code.</p></div>
+        <div class="grid g2">
+          <div class="card"><h3><i class="fas fa-gavel"></i> Clan Rules</h3><ul class="list" id="ruleList"></ul></div>
+          <div class="grid" style="align-content:start">
+            <div class="card"><h3><i class="fab fa-discord"></i> Join the Discord</h3>
+              <p class="muted" style="margin-bottom:14px">Coordinate attacks, ask questions and get notified about events.</p>
+              <a class="btn" id="discordLink" target="_blank" rel="noopener">Open Discord</a></div>
+            <div class="card"><h3><i class="fas fa-headset"></i> Need Help?</h3>
+              <p class="muted">Contact the clan leader <b>T3li</b> in-game or on Discord for access issues, role requests or password resets.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACCOUNT -->
+      <section class="section" id="s-account">
+        <div class="page-head"><h1>⚙️ My Account</h1><p>Your member details and security settings.</p></div>
+        <div class="grid g2">
+          <div class="card"><h3><i class="fas fa-id-card"></i> Profile</h3>
+            <ul class="list">
+              <li><i class="fas fa-user"></i><div><b>Name</b><br><span class="muted" id="accName">-</span></div></li>
+              <li><i class="fas fa-envelope"></i><div><b>Email</b><br><span class="muted" id="accEmail">-</span></div></li>
+              <li><i class="fas fa-at"></i><div><b>Username</b><br><span class="muted" id="accUser">-</span></div></li>
+              <li><i class="fas fa-shield-halved"></i><div><b>Role</b><br><span id="accRole">-</span></div></li>
+              <li><i class="fas fa-hashtag"></i><div><b>Member ID</b><br><span class="muted" id="accId">-</span></div></li>
+              <li><i class="fas fa-calendar-check"></i><div><b>Member since</b><br><span class="muted" id="accSince">-</span></div></li>
+            </ul>
+            <button class="btn danger" id="logoutBtn" style="margin-top:14px"><i class="fas fa-right-from-bracket"></i> Logout</button>
+          </div>
+          <div class="card"><h3><i class="fas fa-key"></i> Change Password</h3>
+            <label class="l">New password</label><input type="password" class="input" id="pw1" autocomplete="new-password" placeholder="At least 6 characters">
+            <label class="l">Repeat new password</label><input type="password" class="input" id="pw2" autocomplete="new-password" placeholder="Repeat password">
+            <button class="btn" id="pwBtn" style="margin-top:16px">Update Password</button>
+            <p class="muted" style="font-size:12px;margin-top:10px">Changing your password signs you out on other devices.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- USER ROLES (admin only) -->
+      <section class="section" id="s-roles">
+        <div class="page-head"><h1>🛡️ User Roles &amp; Rights</h1><p>Promote or demote members, edit logins, disable accounts and decide which menus each group can open.</p></div>
+        <div class="chips" id="roleTabs">
+          <button class="chip active" data-tab="users"><i class="fas fa-users-gear"></i> Users</button>
+          <button class="chip" data-tab="rights"><i class="fas fa-table-cells"></i> Menu Rights</button>
+        </div>
+
+        <div id="tab-users">
+          <div class="toolbar">
+            <input class="input" id="usrSearch" placeholder="Search username, name or email...">
+            <select class="input" id="usrRole" style="max-width:190px"></select>
+            <button class="btn" id="addUserBtn"><i class="fas fa-user-plus"></i> Add user</button>
+          </div>
+          <div class="card"><div class="table-wrap"><table id="usrTable"></table></div></div>
+        </div>
+
+        <div id="tab-rights" style="display:none">
+          <div class="note"><b>How it works:</b> tick a box to give that group access to a menu. Menus a group cannot open stay <u>visible</u> in their sidebar but are greyed out with a <b>PREMIUM</b> tag. Changes apply the next time those members load the dashboard.</div>
+          <div class="card">
+            <div class="table-wrap"><table class="matrix" id="rightsTable"></table></div>
+            <button class="btn" id="saveRights" style="margin-top:16px"><i class="fas fa-floppy-disk"></i> Save Rights</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+<script>
+/* =====================================================================
+   1. CLAN CONTENT  -  EDIT THIS PART
+   ===================================================================== */
+const CONTENT = {
+  clan: { name: 'THE Family Gang', kingdom: 'Kingdom 34', discord: 'https://discord.gg/your-invite' },
+
+  announcements: [
+    { title: 'Welcome to the new member dashboard!', date: '2025-01-01', tag: 'News',
+      body: 'All guides, loadouts and clan stats now live here. Bookmark this page.' },
+    { title: 'Clan activity requirement', date: '2025-01-01', tag: 'Important',
+      body: 'Please log in to the game daily and contribute to the clan. Inactive members may be moved to reserve.' },
+    { title: 'Coordinated attacks', date: '2025-01-01', tag: 'War',
+      body: 'Wait for leader calls before starting attacks. Check the Events tab for schedules.' }
+  ],
+
+  tutorials: [
+    { id: 't1', title: 'Getting Started in Kingdom 34', category: 'Beginner', level: 'Beginner', premium: false, minutes: 8, icon: 'fa-flag',
+      summary: 'Your first days: castle layout, early upgrades and joining clan activities.',
+      steps: ['Finish the in-game tutorial quests and claim all rewards.', 'Upgrade your core buildings before anything else.',
+              'Join the clan Discord and introduce yourself.', 'Contribute to the clan every day.', 'Ask a leader before moving or teleporting.'] },
+    { id: 't2', title: 'Hero Leveling Basics', category: 'Heroes', level: 'Beginner', premium: true, minutes: 10, icon: 'fa-user-shield',
+      summary: 'Choose which heroes to focus on and how to level them without wasting resources.',
+      steps: ['Pick 1–2 main heroes and focus your resources on them.', 'Use PvE content (crypts, monsters) to earn hero XP.',
+              'Upgrade skills that match your playstyle first.', 'Avoid spreading XP thinly across many heroes early on.', 'Re-check your build after every major hero unlock.'] },
+    { id: 't3', title: 'Crypt Farming Fundamentals', category: 'PvE', level: 'Intermediate', premium: true, minutes: 12, icon: 'fa-dungeon',
+      summary: 'Efficient crypt runs: preparation, army setup and rewards.',
+      steps: ['Check the crypt difficulty against your army strength.', 'Equip your PvE loadout (see Equipment Loadouts).',
+              'Bring enough troops to avoid heavy losses.', 'Collect rewards and queue the next run before logging off.', 'Share good runs with the clan.'] },
+    { id: 't4', title: 'Gear Crafting & Upgrades', category: 'Equipment', level: 'Intermediate', premium: true, minutes: 9, icon: 'fa-hammer',
+      summary: 'What to craft, what to save and how to avoid wasting materials.',
+      steps: ['Decide your goal first (PvE, attack or defense).', 'Craft for your main hero before others.',
+              'Keep spare materials for key upgrades.', 'Do not dismantle gear until you are sure.', 'Review the Loadout Optimizer for slot priorities.'] },
+    { id: 't5', title: 'Defending Your Castle', category: 'PvP', level: 'Intermediate', premium: true, minutes: 11, icon: 'fa-chess-rook',
+      summary: 'Keep your resources and troops safe while you are offline.',
+      steps: ['Spend resources before logging off.', 'Keep your troops healthy and in a safe state.', 'Use protection tools when you expect attacks.',
+              'Report enemy scouts or attackers to the clan.', 'Never keep large unspent stockpiles exposed.'] },
+    { id: 't6', title: 'Clan Contribution Guide', category: 'Clan', level: 'Beginner', premium: false, minutes: 6, icon: 'fa-handshake-angle',
+      summary: 'How to earn clan points and help the clan grow.',
+      steps: ['Donate or contribute daily.', 'Take part in clan events.', 'Help teammates when requested.', 'Follow leader calls during wars.'] },
+    { id: 't7', title: 'Resource Management 101', category: 'Economy', level: 'Beginner', premium: true, minutes: 7, icon: 'fa-coins',
+      summary: 'Balance your economy so you never stall on upgrades.',
+      steps: ['Keep all resource buildings upgraded.', 'Plan upgrades ahead so you gather the right resources.',
+              'Use the Resource Gap Planner in Calculators.', 'Do not hoard: spend on upgrades and troops.'] },
+    { id: 't8', title: 'Attack & Rally Etiquette', category: 'PvP', level: 'Advanced', premium: true, minutes: 10, icon: 'fa-bullseye',
+      summary: 'Timing, communication and scouting for coordinated clan attacks.',
+      steps: ['Scout the target before committing troops.', 'Wait for the leader to confirm timing.', 'Arrive together, not one by one.',
+              'Report results in Discord.', 'Never attack allies or neutral players without approval.'] }
+  ],
+
+  loadouts: [
+    { id: 'pve', goal: 'PvE / Crypt Farming', desc: 'Maximise safe, efficient clearing of monsters and crypts.',
+      tips: { Damage: 'Stack offensive stats to clear faster. Best when your troops are already strong.',
+              Survivability: 'Favor defensive stats to reduce troop losses and run longer chains.',
+              Balanced: 'A steady mix is best for most players: fast clears with limited losses.' },
+      slots: [ {slot:'Weapon', focus:'Offense', note:'Highest priority for clearing speed'},
+               {slot:'Armor', focus:'Defense', note:'Reduces troop losses'},
+               {slot:'Helmet', focus:'Balanced', note:'Fill with best available'},
+               {slot:'Accessory', focus:'Utility', note:'Match your hero skills'} ] },
+    { id: 'atk', goal: 'Attack / PvP', desc: 'Win fights against other players and in clan wars.',
+      tips: { Damage: 'Go all-in on offense for rallies. Pair with strong troops and a good scout.',
+              Survivability: 'Keep your army alive for repeated attacks across a long war.',
+              Balanced: 'Recommended default: enough damage to win, enough defense to survive.' },
+      slots: [ {slot:'Weapon', focus:'Offense', note:'Top priority'},
+               {slot:'Armor', focus:'Balanced', note:'Do not neglect survivability'},
+               {slot:'Helmet', focus:'Offense', note:'Secondary damage source'},
+               {slot:'Accessory', focus:'Utility', note:'Speed / marching bonuses if available'} ] },
+    { id: 'def', goal: 'Defense / Castle Safety', desc: 'Protect your castle and troops when you are offline.',
+      tips: { Damage: 'Rarely best for defense, but helps punish attackers with strong counters.',
+              Survivability: 'Recommended: maximise defense so attackers lose more than they gain.',
+              Balanced: 'Good for players who both defend and attack.' },
+      slots: [ {slot:'Armor', focus:'Defense', note:'Top priority'},
+               {slot:'Helmet', focus:'Defense', note:'Stack defensive stats'},
+               {slot:'Weapon', focus:'Balanced', note:'Medium priority'},
+               {slot:'Accessory', focus:'Utility', note:'Choose protective bonuses'} ] }
+  ],
+
+  strategies: [
+    { title: 'Scout before you strike', points: ['Always check the target\'s strength before sending troops.', 'Look at recent activity: online players can react.', 'If in doubt, ask in Discord.'] },
+    { title: 'Coordinate with the clan', points: ['Wait for leader calls on big attacks.', 'Arrive together for maximum impact.', 'Share results (wins and losses) so everyone learns.'] },
+    { title: 'Never leave resources exposed', points: ['Spend before logging off.', 'Keep upgrade queues full.', 'Use storage / protection if available.'] },
+    { title: 'Focus your growth', points: ['Pick a main hero and playstyle.', 'Avoid spreading resources across everything.', 'Revisit your plan every week.'] },
+    { title: 'Make the most of events', points: ['Check the Events tab daily.', 'Prepare resources before an event starts.', 'Participate even briefly: clan points add up.'] },
+    { title: 'Protect your troops', points: ['Do not waste troops on unwinnable fights.', 'Heal and rebuild between attacks.', 'Use scouting and retreat when needed.'] }
+  ],
+
+  cheatsheets: [
+    { title: 'New Player Quick Start', icon: 'fa-rocket', items: ['Finish tutorial quests', 'Upgrade core buildings', 'Join Discord', 'Contribute to clan daily', 'Pick a main hero'] },
+    { title: 'Before You Log Off', icon: 'fa-moon', items: ['Spend resources', 'Fill all upgrade / training queues', 'Send troops on safe PvE runs', 'Check protection status', 'Claim daily rewards'] },
+    { title: 'War Day Checklist', icon: 'fa-flag-checkered', items: ['Join Discord voice', 'Check leader orders', 'Heal / refill troops', 'Equip your attack loadout', 'Report results afterwards'] },
+    { title: 'Scouting Checklist', icon: 'fa-binoculars', items: ['Target power / strength', 'Is the owner online?', 'Estimated troop count', 'Nearby allies', 'Your expected losses'] },
+    { title: 'Resource Priorities', icon: 'fa-scale-balanced', items: ['Upgrades for main hero first', 'Keep economy buildings current', 'Do not hoard', 'Plan the next 3 upgrades', 'Use Resource Gap Planner'] },
+    { title: 'Common Mistakes', icon: 'fa-triangle-exclamation', items: ['Attacking without scouting', 'Spreading XP across many heroes', 'Leaving resources unspent', 'Ignoring clan calls', 'Dismantling gear too early'] }
+  ],
+
+  events: [
+    { name: 'Daily Reset',         day: 'daily', time: '00:00', desc: 'Dailies reset. Claim rewards and start your checklist.', icon: 'fa-rotate' },
+    { name: 'Clan Meeting',        day: 6,       time: '18:00', desc: 'Weekly clan meeting on Discord voice.',               icon: 'fa-microphone' },
+    { name: 'Clan War Preparation',day: 5,       time: '16:00', desc: 'Gear up, heal troops and wait for leader orders.',    icon: 'fa-shield-halved' },
+    { name: 'Crypt Run (Group)',   day: 3,       time: '19:00', desc: 'Group PvE run. Bring your PvE loadout.',              icon: 'fa-dungeon' },
+    { name: 'Weekly Reset',        day: 1,       time: '00:00', desc: 'Weekly tasks reset.',                                 icon: 'fa-calendar-week' }
+  ],
+
+  members: [
+    { name: 'T3li',       role: 'Leader',  power: 98500000, kills: 1250000, joined: '2023-01-10' },
+    { name: 'MemberTwo',  role: 'Co-Leader', power: 74200000, kills: 880000, joined: '2023-02-14' },
+    { name: 'MemberThree',role: 'Officer', power: 61800000, kills: 640000, joined: '2023-03-02' },
+    { name: 'MemberFour', role: 'Officer', power: 54300000, kills: 710000, joined: '2023-04-21' },
+    { name: 'MemberFive', role: 'Elite',   power: 41000000, kills: 390000, joined: '2023-06-05' },
+    { name: 'MemberSix',  role: 'Elite',   power: 36700000, kills: 420000, joined: '2023-07-18' },
+    { name: 'MemberSeven',role: 'Member',  power: 25400000, kills: 180000, joined: '2023-09-09' },
+    { name: 'MemberEight',role: 'Member',  power: 19800000, kills: 120000, joined: '2024-01-12' },
+    { name: 'MemberNine', role: 'Member',  power: 12300000, kills: 65000,  joined: '2024-05-30' },
+    { name: 'MemberTen',  role: 'Recruit', power: 6400000,  kills: 21000,  joined: '2024-11-02' }
+  ],
+
+  resources: ['Food', 'Wood', 'Stone', 'Ore', 'Gold'],
+
+  checklist: {
+    daily:  ['Claim daily login reward', 'Contribute to the clan', 'Collect resources', 'Fill training / upgrade queues', 'Complete daily quests', 'Run PvE (crypts / monsters)', 'Check Discord for orders'],
+    weekly: ['Take part in the clan meeting', 'Join the group crypt run', 'Complete weekly clan tasks', 'Review your gear and hero build']
+  },
+
+  rules: [
+    'Be respectful to all clan members. No insults, spam or drama.',
+    'Be active: log in daily and contribute to the clan.',
+    'Follow leader calls during wars and events.',
+    'Never attack clan members, allies or neutral players without approval.',
+    'Do not share dashboard access or passwords with outsiders.',
+    'Tell a leader if you will be inactive for more than 3 days.',
+    'Help new members: share knowledge and be patient.'
+  ]
+};
+
+/* =====================================================================
+   1b. GUIDE LIBRARY  -  8 main categories, files as links
+   ===================================================================== */
+const LIBRARY = [
+  {
+    id: 'start', title: 'Start Here & Beginner Basics', icon: 'fa-flag', color: '#28a745',
+    desc: 'New player guides, first days, starter packs, common mistakes, and the daily checklist.',
+    files: [
+      'beginners-resources.docx','beginners-world-map.docx','Common Beginner Mistakes.docx',
+      'General guidance.docx','Getting Started with Total Battle.docx','Starter Guide.docx','tb.docx',
+      'Total Battle Beginner Guide.docx','Total Battle Common Mistakes.docx','Total Battle Comprehensive Guide.docx',
+      'Total Battle Daily Checklist.docx','Your First Days - Starter Packs.docx'
+    ]
+  },
+  {
+    id: 'heroes', title: 'Heroes, Captains & Talents', icon: 'fa-user-shield', color: '#7c4dbd',
+    desc: 'Every hero and captain profile, talent trees, leveling routes and XP guides.',
+    files: [
+      'Alexander.docx','Amanitore.docx','Artemisia.docx','Aurora.docx','Aydae.docx','Beowulf.docx','Bernard.docx',
+      'Brann.docx','Brunhild.docx','Captain Carter.docx','Captain guide (2).docx','Captain Guide.docx',
+      'captain-cleopatra.docx','Captains Overvie-1.docx','Captains Overview.docx','Captains.docx','Cleopatra.docx',
+      'Doria.docx','Dragon.docx','Dustan.docx','Farhad.docx','Heimdall.docx','Helen.docx','Hercules or Heimdall.docx',
+      'Hercules.docx','Hero Talents Guide Best Allocation & Resets.docx','Heroes & Captains Basics.docx',
+      'Heroes Guide.docx','Heroes.docx','Ingrid.docx','Leonidas.docx','Level 20 Hero Fast.docx','Lucius.docx',
+      'Minamoto.docx','Proscope.docx','Ramses II.docx','Skadi.docx','Sofia.docx','Stror.docx','Tengel.docx',
+      'Total Battle Captains.docx','Total Battle Hero Talents.docx','Total Battle Heroes.docx',
+      'Total Battle How to Level Up Captains - Fastest XP Methods.docx',
+      'Total Battle How to Level Up Dragon - Steps, Orb Costs, and Sources.docx',
+      'Wu Zetian.docx','Xi Guiying.docx','Ye Ho-Sung.docx'
+    ]
+  },
+  {
+    id: 'city', title: 'City, Buildings & Research', icon: 'fa-city', color: '#0078d4',
+    desc: 'City layout, every building, citadels, monuments, teleport tutorial and the research tree.',
+    files: [
+      'Building Your City.docx','Buildings.docx','Citadel Cursed.docx','Citadels Elven.docx','Citadels.docx',
+      'City Teleport Tutorial.docx','Master the Research system to unlock powerful bonuses.docx',
+      'Master what to research first.docx','Monuments.docx','Research Basics.docx','Research.docx',
+      'Summoning Circle.docx','Technologies.docx','Total Battle Academy Research.docx',
+      'Total Battle City Buildings.docx'
+    ]
+  },
+  {
+    id: 'troops', title: 'Troops, Combat & Army Power', icon: 'fa-shield-halved', color: '#dc3545',
+    desc: 'Troop types and tiers, stacking, combat, monsters, mercenaries and first army training.',
+    files: [
+      'Combat.docx','CP runs.docx','Monsters (Squads).docx',
+      'Total Battle Mercenary Exchange Finding & Hiring.docx',
+      'Total Battle Troop Guide - Troop Types, Tiers and Stacking Explained.docx',
+      'Total Battle Troops.docx','Training Your First Army.docx','Troop Stacking.docx',
+      'VP & CP Guide Unlock Troop Tiers II-IX.docx'
+    ]
+  },
+  {
+    id: 'clans', title: 'Clans & Teamwork', icon: 'fa-users', color: '#00a3a3',
+    desc: 'Clan capital, forts, foundry, temple, masons, ranks, leadership and teamwork.',
+    files: [
+      'Clan Capital.docx','Clan Forts.docx','Clan Foundry.docx','Clan Leadership Together we build strength.docx',
+      'Clan Masons.docx','Clan Ranks.docx','Clan Temple.docx','Clan Timber Harvesting.docx',
+      'Clan University.docx','clan.docx','Joining a Clan.docx','teamwork in Total Battle.docx'
+    ]
+  },
+  {
+    id: 'economy', title: 'Economy, Resources, VIP & Progression', icon: 'fa-coins', color: '#d9a400',
+    desc: 'Gems, mines, villages, protected resources, VIP levels and overall progression.',
+    files: [
+      'Gems.docx','How to Protect Resources.docx','Mines.docx',
+      'Total Battle VIP Guide - All VIP Bonuses, Levels, Points and Activation.docx',
+      'Total Battle VIP Status.docx','view Protected Resources (RSS).docx','Villages & Mining Resources.docx'
+    ]
+  },
+  {
+    id: 'events', title: 'Events, Tournaments & Special Modes', icon: 'fa-trophy', color: '#e67e22',
+    desc: 'Crypts, Ragnarok, tournaments, triumphal challenges, sands of destiny and events.',
+    files: [
+      'Crypt Guide Efficiency, Gear and Tar.docx','Crypts.docx','Hall of Fame.docx',
+      'Hint Tin Man without portals.docx','List of Tournaments.docx','Sands of Destiny.docx',
+      'Total Battle Crypts Guide - All Crypt Types, Levels, Materials and Best Setup.docx',
+      'Total Battle Crypts.docx','Total Battle Events & Boosts.docx','Total Battle Free Gift Links.docx',
+      'Total Battle Ragnarok Strategy - Day-by-Day Plan, Best Captains, and Shop Priorities.docx',
+      'Triumphal Challenge.docx','Union of Triumph.docx'
+    ]
+  },
+  {
+    id: 'gear', title: 'Equipment, Items, Artifacts & Enchantments', icon: 'fa-gem', color: '#9b59b6',
+    desc: 'Equipment slots, artifacts, items, materials and enchantment guides.',
+    files: [
+      'Artifacts.docx','Enchantments.docx','Equipment (2).docx','Equipment.docx','Items.docx','Materials.docx'
+    ]
+  }
+];
+
+const LIB_BASE = 'guides/';   // <-- change to your real folder, e.g. 'docs/'
+
+/* =====================================================================
+   2. CONFIG + AUTH
+   ===================================================================== */
+const API_URL = 'https://login.t3li.workers.dev/api';
+const LOGIN_URL = 'login.html';
+let currentUser = null;
+let TOKEN = null;
+let PERMS = new Set(['overview', 'account']);
+const isAdmin = () => !!currentUser && currentUser.role === 'admin';
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => { const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; };
+const getToken = () => localStorage.getItem('family_token') || sessionStorage.getItem('family_token');
+const clearToken = () => { localStorage.removeItem('family_token'); sessionStorage.removeItem('family_token'); };
+const goToLogin = () => { clearToken(); window.location.replace(LOGIN_URL); };
+
+function toast(msg, type = '') {
+  const old = document.querySelector('.toast'); if (old) old.remove();
+  const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+
+async function authInit() {
+  TOKEN = getToken();
+  if (!TOKEN) return goToLogin();
+  try {
+    const out = await (window.__AUTH || fetch(API_URL + '/check', { headers: { Authorization: 'Bearer ' + TOKEN } })
+      .then(r => r.json().then(d => ({ status: r.status, data: d }))));
+    const data = out.data;
+    if (!data.success) {
+      if (out.status === 403 && data.error) alert(data.error);
+      return goToLogin();
+    }
+    currentUser = data.user;
+    startApp();
+  } catch (err) {
+    console.error(err);
+    $('loadingText').textContent = 'Could not reach the server. Check your connection.';
+    $('retryBtn').style.display = 'inline-block';
+    document.querySelector('#loading .spinner').style.display = 'none';
+  }
+}
+
+window.addEventListener('pageshow', (e) => { if (e.persisted && !getToken()) goToLogin(); });
+
+async function logout() {
+  try { await fetch(API_URL + '/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN } }); } catch (e) {}
+  goToLogin();
+}
+
+/* =====================================================================
+   3. HELPERS
+   ===================================================================== */
+const fmt = (n) => Number(n).toLocaleString('en-US');
+const fmtShort = (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : String(n);
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_S = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+
+function nextOccurrence(ev) {
+  const [h, m] = ev.time.split(':').map(Number);
+  const now = new Date();
+  let d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), h, m));
+  if (ev.day === 'daily') { if (d <= now) d = new Date(d.getTime() + 864e5); return d; }
+  const diff = (ev.day - d.getUTCDay() + 7) % 7;
+  d = new Date(d.getTime() + diff * 864e5);
+  if (d <= now) d = new Date(d.getTime() + 7 * 864e5);
+  return d;
+}
+function countdownText(target) {
+  let s = Math.max(0, Math.floor((target - Date.now()) / 1000));
+  const d = Math.floor(s / 86400); s %= 86400;
+  const h = Math.floor(s / 3600); s %= 3600;
+  const m = Math.floor(s / 60); s %= 60;
+  const p = (x) => String(x).padStart(2, '0');
+  return (d > 0 ? d + 'd ' : '') + p(h) + ':' + p(m) + ':' + p(s);
+}
+const sortedEvents = () => CONTENT.events.map(e => ({ ...e, next: nextOccurrence(e) })).sort((a, b) => a.next - b.next);
+
+/* =====================================================================
+   4. NAVIGATION / THEME
+   ===================================================================== */
+const TITLES = { overview:'Overview', library:'Guide Library', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts',
+  strategies:'Pro Strategies', cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Members',
+  checklist:'Daily Checklist', tools:'Calculators', rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights' };
+
+function showSection(name) {
+  if (!TITLES[name]) name = 'overview';
+  if (currentUser && !PERMS.has(name)) {
+    toast(name === 'roles' ? 'This area is for Admins only.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
+    if (location.hash.slice(1) !== 'overview') location.hash = 'overview';
+    name = 'overview';
+  }
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
+  document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('active', a.dataset.s === name));
+  $('pageTitle').textContent = TITLES[name];
+  closeMenu();
+  window.scrollTo({ top: 0 });
+}
+const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
+window.addEventListener('hashchange', () => showSection(location.hash.slice(1)));
+
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $('themeBtn').innerHTML = '<i class="fas fa-' + (t === 'dark' ? 'sun' : 'moon') + '"></i>';
+  localStorage.setItem('tb_theme', t);
+}
+
+/* =====================================================================
+   5. RENDERERS
+   ===================================================================== */
+function renderOverview() {
+  const members = CONTENT.members;
+  const totalPower = members.reduce((a, m) => a + m.power, 0);
+  const nextEv = sortedEvents()[0];
+  const totalGuides = LIBRARY.reduce((a, c) => a + c.files.length, 0);
+  $('statCards').innerHTML = [
+    ['fa-users', '#0078d4', members.length, 'Clan Members'],
+    ['fa-bolt', '#7c4dbd', fmtShort(totalPower), 'Total Clan Power'],
+    ['fa-book-open-reader', '#d9a400', totalGuides, 'Guides in Library'],
+    ['fa-calendar-day', '#28a745', nextEv ? nextEv.name : '-', 'Next Event']
+  ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
+    <div><b style="font-size:${String(v).length > 9 ? 16 : 24}px">${esc(v)}</b><span>${l}</span></div></div>`).join('');
+
+  $('announcements').innerHTML = '<ul class="list">' + CONTENT.announcements.map(a =>
+    `<li class="ann"><i class="fas fa-circle-info"></i><div><h4>${esc(a.title)} <span class="badge b-lvl">${esc(a.tag)}</span></h4>
+     <small>${esc(a.date)}</small><p>${esc(a.body)}</p></div></li>`).join('') + '</ul>';
+
+  $('nextEvents').innerHTML = '<ul class="list">' + sortedEvents().slice(0, 3).map(e =>
+    `<li><i class="fas ${e.icon || 'fa-calendar'}"></i><div style="flex:1"><b>${esc(e.name)}</b><br><small class="muted">${e.day === 'daily' ? 'Every day' : DAYS[e.day]} · ${e.time} UTC</small></div>
+     <span class="countdown" data-target="${e.next.getTime()}">${countdownText(e.next)}</span></li>`).join('') + '</ul>';
+  updateProgress();
+}
+
+/* ---------- GUIDE LIBRARY ---------- */
+function renderLibrary() {
+  const total = LIBRARY.reduce((a, c) => a + c.files.length, 0);
+  $('libStats').innerHTML = [
+    ['fa-layer-group', '#0078d4', LIBRARY.length, 'Categories'],
+    ['fa-file-word',   '#7c4dbd', total,        'Total Guides'],
+    ['fa-book-open',   '#d9a400', '8',          'Main Topics'],
+    ['fa-clock',       '#28a745', '24/7',       'Available']
+  ].map(([i,c,v,l]) => `<div class="lib-stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
+    <div><b>${esc(v)}</b><span>${esc(l)}</span></div></div>`).join('');
+
+  // Chips for the 8 categories
+  $('libChips').innerHTML = '<button class="chip active" data-cat="all"><i class="fas fa-layer-group"></i> All</button>' +
+    LIBRARY.map(c => `<button class="chip" data-cat="${esc(c.id)}"><i class="fas ${c.icon}"></i> ${esc(c.title.split(' ')[0])}</button>`).join('');
+
+  const state = { q: '', cat: 'all' };
+
+  const draw = () => {
+    const q = state.q.toLowerCase().trim();
+    const cats = LIBRARY.filter(c => state.cat === 'all' || c.id === state.cat);
+    let html = '', shown = 0;
+
+    cats.forEach(cat => {
+      const files = cat.files.filter(f => !q || f.toLowerCase().includes(q));
+      if (!files.length) return;
+      shown += files.length;
+      html += `<div class="card lib-card" data-cat="${esc(cat.id)}">
+        <div class="lib-head">
+          <div class="lib-icon" style="background:${cat.color}"><i class="fas ${cat.icon}"></i></div>
+          <div style="flex:1;min-width:0">
+            <h3>${esc(cat.title)}</h3>
+            <small><b>${files.length}</b> guide${files.length === 1 ? '' : 's'}${q ? ' matching' : ''}</small>
+          </div>
+        </div>
+        <p class="lib-desc">${esc(cat.desc)}</p>
+        <ul class="lib-files">
+          ${files.map(f => {
+            const name = f.replace(/\.docx$/i, '');
+            return `<li><a href="${LIB_BASE}${encodeURIComponent(f)}" target="_blank" rel="noopener" title="${esc(f)}">
+              <i class="fas fa-file-word"></i>
+              <span class="fname">${esc(name)}</span>
+              <span class="ext">DOCX</span>
+            </a></li>`;
+          }).join('')}
+        </ul>
+      </div>`;
+    });
+
+    $('libGrid').innerHTML = shown ? html :
+      `<div class="card lib-empty" style="grid-column:1/-1">
+        <i class="fas fa-magnifying-glass"></i>
+        <h3 style="color:var(--text)">No guides found</h3>
+        <p>Nothing matches "<b>${esc(state.q)}</b>" in this category.</p>
+      </div>`;
+  };
+
+  $('libSearch').oninput = (e) => { state.q = e.target.value; draw(); };
+  $('libChips').onclick = (e) => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    state.cat = b.dataset.cat;
+    document.querySelectorAll('#libChips .chip').forEach(c => c.classList.toggle('active', c === b));
+    draw();
+  };
+  draw();
+}
+
+function renderTutorials() {
+  const cats = ['All', ...new Set(CONTENT.tutorials.map(t => t.category))];
+  const state = { cat: 'All', q: '' };
+  $('tutChips').innerHTML = cats.map(c => `<button class="chip ${c === 'All' ? 'active' : ''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+  const draw = () => {
+    const list = CONTENT.tutorials.filter(t => (state.cat === 'All' || t.category === state.cat) &&
+      (t.title + ' ' + t.summary).toLowerCase().includes(state.q));
+    $('tutGrid').innerHTML = list.length ? list.map(t => `<div class="card tut" data-id="${t.id}">
+      <div class="top"><div class="icon"><i class="fas ${t.icon || 'fa-book'}"></i></div>
+      <span class="badge ${t.premium ? 'b-prem' : 'b-free'}">${t.premium ? '★ Premium' : 'Free'}</span></div>
+      <h4>${esc(t.title)}</h4><p>${esc(t.summary)}</p>
+      <div class="meta"><span class="badge b-lvl">${esc(t.level)}</span><span><i class="far fa-clock"></i> ${t.minutes} min</span></div></div>`).join('')
+      : '<p class="muted">No tutorials match your search.</p>';
+  };
+  $('tutChips').onclick = (e) => { const b = e.target.closest('.chip'); if (!b) return; state.cat = b.dataset.c;
+    document.querySelectorAll('#tutChips .chip').forEach(c => c.classList.toggle('active', c === b)); draw(); };
+  $('tutSearch').oninput = (e) => { state.q = e.target.value.toLowerCase(); draw(); };
+  $('tutGrid').onclick = (e) => { const c = e.target.closest('.tut'); if (!c) return; openTutorial(c.dataset.id); };
+  draw();
+}
+function openTutorial(id) {
+  const t = CONTENT.tutorials.find(x => x.id === id); if (!t) return;
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    <span class="badge ${t.premium ? 'b-prem' : 'b-free'}">${t.premium ? '★ Premium' : 'Free'}</span>
+    <h2 style="margin-top:10px">${esc(t.title)}</h2>
+    <p class="muted">${esc(t.category)} · ${esc(t.level)} · ${t.minutes} min read</p>
+    <p style="margin-top:12px">${esc(t.summary)}</p>
+    <h3 style="margin-top:18px">Steps</h3><ol>${t.steps.map(s => '<li>' + esc(s) + '</li>').join('')}</ol>
+    <button class="btn" onclick="closeModal()">Got it</button>`;
+  $('modalBg').classList.add('show');
+}
+function closeModal() { $('modalBg').classList.remove('show'); }
+
+function renderLoadouts() {
+  $('loGoal').innerHTML = CONTENT.loadouts.map(l => `<option value="${l.id}">${esc(l.goal)}</option>`).join('');
+  const draw = () => {
+    const lo = CONTENT.loadouts.find(l => l.id === $('loGoal').value);
+    const pr = $('loPrio').value;
+    $('loResult').innerHTML = `<b>${esc(lo.goal)}</b> · ${esc(pr)}<br>${esc(lo.desc)}<br><br>${esc(lo.tips[pr])}`;
+    $('loTable').innerHTML = '<tr><th>Slot</th><th>Focus</th><th>Note</th></tr>' +
+      lo.slots.map(s => `<tr><td><b>${esc(s.slot)}</b></td><td><span class="badge b-lvl">${esc(s.focus)}</span></td><td class="muted" style="white-space:normal">${esc(s.note)}</td></tr>`).join('');
+  };
+  $('loGoal').onchange = draw; $('loPrio').onchange = draw; draw();
+}
+
+function renderStrategies() {
+  $('stratList').innerHTML = CONTENT.strategies.map((s, i) => `<details ${i === 0 ? 'open' : ''}>
+    <summary><i class="fas fa-chess-knight" style="color:var(--primary)"></i> ${esc(s.title)}<i class="fas fa-chevron-down chev"></i></summary>
+    <div class="body"><ul>${s.points.map(p => '<li>' + esc(p) + '</li>').join('')}</ul></div></details>`).join('');
+}
+
+function renderCheatSheets() {
+  $('cheatGrid').innerHTML = CONTENT.cheatsheets.map((c, i) => `<div class="card">
+    <h3><i class="fas ${c.icon}"></i> ${esc(c.title)}</h3>
+    <ul class="list">${c.items.map(x => '<li><i class="fas fa-check"></i>' + esc(x) + '</li>').join('')}</ul>
+    <button class="btn outline sm" data-copy="${i}" style="margin-top:12px"><i class="far fa-copy"></i> Copy</button></div>`).join('');
+  $('cheatGrid').onclick = async (e) => {
+    const b = e.target.closest('[data-copy]'); if (!b) return;
+    const c = CONTENT.cheatsheets[b.dataset.copy];
+    const text = c.title + '\n' + c.items.map(x => '- ' + x).join('\n');
+    try { await navigator.clipboard.writeText(text); toast('Copied to clipboard', 'ok'); } catch { toast('Copy failed', 'err'); }
+  };
+}
+
+function renderEvents() {
+  $('eventList').innerHTML = sortedEvents().map(e => {
+    const local = e.next.toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+    return `<div class="event"><div class="date"><b>${e.next.getUTCDate()}</b><small>${DAYS_S[e.next.getUTCDay()]}</small></div>
+      <div class="info"><h4><i class="fas ${e.icon || 'fa-calendar'}" style="color:var(--primary)"></i> ${esc(e.name)}</h4>
+      <p>${esc(e.desc)}</p><p>${e.day === 'daily' ? 'Every day' : 'Every ' + DAYS[e.day]} · <b>${e.time} UTC</b> · your time: ${esc(local)}</p></div>
+      <div class="countdown" data-target="${e.next.getTime()}">${countdownText(e.next)}<small>until start</small></div></div>`;
+  }).join('');
+}
+
+function renderMembers() {
+  const ms = CONTENT.members;
+  const totalP = ms.reduce((a, m) => a + m.power, 0), totalK = ms.reduce((a, m) => a + m.kills, 0);
+  $('memberStats').innerHTML = [
+    ['fa-users', '#0078d4', ms.length, 'Total Members'],
+    ['fa-bolt', '#7c4dbd', fmtShort(totalP), 'Total Power'],
+    ['fa-skull', '#dc3545', fmtShort(totalK), 'Total Kills'],
+    ['fa-chart-simple', '#28a745', fmtShort(Math.round(totalP / ms.length)), 'Avg Power']
+  ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div><div><b>${v}</b><span>${l}</span></div></div>`).join('');
+
+  const bars = (key) => { const top = [...ms].sort((a, b) => b[key] - a[key]).slice(0, 5), max = top[0][key];
+    return top.map(m => `<div class="bar-row"><span>${esc(m.name)}</span><div class="bar"><div style="width:${(m[key] / max * 100).toFixed(1)}%"></div></div><span>${fmtShort(m[key])}</span></div>`).join(''); };
+  $('topPower').innerHTML = bars('power'); $('topKills').innerHTML = bars('kills');
+
+  let sort = { key: 'power', dir: -1 }, q = '';
+  const cols = [['#', null], ['Name', 'name'], ['Role', 'role'], ['Power', 'power'], ['Kills', 'kills'], ['Joined', 'joined']];
+  const draw = () => {
+    const rows = ms.filter(m => (m.name + m.role).toLowerCase().includes(q))
+      .sort((a, b) => (a[sort.key] > b[sort.key] ? 1 : -1) * sort.dir);
+    $('memTable').innerHTML = '<tr>' + cols.map(([l, k]) => `<th data-k="${k || ''}">${l}${k && sort.key === k ? (sort.dir === 1 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr>' +
+      rows.map((m, i) => `<tr><td class="rank">${i + 1}</td><td><b>${esc(m.name)}</b></td><td><span class="badge b-role">${esc(m.role)}</span></td>
+        <td>${fmt(m.power)}</td><td>${fmt(m.kills)}</td><td class="muted">${esc(m.joined)}</td></tr>`).join('');
+  };
+  $('memTable').onclick = (e) => { const th = e.target.closest('th'); if (!th || !th.dataset.k) return;
+    sort = { key: th.dataset.k, dir: sort.key === th.dataset.k ? -sort.dir : -1 }; draw(); };
+  $('memSearch').oninput = (e) => { q = e.target.value.toLowerCase(); draw(); };
+  draw();
+}
+
+/* ---------- checklist ---------- */
+function periodKeys() {
+  const n = new Date(), day = n.toISOString().slice(0, 10);
+  const mon = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate() - ((n.getUTCDay() + 6) % 7)));
+  return { day, week: mon.toISOString().slice(0, 10) };
+}
+const ckKey = () => 'tb_check_' + currentUser.id;
+function loadChecks() {
+  const k = periodKeys(); let s;
+  try { s = JSON.parse(localStorage.getItem(ckKey())) || {}; } catch { s = {}; }
+  if (s.day !== k.day) { s.day = k.day; s.daily = {}; }
+  if (s.week !== k.week) { s.week = k.week; s.weekly = {}; }
+  s.daily = s.daily || {}; s.weekly = s.weekly || {};
+  return s;
+}
+function saveChecks(s) { try { localStorage.setItem(ckKey(), JSON.stringify(s)); } catch (e) {} }
+
+function renderChecklist() {
+  const s = loadChecks();
+  const draw = (type, el, bar) => {
+    const items = CONTENT.checklist[type];
+    $(el).innerHTML = items.map((t, i) => `<label class="check ${s[type][i] ? 'done' : ''}"><input type="checkbox" data-t="${type}" data-i="${i}" ${s[type][i] ? 'checked' : ''}><span>${esc(t)}</span></label>`).join('');
+    const done = items.filter((_, i) => s[type][i]).length;
+    $(bar).style.width = (items.length ? done / items.length * 100 : 0) + '%';
+  };
+  const all = () => { draw('daily', 'dailyList', 'dailyBar'); draw('weekly', 'weeklyList', 'weeklyBar'); updateProgress(); };
+  document.getElementById('s-checklist').onchange = (e) => { const c = e.target; if (!c.dataset.t) return;
+    s[c.dataset.t][c.dataset.i] = c.checked; saveChecks(s); all(); };
+  all();
+}
+function updateProgress() {
+  const s = loadChecks(), items = CONTENT.checklist.daily, done = items.filter((_, i) => s.daily[i]).length;
+  const pct = items.length ? Math.round(done / items.length * 100) : 0;
+  $('overviewProgress').innerHTML = `<p class="muted" style="font-size:14px">${done} of ${items.length} daily tasks complete</p>
+    <div class="progress"><div style="width:${pct}%"></div></div><button class="btn outline sm" data-go="checklist">Open checklist</button>`;
+}
+
+function renderTools() {
+  const calc = () => {
+    const mins = (+$('tcD').value || 0) * 1440 + (+$('tcH').value || 0) * 60 + (+$('tcM').value || 0);
+    const bonus = +$('tcB').value || 0;
+    if (mins <= 0) { $('tcRes').textContent = 'Enter a duration above.'; return; }
+    const real = mins / (1 + bonus / 100), d = Math.floor(real / 1440), h = Math.floor(real % 1440 / 60), m = Math.round(real % 60);
+    $('tcRes').innerHTML = `Real time: <b>${d}d ${h}h ${m}m</b><br><span class="muted">You save ${Math.round(mins - real)} minutes (${(100 - 100 / (1 + bonus / 100)).toFixed(1)}% faster).</span>`;
+  };
+  ['tcD', 'tcH', 'tcM', 'tcB'].forEach(id => $(id).oninput = calc);
+
+  $('rgTable').innerHTML = '<tr><th>Resource</th><th>Needed</th><th>You have</th></tr>' +
+    CONTENT.resources.map((r, i) => `<tr><td><b>${esc(r)}</b></td><td><input type="number" min="0" class="input rg" data-i="${i}" data-k="n" placeholder="0" style="min-width:110px"></td>
+      <td><input type="number" min="0" class="input rg" data-i="${i}" data-k="h" placeholder="0" style="min-width:110px"></td></tr>`).join('');
+  $('rgTable').oninput = () => {
+    const need = {}, have = {};
+    document.querySelectorAll('.rg').forEach(el => { (el.dataset.k === 'n' ? need : have)[el.dataset.i] = +el.value || 0; });
+    const lines = CONTENT.resources.map((r, i) => { const gap = (need[i] || 0) - (have[i] || 0);
+      return `${esc(r)}: ` + (gap > 0 ? `<b>${fmt(gap)}</b> still needed` : `<span style="color:var(--ok)">enough ✔</span>`); });
+    $('rgRes').innerHTML = lines.join('<br>');
+  };
+  $('rgRes').innerHTML = 'Fill in the table to see what is missing.';
+}
+
+function renderRules() {
+  $('ruleList').innerHTML = CONTENT.rules.map((r, i) => `<li><i class="fas fa-circle-${i + 1 <= 50 ? 'check' : 'dot'}"></i><div>${esc(r)}</div></li>`).join('');
+  $('discordLink').href = CONTENT.clan.discord;
+}
+
+function renderAccount() {
+  const u = currentUser;
+  $('accName').textContent = u.name || '-';
+  $('accUser').textContent = u.username || '-';
+  $('accRole').innerHTML = roleBadgeRaw(u.roleLabel || u.role, u.roleColor);
+  $('accEmail').textContent = u.email;
+  $('accId').textContent = '#' + u.id;
+  let since = '-';
+  if (u.createdAt) { const d = new Date(String(u.createdAt).replace(' ', 'T') + 'Z'); if (!isNaN(d)) since = d.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' }); }
+  $('accSince').textContent = since;
+
+  $('pwBtn').onclick = async () => {
+    const a = $('pw1').value, b = $('pw2').value;
+    if (a.length < 6) return toast('Password must be at least 6 characters.', 'err');
+    if (a !== b) return toast('Passwords do not match.', 'err');
+    $('pwBtn').disabled = true;
+    try {
+      const res = await fetch(API_URL + '/user', { method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + TOKEN },
+        body: JSON.stringify({ action: 'updatePassword', password: a }) });
+      const data = await res.json();
+      if (data.success) { toast('Password updated successfully!', 'ok'); $('pw1').value = $('pw2').value = ''; }
+      else toast(data.error || 'Could not update password.', 'err');
+    } catch (e) { toast('Network error. Try again.', 'err'); }
+    $('pwBtn').disabled = false;
+  };
+}
+
+/* =====================================================================
+   5b. PERMISSIONS + ADMIN
+   ===================================================================== */
+const roleBadgeRaw = (label, color) => { const c = /^#[0-9a-fA-F]{3,8}$/.test(color || '') ? color : '#6c757d';
+  return `<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}66">${esc(label)}</span>`; };
+
+function applyPermissions() {
+  PERMS = new Set(currentUser.permissions || ['overview', 'account']);
+  document.querySelectorAll('#nav a[data-s]').forEach(a => {
+    const k = a.dataset.s;
+    if (k === 'roles') return;
+    if (!PERMS.has(k)) {
+      a.classList.add('locked');
+      a.title = 'Premium: ask an admin to unlock this section';
+      if (!a.querySelector('.pill')) a.insertAdjacentHTML('beforeend', '<span class="pill lock"><i class="fas fa-lock"></i> PREMIUM</span>');
+    }
+  });
+}
+
+async function api(path, method = 'GET', body) {
+  const attempts = (method === 'POST' || method === 'DELETE') ? 1 : 2;
+  for (let i = 1; i <= attempts; i++) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 15000);
+    try {
+      const res = await fetch(API_URL + path, { method, signal: ctl.signal,
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + TOKEN },
+        body: body ? JSON.stringify(body) : undefined });
+      clearTimeout(timer);
+      if (res.status === 401) { goToLogin(); return { success: false, error: 'Session expired' }; }
+      return await res.json();
+    } catch (e) {
+      clearTimeout(timer);
+      if (i === attempts) return { success: false,
+        error: 'Could not reach the server (network problem). Check your connection and try again. Your change may not have been saved.' };
+    }
+  }
+}
+
+const ADM = { users: [], roles: [], menus: [], matrix: {} };
+const roleBadge = (key) => { const r = ADM.roles.find(x => x.role_key === key); return roleBadgeRaw(r ? r.label : key, r ? r.color : '#6c757d'); };
+
+function initAdmin() {
+  $('navRoles').style.display = ''; $('adminLabel').style.display = '';
+  $('roleTabs').onclick = (e) => { const b = e.target.closest('.chip'); if (!b) return;
+    document.querySelectorAll('#roleTabs .chip').forEach(c => c.classList.toggle('active', c === b));
+    $('tab-users').style.display = b.dataset.tab === 'users' ? '' : 'none';
+    $('tab-rights').style.display = b.dataset.tab === 'rights' ? '' : 'none'; };
+  $('usrSearch').oninput = renderUsers; $('usrRole').onchange = renderUsers;
+  $('addUserBtn').onclick = () => openUserModal(null);
+  $('usrTable').onclick = onUserAction;
+  $('saveRights').onclick = saveRights;
+  loadAdmin();
+}
+
+async function loadAdmin() {
+  const [u, p] = await Promise.all([api('/admin/users'), api('/admin/permissions')]);
+  if (!u.success || !p.success) { toast((u.error || p.error || 'Could not load admin data'), 'err'); return; }
+  ADM.users = u.users; ADM.roles = p.roles; ADM.menus = p.menus; ADM.matrix = p.matrix;
+  $('usrRole').innerHTML = '<option value="">All roles</option>' + ADM.roles.map(r => `<option value="${esc(r.role_key)}">${esc(r.label)}</option>`).join('');
+  renderUsers(); renderRights();
+}
+async function refreshUsers() { const u = await api('/admin/users'); if (u.success) { ADM.users = u.users; renderUsers(); } }
+
+function renderUsers() {
+  const q = $('usrSearch').value.toLowerCase(), rf = $('usrRole').value;
+  const rows = ADM.users.filter(u => (!rf || u.role === rf) && (u.username + ' ' + u.email + ' ' + (u.name || '')).toLowerCase().includes(q));
+  const ri = (k) => ADM.roles.findIndex(r => r.role_key === k);
+  $('usrTable').innerHTML = '<tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>' +
+    (rows.map(u => { const me = u.id === currentUser.id, i = ri(u.role);
+      return `<tr>
+      <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${esc((u.username || u.email).charAt(0).toUpperCase())}</div>
+        <div><b>${esc(u.username || '-')}</b>${me ? ' <span class="badge b-lvl">You</span>' : ''}<br><small class="muted">${esc(u.name || '')}</small></div></div></td>
+      <td>${esc(u.email)}</td><td>${roleBadge(u.role)}</td>
+      <td><span class="badge ${u.is_active ? 'st-on' : 'st-off'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
+      <td class="muted">${esc(String(u.created_at).slice(0, 10))}</td>
+      <td><div class="act">
+        <button class="mini" data-act="promote" data-id="${u.id}" title="Promote" ${me || i <= 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+        <button class="mini" data-act="demote" data-id="${u.id}" title="Demote" ${me || i >= ADM.roles.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+        <button class="mini" data-act="edit" data-id="${u.id}" title="Edit login details"><i class="fas fa-pen"></i></button>
+        <button class="mini" data-act="toggle" data-id="${u.id}" title="${u.is_active ? 'Disable' : 'Enable'} account" ${me ? 'disabled' : ''}><i class="fas fa-${u.is_active ? 'ban' : 'circle-check'}"></i></button>
+        <button class="mini bad" data-act="delete" data-id="${u.id}" title="Delete" ${me ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
+      </div></td></tr>`; }).join('') || '<tr><td colspan="6" class="muted">No users found.</td></tr>');
+}
+
+async function saveUser(id, body, okMsg) {
+  const r = await api('/admin/users/' + id, 'PATCH', body);
+  toast(r.success ? okMsg : (r.error || 'Failed'), r.success ? 'ok' : 'err');
+  await refreshUsers();
+  return r.success;
+}
+
+async function onUserAction(e) {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const id = +b.dataset.id, u = ADM.users.find(x => x.id === id), act = b.dataset.act; if (!u) return;
+  if (act === 'promote' || act === 'demote') {
+    const i = ADM.roles.findIndex(r => r.role_key === u.role), nr = ADM.roles[act === 'promote' ? i - 1 : i + 1];
+    if (!nr) return;
+    if (nr.role_key === 'admin' && !confirm('Promote ' + u.username + ' to ADMIN? Admins have full control of this dashboard.')) return;
+    await saveUser(id, { role: nr.role_key }, u.username + ' is now ' + nr.label);
+  } else if (act === 'toggle') {
+    if (u.is_active && !confirm('Disable ' + u.username + '? They will be logged out and cannot sign in.')) return;
+    await saveUser(id, { is_active: !u.is_active }, u.username + (u.is_active ? ' disabled' : ' enabled'));
+  } else if (act === 'edit') {
+    openUserModal(u);
+  } else if (act === 'delete') {
+    if (!confirm('Permanently delete ' + u.username + '? This cannot be undone.')) return;
+    const r = await api('/admin/users/' + id, 'DELETE');
+    toast(r.success ? 'User deleted' : (r.error || 'Failed'), r.success ? 'ok' : 'err');
+    await refreshUsers();
+  }
+}
+
+function openUserModal(u) {
+  const isNew = !u, me = u && u.id === currentUser.id;
+  const opts = ADM.roles.map(r => `<option value="${esc(r.role_key)}" ${(u ? u.role : 'member') === r.role_key ? 'selected' : ''}>${esc(r.label)}</option>`).join('');
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    <h2>${isNew ? 'Add user' : 'Edit user'}</h2>
+    <p class="muted" style="margin-bottom:6px">${isNew ? 'Create a login for a new member.' : 'Change login details, role or status.'}</p>
+    <label class="l">Username</label><input class="input" id="mu_user" value="${esc(u ? u.username || '' : '')}" placeholder="3-24 letters, numbers . _ -">
+    <label class="l">Display name</label><input class="input" id="mu_name" value="${esc(u ? u.name || '' : '')}">
+    <label class="l">Email</label><input class="input" id="mu_email" type="email" value="${esc(u ? u.email : '')}">
+    <label class="l">${isNew ? 'Password' : 'New password (leave empty to keep current)'}</label>
+    <div class="pw-row"><input class="input" id="mu_pw" type="text" autocomplete="off" placeholder="min 6 characters"><button class="btn outline sm" type="button" id="mu_gen">Generate</button></div>
+    <label class="l">Role</label><select class="input" id="mu_role" ${me ? 'disabled' : ''}>${opts}</select>
+    ${isNew ? '' : `<label class="check" style="margin-top:14px"><input type="checkbox" id="mu_active" ${u.is_active ? 'checked' : ''} ${me ? 'disabled' : ''}><span>Account active (can log in)</span></label>`}
+    ${me ? '<p class="muted" style="font-size:12px;margin-top:8px">You cannot change your own role or disable your own account.</p>' : ''}
+    ${!isNew ? '<p class="muted" style="font-size:12px;margin-top:8px">Changing the password or disabling the account signs the user out everywhere.</p>' : ''}
+    <div style="display:flex;gap:10px;margin-top:20px"><button class="btn" id="mu_save">${isNew ? 'Create user' : 'Save changes'}</button><button class="btn outline" onclick="closeModal()">Cancel</button></div>`;
+  $('modalBg').classList.add('show');
+  $('mu_gen').onclick = () => { const c = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let p = '';
+    const a = new Uint32Array(12); crypto.getRandomValues(a); a.forEach(n => p += c[n % c.length]); $('mu_pw').value = p; };
+  $('mu_save').onclick = async () => {
+    const body = { username: $('mu_user').value.trim(), name: $('mu_name').value.trim(), email: $('mu_email').value.trim(), role: $('mu_role').value };
+    const pw = $('mu_pw').value; if (pw) body.password = pw;
+    if (!isNew && $('mu_active')) body.is_active = $('mu_active').checked;
+    $('mu_save').disabled = true;
+    const r = isNew ? await api('/admin/users', 'POST', body) : await api('/admin/users/' + u.id, 'PATCH', body);
+    $('mu_save').disabled = false;
+    if (r.success) { toast(isNew ? 'User created' : 'User updated' + (pw ? ' (password changed)' : ''), 'ok'); closeModal(); refreshUsers(); }
+    else toast(r.error || 'Failed', 'err');
+  };
+}
+
+function renderRights() {
+  const roles = ADM.roles;
+  $('rightsTable').innerHTML = '<tr><th>Menu</th>' + roles.map(r => `<th>${roleBadgeRaw(r.label, r.color)}</th>`).join('') + '</tr>' +
+    ADM.menus.map(m => '<tr><td><b>' + esc(m.label) + '</b>' + (m.always ? ' <span class="badge b-lvl">always on</span>' : '') + (m.adminOnly ? ' <span class="badge b-lvl">admin only</span>' : '') + '</td>' +
+      roles.map(r => { const isAdm = r.role_key === 'admin', locked = isAdm || m.always || m.adminOnly;
+        const checked = isAdm || (!m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
+        return `<td style="text-align:center"><input type="checkbox" class="rt" data-r="${esc(r.role_key)}" data-m="${esc(m.key)}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}></td>`; }).join('') + '</tr>').join('');
+}
+
+async function saveRights() {
+  const matrix = {};
+  ADM.roles.forEach(r => { if (r.role_key !== 'admin') matrix[r.role_key] = []; });
+  document.querySelectorAll('#rightsTable .rt').forEach(c => { if (c.checked && matrix[c.dataset.r]) matrix[c.dataset.r].push(c.dataset.m); });
+  $('saveRights').disabled = true;
+  const r = await api('/admin/permissions', 'PUT', { matrix });
+  $('saveRights').disabled = false;
+  toast(r.success ? 'Rights saved. Members see changes on their next page load.' : (r.error || 'Failed'), r.success ? 'ok' : 'err');
+  if (r.success) { const p = await api('/admin/permissions'); if (p.success) { ADM.matrix = p.matrix; renderRights(); } }
+}
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+function startApp() {
+  const name = currentUser.name || currentUser.email.split('@')[0];
+  $('heroName').textContent = name;
+  $('chipName').textContent = name;
+  $('avatar').textContent = name.charAt(0).toUpperCase();
+  $('topName').textContent = name;
+  $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
+
+  $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
+  applyPermissions();
+  renderOverview(); renderLibrary(); renderTutorials(); renderLoadouts(); renderStrategies(); renderCheatSheets();
+  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount();
+
+  document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
+  $('nav').addEventListener('click', (e) => {
+    const a = e.target.closest('a.locked');
+    if (a) { e.preventDefault(); toast('🔒 "' + TITLES[a.dataset.s] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err'); }
+  });
+  if (isAdmin()) initAdmin();
+  $('menuBtn').onclick = () => { $('sidebar').classList.add('open'); $('overlay').classList.add('show'); };
+  $('overlay').onclick = closeMenu;
+  $('themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  $('userChip').onclick = () => { location.hash = 'account'; };
+  $('logoutTop').onclick = logout; $('logoutBtn').onclick = logout;
+  $('modalBg').onclick = (e) => { if (e.target === $('modalBg')) closeModal(); };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  const tick = () => {
+    $('utcClock').textContent = new Date().toISOString().slice(11, 19);
+    document.querySelectorAll('.countdown[data-target]').forEach(el => {
+      const t = +el.dataset.target;
+      if (t - Date.now() <= 0) { renderEvents(); renderOverview(); return; }
+      const small = el.querySelector('small');
+      el.firstChild.nodeValue = countdownText(t);
+      if (!small && el.childNodes.length === 1) el.textContent = countdownText(t);
+    });
+  };
+  tick(); setInterval(tick, 1000);
+
+  showSection(location.hash.slice(1));
+  $('loading').style.display = 'none';
+}
+
+applyTheme(localStorage.getItem('tb_theme') || 'light');
+authInit();
+</script>
+</body>
+</html>
