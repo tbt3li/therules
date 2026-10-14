@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Generate Admin SQL</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 20px; }
+    h1 { font-size: 20px; }
+    label { display:block; margin-top:12px; font-weight:600; font-size:14px; }
+    input { width:100%; padding:10px; margin-top:4px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+    button { margin-top:16px; padding:12px 20px; background:#0f3460; color:#fff; border:0; border-radius:6px; font-weight:600; cursor:pointer; }
+    pre { background:#f4f4f4; padding:16px; border-radius:8px; overflow:auto; margin-top:20px; word-break:break-all; }
+    .note { color:#666; font-size:13px; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <h1>Generate Admin SQL INSERT</h1>
+  <p class="note">Uses the exact same PBKDF2-SHA256 (100k iterations) as your Worker.</p>
+
+  <label>Username</label>
+  <input id="u" value="admin" />
+
+  <label>Password</label>
+  <input id="p" value="admin" />
+
+  <button onclick="run()">Generate SQL</button>
+
+  <pre id="out">Click Generate SQL…</pre>
+
+  <script>
+    function randomHex(bytes) {
+      const a = new Uint8Array(bytes);
+      crypto.getRandomValues(a);
+      return [...a].map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function hashPassword(password, salt, pepper) {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey(
+        'raw', enc.encode(password + pepper),
+        { name: 'PBKDF2' }, false, ['deriveBits']
+      );
+      const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' },
+        keyMaterial, 256
+      );
+      return btoa(String.fromCharCode(...new Uint8Array(bits)));
+    }
+
+    async function run() {
+      const username = document.getElementById('u').value.trim();
+      const password = document.getElementById('p').value;
+      if (!username || !password) return alert('Enter username and password');
+
+      const salt = randomHex(16);
+      const pepper = randomHex(16);
+      const hashed = await hashPassword(password, salt, pepper);
+
+      const sql =
+`INSERT INTO users (username, password, salt, pepper) VALUES (
+  '${username}',
+  '${hashed}',
+  '${salt}',
+  '${pepper}'
+);`;
+
+      document.getElementById('out').textContent = sql;
+    }
+  </script>
+</body>
+</html>
