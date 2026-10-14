@@ -495,7 +495,7 @@ async function init() {
     $('registerLink').onclick = (e) => { e.preventDefault(); setMode(!isSignUpMode); };
     $('forgotPassword').addEventListener('click', (e) => {
         e.preventDefault();
-        showNotification('Password reset is not available yet. Please contact the admin (T3li).', 'warning');
+        showNotification('Password reset is not available yet. Please contact the admin (웃T3li).', 'warning');
     });
     $('steamBtn').addEventListener('click', () => showNotification('Steam login is not configured yet.', 'warning'));
     $('discordBtn').addEventListener('click', () => showNotification('Discord login is not configured yet.', 'warning'));
