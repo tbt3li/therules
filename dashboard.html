@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script>
-/* AUTH GATE - runs before anything else loads.
-   No token  -> instantly go to login.html (page is hidden so nothing flashes).
-   Has token -> start the server check right now, in parallel with the page loading. */
+
 (function () {
   var t = localStorage.getItem('family_token') || sessionStorage.getItem('family_token');
   if (!t) {
@@ -279,7 +277,7 @@ details .body ul{padding-left:20px;margin-top:6px}
       <div class="nav-label" id="adminLabel" style="display:none">Administration</div>
       <a href="#roles" data-s="roles" id="navRoles" style="display:none"><i class="fas fa-user-shield"></i> User Roles</a>
     </nav>
-    <div class="side-foot">&copy; 2025 THE Family Gang<br>웃 T3li · Members only</div>
+    <div class="side-foot">&copy; 2026 THE Family Gang<br>웃 T3li · Members only</div>
   </aside>
   <div class="overlay" id="overlay"></div>
 
