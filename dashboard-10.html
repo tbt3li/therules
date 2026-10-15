@@ -250,6 +250,13 @@ details .body ul{padding-left:20px;margin-top:6px}
 .gcard.locked{opacity:.6}.gcard h4{font-size:16px;margin-bottom:4px}.gcard p{font-size:13.5px;color:var(--muted)}
 .gread img{width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:12px 0}
 .gread p{margin:0 0 12px;line-height:1.65;font-size:14.5px}
+
+/* guide colours: one light colour per category */
+.gcard.gtint{background:var(--gc);border-color:var(--ga);color:#323130}
+.gcard.gtint p{color:#4a4846}
+.gcard.gtint .gthumb{background:var(--ga)}
+.chip.gcol{background:var(--gc);border-color:var(--ga);color:#323130}
+.chip.gcol:hover,.chip.gcol.active{background:var(--ga);border-color:var(--ga);color:#fff}
 </style>
 </head>
 <body>
@@ -1168,6 +1175,18 @@ const thumb = (img, icon) => `<div class="gthumb"><i class="fas ${escA(icon || '
   (safeImg(img) ? `<img src="${escA(safeImg(img))}" alt="" loading="lazy" onerror="this.style.display='none'">` : '') + '</div>';
 const catOf = (k) => GD.cats.find(c => c.category_key === k) || {};
 
+const GCOL = {            // [light background, accent]
+  beginner:  ['#dff6dd', '#6bbf6a'],
+  heroes:    ['#e1efff', '#5b9bd5'],
+  captains:  ['#fff3cd', '#d9a400'],
+  equipment: ['#ffe3d3', '#e8885a'],
+  city:      ['#d9f3f1', '#3fb3ab'],
+  combat:    ['#fde1e4', '#e0707e'],
+  clan:      ['#ece3fa', '#9a78d6'],
+  research:  ['#fde4f1', '#d96aa7']
+};
+const gtint = (k) => GCOL[k] ? `style="--gc:${GCOL[k][0]};--ga:${GCOL[k][1]}"` : '';
+
 function renderGuideText(t) {
   return String(t || '').split(/\n{2,}/).map(p => { p = p.trim(); if (!p) return '';
     if (/^#{1,3} /.test(p)) return '<h3 style="margin:16px 0 6px">' + esc(p.replace(/^#+ /, '')) + '</h3>';
@@ -1191,15 +1210,15 @@ async function loadGuides() {
 function drawGuides() {
   const cnt = (k) => GD.guides.filter(g => g.category_key === k).length;
   $('gChips').innerHTML = `<button class="chip ${GD.cat ? '' : 'active'}" data-c="">All categories</button>` +
-    GD.cats.map(c => `<button class="chip ${GD.cat === c.category_key ? 'active' : ''}" data-c="${escA(c.category_key)}">${esc(c.label)} (${cnt(c.category_key)})</button>`).join('');
+    GD.cats.map(c => `<button class="chip gcol ${GD.cat === c.category_key ? 'active' : ''}" ${gtint(c.category_key)} data-c="${escA(c.category_key)}">${esc(c.label)} (${cnt(c.category_key)})</button>`).join('');
   if (!GD.cat && !GD.q) {
-    $('gGrid').innerHTML = GD.cats.map(c => `<div class="card gcard" data-cat="${escA(c.category_key)}">${thumb(c.image_url, c.icon)}
+    $('gGrid').innerHTML = GD.cats.map(c => `<div class="card gcard gtint" ${gtint(c.category_key)} data-cat="${escA(c.category_key)}">${thumb(c.image_url, c.icon)}
       <h4>${esc(c.label)}</h4><p>${esc(c.description)}</p><p class="muted" style="margin-top:8px;font-size:12px">${cnt(c.category_key)} guides</p></div>`).join('');
     return;
   }
   const list = GD.guides.filter(g => (!GD.cat || g.category_key === GD.cat) && (g.title + ' ' + g.summary).toLowerCase().includes(GD.q));
   $('gGrid').innerHTML = list.length ? list.map(g => { const c = catOf(g.category_key);
-    return `<div class="card gcard ${g.locked ? 'locked' : ''}" data-gid="${g.id}">${thumb(g.image_url || c.image_url, c.icon)}
+    return `<div class="card gcard gtint ${g.locked ? 'locked' : ''}" ${gtint(g.category_key)} data-gid="${g.id}">${thumb(g.image_url || c.image_url, c.icon)}
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h4>${esc(g.title)}</h4>
       <span class="badge ${g.is_premium ? 'b-prem' : 'b-free'}">${g.locked ? '<i class="fas fa-lock"></i> ' : ''}${g.is_premium ? 'Premium' : 'Free'}</span></div>
       <p>${esc(g.summary || c.label || '')}</p></div>`; }).join('') : '<p class="muted">No guides match.</p>';
