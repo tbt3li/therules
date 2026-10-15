@@ -1176,14 +1176,14 @@ const thumb = (img, icon) => `<div class="gthumb"><i class="fas ${escA(icon || '
 const catOf = (k) => GD.cats.find(c => c.category_key === k) || {};
 
 const GCOL = {            // [light background, accent]
-  beginner:  ['#dff6dd', '#6bbf6a60'],
-  heroes:    ['#e1efff', '#5b9bd560'],
-  captains:  ['#fff3cd', '#d9a40060'],
-  equipment: ['#ffe3d3', '#e8885a60'],
-  city:      ['#d9f3f1', '#3fb3ab60'],
-  combat:    ['#fde1e4', '#e0707e60'],
-  clan:      ['#ece3fa', '#9a78d660'],
-  research:  ['#fde4f1', '#d96aa760']
+  beginner:  ['#dff6dd60', '#6bbf6a60'],
+  heroes:    ['#e1efff60', '#5b9bd560'],
+  captains:  ['#fff3cd60', '#d9a40060'],
+  equipment: ['#ffe3d360', '#e8885a60'],
+  city:      ['#d9f3f160', '#3fb3ab60'],
+  combat:    ['#fde1e460', '#e0707e60'],
+  clan:      ['#ece3fa60', '#9a78d660'],
+  research:  ['#fde4f160', '#d96aa760']
 };
 const gtint = (k) => GCOL[k] ? `style="--gc:${GCOL[k][0]};--ga:${GCOL[k][1]}"` : '';
 
