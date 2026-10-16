@@ -304,7 +304,9 @@ a.chip{text-decoration:none;display:inline-block}
     <nav class="nav" id="nav">
       <div class="nav-label">Main</div>
       <a href="#overview" data-s="overview"><i class="fas fa-house"></i> Overview</a>
-      <a href="#events" data-s="events"><i class="fas fa-calendar-days"></i> Events &amp; Calendar</a>
+      <div class="nav-label" style="padding-top:10px">Events &amp; Calendar</div>
+      <a href="#events" data-s="events" class="sub"><i class="fas fa-calendar-days"></i> Calendar</a>
+      <a href="#eventlist" data-s="eventlist" class="sub"><i class="fas fa-flag"></i> All Events</a>
       <a href="#members" data-s="members"><i class="fas fa-users"></i> Clan Members</a>
       <div class="nav-label">Premium Resources</div>
       <a href="#tutorials" data-s="tutorials"><i class="fas fa-graduation-cap"></i> Premium Tutorials</a>
@@ -321,6 +323,7 @@ a.chip{text-decoration:none;display:inline-block}
       <div class="nav-label" id="adminLabel" style="display:none">Administration</div>
       <a href="#roles" data-s="roles" id="navRoles" style="display:none"><i class="fas fa-user-shield"></i> User Roles</a>
       <a href="#guideadmin" data-s="guideadmin" id="navGuideAdmin" style="display:none"><i class="fas fa-book-bookmark"></i> Manage Guides</a>
+      <a href="#eventadmin" data-s="eventadmin" id="navEventAdmin" style="display:none"><i class="fas fa-calendar-plus"></i> Manage Events</a>
     </nav>
     <div class="side-foot">&copy; 2026 THE Family Gang<br>웃 T3li · Members only</div>
   </aside>
@@ -362,7 +365,7 @@ a.chip{text-decoration:none;display:inline-block}
         <div class="grid g2">
           <div class="card"><h3><i class="fas fa-bullhorn"></i> Clan Announcements</h3><div id="announcements"></div></div>
           <div class="grid" style="align-content:start">
-            <div class="card"><h3><i class="fas fa-clock"></i> Next Events</h3><div id="nextEvents"></div></div>
+            <div class="card"><h3><i class="fas fa-play"></i> Events Running Now</h3><div id="nextEvents"></div></div>
             <div class="card"><h3><i class="fas fa-list-check"></i> Today's Progress</h3><div id="overviewProgress"></div></div>
           </div>
         </div>
@@ -406,8 +409,36 @@ a.chip{text-decoration:none;display:inline-block}
 
       <!-- EVENTS -->
       <section class="section" id="s-events">
-        <div class="page-head"><h1>📅 Events &amp; Calendar</h1><p>All times are shown in UTC and your local time. Countdowns update live.</p></div>
-        <div class="card" id="eventList"></div>
+        <div class="page-head"><h1>📅 Events &amp; Calendar</h1><p>The game day changes at <b>17:00 UTC</b>. Click any picture for details.</p></div>
+        <div class="chips"><a class="chip active" href="#events">Calendar</a><a class="chip" href="#eventlist">All Events</a></div>
+        <div class="grid g2" style="margin-bottom:20px">
+          <div class="card"><h3><i class="fas fa-play"></i> Running now <small id="evNowDate" class="muted"></small></h3><div id="evNow"></div></div>
+          <div class="card"><h3><i class="fas fa-forward"></i> Coming next <small id="evNextDate" class="muted"></small></h3><div id="evNext"></div>
+            <p class="muted" style="margin-top:10px;font-size:13px">Starts in <b id="evReset">--:--:--</b></p></div>
+        </div>
+        <div class="grid g2">
+          <div class="card"><h3 id="evM1T"></h3><div id="evM1"></div></div>
+          <div class="card"><h3 id="evM2T"></h3><div id="evM2"></div></div>
+        </div>
+      </section>
+      
+      <section class="section" id="s-eventlist">
+        <div class="page-head"><h1>🎯 All Events</h1><p>Every event with its picture and a short description. Click one for the full details.</p></div>
+        <div class="chips"><a class="chip" href="#events">Calendar</a><a class="chip active" href="#eventlist">All Events</a></div>
+        <div class="toolbar"><input class="input" id="elSearch" placeholder="Search events..."></div>
+        <div class="chips" id="elChips"></div>
+        <div class="grid g3" id="elGrid"></div>
+      </section>
+      
+      <section class="section" id="s-eventadmin">
+        <div class="page-head"><h1>🗓️ Manage Events</h1><p>Add each event once, with its picture path, description and HTML details.</p></div>
+        <div id="eaMissing"></div>
+        <div class="toolbar">
+          <input class="input" id="eaSearch" placeholder="Search events...">
+          <button class="btn" id="eaAdd"><i class="fas fa-plus"></i> Add event</button>
+          <button class="btn outline" id="eaRefresh"><i class="fas fa-rotate"></i> Reload Excel now</button>
+        </div>
+        <div class="card"><div class="table-wrap"><table id="eaTable"></table></div></div>
       </section>
 
       <!-- MEMBERS -->
@@ -780,12 +811,12 @@ const sortedEvents = () => CONTENT.events.map(e => ({ ...e, next: nextOccurrence
    ===================================================================== */
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
   cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Members', checklist:'Daily Checklist', tools:'Calculators',
-  rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights', guides:'Game Guides', guideadmin:'Manage Guides' };
+  rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights', guides:'Game Guides', guideadmin:'Manage Guides', eventlist:'All Events', eventadmin:'Manage Events' };
 
 function showSection(name) {
   if (!TITLES[name]) name = 'overview';
-  if (currentUser && !PERMS.has(name)) {
-    toast((name === 'roles' || name === 'guideadmin') ? 'This area is for Admins only.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
+  if (currentUser && !PERMS.has(PERM_OF[name] || name)) {
+    toast((name === 'roles' || name === 'guideadmin' || name === 'eventadmin') ? 'This area is for Admins only.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
     if (location.hash.slice(1) !== 'overview') location.hash = 'overview';
     name = 'overview';
   }
@@ -815,7 +846,7 @@ function renderOverview() {
     ['fa-users', '#0078d4', members.length, 'Clan Members'],
     ['fa-bolt', '#7c4dbd', fmtShort(totalPower), 'Total Clan Power'],
     ['fa-graduation-cap', '#d9a400', CONTENT.tutorials.length, 'Tutorials'],
-    ['fa-calendar-day', '#28a745', nextEv ? nextEv.name : '-', 'Next Event']
+    ['fa-calendar-day', '#28a745', String(evOn(evGameDate()).length), 'Events running']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
     <div><b style="font-size:${String(v).length > 9 ? 16 : 24}px">${esc(v)}</b><span>${l}</span></div></div>`).join('');
 
@@ -823,9 +854,7 @@ function renderOverview() {
     `<li class="ann"><i class="fas fa-circle-info"></i><div><h4>${esc(a.title)} <span class="badge b-lvl">${esc(a.tag)}</span></h4>
      <small>${esc(a.date)}</small><p>${esc(a.body)}</p></div></li>`).join('') + '</ul>';
 
-  $('nextEvents').innerHTML = '<ul class="list">' + sortedEvents().slice(0, 3).map(e =>
-    `<li><i class="fas ${e.icon || 'fa-calendar'}"></i><div style="flex:1"><b>${esc(e.name)}</b><br><small class="muted">${e.day === 'daily' ? 'Every day' : DAYS[e.day]} · ${e.time} UTC</small></div>
-     <span class="countdown" data-target="${e.next.getTime()}">${countdownText(e.next)}</span></li>`).join('') + '</ul>';
+  drawOverviewEvents();
   updateProgress();
 }
 
@@ -1035,8 +1064,8 @@ function applyPermissions() {
   PERMS = new Set(currentUser.permissions || ['overview', 'account']);
   document.querySelectorAll('#nav a[data-s]').forEach(a => {
     const k = a.dataset.s;
-    if (k === 'roles' || k === 'guideadmin') return;                       // admin entry handled in initAdmin
-    if (!PERMS.has(k)) {
+    if (k === 'roles' || k === 'guideadmin' || k === 'eventadmin') return;                       // admin entry handled in initAdmin
+    if (!PERMS.has(PERM_OF[k] || k)) {
       a.classList.add('locked');
       a.title = 'Premium: ask an admin to unlock this section';
       if (!a.querySelector('.pill')) a.insertAdjacentHTML('beforeend', '<span class="pill lock"><i class="fas fa-lock"></i> PREMIUM</span>');
@@ -1051,7 +1080,7 @@ async function api(path, method = 'GET', body) {
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 15000);          // give up after 15s instead of hanging
     try {
-      const res = await fetch(API_URL + path, { method, signal: ctl.signal,
+      const res = await fetch((path.startsWith('http') ? '' : API_URL) + path, { method, signal: ctl.signal,
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + TOKEN },
         body: body ? JSON.stringify(body) : undefined });
       clearTimeout(timer);
@@ -1079,6 +1108,7 @@ function initAdmin() {
   $('usrTable').onclick = onUserAction;
   $('saveRights').onclick = saveRights;
   initGuideAdmin();
+  initEventAdmin();
   loadAdmin();
 }
 
@@ -1426,6 +1456,167 @@ function openCatModal(key) {
   };
 }
 
+/* =====================================================================
+   5d. EVENTS (Excel schedule + event catalog)  -  paste ABOVE "function startApp() {"
+   ===================================================================== */
+const EV_URL = 'https://events.t3li.workers.dev/api';
+const RESET_HOUR = 17;                                   // daily reset, UTC
+const PERM_OF = { eventlist: 'events' };                 // sub menus share the Events right
+const EV = { schedule: {}, catalog: {}, unknown: [], ok: false, err: '', gd: '' };
+const evApi = (p, m, b) => api(EV_URL + p, m, b);
+const evNorm = (s) => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+// game day D starts at 17:00 UTC of the previous calendar day (17:00 UTC = 00:00 at UTC+7)
+const evGameDate = (ms = Date.now()) => new Date(ms + (24 - RESET_HOUR) * 36e5).toISOString().slice(0, 10);
+const evAdd = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
+const evNextReset = () => { const n = new Date(); let t = Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate(), RESET_HOUR); if (t <= n.getTime()) t += 864e5; return t; };
+const evDate = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+const evSafeImg = (u) => { u = String(u || '').replace(/\\/g, '/'); return /^(https:\/\/|\/?(event-images|assets)\/)[^\s"'<>]+$/.test(u) ? u : ''; };
+const evTitle = (e) => (e.c && e.c.title) || e.name.replace(/-/g, ' ');
+const evOn = (d) => (EV.schedule[d] || []).map(n => { const k = evNorm(n); return { key: k, name: n, c: EV.catalog[k] || null }; });
+
+function evMini(e, cls = '') {
+  const t = evTitle(e), img = e.c && evSafeImg(e.c.image_url);
+  return img
+    ? `<img class="evmini ${cls}" src="${escA(img)}" alt="${escA(t)}" title="${escA(t)}" data-ev="${escA(e.key)}" loading="lazy" onerror="this.style.visibility='hidden'">`
+    : `<div class="evmini evph ${cls}" title="${escA(t)}" data-ev="${escA(e.key)}">${esc(t.charAt(0).toUpperCase())}</div>`;
+}
+const evRows = (list, empty) => list.length ? list.map(e => `<div class="evrow" data-ev="${escA(e.key)}">${evMini(e, 'evbig')}
+  <div><b>${esc(evTitle(e))}</b><small>${esc((e.c && e.c.short_desc) || '')}</small></div></div>`).join('') : `<p class="muted">${esc(empty)}</p>`;
+
+function drawOverviewEvents() {
+  const el = $('nextEvents'); if (!el) return;
+  el.innerHTML = evRows(evOn(evGameDate()), EV.ok ? 'No events running today.' : (EV.err || 'Loading events...')) +
+    '<button class="btn outline sm" data-go="events" style="margin-top:12px">Open calendar</button>';
+}
+
+function evMonthHtml(y, m, gd) {
+  const days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(), lead = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7, pad = (n) => String(n).padStart(2, '0');
+  let h = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<div class="mhead">${d}</div>`).join('') + '<div class="mcell empty"></div>'.repeat(lead);
+  for (let d = 1; d <= days; d++) {
+    const ds = `${y}-${pad(m + 1)}-${pad(d)}`;
+    h += `<div class="mcell ${ds === gd ? 'today' : ds < gd ? 'past' : ''}"><span class="dn">${d}</span><div class="imgs">${evOn(ds).map(e => evMini(e)).join('')}</div></div>`;
+  }
+  return `<div class="mgrid">${h}</div>`;
+}
+const evMonthName = (y, m) => new Date(Date.UTC(y, m, 1)).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+function renderEvents() {                                // Calendar page (replaces the old placeholder version)
+  if (!$('evNow')) return;
+  const gd = evGameDate(), nx = evAdd(gd, 1), y = +gd.slice(0, 4), m = +gd.slice(5, 7) - 1;
+  $('evNow').innerHTML = evRows(evOn(gd), EV.ok ? 'No events today.' : (EV.err || 'Loading events...'));
+  $('evNext').innerHTML = evRows(evOn(nx), EV.ok ? 'No events scheduled for tomorrow.' : '');
+  $('evNowDate').textContent = evDate(gd); $('evNextDate').textContent = evDate(nx);
+  $('evM1T').textContent = evMonthName(y, m); $('evM2T').textContent = evMonthName(m === 11 ? y + 1 : y, (m + 1) % 12);
+  $('evM1').innerHTML = evMonthHtml(y, m, gd); $('evM2').innerHTML = evMonthHtml(m === 11 ? y + 1 : y, (m + 1) % 12, gd);
+}
+
+let elCat = '', elQ = '';
+function renderEventList() {
+  if (!$('elGrid')) return;
+  const cats = [...new Set(Object.values(EV.catalog).map(c => c.category).filter(Boolean))].sort();
+  $('elChips').innerHTML = ['', ...cats].map(c => `<button class="chip ${elCat === c ? 'active' : ''}" data-c="${escA(c)}">${c ? esc(c) : 'All'}</button>`).join('');
+  const gd = evGameDate(), running = new Set(evOn(gd).map(e => e.key)), dates = Object.keys(EV.schedule).sort().filter(d => d >= gd);
+  const nextDate = (k) => dates.find(d => EV.schedule[d].some(n => evNorm(n) === k));
+  const list = Object.values(EV.catalog).filter(c => (!elCat || c.category === elCat) && (c.title + ' ' + c.short_desc).toLowerCase().includes(elQ))
+    .sort((a, b) => a.title.localeCompare(b.title));
+  $('elGrid').innerHTML = list.length ? list.map(c => { const nd = nextDate(c.event_key), img = evSafeImg(c.image_url);
+    return `<div class="card gcard" data-ev="${escA(c.event_key)}"><div class="gthumb"><i class="fas fa-calendar-day"></i>${img ? `<img src="${escA(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}</div>
+      <div style="display:flex;justify-content:space-between;gap:8px"><h4>${esc(c.title)}</h4>${running.has(c.event_key) ? '<span class="badge st-on">Running</span>' : ''}</div>
+      <p>${esc(c.short_desc)}</p><p class="muted" style="margin-top:8px;font-size:12px">${c.category ? esc(c.category) + ' · ' : ''}${nd ? 'Next: ' + evDate(nd) : 'Not scheduled'}</p></div>`; }).join('')
+    : '<p class="muted">No events in the catalog yet. An admin can add them in Manage Events.</p>';
+}
+
+function openEvent(key) {                                // detail window (opens when a picture is clicked)
+  const c = EV.catalog[key], img = c && evSafeImg(c.image_url);
+  const dates = Object.keys(EV.schedule).sort().filter(d => d >= evGameDate() && EV.schedule[d].some(n => evNorm(n) === key)).slice(0, 8);
+  $('modal').classList.add('wide');
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    ${img ? `<img src="${escA(img)}" alt="" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin-bottom:12px" onerror="this.style.display='none'">` : ''}
+    <h2>${esc(c ? c.title : key.replace(/-/g, ' '))}</h2><p class="muted">${esc((c && c.category) || '')}</p>
+    <p style="margin:10px 0">${esc(c ? c.short_desc : 'No description added yet.')}</p>
+    <div id="evBody"></div>
+    ${dates.length ? `<p class="muted" style="margin:12px 0;font-size:13px"><b>Upcoming:</b> ${dates.map(evDate).join(' · ')}</p>` : ''}
+    <button class="btn" onclick="closeModal()">Close</button>`;
+  $('modalBg').classList.add('show');
+  if (c && c.details_html) mountGuideFrame($('evBody'), toHtml(c.details_html));
+}
+
+function redrawEvents() { renderOverview(); renderEvents(); renderEventList(); renderEventAdmin(); }
+async function loadEvents() {
+  const r = await evApi('/events/data');
+  if (r.success) { EV.schedule = r.schedule; EV.catalog = r.catalog; EV.unknown = r.unknown || []; EV.ok = true; EV.err = ''; }
+  else EV.err = r.error || 'Could not load events.';
+  EV.gd = evGameDate(); redrawEvents();
+}
+function initEvents() {
+  $('elSearch').oninput = (e) => { elQ = e.target.value.toLowerCase(); renderEventList(); };
+  $('elChips').onclick = (e) => { const b = e.target.closest('.chip'); if (b) { elCat = b.dataset.c; renderEventList(); } };
+  document.body.addEventListener('click', (e) => { const t = e.target.closest('[data-ev]'); if (t) openEvent(t.dataset.ev); });
+  setInterval(() => {                                    // reset countdown + automatic switch at 17:00 UTC
+    const s = Math.max(0, Math.floor((evNextReset() - Date.now()) / 1000)), p = (x) => String(x).padStart(2, '0');
+    if ($('evReset')) $('evReset').textContent = p(Math.floor(s / 3600)) + ':' + p(Math.floor(s % 3600 / 60)) + ':' + p(s % 60);
+    if (evGameDate() !== EV.gd) { EV.gd = evGameDate(); redrawEvents(); }
+  }, 1000);
+  setInterval(loadEvents, 10 * 60 * 1000);               // pick up a new Excel file without reloading the page
+  loadEvents();
+}
+
+/* ---- admin: manage events ---- */
+function initEventAdmin() {
+  $('navEventAdmin').style.display = '';
+  $('eaSearch').oninput = renderEventAdmin;
+  $('eaAdd').onclick = () => openEventModal(null);
+  $('eaRefresh').onclick = async () => { const r = await evApi('/events/admin/refresh', 'POST');
+    toast(r.success ? 'Excel file reloaded' : (r.error || 'Failed'), r.success ? 'ok' : 'err'); loadEvents(); };
+  $('eaMissing').onclick = (e) => { const b = e.target.closest('[data-miss]'); if (b) openEventModal(null, b.dataset.miss); };
+  $('eaTable').onclick = async (e) => {
+    const b = e.target.closest('[data-ek]'); if (!b) return;
+    const c = Object.values(EV.catalog).find(x => x.id === +b.dataset.ek); if (!c) return;
+    if (b.dataset.act === 'edit') return openEventModal(c);
+    if (!confirm('Delete event "' + c.title + '"?')) return;
+    const r = await evApi('/events/admin/catalog/' + c.id, 'DELETE');
+    toast(r.success ? 'Event deleted' : (r.error || 'Failed'), r.success ? 'ok' : 'err'); loadEvents();
+  };
+  renderEventAdmin();
+}
+function renderEventAdmin() {
+  if (!$('eaTable') || !isAdmin()) return;
+  const q = $('eaSearch').value.toLowerCase();
+  $('eaMissing').innerHTML = EV.unknown.length ? '<div class="note"><b>Used in the Excel file but not added yet (click to add):</b><br>' +
+    EV.unknown.map(u => `<button class="chip" style="margin:6px 6px 0 0" data-miss="${escA(u.name)}">${esc(u.name)}</button>`).join('') + '</div>' : '';
+  const rows = Object.values(EV.catalog).filter(c => (c.title + c.event_key + c.category).toLowerCase().includes(q)).sort((a, b) => a.title.localeCompare(b.title));
+  $('eaTable').innerHTML = '<tr><th>Picture</th><th>Event</th><th>Excel name</th><th>Category</th><th>Actions</th></tr>' +
+    (rows.map(c => `<tr><td>${evMini({ key: c.event_key, name: c.title, c })}</td><td><b>${esc(c.title)}</b></td><td class="muted">${esc(c.event_key)}</td><td>${esc(c.category || '-')}</td>
+      <td><div class="act"><button class="mini" data-act="edit" data-ek="${c.id}" title="Edit"><i class="fas fa-pen"></i></button>
+      <button class="mini bad" data-act="del" data-ek="${c.id}" title="Delete"><i class="fas fa-trash"></i></button></div></td></tr>`).join('') || '<tr><td colspan="5" class="muted">No events yet.</td></tr>');
+}
+function openEventModal(c, prefill) {
+  c = c || { id: 0, title: (prefill || '').replace(/-/g, ' '), category: '', image_url: '', short_desc: '', details_html: '' };
+  const cats = [...new Set(Object.values(EV.catalog).map(x => x.category).filter(Boolean))];
+  $('modal').classList.add('wide');
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    <h2>${c.id ? 'Edit event' : 'Add event'}</h2>
+    <label class="l">Event name (Rise of Ancient and Rise-of-Ancient in Excel both match)</label><input class="input" id="em_title" maxlength="80" value="${escA(c.title)}">
+    <label class="l">Category</label><input class="input" id="em_cat" list="em_cats" maxlength="40" value="${escA(c.category)}" placeholder="e.g. PvE, Clan, Daily"><datalist id="em_cats">${cats.map(x => `<option value="${escA(x)}">`).join('')}</datalist>
+    <label class="l">Picture path (e.g. event-images/rise-of-ancient.png)</label><input class="input" id="em_img" value="${escA(c.image_url)}">
+    <label class="l">Short description (max 300)</label><input class="input" id="em_desc" maxlength="300" value="${escA(c.short_desc)}">
+    <label class="l" style="display:flex;justify-content:space-between;align-items:center;gap:8px">Details (HTML)
+      <span><button type="button" class="btn outline sm" id="em_tcode">HTML code</button> <button type="button" class="btn outline sm" id="em_tprev">Preview</button></span></label>
+    <textarea class="input codebox" id="em_html" spellcheck="false">${esc(c.details_html || '')}</textarea>
+    <div id="em_prev" style="display:none;border:1px solid var(--border);border-radius:8px;padding:12px;background:var(--card)"></div>
+    <div style="display:flex;gap:10px;margin-top:18px"><button class="btn" id="em_save">Save event</button><button class="btn outline" onclick="closeModal()">Cancel</button></div>`;
+  $('modalBg').classList.add('show');
+  $('em_tcode').onclick = () => { $('em_prev').style.display = 'none'; $('em_html').style.display = ''; };
+  $('em_tprev').onclick = () => { $('em_html').style.display = 'none'; $('em_prev').style.display = 'block'; mountGuideFrame($('em_prev'), toHtml($('em_html').value)); };
+  $('em_save').onclick = async () => {
+    const body = { title: $('em_title').value, category: $('em_cat').value, image_url: $('em_img').value.trim(), short_desc: $('em_desc').value, details_html: $('em_html').value };
+    $('em_save').disabled = true;
+    const r = c.id ? await evApi('/events/admin/catalog/' + c.id, 'PATCH', body) : await evApi('/events/admin/catalog', 'POST', body);
+    $('em_save').disabled = false;
+    if (r.success) { toast('Event saved', 'ok'); closeModal(); loadEvents(); } else toast(r.error || 'Failed', 'err');
+  };
+}
+
 function startApp() {
   const name = currentUser.name || currentUser.email.split('@')[0];
   $('heroName').textContent = name;
@@ -1437,7 +1628,7 @@ function startApp() {
   $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
   applyPermissions();
   renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies(); renderCheatSheets();
-  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides();
+  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents();
 
   document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
   $('nav').addEventListener('click', (e) => {
