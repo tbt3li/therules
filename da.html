@@ -265,6 +265,25 @@ details .body ul{padding-left:20px;margin-top:6px}
 .modal.wide{max-width:980px}
 .codebox{font-family:Consolas,Menlo,monospace;font-size:13px;min-height:340px;white-space:pre;tab-size:2;resize:vertical}
 @media(max-width:600px){.gart{padding:14px}}
+
+/* events */
+.nav a.sub{margin-left:12px;font-size:14px}
+a.chip{text-decoration:none;display:inline-block}
+.evmini{width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--input);border:1px solid var(--border);cursor:pointer}
+.evbig{width:56px;height:56px}
+.evph{display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:700}
+.evrow{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.evrow:last-child{border-bottom:none}.evrow b{font-size:14.5px}.evrow small{color:var(--muted);display:block}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mhead{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0}
+.mcell{min-height:78px;border:1px solid var(--border);border-radius:8px;padding:4px;background:var(--card);overflow:hidden}
+.mcell.empty{background:transparent;border-color:transparent}
+.mcell.today{border:2px solid var(--primary);background:var(--input)}
+.mcell.past{opacity:.55}
+.mcell .dn{font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px}
+.mcell .imgs{display:flex;flex-wrap:wrap;gap:3px}
+.mcell .evmini{width:26px;height:26px;border-radius:6px;font-size:11px}
+@media(max-width:600px){.mcell{min-height:56px;padding:2px}.mcell .evmini{width:18px;height:18px;font-size:9px}.mcell .dn{font-size:10px}.mgrid{gap:2px}}
   
 </style>
 </head>
