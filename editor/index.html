@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post Editor · The Family</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+<header class="top">
+  <input id="title" class="title-in" placeholder="Post title…" aria-label="Post title">
+  <nav class="tabs" role="tablist">
+    <button class="tab on" data-tab="edit">Editor</button>
+    <button class="tab" data-tab="preview">Preview</button>
+    <button class="tab" data-tab="code">HTML code</button>
+  </nav>
+  <div class="acts">
+    <button id="bNew" title="New post">New</button>
+    <button id="bImport" title="Import .html file">Import</button>
+    <button id="bTheme" title="Toggle dark mode">Theme</button>
+    <button id="bFull" title="Fullscreen">Full</button>
+    <input type="file" id="fileIn" accept=".html,.htm,.txt,.md" hidden>
+  </div>
+</header>
+
+<div id="toolbar" class="toolbar" role="toolbar" aria-label="Formatting"></div>
+
+<main>
+  <section id="p-edit" class="pane on">
+    <div class="meta">
+      <label>Slug <input id="slug" placeholder="my-first-post"></label>
+      <label>Description <input id="desc" placeholder="Short summary for search engines"></label>
+      <label>Cover image URL <input id="cover" placeholder="https://…"></label>
+    </div>
+    <article id="editor" class="doc" contenteditable="true" spellcheck="true" data-ph="Start writing your post…"></article>
+  </section>
+
+  <section id="p-preview" class="pane">
+    <div class="bar">
+      <button data-w="100%" class="on">Desktop</button>
+      <button data-w="768px">Tablet</button>
+      <button data-w="390px">Mobile</button>
+    </div>
+    <div class="frame-wrap"><iframe id="frame" title="Preview"></iframe></div>
+  </section>
+
+  <section id="p-code" class="pane">
+    <div class="bar">
+      <label><input type="radio" name="mode" value="body" checked> Body only</label>
+      <label><input type="radio" name="mode" value="full"> Full page</label>
+      <label><input type="checkbox" id="pretty" checked> Format code</label>
+      <span class="sp"></span>
+      <button id="bApply">Apply edits to editor</button>
+      <button id="bCopy" class="pri">Copy HTML</button>
+      <button id="bDown">Download .html</button>
+    </div>
+    <textarea id="code" spellcheck="false" aria-label="HTML source"></textarea>
+  </section>
+</main>
+
+<footer class="status"><span id="stat">0 words</span><span id="saved">Not saved yet</span></footer>
+<dialog id="dlg"><form method="dialog" id="dform"></form></dialog>
+<div id="toast" role="status"></div>
+<script src="editor.js"></script>
+</body>
+</html>
