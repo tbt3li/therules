@@ -319,6 +319,8 @@ a.chip{text-decoration:none;display:inline-block}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:900px){.chhead{grid-template-columns:1fr}.chnav{text-align:left}.chbtns{justify-content:flex-start}}
 
+.chnav small{font-weight:600}
+
 </style>
 </head>
 <body>
@@ -1732,13 +1734,14 @@ async function refreshAll() {
   }
 }
 
+
 /* =====================================================================
    5e. CLAN CHESTS  -  paste ABOVE "function startApp() {"
    (the newer renderMembers below replaces the old placeholder one automatically)
    ===================================================================== */
 const COUNTS_URL = 'https://counts.t3li.workers.dev/api/counts';
 const CH_WEEK = 7 * 864e5;
-const CH = { players: [], cats: [], cols: [], target: 35000, month: [], ok: false, err: '', loading: false,
+const CH = { players: [], cats: [], cols: [], target: 35000, month: [], ok: false, err: '', loading: false, offset: 0, prevOffset: 0, pending: false,
   nextRefresh: 0, fetchedAt: 0, stale: false, weekStart: 0, weekEnd: 0, sortKey: 'points', sortDir: -1, q: '', hideZero: false };
 const CH_COL = { red: 'var(--bad)', orange: 'var(--warn)', blue: 'var(--primary)', green: 'var(--ok)' };
 const chN = (v) => (typeof v === 'number' && isFinite(v)) ? v : 0;
@@ -1784,21 +1787,24 @@ async function chBuildMonth(week0Players) {
 }
 
 async function loadChests() {
-  if (CH.loading) return; CH.loading = true;
+  if (CH.loading) { CH.pending = true; return; } CH.loading = true;
   try {
-    const [j, t] = await Promise.all([chFetchWeek(0), api('/settings/chest-target')]);
+    const [j0, t] = await Promise.all([chFetchWeek(0), api('/settings/chest-target')]);
+    const j = CH.offset === 0 ? j0 : await chFetchWeek(CH.offset);      // week shown in the table
     if (t && t.success) CH.target = t.target;
     CH.players = j.data.players || []; CH.cats = j.data.categories || [];
     CH.nextRefresh = j.nextRefresh || Date.now() + 6e4; CH.fetchedAt = j.fetchedAt || Date.now();
     CH.stale = !!j.stale; CH.weekStart = j.weekStart; CH.weekEnd = j.weekEnd;
-    chBuildCols(); CH.ok = true; CH.err = '';
-    try { CH.month = await chBuildMonth(CH.players); } catch (e) { CH.month = []; }
+    chBuildCols(); CH.ok = true; CH.err = ''; CH.prevOffset = CH.offset;
+    try { CH.month = await chBuildMonth(j0.data.players || []); } catch (e) { CH.month = []; }
   } catch (e) {
     CH.nextRefresh = Date.now() + 6e4;
     if (!CH.ok) CH.err = 'Could not load chest data: ' + e.message;
+    else if (CH.offset !== CH.prevOffset) { CH.offset = CH.prevOffset; toast('Could not load that week. Please try again.', 'err'); }
   }
   CH.loading = false;
   renderMembers(); renderOverview();
+  if (CH.pending) { CH.pending = false; loadChests(); }
 }
 
 function chBuildCols() {          // sequence = counts.html, with Chests moved after Points
@@ -1832,7 +1838,7 @@ function chRenderTable() {
     const cells = CH.cols.map(c => {
       const v = c.get(p);
       if (c.key === 'name') return `<td style="font-weight:600;color:${col}">${esc(v)}${(p.aliases || []).length ? `<span class="chalias">aka ${esc(p.aliases.join(', '))}</span>` : ''}</td>`;
-      if (c.key === 'percentage') return `<td class="num" style="font-weight:800;color:${col}">${Math.round(pct)}%</td>`;
+      if (c.key === 'percentage') return `<td class="num" style="font-weight:600;color:${col}">${Math.round(pct)}%</td>`;
       if (c.key === 'points') return `<td class="num"><div class="chbar"><div class="chfill" style="width:${Math.min(100, Math.max(0, pct))}%;background:${col}"></div><span>${chCompact(v)} / ${chCompact(CH.target)}</span></div></td>`;
       return `<td class="num"${v === 0 && c.key.startsWith('cat:') ? ' style="opacity:.5"' : ''}>${v === 0 && c.key.startsWith('cat:') ? '–' : fmt(v)}</td>`;
     }).join('');
@@ -1847,8 +1853,25 @@ function chRenderTable() {
   $('chTable').innerHTML = head + '<tbody>' + (body || `<tr><td colspan="${CH.cols.length + 1}" class="muted">No players found.</td></tr>`) + '</tbody>' + foot;
 }
 
+function chRenderWeekNav() {                      // week label + button states (works before data arrives)
+  const start = chLastReset(Date.now()) - CH.offset * CH_WEEK, end = start + CH_WEEK;
+  const wl = CH.offset === 0 ? 'Current week' : CH.offset === 1 ? 'Last week' : CH.offset + ' weeks ago';
+  const fd = (ms) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const set = (id, t) => { const el = $(id); if (el) el.textContent = t; };
+  set('chWeekLabel', wl + ' · ' + fd(start) + ' → ' + fd(end) + ' (17:00 UTC)');
+  set('chWeekTag', '(' + wl.toLowerCase() + ')');
+  [['chPrev', CH.offset >= 26], ['chCur', CH.offset === 0], ['chNext', CH.offset === 0]].forEach(([id, d]) => { const el = $(id); if (el) el.disabled = d; });
+}
+function chGo(o) {
+  CH.prevOffset = CH.offset; CH.offset = Math.max(0, Math.min(26, o));
+  chRenderWeekNav();
+  if ($('chTable')) $('chTable').style.opacity = '.45';        // loading feedback
+  loadChests();
+}
+
 function renderMembers() {                       // Clan Chests page
   if (!$('chTable')) return;
+  chRenderWeekNav(); $('chTable').style.opacity = '';
   if (!CH.ok) { $('chStats').innerHTML = ''; $('chTable').innerHTML = `<tr><td class="muted">${esc(CH.err || 'Loading chest data...')}</td></tr>`; return; }
   const ps = CH.players;
   $('chStats').innerHTML = [
@@ -1861,7 +1884,7 @@ function renderMembers() {                       // Clan Chests page
   $('chMonthName').textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   $('chTopMonth').innerHTML = chBars(CH.month);
   if (document.activeElement !== $('chTargetInput')) $('chTargetInput').value = CH.target;
-  $('chStatus').textContent = 'Data updated: ' + new Date(CH.fetchedAt).toLocaleString() + (CH.stale ? ' (showing last saved data)' : '');
+  $('chStatus').textContent = 'Data updated: ' + new Date(CH.fetchedAt).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' }) + (CH.stale ? ' (showing last saved data)' : '');
   chRenderTable();
 }
 
@@ -1875,6 +1898,11 @@ function chTick() {
 function initChests() {
   $('chSearch').oninput = (e) => { CH.q = e.target.value.trim().toLowerCase(); chRenderTable(); };
   $('chHide').onchange = (e) => { CH.hideZero = e.target.checked; chRenderTable(); };
+  document.addEventListener('click', (e) => {              // week buttons
+    const b = e.target.closest('#chPrev, #chCur, #chNext'); if (!b || b.disabled) return;
+    chGo(b.id === 'chPrev' ? CH.offset + 1 : b.id === 'chNext' ? CH.offset - 1 : 0);
+  });
+  chRenderWeekNav();
   $('chTable').onclick = (e) => {
     const th = e.target.closest('th[data-k]'); if (!th) return;
     const c = CH.cols.find(x => x.key === th.dataset.k); if (!c) return;
@@ -1893,6 +1921,7 @@ function initChests() {
   }
   setInterval(chTick, 1000); chTick(); loadChests();
 }
+
 
   
 function startApp() {
