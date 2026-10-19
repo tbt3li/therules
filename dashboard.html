@@ -300,6 +300,8 @@ a.chip{text-decoration:none;display:inline-block}
   .mcell .evmini{width:22px;height:22px}
   .mname{display:block}
 }
+
+@media(max-width:600px){#refreshBtn span{display:none}}
   
 </style>
 </head>
@@ -356,6 +358,7 @@ a.chip{text-decoration:none;display:inline-block}
         </div>
       
         <div class="top-right">
+          <button class="btn outline sm" id="refreshBtn" title="Refresh data"><i class="fas fa-rotate"></i> <span>Refresh</span></button>
           <div class="utc">Server time (UTC)<br><b id="utcClock">--:--:--</b></div>
           <button class="icon-btn" id="themeBtn" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
           <div class="user-chip" id="userChip" title="My account"><div class="avatar" id="avatar">?</div><span id="chipName">...</span></div>
@@ -558,6 +561,7 @@ a.chip{text-decoration:none;display:inline-block}
           <div class="toolbar">
             <input class="input" id="usrSearch" placeholder="Search username, name or email...">
             <select class="input" id="usrRole" style="max-width:190px"></select>
+            <select class="input" id="usrOnline" style="max-width:170px;display:none"><option value="">Online + Offline</option><option value="on">🟢 Online</option><option value="off">🔴 Offline</option></select>
             <button class="btn" id="addUserBtn"><i class="fas fa-user-plus"></i> Add user</button>
           </div>
           <div class="card"><div class="table-wrap"><table id="usrTable"></table></div></div>
@@ -1084,12 +1088,12 @@ function applyPermissions() {
   PERMS = new Set(currentUser.permissions || ['overview', 'account']);
   document.querySelectorAll('#nav a[data-s]').forEach(a => {
     const k = a.dataset.s;
-    if (k === 'roles' || k === 'guideadmin' || k === 'eventadmin') return;                       // admin entry handled in initAdmin
-    if (!PERMS.has(PERM_OF[k] || k)) {
-      a.classList.add('locked');
-      a.title = 'Premium: ask an admin to unlock this section';
-      if (!a.querySelector('.pill')) a.insertAdjacentHTML('beforeend', '<span class="pill lock"><i class="fas fa-lock"></i> PREMIUM</span>');
-    }
+    if (k === 'roles' || k === 'guideadmin' || k === 'eventadmin') return;
+    const locked = !PERMS.has(PERM_OF[k] || k), pill = a.querySelector('.pill');
+    a.classList.toggle('locked', locked);
+    a.title = locked ? 'Premium: ask an admin to unlock this section' : '';
+    if (locked && !pill) a.insertAdjacentHTML('beforeend', '<span class="pill lock"><i class="fas fa-lock"></i> PREMIUM</span>');
+    if (!locked && pill) pill.remove();
   });
 }
 
@@ -1124,6 +1128,7 @@ function initAdmin() {
     $('tab-users').style.display = b.dataset.tab === 'users' ? '' : 'none';
     $('tab-rights').style.display = b.dataset.tab === 'rights' ? '' : 'none'; };
   $('usrSearch').oninput = renderUsers; $('usrRole').onchange = renderUsers;
+  if (isSuper()) { $('usrOnline').style.display = ''; $('usrOnline').onchange = renderUsers; setInterval(refreshUsers, 60000); }
   $('addUserBtn').onclick = () => openUserModal(null);
   $('usrTable').onclick = onUserAction;
   $('saveRights').onclick = saveRights;
@@ -1142,14 +1147,15 @@ async function refreshUsers() { const u = await api('/admin/users'); if (u.succe
 
 function renderUsers() {
   const q = $('usrSearch').value.toLowerCase(), rf = $('usrRole').value;
-  const rows = ADM.users.filter(u => (!rf || u.role === rf) && (u.username + ' ' + u.email + ' ' + (u.name || '')).toLowerCase().includes(q));
+  const onf = isSuper() ? $('usrOnline').value : '';
+  const rows = ADM.users.filter(u => (!rf || u.role === rf) && (!onf || (onf === 'on') === !!u.online) && (u.username + ' ' + u.email + ' ' + (u.name || '')).toLowerCase().includes(q));
   const ri = (k) => ADM.roles.findIndex(r => r.role_key === k);
-  $('usrTable').innerHTML = '<tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>' +
+  $('usrTable').innerHTML = '<tr><th>User</th><th>Email</th><th>Role</th>' + (isSuper() ? '<th>Presence</th><th>IP (Country)</th>' : '') + '<th>Status</th><th>Joined</th><th>Actions</th></tr>' +
     (rows.map(u => { const me = u.id === currentUser.id, i = ri(u.role), lk = !isSuper() && u.role === 'superadmin';
       return `<tr>
       <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${esc((u.username || u.email).charAt(0).toUpperCase())}</div>
         <div><b>${esc(u.username || '-')}</b>${me ? ' <span class="badge b-lvl">You</span>' : ''}<br><small class="muted">${esc(u.name || '')}</small></div></div></td>
-      <td>${esc(u.email)}</td><td>${roleBadge(u.role)}</td>
+      <td>${esc(u.email)}</td><td>${roleBadge(u.role)}</td>${isSuper() ? presenceCells(u) : ''}
       <td><span class="badge ${u.is_active ? 'st-on' : 'st-off'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
       <td class="muted">${esc(String(u.created_at).slice(0, 10))}</td>
       <td><div class="act">
@@ -1476,7 +1482,7 @@ function openCatModal(key) {
 }
 
 /* =====================================================================
-   5d. EVENTS (Excel schedule + event catalog)  -  paste ABOVE "function startApp() {"
+   5d. EVENTS (Excel schedule + event catalog)
    ===================================================================== */
 const EV_URL = 'https://events.t3li.workers.dev/api';
 const RESET_HOUR = 17;                                   // daily reset, UTC
@@ -1640,6 +1646,51 @@ function openEventModal(c, prefill) {
   };
 }
 
+/* ---- presence (Super Admin only) ---- */
+const timeAgo = (ms) => {
+  if (!ms) return 'Never logged in';
+  const d = new Date(ms), n = new Date();
+  const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((day(n) - day(d)) / 864e5);
+  if (days <= 0) return 'Today logged in (' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ')';
+  if (days === 1) return 'Yesterday logged in';
+  return days + ' days ago';
+};
+  
+function presenceCells(u) {
+  const on = !!u.online, col = on ? '#28a745' : '#dc3545';
+  const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};box-shadow:0 0 6px ${col};margin-right:6px"></span>`;
+  const seen = on ? '' : `<br><small class="muted">${esc(timeAgo(u.last_seen))}</small>`;
+  const cc = /^[A-Z]{2}$/.test(u.last_country || '') ? u.last_country.toLowerCase() : '';
+  const flag = cc ? `<img src="https://flagcdn.com/24x18/${cc}.png" width="20" height="15" alt="" style="vertical-align:middle;margin-right:4px;border-radius:2px" onerror="this.style.display='none'">` : '';
+  const loc = u.last_ip ? `${esc(u.last_ip)} (${flag}${esc(u.country_name || u.last_country || 'Unknown')})` : '<span class="muted">-</span>';
+  return `<td style="white-space:nowrap">${dot}<b style="color:${col}">${on ? 'Online' : 'Offline'}</b>${seen}</td><td style="white-space:nowrap">${loc}</td>`;
+}
+
+async function refreshAll() {
+  const btn = $('refreshBtn'); if (btn.disabled) return;
+  btn.disabled = true; btn.querySelector('i').classList.add('fa-spin');
+  try {
+    const r = await api('/check');                       // also logs you out if the session ended
+    if (!r.success) return toast(r.error || 'Could not refresh.', 'err');
+    if (r.user.role !== currentUser.role) { location.reload(); return; }   // role changed: rebuild the whole page
+    currentUser = r.user;
+    $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
+    $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
+    applyPermissions(); renderAccount();
+    const jobs = [loadGuides(), loadEvents()];
+    if (isAdmin()) jobs.push(loadAdmin());               // users, online status, menu rights
+    if (isSuper()) jobs.push(loadGuideAdmin());
+    await Promise.all(jobs);
+    showSection(location.hash.slice(1));                 // leaves a section that just became locked
+    toast('Refreshed', 'ok');
+  } catch (e) {
+    toast('Refresh failed. Check your connection.', 'err');
+  } finally {
+    btn.disabled = false; btn.querySelector('i').classList.remove('fa-spin');
+  }
+}
+  
 function startApp() {
   const name = currentUser.name || currentUser.email.split('@')[0];
   $('heroName').textContent = name;
@@ -1663,6 +1714,7 @@ function startApp() {
   $('overlay').onclick = closeMenu;
   $('themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
   $('userChip').onclick = () => { location.hash = 'account'; };
+  $('refreshBtn').onclick = refreshAll;
   $('logoutTop').onclick = logout; $('logoutBtn').onclick = logout;
   $('modalBg').onclick = (e) => { if (e.target === $('modalBg')) closeModal(); };
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
@@ -1679,6 +1731,7 @@ function startApp() {
     });
   };
   tick(); setInterval(tick, 1000);
+  setInterval(() => { fetch(API_URL + '/ping', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN } }).catch(() => {}); }, 120000);
 
   showSection(location.hash.slice(1));
   $('loading').style.display = 'none';
