@@ -753,7 +753,8 @@ const LOGIN_URL = 'login.html';
 let currentUser = null;
 let TOKEN = null;
 let PERMS = new Set(['overview', 'account']);
-const isAdmin = () => !!currentUser && currentUser.role === 'admin';
+const isAdmin = () => !!currentUser && ['admin', 'superadmin'].includes(currentUser.role);
+const isSuper = () => !!currentUser && currentUser.role === 'superadmin';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => { const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; };
@@ -1126,8 +1127,7 @@ function initAdmin() {
   $('addUserBtn').onclick = () => openUserModal(null);
   $('usrTable').onclick = onUserAction;
   $('saveRights').onclick = saveRights;
-  initGuideAdmin();
-  initEventAdmin();
+  if (isSuper()) { initGuideAdmin(); initEventAdmin(); }   // Super Admin only
   loadAdmin();
 }
 
@@ -1145,7 +1145,7 @@ function renderUsers() {
   const rows = ADM.users.filter(u => (!rf || u.role === rf) && (u.username + ' ' + u.email + ' ' + (u.name || '')).toLowerCase().includes(q));
   const ri = (k) => ADM.roles.findIndex(r => r.role_key === k);
   $('usrTable').innerHTML = '<tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>' +
-    (rows.map(u => { const me = u.id === currentUser.id, i = ri(u.role);
+    (rows.map(u => { const me = u.id === currentUser.id, i = ri(u.role), lk = !isSuper() && u.role === 'superadmin';
       return `<tr>
       <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${esc((u.username || u.email).charAt(0).toUpperCase())}</div>
         <div><b>${esc(u.username || '-')}</b>${me ? ' <span class="badge b-lvl">You</span>' : ''}<br><small class="muted">${esc(u.name || '')}</small></div></div></td>
@@ -1153,11 +1153,11 @@ function renderUsers() {
       <td><span class="badge ${u.is_active ? 'st-on' : 'st-off'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
       <td class="muted">${esc(String(u.created_at).slice(0, 10))}</td>
       <td><div class="act">
-        <button class="mini" data-act="promote" data-id="${u.id}" title="Promote" ${me || i <= 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
-        <button class="mini" data-act="demote" data-id="${u.id}" title="Demote" ${me || i >= ADM.roles.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
-        <button class="mini" data-act="edit" data-id="${u.id}" title="Edit login details"><i class="fas fa-pen"></i></button>
-        <button class="mini" data-act="toggle" data-id="${u.id}" title="${u.is_active ? 'Disable' : 'Enable'} account" ${me ? 'disabled' : ''}><i class="fas fa-${u.is_active ? 'ban' : 'circle-check'}"></i></button>
-        <button class="mini bad" data-act="delete" data-id="${u.id}" title="Delete" ${me ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
+        <button class="mini" data-act="promote" data-id="${u.id}" title="Promote" ${me || lk || i <= 0 || (!isSuper() && ADM.roles[i - 1] && ADM.roles[i - 1].role_key === 'superadmin') ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+        <button class="mini" data-act="demote" data-id="${u.id}" title="Demote" ${me || lk || i >= ADM.roles.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+        <button class="mini" data-act="edit" data-id="${u.id}" title="Edit login details" ${lk ? 'disabled' : ''}><i class="fas fa-pen"></i></button>
+        <button class="mini" data-act="toggle" data-id="${u.id}" title="${u.is_active ? 'Disable' : 'Enable'} account" ${me || lk ? 'disabled' : ''}><i class="fas fa-${u.is_active ? 'ban' : 'circle-check'}"></i></button>
+        <button class="mini bad" data-act="delete" data-id="${u.id}" title="Delete" ${me || lk ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
       </div></td></tr>`; }).join('') || '<tr><td colspan="6" class="muted">No users found.</td></tr>');
 }
 
@@ -1174,7 +1174,7 @@ async function onUserAction(e) {
   if (act === 'promote' || act === 'demote') {
     const i = ADM.roles.findIndex(r => r.role_key === u.role), nr = ADM.roles[act === 'promote' ? i - 1 : i + 1];
     if (!nr) return;
-    if (nr.role_key === 'admin' && !confirm('Promote ' + u.username + ' to ADMIN? Admins have full control of this dashboard.')) return;
+    if ((nr.role_key === 'admin' || nr.role_key === 'superadmin') && !confirm('Promote ' + u.username + ' to ADMIN? Admins have full control of this dashboard.')) return;
     await saveUser(id, { role: nr.role_key }, u.username + ' is now ' + nr.label);
   } else if (act === 'toggle') {
     if (u.is_active && !confirm('Disable ' + u.username + '? They will be logged out and cannot sign in.')) return;
@@ -1191,7 +1191,7 @@ async function onUserAction(e) {
 
 function openUserModal(u) {
   const isNew = !u, me = u && u.id === currentUser.id;
-  const opts = ADM.roles.map(r => `<option value="${esc(r.role_key)}" ${(u ? u.role : 'member') === r.role_key ? 'selected' : ''}>${esc(r.label)}</option>`).join('');
+  const opts = ADM.roles.filter(r => isSuper() || r.role_key !== 'superadmin').map(r => `<option value="${esc(r.role_key)}" ${(u ? u.role : 'member') === r.role_key ? 'selected' : ''}>${esc(r.label)}</option>`).join('');
   $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
     <h2>${isNew ? 'Add user' : 'Edit user'}</h2>
     <p class="muted" style="margin-bottom:6px">${isNew ? 'Create a login for a new member.' : 'Change login details, role or status.'}</p>
@@ -1223,15 +1223,15 @@ function openUserModal(u) {
 function renderRights() {
   const roles = ADM.roles;
   $('rightsTable').innerHTML = '<tr><th>Menu</th>' + roles.map(r => `<th>${roleBadgeRaw(r.label, r.color)}</th>`).join('') + '</tr>' +
-    ADM.menus.map(m => '<tr><td><b>' + esc(m.label) + '</b>' + (m.always ? ' <span class="badge b-lvl">always on</span>' : '') + (m.adminOnly ? ' <span class="badge b-lvl">admin only</span>' : '') + '</td>' +
-      roles.map(r => { const isAdm = r.role_key === 'admin', locked = isAdm || m.always || m.adminOnly;
-        const checked = isAdm || (!m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
+    ADM.menus.map(m => '<tr><td><b>' + esc(m.label) + '</b>' + (m.always ? ' <span class="badge b-lvl">always on</span>' : '') + (m.superOnly ? ' <span class="badge b-lvl">super admin only</span>' : m.adminOnly ? ' <span class="badge b-lvl">admin only</span>' : '') + '</td>' +
+      roles.map(r => { const isAdm = r.role_key === 'admin' || r.role_key === 'superadmin', locked = isAdm || m.always || m.adminOnly;
+const checked = r.role_key === 'superadmin' || (r.role_key === 'admin' && !m.superOnly) || (!isAdm && !m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
         return `<td style="text-align:center"><input type="checkbox" class="rt" data-r="${esc(r.role_key)}" data-m="${esc(m.key)}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}></td>`; }).join('') + '</tr>').join('');
 }
 
 async function saveRights() {
   const matrix = {};
-  ADM.roles.forEach(r => { if (r.role_key !== 'admin') matrix[r.role_key] = []; });
+  ADM.roles.forEach(r => { if (r.role_key !== 'admin' && r.role_key !== 'superadmin') matrix[r.role_key] = []; });
   document.querySelectorAll('#rightsTable .rt').forEach(c => { if (c.checked && matrix[c.dataset.r]) matrix[c.dataset.r].push(c.dataset.m); });
   $('saveRights').disabled = true;
   const r = await api('/admin/permissions', 'PUT', { matrix });
@@ -1603,7 +1603,7 @@ function initEventAdmin() {
   renderEventAdmin();
 }
 function renderEventAdmin() {
-  if (!$('eaTable') || !isAdmin()) return;
+  if (!$('eaTable') || !isSuper()) return;
   const q = $('eaSearch').value.toLowerCase();
   $('eaMissing').innerHTML = EV.unknown.length ? '<div class="note"><b>Used in the Excel file but not added yet (click to add):</b><br>' +
     EV.unknown.map(u => `<button class="chip" style="margin:6px 6px 0 0" data-miss="${escA(u.name)}">${esc(u.name)}</button>`).join('') + '</div>' : '';
