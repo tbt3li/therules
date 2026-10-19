@@ -911,7 +911,7 @@ function renderOverview() {
   const nextEv = sortedEvents()[0];
   $('statCards').innerHTML = [
     ['fa-users', '#0078d4', CH.players.length || '-', 'Clan Members'],
-    ['fa-bullseye', '#d9a400', fmt(CH.target), 'Weekly Chest Target'],
+    ['fa-bullseye', '#d366b7', fmt(CH.target), 'Weekly Chest Target'],
     ['fa-graduation-cap', '#d9a400', CONTENT.tutorials.length, 'Tutorials'],
     ['fa-book-open', '#28a745', GD.guides.length || '-', 'Game Guides']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
