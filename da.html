@@ -1645,13 +1645,15 @@ function openEventModal(c, prefill) {
 
 /* ---- presence (Super Admin only) ---- */
 const timeAgo = (ms) => {
-  if (!ms) return 'never logged in';
-  const s = Math.floor((Date.now() - ms) / 1000);
-  if (s < 60) return 'just now';
-  if (s < 3600) return Math.floor(s / 60) + ' min ago';
-  if (s < 86400) return Math.floor(s / 3600) + ' h ago';
-  return Math.floor(s / 86400) + ' d ago';
+  if (!ms) return 'Never logged in';
+  const d = new Date(ms), n = new Date();
+  const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((day(n) - day(d)) / 864e5);
+  if (days <= 0) return 'Today logged in (' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ')';
+  if (days === 1) return 'Yesterday logged in';
+  return days + ' days ago';
 };
+  
 function presenceCells(u) {
   const on = !!u.online, col = on ? '#28a745' : '#dc3545';
   const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};box-shadow:0 0 6px ${col};margin-right:6px"></span>`;
