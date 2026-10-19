@@ -332,6 +332,26 @@ a.chip{text-decoration:none;display:inline-block}
     padding-bottom: 2px;
 }
 
+/* downward glow/shadow under the two event boxes */
+.evNow{
+  box-shadow:0 10px 22px -6px rgba(220,53,69,.55),
+             0 4px 8px -4px rgba(220,53,69,.35);
+  border-bottom:3px solid var(--bad);
+}
+.evNext{
+  box-shadow:0 10px 22px -6px rgba(40,167,69,.55),
+             0 4px 8px -4px rgba(40,167,69,.35);
+  border-bottom:3px solid var(--ok);
+}
+
+/* slightly stronger in dark mode so it stays visible */
+[data-theme="dark"] .evNow{
+  box-shadow:0 10px 24px -4px rgba(220,53,69,.45);
+}
+[data-theme="dark"] .evNext{
+  box-shadow:0 10px 24px -4px rgba(40,167,69,.45);
+}
+
 /* Updating website on daily basis start */
 .top-alert{
   color:#00a00e;
