@@ -321,6 +321,22 @@ a.chip{text-decoration:none;display:inline-block}
 
 .chnav small{font-weight:600}
 
+/* Updating website on daily basis start */
+.top-alert{
+  color:#dc3545;
+  font-weight:600;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:340px;
+}
+@media(max-width:900px){.top-alert{display:none}}
+
+.top-alert{animation:blink 2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.45}}
+/* Updating website on daily basis end */
+  
 </style>
 </head>
 <body>
@@ -369,6 +385,8 @@ a.chip{text-decoration:none;display:inline-block}
     <header class="topbar">
         <button class="icon-btn" id="menuBtn" aria-label="Menu"><i class="fas fa-bars"></i></button>
         <h2 id="pageTitle">Overview</h2>
+      
+        <span class="top-alert">We are updating website on <b>Daily Basis</b></span>
       
         <div class="top-center">
           <b id="topName">...</b>
