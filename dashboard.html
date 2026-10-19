@@ -911,9 +911,9 @@ function renderOverview() {
   const nextEv = sortedEvents()[0];
   $('statCards').innerHTML = [
     ['fa-users', '#0078d4', CH.players.length || '-', 'Clan Members'],
-    ['fa-box-open', '#7c4dbd', fmtShort(CH.players.reduce((s, p) => s + chN(p.points), 0)), 'Weekly Points'],
+    ['fa-bullseye', '#d9a400', fmt(CH.target), 'Weekly Chest Target'],
     ['fa-graduation-cap', '#d9a400', CONTENT.tutorials.length, 'Tutorials'],
-    ['fa-calendar-day', '#28a745', String(evOn(evGameDate()).length), 'Events running']
+    ['fa-book-open', '#28a745', GD.guides.length || '-', 'Game Guides']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
     <div><b style="font-size:${String(v).length > 9 ? 16 : 24}px">${esc(v)}</b><span>${l}</span></div></div>`).join('');
 
@@ -1332,7 +1332,7 @@ async function initGuides() {
 async function loadGuides() {
   const r = await api('/guides');
   if (!r.success) { $('gGrid').innerHTML = '<p class="muted">' + esc(r.error || 'Could not load guides.') + '</p>'; return; }
-  GD.cats = r.categories; GD.guides = r.guides; drawGuides();
+  GD.cats = r.categories; GD.guides = r.guides; drawGuides(); renderOverview();
 }
 function drawGuides() {
   const cnt = (k) => GD.guides.filter(g => g.category_key === k).length;
@@ -1916,7 +1916,7 @@ function initChests() {
       $('chTargetSave').disabled = true;
       const r = await api('/settings/chest-target', 'PUT', { target: t });
       $('chTargetSave').disabled = false;
-      if (r.success) { CH.target = t; toast('Weekly target saved', 'ok'); renderMembers(); } else toast(r.error || 'Failed', 'err');
+      if (r.success) { CH.target = t; toast('Weekly target saved', 'ok'); renderMembers(); renderOverview(); } else toast(r.error || 'Failed', 'err');
     };
   }
   setInterval(chTick, 1000); chTick(); loadChests();
