@@ -302,7 +302,16 @@ a.chip{text-decoration:none;display:inline-block}
 }
 
 @media(max-width:600px){#refreshBtn span{display:none}}
-  
+
+/* clan chests */
+.chbar{position:relative;height:20px;min-width:150px;border-radius:6px;background:var(--input);border:1px solid var(--border);overflow:hidden}
+.chfill{height:100%}
+.chbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.chalias{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+#chTable th,#chTable td{padding:5px 10px;font-size:13.5px}
+#chTable .num{text-align:right}
+#chTable tfoot td{font-weight:700;border-top:2px solid var(--primary);border-bottom:none}
+
 </style>
 </head>
 <body>
@@ -834,7 +843,7 @@ const sortedEvents = () => CONTENT.events.map(e => ({ ...e, next: nextOccurrence
    4. NAVIGATION / THEME
    ===================================================================== */
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
-  cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Members', checklist:'Daily Checklist', tools:'Calculators',
+  cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Chests', checklist:'Daily Checklist', tools:'Calculators',
   rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights', guides:'Game Guides', guideadmin:'Manage Guides', eventlist:'All Events', eventadmin:'Manage Events' };
 
 function showSection(name) {
