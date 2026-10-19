@@ -333,25 +333,29 @@ a.chip{text-decoration:none;display:inline-block}
 }
 
 /* downward glow/shadow under the two event boxes */
-.evNow{
-  box-shadow:0 10px 22px -6px rgba(220,53,69,.55),
-             0 4px 8px -4px rgba(220,53,69,.35);
-  border-bottom:3px solid var(--bad);
+/* ---------- events running now (red) ---------- */
+#evNow .evmini{
+  border:2px solid var(--bad);
+  box-shadow:0 4px 10px -2px rgba(220,53,69,.65),
+             0 0 0 2px rgba(220,53,69,.15);
 }
-.evNext{
-  box-shadow:0 10px 22px -6px rgba(40,167,69,.55),
-             0 4px 8px -4px rgba(40,167,69,.35);
-  border-bottom:3px solid var(--ok);
-}
+#evNow .evrow{ border-bottom:1px solid rgba(220,53,69,.25); }
+#evNow .evph{ background:rgba(220,53,69,.12); color:var(--bad); }
 
-/* slightly stronger in dark mode so it stays visible */
-[data-theme="dark"] .evNow{
-  box-shadow:0 10px 24px -4px rgba(220,53,69,.45);
+/* ---------- events coming next (green) ---------- */
+#evNext .evmini{
+  border:2px solid var(--ok);
+  box-shadow:0 4px 10px -2px rgba(40,167,69,.65),
+             0 0 0 2px rgba(40,167,69,.15);
 }
-[data-theme="dark"] .evNext{
-  box-shadow:0 10px 24px -4px rgba(40,167,69,.45);
-}
+#evNext .evrow{ border-bottom:1px solid rgba(40,167,69,.25); }
+#evNext .evph{ background:rgba(40,167,69,.12); color:var(--ok); }
 
+/* dark mode: same colours already read well, just soften the halo */
+[data-theme="dark"] #evNow .evmini { box-shadow:0 4px 12px -2px rgba(220,53,69,.5); }
+[data-theme="dark"] #evNext .evmini{ box-shadow:0 4px 12px -2px rgba(40,167,69,.5); }
+/* End downward glow/shadow under the two event boxes *
+  
 /* Updating website on daily basis start */
 .top-alert{
   color:#00a00e;
