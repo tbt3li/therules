@@ -1971,14 +1971,14 @@ TITLES.chestdefs = 'Chest Definitions';            // without this entry the rou
 function ensureChestDefsPage() {                   // creates the page itself if it is missing from the HTML
   if (!$('cdStyle')) {
     const st = document.createElement('style'); st.id = 'cdStyle';
-    st.textContent = `.cdgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
-      @media(max-width:1100px){.cdgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.cdgrid{grid-template-columns:1fr}}
-      .cdbox{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-      .cdbox h4{margin:0;padding:6px 10px;font-size:13px;background:var(--input);color:var(--primary);border-bottom:1px solid var(--border)}
-      .cdbox table{width:100%;border-collapse:collapse;font-size:12.5px}
-      .cdbox th,.cdbox td{padding:1px 6px;line-height:1.35;white-space:normal;cursor:default}
+    st.textContent = `.cdgrid{display:block;column-count:3;column-gap:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+      @media(max-width:1100px){.cdgrid{column-count:2}}@media(max-width:700px){.cdgrid{column-count:1}}
+      .cdbox{break-inside:avoid;margin:0;border-top:1px solid var(--border);border-left:1px solid var(--border);background:var(--card)}
+      .cdbox h4{margin:0;padding:4px 8px;font-size:13px;background:var(--input);color:var(--primary);border-bottom:1px solid var(--border)}
+      .cdbox table{width:100%;border-collapse:collapse;font-size:12.5px;margin:0}
+      .cdbox th,.cdbox td{padding:0 6px;line-height:1.3;white-space:normal;border-bottom:1px solid var(--border);cursor:default}
       .cdbox th{font-size:10.5px}.cdbox tr:last-child td{border-bottom:none}.cdbox td.n,.cdbox th.n{text-align:right;font-variant-numeric:tabular-nums}
-      .cdbox .mini{width:20px;height:20px;font-size:10px}.cdbox .act{gap:3px}`;
+      .cdbox .mini{width:20px;height:18px;font-size:10px;margin:1px 0}.cdbox .act{gap:3px}`;
     document.head.appendChild(st);
   }
   if (!$('s-chestdefs')) {
@@ -2148,8 +2148,6 @@ function renderTools() {                                   // replaces the old t
   });
   window.addEventListener('hashchange', () => CALCS.filter(c => c.lazy && location.hash === '#calc-' + c.id).forEach(calcMount));
 }
-
-
 
   
 function startApp() {
