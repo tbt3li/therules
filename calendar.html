@@ -36,28 +36,7 @@ table a:focus {color:blue;outline: none;}
   body { top: 0px !important; }
   body > .skiptranslate { display: none !important; }
 
-.box{
-    width:100%; max-width:440px; text-align:center; padding:44px 34px;
-    background:var(--card); border:1px solid var(--border); border-radius:14px;
-    box-shadow:0 8px 28px rgba(0,0,0,.12);
-  }
-  .logo{height:56px; width:auto; margin-bottom:18px}
-  .icon{
-    width:70px; height:70px; margin:0 auto 20px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:30px; color:#fff; background:linear-gradient(135deg,var(--primary),var(--accent));
-  }
-  h1{font-size:24px; margin-bottom:10px}
-  p{color:var(--muted); font-size:16px; line-height:1.6; margin-bottom:28px}
-  .btn{
-    display:inline-flex; align-items:center; gap:10px; padding:14px 34px; border-radius:8px;
-    background:var(--primary); color:#fff; text-decoration:none; font-size:16px; font-weight:600;
-    transition:background .2s, transform .15s;
-  }
-  .btn:hover{background:var(--primary-dark); transform:translateY(-2px)}
-  .btn:focus-visible{outline:3px solid rgba(0,120,212,.4); outline-offset:2px}
-  .foot{margin-top:24px; font-size:13px; color:var(--muted)}
-	
+
 </style>
 <body class="index-page">
 
@@ -118,14 +97,73 @@ table a:focus {color:blue;outline: none;}
 	  </div>
 	</div><!-- End Page Title -->
 
-    <div class="box">
-    <img class="logo" src="assets/img/logo.png" alt="" onerror="this.style.display='none'">
-    <div class="icon"><i class="fas fa-lock"></i></div>
-    <h1>Members Only</h1>
-    <p>To view the calendar and other stuff, please login first.</p>
-    <a class="btn" href="login.html"><i class="fas fa-right-to-bracket"></i> Login</a>
-    <div class="foot">&copy; 2026 THE Family Gang</div>
-  </div>
+   <div class="gate">
+	  <div class="icon"><i class="fas fa-lock"></i></div>
+	  <h1>Login Required</h1>
+	  <p>
+	    To view the <b>calendar</b>, clan chests, premium tutorials and other member
+	    resources, please log in with your clan account.
+	  </p>
+	  <a class="btn-login" href="website/login.html">
+	    <i class="fas fa-right-to-bracket"></i> Login
+	  </a>
+	  <small>Members only · THE Family Gang · Kingdom 34</small>
+	</div>
+	
+	<style>
+	.gate{
+	  background:var(--card,#fff);
+	  border:1px solid var(--border,#e1dfdd);
+	  border-radius:16px;
+	  box-shadow:0 10px 30px rgba(0,0,0,.10);
+	  padding:48px 36px;
+	  max-width:460px;
+	  width:100%;
+	  margin:40px auto;
+	  text-align:center;
+	}
+	.gate .icon{
+	  width:80px; height:80px;
+	  margin:0 auto 22px;
+	  border-radius:50%;
+	  background:linear-gradient(135deg,var(--primary,#0078d4),var(--accent,#7c4dbd));
+	  color:#fff;
+	  display:flex; align-items:center; justify-content:center;
+	  font-size:32px;
+	  box-shadow:0 8px 20px rgba(0,120,212,.35);
+	}
+	.gate h1{font-size:26px;margin-bottom:10px;color:var(--text,#323130)}
+	.gate p{color:var(--muted,#605e5c);font-size:15px;line-height:1.6;margin-bottom:28px}
+	.gate .btn-login{
+	  display:inline-flex;
+	  align-items:center;
+	  gap:10px;
+	  background:var(--primary,#0078d4);
+	  color:#fff;
+	  text-decoration:none;
+	  font-weight:600;
+	  font-size:16px;
+	  padding:14px 32px;
+	  border-radius:10px;
+	  transition:.15s;
+	  box-shadow:0 4px 14px rgba(0,120,212,.35);
+	}
+	.gate .btn-login:hover{
+	  background:#005a9e;
+	  transform:translateY(-2px);
+	  box-shadow:0 8px 20px rgba(0,120,212,.45);
+	}
+	.gate small{
+	  display:block;
+	  margin-top:22px;
+	  color:var(--muted,#605e5c);
+	  font-size:12.5px;
+	}
+	@media(max-width:480px){
+	  .gate{padding:36px 22px}
+	  .gate h1{font-size:22px}
+	}
+	</style>
 
   </main>
 
