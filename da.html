@@ -1153,8 +1153,16 @@ function renderAccount() {
    5b. PERMISSIONS + ADMIN (User Roles)
    ===================================================================== */
 const roleBadgeRaw = (label, color) => { const c = /^#[0-9a-fA-F]{3,8}$/.test(color || '') ? color : '#6c757d';
-  return `<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}66">${esc(label)}</span>`; };
+  return `<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}66">${roleIcon(label, c)}${esc(label)}</span>`; };
 
+const ROLE_ICON = { superadmin: ['fa-crown', '👑'], admin: ['fa-user-shield', '🛡️'], superior: ['fa-gem', '💎'],
+  officer: ['fa-user-tie', '⚔️'], veteran: ['fa-award', '🏅'], member: ['fa-handshake', '🤝'] };
+const roleKeyOf = (label) => String(label || '').toLowerCase().replace(/[^a-z]/g, '');
+const roleIcon = (label, color) => { const k = roleKeyOf(label), r = ROLE_ICON[k]; if (!r) return '';
+  return `<i class="fas ${r[0]}" style="color:${k === 'admin' ? '#dc3545' : color};margin-right:5px"></i>`; };
+const roleEmoji = (label) => { const r = ROLE_ICON[roleKeyOf(label)]; return r ? r[1] + ' ' : ''; };
+
+  
 function applyPermissions() {
   PERMS = new Set(currentUser.permissions || ['overview', 'account']);
   document.querySelectorAll('#nav a[data-s]').forEach(a => {
@@ -1211,7 +1219,7 @@ async function loadAdmin() {
   const [u, p] = await Promise.all([api('/admin/users'), api('/admin/permissions')]);
   if (!u.success || !p.success) { toast((u.error || p.error || 'Could not load admin data'), 'err'); return; }
   ADM.users = u.users; ADM.roles = p.roles; ADM.menus = p.menus; ADM.matrix = p.matrix;
-  $('usrRole').innerHTML = '<option value="">All roles</option>' + ADM.roles.map(r => `<option value="${esc(r.role_key)}">${esc(r.label)}</option>`).join('');
+  $('usrRole').innerHTML = '<option value="">All roles</option>' + ADM.roles.map(r => `<option value="${esc(r.role_key)}">${roleEmoji(r.label)}${esc(r.label)}</option>`).join('');
   renderUsers(); renderRights();
 }
 async function refreshUsers() { const u = await api('/admin/users'); if (u.success) { ADM.users = u.users; renderUsers(); } }
@@ -1268,7 +1276,7 @@ async function onUserAction(e) {
 
 function openUserModal(u) {
   const isNew = !u, me = u && u.id === currentUser.id;
-  const opts = ADM.roles.filter(r => isSuper() || r.role_key !== 'superadmin').map(r => `<option value="${esc(r.role_key)}" ${(u ? u.role : 'member') === r.role_key ? 'selected' : ''}>${esc(r.label)}</option>`).join('');
+  const opts = ADM.roles.filter(r => isSuper() || r.role_key !== 'superadmin').map(r => `<option value="${esc(r.role_key)}" ${(u ? u.role : 'member') === r.role_key ? 'selected' : ''}>${roleEmoji(r.label)}${esc(r.label)}</option>`).join('');
   $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
     <h2>${isNew ? 'Add user' : 'Edit user'}</h2>
     <p class="muted" style="margin-bottom:6px">${isNew ? 'Create a login for a new member.' : 'Change login details, role or status.'}</p>
@@ -1747,7 +1755,7 @@ async function refreshAll() {
     if (r.user.role !== currentUser.role) { location.reload(); return; }   // role changed: rebuild the whole page
     currentUser = r.user;
     $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
-    $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
+    $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
     applyPermissions(); renderAccount();
     const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
     if (isAdmin()) jobs.push(loadAdmin());               // users, online status, menu rights
@@ -2118,7 +2126,7 @@ function startApp() {
   $('topName').textContent = name;
   $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
 
-  $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
+ $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
   applyPermissions();
   renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies();
   renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents(); initChests(); initChestDefs();
