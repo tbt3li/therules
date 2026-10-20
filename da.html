@@ -1117,28 +1117,6 @@ function updateProgress() {
     <div class="progress"><div style="width:${pct}%"></div></div><button class="btn outline sm" data-go="checklist">Open checklist</button>`;
 }
 
-function renderTools() {
-  const calc = () => {
-    const mins = (+$('tcD').value || 0) * 1440 + (+$('tcH').value || 0) * 60 + (+$('tcM').value || 0);
-    const bonus = +$('tcB').value || 0;
-    if (mins <= 0) { $('tcRes').textContent = 'Enter a duration above.'; return; }
-    const real = mins / (1 + bonus / 100), d = Math.floor(real / 1440), h = Math.floor(real % 1440 / 60), m = Math.round(real % 60);
-    $('tcRes').innerHTML = `Real time: <b>${d}d ${h}h ${m}m</b><br><span class="muted">You save ${Math.round(mins - real)} minutes (${(100 - 100 / (1 + bonus / 100)).toFixed(1)}% faster).</span>`;
-  };
-  ['tcD', 'tcH', 'tcM', 'tcB'].forEach(id => $(id).oninput = calc);
-
-  $('rgTable').innerHTML = '<tr><th>Resource</th><th>Needed</th><th>You have</th></tr>' +
-    CONTENT.resources.map((r, i) => `<tr><td><b>${esc(r)}</b></td><td><input type="number" min="0" class="input rg" data-i="${i}" data-k="n" placeholder="0" style="min-width:110px"></td>
-      <td><input type="number" min="0" class="input rg" data-i="${i}" data-k="h" placeholder="0" style="min-width:110px"></td></tr>`).join('');
-  $('rgTable').oninput = () => {
-    const need = {}, have = {};
-    document.querySelectorAll('.rg').forEach(el => { (el.dataset.k === 'n' ? need : have)[el.dataset.i] = +el.value || 0; });
-    const lines = CONTENT.resources.map((r, i) => { const gap = (need[i] || 0) - (have[i] || 0);
-      return `${esc(r)}: ` + (gap > 0 ? `<b>${fmt(gap)}</b> still needed` : `<span style="color:var(--ok)">enough ✔</span>`); });
-    $('rgRes').innerHTML = lines.join('<br>');
-  };
-  $('rgRes').innerHTML = 'Fill in the table to see what is missing.';
-}
 
 function renderRules() {
   $('ruleList').innerHTML = CONTENT.rules.map((r, i) => `<li><i class="fas fa-circle-${i + 1 <= 50 ? 'check' : 'dot'}"></i><div>${esc(r)}</div></li>`).join('');
