@@ -1963,6 +1963,20 @@ function initChests() {
    Paste ABOVE "function startApp() {" and BELOW the events/chests blocks.
    ===================================================================== */
 PERM_OF.chestdefs = 'members';                     // sub menu uses the Clan Chests right
+TITLES.chestdefs = 'Chest Definitions';            // without this entry the router sends you back to Overview
+
+function ensureChestDefsPage() {                   // creates the page itself if it is missing from the HTML
+  if ($('s-chestdefs')) return;
+  const s = document.createElement('section'); s.className = 'section'; s.id = 's-chestdefs';
+  s.innerHTML = `<div class="page-head"><h1>📖 Chest Definitions</h1><p>Chest types, levels and points. Maintained by the Super Admin.</p></div>
+    <div class="chips"><a class="chip" href="#members">Clan Chests</a><a class="chip active" href="#chestdefs">Chest Definitions</a></div>
+    <div class="chips" id="cdGroups"></div>
+    <div class="toolbar"><input class="input" id="cdSearch" placeholder="Search type or name...">
+      <button class="btn" id="cdAdd" style="display:none"><i class="fas fa-plus"></i> Add chest</button>
+      <button class="btn outline" id="cdBulk" style="display:none"><i class="fas fa-table-list"></i> Bulk add</button></div>
+    <div class="card"><div class="table-wrap"><table id="cdTable"></table></div></div>`;
+  (document.querySelector('main.content') || document.querySelector('main')).appendChild(s);
+}
 
 /* ---------- Chest Definitions ---------- */
 const CD = { groups: [], defs: [], grp: '', q: '', ok: false, err: '' };
@@ -1994,6 +2008,7 @@ function renderChestDefs() {
   $('cdTable').innerHTML = html;
 }
 function initChestDefs() {
+  ensureChestDefsPage();
   $('cdSearch').oninput = (e) => { CD.q = e.target.value.toLowerCase(); renderChestDefs(); };
   $('cdGroups').onclick = (e) => { const b = e.target.closest('.chip'); if (b) { CD.grp = b.dataset.g; renderChestDefs(); } };
   if (isSuper()) {
@@ -2116,6 +2131,7 @@ function renderTools() {                                   // replaces the old t
   });
   window.addEventListener('hashchange', () => CALCS.filter(c => c.lazy && location.hash === '#calc-' + c.id).forEach(calcMount));
 }
+
 
   
 function startApp() {
