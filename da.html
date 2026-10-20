@@ -1971,9 +1971,9 @@ TITLES.chestdefs = 'Chest Definitions';            // without this entry the rou
 function ensureChestDefsPage() {                   // creates the page itself if it is missing from the HTML
   if (!$('cdStyle')) {
     const st = document.createElement('style'); st.id = 'cdStyle';
-    st.textContent = `.cdgrid{display:block;column-count:3;column-gap:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+    st.textContent = `.cdgrid{display:block;column-count:3;column-gap:14px}
       @media(max-width:1100px){.cdgrid{column-count:2}}@media(max-width:700px){.cdgrid{column-count:1}}
-      .cdbox{break-inside:avoid;margin:0;border-top:1px solid var(--border);border-left:1px solid var(--border);background:var(--card)}
+      .cdbox{break-inside:avoid;margin:0 0 -1px;border:1px solid var(--border);background:var(--card)}
       .cdbox h4{margin:0;padding:4px 8px;font-size:13px;background:var(--input);color:var(--primary);border-bottom:1px solid var(--border)}
       .cdbox table{width:100%;border-collapse:collapse;font-size:12.5px;margin:0}
       .cdbox th,.cdbox td{padding:0 6px;line-height:1.3;white-space:normal;border-bottom:1px solid var(--border);cursor:default}
