@@ -278,9 +278,9 @@ a.chip{text-decoration:none;display:inline-block}
 .mhead{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0}
 .mcell{min-height:78px;border:1px solid #cdcac7;border-radius:8px;padding:4px;background:var(--card);overflow:hidden}
 .mcell.empty{background:transparent;border-color:transparent}
-.mcell.today{border:2px solid #dc3545;background:rgba(220,53,69,.12)}
+.mcell.today{border:2px solid #dc354559;background:rgba(220,53,69,.12)}
 .mcell.today .dn{color:#dc3545}
-.mcell.next{border:2px solid #28a745;background:rgba(40,167,69,.12)}
+.mcell.next{border:2px solid #28a74559;background:rgba(40,167,69,.12)}
 .mcell.next .dn{color:#28a745}
 .evd-now{color:#dc3545;font-weight:700}.evd-next{color:#28a745;font-weight:700}
 .mcell.past{opacity:.55}
@@ -302,6 +302,75 @@ a.chip{text-decoration:none;display:inline-block}
 }
 
 @media(max-width:600px){#refreshBtn span{display:none}}
+
+/* clan chests */
+.chbar{position:relative;height:20px;min-width:150px;border-radius:6px;background:var(--input);border:1px solid var(--border);overflow:hidden}
+.chfill{height:100%}
+.chbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#cdcdcd;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.chalias{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+#chTable th,#chTable td{padding:5px 10px;font-size:13.5px}
+#chTable .num{text-align:right}
+#chTable tfoot td{font-weight:700;border-top:2px solid var(--primary);border-bottom:none}
+
+.chhead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+.chnav{text-align:right}
+.chbtns{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.chnav small{display:block;margin-top:6px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:900px){.chhead{grid-template-columns:1fr}.chnav{text-align:left}.chbtns{justify-content:flex-start}}
+
+.chnav small{font-weight:600}
+
+.evr-title {
+    font-weight: 700;
+    border-bottom: 3px solid #E53935;
+    padding-bottom: 2px;
+}
+.evg-title {
+    font-weight: 700;
+    border-bottom: 3px solid #3ca647;
+    padding-bottom: 2px;
+}
+
+/* downward glow/shadow under the two event boxes */
+/* ---------- events running now (red) ---------- */
+#evNow .evmini{
+  border:2px solid #dc35450d;
+  box-shadow:0 4px 10px -2px rgba(220,53,69,.65),
+             0 0 0 2px rgba(220,53,69,.15);
+}
+#evNow .evrow{ border-bottom:1px solid rgba(220,53,69,.25); }
+#evNow .evph{ background:rgba(220,53,69,.12); color:var(--bad); }
+
+/* ---------- events coming next (green) ---------- */
+#evNext .evmini{
+  border:2px solid #28a7450d;
+  box-shadow:0 4px 10px -2px rgba(40,167,69,.65),
+             0 0 0 2px rgba(40,167,69,.15);
+}
+#evNext .evrow{ border-bottom:1px solid rgba(40,167,69,.25); }
+#evNext .evph{ background:rgba(40,167,69,.12); color:var(--ok); }
+
+/* dark mode: same colours already read well, just soften the halo */
+[data-theme="dark"] #evNow .evmini { box-shadow:0 4px 12px -2px rgba(220,53,69,.5); }
+[data-theme="dark"] #evNext .evmini{ box-shadow:0 4px 12px -2px rgba(40,167,69,.5); }
+/* End downward glow/shadow under the two event boxes *
+  
+/* Updating website on daily basis start */
+.top-alert{
+  color:#00a00e;
+  font-weight:600;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:340px;
+}
+@media(max-width:900px){.top-alert{display:none}}
+
+.top-alert{animation:blink 0.5s ease-in-out infinite}
+@keyframes blink{50%{opacity:.45}}
+/* Updating website on daily basis end */
   
 </style>
 </head>
@@ -352,6 +421,8 @@ a.chip{text-decoration:none;display:inline-block}
         <button class="icon-btn" id="menuBtn" aria-label="Menu"><i class="fas fa-bars"></i></button>
         <h2 id="pageTitle">Overview</h2>
       
+        <span class="top-alert">We are updating website on <b>Daily Basis</b></span>
+      
         <div class="top-center">
           <b id="topName">...</b>
           <span id="topRole"></span>
@@ -373,7 +444,7 @@ a.chip{text-decoration:none;display:inline-block}
         <div class="hero">
           <h1>Welcome back, <span id="heroName">Member</span>! ⚔️</h1><p style="color:#00ff68;"> We are updating website on <b>Daily Basis</b>, so stay tune, Thanks</p>
           <p style="margin-bottom:10px"><span class="badge" id="heroRole" style="background:rgba(255,255,255,.22);color:#fff"></span></p>
-          <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34): premium tutorials, loadouts, strategies, cheat sheets and clan stats, all in one place.</p>
+          <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34):</p><p>premium tutorials, loadouts, strategies, cheat sheets and clan stats, all in one place.</p>
           <div class="btns">
             <button class="btn ghost" data-go="tutorials"><i class="fas fa-graduation-cap"></i> Browse Tutorials</button>
             <button class="btn ghost" data-go="events"><i class="fas fa-calendar-days"></i> Upcoming Events</button>
@@ -431,10 +502,10 @@ a.chip{text-decoration:none;display:inline-block}
         <div class="page-head"><h1>📅 Events &amp; Calendar</h1><p>The game day changes at <b>17:00 UTC</b>. Click any picture for details.</p></div>
         <div class="chips"><a class="chip active" href="#events">Calendar</a><a class="chip" href="#eventlist">All Events</a></div>
         <div class="grid g2" style="margin-bottom:20px">
-          <div class="card"><h3><i class="fas fa-play"></i> Events Running Now <small id="evNowDate" class="evd-now"></small></h3>
+          <div class="card"><h3><i class="fas fa-play"></i> <span class="evr-title">Events Running Now</span> <small id="evNowDate" class="evd-now"></small></h3>
           <p class="muted" style="margin-top:10px;font-size:13px">⏳ Remaining Time <b class="evtimer" style="color:#dc3545">--:--:--</b></p>
           <div id="evNow"></div></div>
-          <div class="card"><h3><i class="fas fa-forward"></i> Events Coming Next <small id="evNextDate" class="evd-next"></small></h3>
+          <div class="card"><h3><i class="fas fa-forward"></i> <span class="evg-title">Up Coming Events</span> <small id="evNextDate" class="evd-next"></small></h3>
           <p class="muted" style="margin-top:10px;font-size:13px">⏳ Starts in <b class="evtimer" style="color:#28a745">--:--:--</b></p>
           <div id="evNext"></div></div>
         </div>
@@ -464,16 +535,41 @@ a.chip{text-decoration:none;display:inline-block}
       </section>
 
       <!-- MEMBERS -->
+      <!-- CLAN CHESTS -->
       <section class="section" id="s-members">
-        <div class="page-head"><h1>👥 Clan Member Statistics</h1><p>Roster, roles and rankings for THE Family Gang.</p></div>
-        <div class="grid g4" id="memberStats" style="margin-bottom:20px"></div>
+        <div class="page-head chhead">
+          <div><h1>🎁 Clan Chests</h1><p><text style="color:#1c8716 !important;">Live weekly chest leaderboard</text> for THE Family Gang.</p></div>
+          <div class="card" style="padding:10px 18px;text-align:center">
+            <small class="muted">Weekly reset in</small><br>
+            <b id="chTimer" style="font-size:22px;font-variant-numeric:tabular-nums;color:var(--bad)">--</b><br>
+            <small class="muted" id="chResetAt"></small>
+          </div>
+          <div class="chnav">
+            <div class="chbtns">
+              <button class="btn outline sm" id="chPrev">◀ Previous week</button>
+              <button class="btn sm" id="chCur">Current week</button>
+              <button class="btn outline sm" id="chNext">Next week ▶</button>
+            </div>
+            <small class="muted" id="chWeekLabel"></small>
+          </div>
+        </div>
+        <div class="grid g4" id="chStats" style="margin-bottom:20px"></div>
         <div class="grid g2" style="margin-bottom:20px">
-          <div class="card"><h3><i class="fas fa-trophy"></i> Top 5 by Power</h3><div id="topPower"></div></div>
-          <div class="card"><h3><i class="fas fa-skull"></i> Top 5 by Kills</h3><div id="topKills"></div></div>
+          <div class="card"><h3><i class="fas fa-trophy"></i> Top 5 by Chest Points <span id="chWeekTag">(current week)</span></h3><div id="chTopWeek"></div></div>
+          <div class="card"><h3><i class="fas fa-calendar-check"></i> Top 5 this month · <span id="chMonthName"></span></h3><div id="chTopMonth"></div></div>
         </div>
         <div class="card">
-          <div class="toolbar"><input class="input" id="memSearch" placeholder="Search members..."></div>
-          <div class="table-wrap"><table id="memTable"></table></div>
+          <div class="toolbar">
+            <input class="input" id="chSearch" placeholder="Search player...">
+            <label class="chk" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="chHide"> Hide players with 0 chests</label>
+          </div>
+          <div class="table-wrap"><table id="chTable"></table></div>
+          <p class="muted" id="chStatus" style="font-size:12px;margin-top:10px"></p>
+        </div>
+        <div class="card" id="chTargetBox" style="display:none;margin-top:20px">
+          <h3><i class="fas fa-bullseye"></i> Weekly chest target (Super Admin)</h3>
+          <div class="toolbar" style="margin-bottom:0"><input class="input" type="number" min="1" id="chTargetInput" style="max-width:220px"><button class="btn" id="chTargetSave">Save target</button></div>
+          <p class="muted" style="font-size:12px;margin-top:8px">Used for the % column, the points bars and the Required Chests / Week card. Members see the new value on their next refresh.</p>
         </div>
       </section>
 
@@ -516,11 +612,11 @@ a.chip{text-decoration:none;display:inline-block}
         <div class="grid g2">
           <div class="card"><h3><i class="fas fa-gavel"></i> Clan Rules</h3><ul class="list" id="ruleList"></ul></div>
           <div class="grid" style="align-content:start">
-            <div class="card"><h3><i class="fab fa-discord"></i> Join the Discord</h3>
+           <div class="card"><h3><i class="fab fa-discord"></i> Join the Discord</h3>
               <p class="muted" style="margin-bottom:14px">Coordinate attacks, ask questions and get notified about events.</p>
               <a class="btn" id="discordLink" target="_blank" rel="noopener">Open Discord</a></div>
             <div class="card"><h3><i class="fas fa-headset"></i> Need Help?</h3>
-              <p class="muted">Contact the clan leader <b>T3li</b> in-game or on Discord for access issues, role requests or password resets.</p></div>
+              <p class="muted">Contact the clan leader <b>WOLFICH</b> or <b>T3li</b> in-game or <a href="https://thefamily.pages.dev/contact" target="_blank">Contact us</a> page, role requests or password resets.</p></div>
           </div>
         </div>
       </section>
@@ -834,7 +930,7 @@ const sortedEvents = () => CONTENT.events.map(e => ({ ...e, next: nextOccurrence
    4. NAVIGATION / THEME
    ===================================================================== */
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
-  cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Members', checklist:'Daily Checklist', tools:'Calculators',
+  cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Chests', checklist:'Daily Checklist', tools:'Calculators',
   rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights', guides:'Game Guides', guideadmin:'Manage Guides', eventlist:'All Events', eventadmin:'Manage Events' };
 
 function showSection(name) {
@@ -867,10 +963,10 @@ function renderOverview() {
   const totalPower = members.reduce((a, m) => a + m.power, 0);
   const nextEv = sortedEvents()[0];
   $('statCards').innerHTML = [
-    ['fa-users', '#0078d4', members.length, 'Clan Members'],
-    ['fa-bolt', '#7c4dbd', fmtShort(totalPower), 'Total Clan Power'],
+    ['fa-users', '#0078d4', CH.players.length || '-', 'Clan Members'],
+    ['fa-bullseye', '#d366b7', fmt(CH.target), 'Weekly Chest Target'],
     ['fa-graduation-cap', '#d9a400', CONTENT.tutorials.length, 'Tutorials'],
-    ['fa-calendar-day', '#28a745', String(evOn(evGameDate()).length), 'Events running']
+    ['fa-book-open', '#28a745', GD.guides.length || '-', 'Game Guides']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
     <div><b style="font-size:${String(v).length > 9 ? 16 : 24}px">${esc(v)}</b><span>${l}</span></div></div>`).join('');
 
@@ -1289,7 +1385,7 @@ async function initGuides() {
 async function loadGuides() {
   const r = await api('/guides');
   if (!r.success) { $('gGrid').innerHTML = '<p class="muted">' + esc(r.error || 'Could not load guides.') + '</p>'; return; }
-  GD.cats = r.categories; GD.guides = r.guides; drawGuides();
+  GD.cats = r.categories; GD.guides = r.guides; drawGuides(); renderOverview();
 }
 function drawGuides() {
   const cnt = (k) => GD.guides.filter(g => g.category_key === k).length;
@@ -1678,7 +1774,7 @@ async function refreshAll() {
     $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
     $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
     applyPermissions(); renderAccount();
-    const jobs = [loadGuides(), loadEvents()];
+    const jobs = [loadGuides(), loadEvents(), loadChests()];
     if (isAdmin()) jobs.push(loadAdmin());               // users, online status, menu rights
     if (isSuper()) jobs.push(loadGuideAdmin());
     await Promise.all(jobs);
@@ -1690,6 +1786,196 @@ async function refreshAll() {
     btn.disabled = false; btn.querySelector('i').classList.remove('fa-spin');
   }
 }
+
+
+/* =====================================================================
+   5e. CLAN CHESTS  -  paste ABOVE "function startApp() {"
+   (the newer renderMembers below replaces the old placeholder one automatically)
+   ===================================================================== */
+const COUNTS_URL = 'https://counts.t3li.workers.dev/api/counts';
+const CH_WEEK = 7 * 864e5;
+const CH = { players: [], cats: [], cols: [], target: 35000, month: [], ok: false, err: '', loading: false, offset: 0, prevOffset: 0, pending: false,
+  nextRefresh: 0, fetchedAt: 0, stale: false, weekStart: 0, weekEnd: 0, sortKey: 'points', sortDir: -1, q: '', hideZero: false };
+const CH_COL = { red: 'var(--bad)', orange: 'var(--warn)', blue: 'var(--primary)', green: 'var(--ok)' };
+const chN = (v) => (typeof v === 'number' && isFinite(v)) ? v : 0;
+const chColor = (pct) => pct < 50 ? 'red' : pct <= 80 ? 'orange' : pct < 100 ? 'blue' : 'green';
+const chCompact = (v) => { v = chN(v);
+  if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'm';
+  if (Math.abs(v) >= 1e3) return (v / 1e3).toFixed(v % 1e3 ? 1 : 0) + 'k';
+  return String(v); };
+const chPct = (p) => chN(p.points) / Math.max(1, CH.target) * 100;
+function chLastReset(now) {                              // last Sunday 17:00 UTC
+  const d = new Date(now); let t = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 17, 0, 0);
+  t -= d.getUTCDay() * 864e5; if (t > now) t -= CH_WEEK; return t;
+}
+const chNextReset = () => chLastReset(Date.now()) + CH_WEEK;
+
+async function chFetchWeek(offset) {
+  const res = await fetch(COUNTS_URL + '?week=' + offset + '&t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' });
+  const j = await res.json();
+  if (!j.ok) throw new Error(j.error || 'Could not load chest data');
+  return j;
+}
+
+// Month totals: a weekly season belongs to the month in which it ENDS (its Sunday 17:00 UTC reset).
+async function chBuildMonth(week0Players) {
+  const now = Date.now(), nd = new Date(now), ym = nd.getUTCFullYear() * 12 + nd.getUTCMonth(), cur = chLastReset(now);
+  const monthOf = (ms) => { const d = new Date(ms - 1); return d.getUTCFullYear() * 12 + d.getUTCMonth(); };
+  const offs = [];
+  for (let k = 0; k <= 6; k++) { const m = monthOf(cur + CH_WEEK - k * CH_WEEK); if (m === ym) offs.push(k); else if (m < ym) break; }
+  const past = offs.filter(k => k > 0), key = 'ch_month_' + ym;
+  let rows = null;
+  try { const c = JSON.parse(localStorage.getItem(key)); if (c && Date.now() - c.ts < 36e5 && JSON.stringify(c.offs) === JSON.stringify(past)) rows = c.rows; } catch (e) {}
+  if (!rows) {
+    const res = await Promise.all(past.map(k => chFetchWeek(k).catch(() => null)));
+    rows = []; let complete = true;
+    res.forEach(r => { if (!r) complete = false; else (r.data.players || []).forEach(p => rows.push({ name: p.name, points: chN(p.points), chests: chN(p.chests) })); });
+    if (complete) { try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), offs: past, rows })); } catch (e) {} }
+  }
+  const acc = new Map();
+  const add = (n, pts, ch) => { const a = acc.get(n) || { name: n, points: 0, chests: 0 }; a.points += pts; a.chests += ch; acc.set(n, a); };
+  rows.forEach(r => add(r.name, r.points, r.chests));
+  if (offs.includes(0)) week0Players.forEach(p => add(p.name, chN(p.points), chN(p.chests)));
+  return [...acc.values()].sort((a, b) => b.points - a.points).slice(0, 5);
+}
+
+async function loadChests() {
+  if (CH.loading) { CH.pending = true; return; } CH.loading = true;
+  try {
+    const [j0, t] = await Promise.all([chFetchWeek(0), api('/settings/chest-target')]);
+    const j = CH.offset === 0 ? j0 : await chFetchWeek(CH.offset);      // week shown in the table
+    if (t && t.success) CH.target = t.target;
+    CH.players = j.data.players || []; CH.cats = j.data.categories || [];
+    CH.nextRefresh = j.nextRefresh || Date.now() + 6e4; CH.fetchedAt = j.fetchedAt || Date.now();
+    CH.stale = !!j.stale; CH.weekStart = j.weekStart; CH.weekEnd = j.weekEnd;
+    chBuildCols(); CH.ok = true; CH.err = ''; CH.prevOffset = CH.offset;
+    try { CH.month = await chBuildMonth(j0.data.players || []); } catch (e) { CH.month = []; }
+  } catch (e) {
+    CH.nextRefresh = Date.now() + 6e4;
+    if (!CH.ok) CH.err = 'Could not load chest data: ' + e.message;
+    else if (CH.offset !== CH.prevOffset) { CH.offset = CH.prevOffset; toast('Could not load that week. Please try again.', 'err'); }
+  }
+  CH.loading = false;
+  renderMembers(); renderOverview();
+  if (CH.pending) { CH.pending = false; loadChests(); }
+}
+
+function chBuildCols() {          // sequence = counts.html, with Chests moved after Points
+  const cats = [...CH.cats], pretty = (s) => String(s).replace(/\b\w/g, c => c.toUpperCase());
+  CH.players.forEach(p => Object.keys(p).forEach(k => { if (p[k] && typeof p[k] === 'object' && !Array.isArray(p[k]) && 'chests' in p[k] && !cats.includes(k)) cats.push(k); }));
+  const cols = [
+    { key: 'name', label: 'Player', num: false, get: p => p.name || '' },
+    { key: 'percentage', label: '%', num: true, get: p => chPct(p) },
+    { key: 'points', label: 'Points', num: true, get: p => chN(p.points) },
+    { key: 'chests', label: 'Chests', num: true, get: p => chN(p.chests) }
+  ];
+  cats.forEach(c => { if (CH.players.some(p => chN(p[c] && p[c].chests) > 0)) cols.push({ key: 'cat:' + c, label: pretty(c), num: true, get: p => chN(p[c] && p[c].chests) }); });
+  if (CH.players.some(p => chN(p.penalty) !== 0)) cols.push({ key: 'penalty', label: 'Penalty', num: true, get: p => chN(p.penalty) });
+  cols.push({ key: 'guardsLevel', label: 'Guard Lvl', num: true, get: p => chN(p.guardsLevel) });
+  CH.cols = cols;
+}
+
+const chBars = (arr) => arr.length ? arr.map(m => `<div class="bar-row"><span>${esc(m.name)}</span><div class="bar"><div style="width:${(m.points / (arr[0].points || 1) * 100).toFixed(1)}%"></div></div><span>${chCompact(m.points)}</span></div>`).join('')
+  : '<p class="muted">No data yet.</p>';
+
+function chRenderTable() {
+  if (!CH.cols.length) return;
+  let list = CH.players.filter(p => (!CH.q || (p.name + ' ' + (p.aliases || []).join(' ')).toLowerCase().includes(CH.q)) && (!CH.hideZero || chN(p.chests) > 0));
+  const sc = CH.cols.find(c => c.key === CH.sortKey) || CH.cols[2];
+  list = [...list].sort((a, b) => { const x = sc.get(a), y = sc.get(b);
+    return (sc.num ? x - y : String(x).localeCompare(String(y), undefined, { numeric: true, sensitivity: 'base' })) * CH.sortDir || chN(b.points) - chN(a.points); });
+  const medals = ['🥇', '🥈', '🥉'];
+  const head = '<thead><tr><th style="text-align:center">#</th>' + CH.cols.map(c => `<th data-k="${escA(c.key)}" class="${c.num ? 'num' : ''}">${esc(c.label)}${CH.sortKey === c.key ? (CH.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead>';
+  const body = list.map((p, i) => {
+    const pct = chPct(p), col = CH_COL[chColor(pct)];
+    const cells = CH.cols.map(c => {
+      const v = c.get(p);
+      if (c.key === 'name') return `<td style="font-weight:600;color:${col}">${esc(v)}${(p.aliases || []).length ? `<span class="chalias">aka ${esc(p.aliases.join(', '))}</span>` : ''}</td>`;
+      if (c.key === 'percentage') return `<td class="num" style="font-weight:600;color:${col}">${Math.round(pct)}%</td>`;
+      if (c.key === 'points') return `<td class="num"><div class="chbar"><div class="chfill" style="width:${Math.min(100, Math.max(0, pct))}%;background:${col}"></div><span>${chCompact(v)} / ${chCompact(CH.target)}</span></div></td>`;
+      return `<td class="num"${v === 0 && c.key.startsWith('cat:') ? ' style="opacity:.5"' : ''}>${v === 0 && c.key.startsWith('cat:') ? '–' : fmt(v)}</td>`;
+    }).join('');
+    const rank = (!CH.q && CH.sortDir < 0 && sc.num && i < 3) ? medals[i] : i + 1;
+    return `<tr${chN(p.chests) === 0 ? ' style="opacity:.55"' : ''}><td class="rank" style="text-align:center">${rank}</td>${cells}</tr>`;
+  }).join('');
+  const sum = (get) => list.reduce((s, p) => s + get(p), 0);
+  const foot = '<tfoot><tr><td>Σ</td>' + CH.cols.map(c => c.key === 'name' ? `<td>Total (${list.length})</td>`
+    : c.key === 'guardsLevel' ? '<td></td>'
+    : c.key === 'percentage' ? `<td class="num">${list.length ? Math.round(sum(p => chN(p.points)) / (Math.max(1, CH.target) * list.length) * 100) : 0}%</td>`
+    : c.key === 'points' ? `<td class="num">${chCompact(sum(c.get))}</td>` : `<td class="num">${fmt(sum(c.get))}</td>`).join('') + '</tr></tfoot>';
+  $('chTable').innerHTML = head + '<tbody>' + (body || `<tr><td colspan="${CH.cols.length + 1}" class="muted">No players found.</td></tr>`) + '</tbody>' + foot;
+}
+
+function chRenderWeekNav() {                      // week label + button states (works before data arrives)
+  const start = chLastReset(Date.now()) - CH.offset * CH_WEEK, end = start + CH_WEEK;
+  const wl = CH.offset === 0 ? 'Current week' : CH.offset === 1 ? 'Last week' : CH.offset + ' weeks ago';
+  const fd = (ms) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const set = (id, t) => { const el = $(id); if (el) el.textContent = t; };
+  set('chWeekLabel', wl + ' · ' + fd(start) + ' → ' + fd(end) + ' (17:00 UTC)');
+  set('chWeekTag', '(' + wl.toLowerCase() + ')');
+  [['chPrev', CH.offset >= 26], ['chCur', CH.offset === 0], ['chNext', CH.offset === 0]].forEach(([id, d]) => { const el = $(id); if (el) el.disabled = d; });
+}
+function chGo(o) {
+  CH.prevOffset = CH.offset; CH.offset = Math.max(0, Math.min(26, o));
+  chRenderWeekNav();
+  if ($('chTable')) $('chTable').style.opacity = '.45';        // loading feedback
+  loadChests();
+}
+
+function renderMembers() {                       // Clan Chests page
+  if (!$('chTable')) return;
+  chRenderWeekNav(); $('chTable').style.opacity = '';
+  if (!CH.ok) { $('chStats').innerHTML = ''; $('chTable').innerHTML = `<tr><td class="muted">${esc(CH.err || 'Loading chest data...')}</td></tr>`; return; }
+  const ps = CH.players;
+  $('chStats').innerHTML = [
+    ['fa-users', '#0078d4', fmt(ps.length), 'Total Members'],
+    ['fa-bullseye', '#d9a400', fmt(CH.target), 'Required Chests / Week'],
+    ['fa-box-open', '#28a745', fmt(ps.reduce((s, p) => s + chN(p.chests), 0)), 'Total Chests Collected'],
+    ['fa-star', '#7c4dbd', fmt(ps.reduce((s, p) => s + chN(p.points), 0)), 'Total Points Collected']
+  ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div><div><b>${v}</b><span>${l}</span></div></div>`).join('');
+  $('chTopWeek').innerHTML = chBars([...ps].sort((a, b) => chN(b.points) - chN(a.points)).slice(0, 5).map(p => ({ name: p.name, points: chN(p.points) })));
+  $('chMonthName').textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  $('chTopMonth').innerHTML = chBars(CH.month);
+  if (document.activeElement !== $('chTargetInput')) $('chTargetInput').value = CH.target;
+  $('chStatus').textContent = 'Data updated: ' + new Date(CH.fetchedAt).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' }) + (CH.stale ? ' (showing last saved data)' : '');
+  chRenderTable();
+}
+
+function chTick() {
+  const s = Math.max(0, Math.floor((chNextReset() - Date.now()) / 1000)), p = (x) => String(x).padStart(2, '0');
+  const t = (s >= 86400 ? Math.floor(s / 86400) + 'd ' : '') + p(Math.floor(s % 86400 / 3600)) + ':' + p(Math.floor(s % 3600 / 60)) + ':' + p(s % 60);
+  if ($('chTimer')) { $('chTimer').textContent = t; $('chResetAt').textContent = new Date(chNextReset()).toUTCString().slice(5, 22) + ' UTC'; }
+  if (CH.ok && !CH.loading && Date.now() >= CH.nextRefresh + 3000) loadChests();
+}
+
+function initChests() {
+  $('chSearch').oninput = (e) => { CH.q = e.target.value.trim().toLowerCase(); chRenderTable(); };
+  $('chHide').onchange = (e) => { CH.hideZero = e.target.checked; chRenderTable(); };
+  document.addEventListener('click', (e) => {              // week buttons
+    const b = e.target.closest('#chPrev, #chCur, #chNext'); if (!b || b.disabled) return;
+    chGo(b.id === 'chPrev' ? CH.offset + 1 : b.id === 'chNext' ? CH.offset - 1 : 0);
+  });
+  chRenderWeekNav();
+  $('chTable').onclick = (e) => {
+    const th = e.target.closest('th[data-k]'); if (!th) return;
+    const c = CH.cols.find(x => x.key === th.dataset.k); if (!c) return;
+    CH.sortDir = CH.sortKey === c.key ? -CH.sortDir : (c.num ? -1 : 1); CH.sortKey = c.key; chRenderTable();
+  };
+  if (isSuper()) {
+    $('chTargetBox').style.display = '';
+    $('chTargetSave').onclick = async () => {
+      const t = parseInt($('chTargetInput').value, 10);
+      if (!(t >= 1 && t <= 10000000)) return toast('Enter a number between 1 and 10,000,000.', 'err');
+      $('chTargetSave').disabled = true;
+      const r = await api('/settings/chest-target', 'PUT', { target: t });
+      $('chTargetSave').disabled = false;
+      if (r.success) { CH.target = t; toast('Weekly target saved', 'ok'); renderMembers(); renderOverview(); } else toast(r.error || 'Failed', 'err');
+    };
+  }
+  setInterval(chTick, 1000); chTick(); loadChests();
+}
+
+
   
 function startApp() {
   const name = currentUser.name || currentUser.email.split('@')[0];
@@ -1702,7 +1988,7 @@ function startApp() {
   $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
   applyPermissions();
   renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies(); renderCheatSheets();
-  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents();
+  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents(); initChests();
 
   document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
   $('nav').addEventListener('click', (e) => {
