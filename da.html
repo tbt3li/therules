@@ -371,6 +371,11 @@ a.chip{text-decoration:none;display:inline-block}
 .top-alert{animation:blink 0.5s ease-in-out infinite}
 @keyframes blink{50%{opacity:.45}}
 /* Updating website on daily basis end */
+
+.calc-btn{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);text-decoration:none;transition:.15s}
+.calc-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
+.calc-btn b{display:block;font-size:15px}.calc-btn small{color:var(--muted);font-size:12.5px}
+.ci{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--accent))}
   
 </style>
 </head>
@@ -395,11 +400,11 @@ a.chip{text-decoration:none;display:inline-block}
       <a href="#events" data-s="events" class="sub"><i class="fas fa-calendar-days"></i> Calendar</a>
       <a href="#eventlist" data-s="eventlist" class="sub"><i class="fas fa-flag"></i> All Events</a>
       <a href="#members" data-s="members"><i class="fas fa-users"></i> Clan Chests</a>
+       <a href="#chestdefs" data-s="chestdefs" class="sub"><i class="fas fa-list-ol"></i> Chest Definitions</a>
       <div class="nav-label">Premium Resources</div>
       <a href="#tutorials" data-s="tutorials"><i class="fas fa-graduation-cap"></i> Premium Tutorials</a>
       <a href="#loadouts" data-s="loadouts"><i class="fas fa-shield-halved"></i> Equipment Loadouts</a>
       <a href="#strategies" data-s="strategies"><i class="fas fa-chess"></i> Pro Strategies</a>
-      <a href="#cheatsheets" data-s="cheatsheets"><i class="fas fa-file-lines"></i> Cheat Sheets</a>
       <a href="#guides" data-s="guides"><i class="fas fa-book-open"></i> Game Guides</a>
       <div class="nav-label">Tools</div>
       <a href="#checklist" data-s="checklist"><i class="fas fa-list-check"></i> Daily Checklist</a>
@@ -573,6 +578,18 @@ a.chip{text-decoration:none;display:inline-block}
         </div>
       </section>
 
+      <section class="section" id="s-chestdefs">
+        <div class="page-head"><h1>📖 Chest Definitions</h1><p>Chest types, levels and points. Maintained by the Super Admin.</p></div>
+        <div class="chips"><a class="chip" href="#members">Clan Chests</a><a class="chip active" href="#chestdefs">Chest Definitions</a></div>
+        <div class="chips" id="cdGroups"></div>
+        <div class="toolbar">
+          <input class="input" id="cdSearch" placeholder="Search type or name...">
+          <button class="btn" id="cdAdd" style="display:none"><i class="fas fa-plus"></i> Add chest</button>
+          <button class="btn outline" id="cdBulk" style="display:none"><i class="fas fa-table-list"></i> Bulk add</button>
+        </div>
+        <div class="card"><div class="table-wrap"><table id="cdTable"></table></div></div>
+      </section>
+      
       <!-- CHECKLIST -->
       <section class="section" id="s-checklist">
         <div class="page-head"><h1>✅ Daily &amp; Weekly Checklist</h1><p>Your progress is saved on this device. Dailies reset at 00:00 UTC, weeklies on Monday.</p></div>
@@ -584,27 +601,10 @@ a.chip{text-decoration:none;display:inline-block}
 
       <!-- TOOLS -->
       <section class="section" id="s-tools">
-        <div class="page-head"><h1>🧮 Calculators</h1><p>Handy tools for planning upgrades and resources.</p></div>
-        <div class="grid g2">
-          <div class="card">
-            <h3><i class="fas fa-hourglass-half"></i> Time with Speed Bonus</h3>
-            <p class="muted" style="font-size:13px">Enter the base duration and your total speed bonus to see the real time.</p>
-            <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:10px">
-              <div><label class="l">Days</label><input type="number" min="0" class="input" id="tcD" value="0"></div>
-              <div><label class="l">Hours</label><input type="number" min="0" class="input" id="tcH" value="0"></div>
-              <div><label class="l">Minutes</label><input type="number" min="0" class="input" id="tcM" value="0"></div>
-            </div>
-            <label class="l">Speed bonus (%)</label><input type="number" min="0" class="input" id="tcB" value="0">
-            <div class="result" id="tcRes">Enter a duration above.</div>
-          </div>
-          <div class="card">
-            <h3><i class="fas fa-boxes-stacked"></i> Resource Gap Planner</h3>
-            <p class="muted" style="font-size:13px">See how much you still need to gather.</p>
-            <div class="table-wrap"><table id="rgTable"></table></div>
-            <div class="result" id="rgRes"></div>
-          </div>
-        </div>
+        <div class="page-head"><h1>🧮 Calculators</h1><p>Pick a calculator. Each one has its own page link.</p></div>
+        <div class="grid g3" id="calcGrid"></div>
       </section>
+      <div id="calcPages"></div>
 
       <!-- RULES -->
       <section class="section" id="s-rules">
@@ -612,9 +612,9 @@ a.chip{text-decoration:none;display:inline-block}
         <div class="grid g2">
           <div class="card"><h3><i class="fas fa-gavel"></i> Clan Rules</h3><ul class="list" id="ruleList"></ul></div>
           <div class="grid" style="align-content:start">
-           <div class="card"><h3><i class="fab fa-discord"></i> Join the Discord</h3>
-              <p class="muted" style="margin-bottom:14px">Coordinate attacks, ask questions and get notified about events.</p>
-              <a class="btn" id="discordLink" target="_blank" rel="noopener">Open Discord</a></div>
+           <div class="card"><h3><i class="fas fa-envelope"></i> Contact Us</h3>
+              <p class="muted" style="margin-bottom:14px">Questions, feedback or need help? Send us a message on the website.</p>
+              <a class="btn" href="/contact" target="_blank" rel="noopener">Contact</a></div>
             <div class="card"><h3><i class="fas fa-headset"></i> Need Help?</h3>
               <p class="muted">Contact the clan leader <b>WOLFICH</b> or <b>T3li</b> in-game or <a href="https://thefamily.pages.dev/contact" target="_blank">Contact us</a> page, role requests or password resets.</p></div>
           </div>
@@ -631,7 +631,6 @@ a.chip{text-decoration:none;display:inline-block}
               <li><i class="fas fa-envelope"></i><div><b>Email</b><br><span class="muted" id="accEmail">-</span></div></li>
               <li><i class="fas fa-at"></i><div><b>Username</b><br><span class="muted" id="accUser">-</span></div></li>
               <li><i class="fas fa-shield-halved"></i><div><b>Role</b><br><span id="accRole">-</span></div></li>
-              <li><i class="fas fa-hashtag"></i><div><b>Member ID</b><br><span class="muted" id="accId">-</span></div></li>
               <li><i class="fas fa-calendar-check"></i><div><b>Member since</b><br><span class="muted" id="accSince">-</span></div></li>
             </ul>
             <button class="btn danger" id="logoutBtn" style="margin-top:14px"><i class="fas fa-right-from-bracket"></i> Logout</button>
@@ -930,7 +929,7 @@ const sortedEvents = () => CONTENT.events.map(e => ({ ...e, next: nextOccurrence
    4. NAVIGATION / THEME
    ===================================================================== */
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
-  cheatsheets:'Cheat Sheets', events:'Events & Calendar', members:'Clan Chests', checklist:'Daily Checklist', tools:'Calculators',
+  events:'Events & Calendar', members:'Clan Chests', checklist:'Daily Checklist', tools:'Calculators',
   rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights', guides:'Game Guides', guideadmin:'Manage Guides', eventlist:'All Events', eventadmin:'Manage Events' };
 
 function showSection(name) {
@@ -941,7 +940,7 @@ function showSection(name) {
     name = 'overview';
   }
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
-  document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('active', a.dataset.s === name));
+  document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('active', a.dataset.s === (name.startsWith('calc-') ? 'tools' : name)));
   $('pageTitle').textContent = TITLES[name];
   closeMenu();
   window.scrollTo({ top: 0 });
@@ -1143,7 +1142,6 @@ function renderTools() {
 
 function renderRules() {
   $('ruleList').innerHTML = CONTENT.rules.map((r, i) => `<li><i class="fas fa-circle-${i + 1 <= 50 ? 'check' : 'dot'}"></i><div>${esc(r)}</div></li>`).join('');
-  $('discordLink').href = CONTENT.clan.discord;
 }
 
 function renderAccount() {
@@ -1152,7 +1150,6 @@ function renderAccount() {
   $('accUser').textContent = u.username || '-';
   $('accRole').innerHTML = roleBadgeRaw(u.roleLabel || u.role, u.roleColor);
   $('accEmail').textContent = u.email;
-  $('accId').textContent = '#' + u.id;
   let since = '-';
   if (u.createdAt) { const d = new Date(String(u.createdAt).replace(' ', 'T') + 'Z'); if (!isNaN(d)) since = d.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' }); }
   $('accSince').textContent = since;
@@ -1774,7 +1771,7 @@ async function refreshAll() {
     $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
     $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
     applyPermissions(); renderAccount();
-    const jobs = [loadGuides(), loadEvents(), loadChests()];
+    const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
     if (isAdmin()) jobs.push(loadAdmin());               // users, online status, menu rights
     if (isSuper()) jobs.push(loadGuideAdmin());
     await Promise.all(jobs);
@@ -1975,6 +1972,164 @@ function initChests() {
   setInterval(chTick, 1000); chTick(); loadChests();
 }
 
+/* =====================================================================
+   5f. CHEST DEFINITIONS + CALCULATORS
+   Paste ABOVE "function startApp() {" and BELOW the events/chests blocks.
+   ===================================================================== */
+PERM_OF.chestdefs = 'members';                     // sub menu uses the Clan Chests right
+
+/* ---------- Chest Definitions ---------- */
+const CD = { groups: [], defs: [], grp: '', q: '', ok: false, err: '' };
+
+async function loadChestDefs() {
+  const r = await api('/chest-defs');
+  if (r.success) { CD.groups = r.groups; CD.defs = r.defs; CD.ok = true; CD.err = ''; } else CD.err = r.error || 'Could not load chest definitions.';
+  renderChestDefs();
+  if (location.hash === '#calc-chestpoints') calcMount(CALCS.find(c => c.id === 'chestpoints'));
+}
+function renderChestDefs() {
+  if (!$('cdTable')) return;
+  if (!CD.ok) { $('cdGroups').innerHTML = ''; $('cdTable').innerHTML = `<tr><td class="muted">${esc(CD.err || 'Loading...')}</td></tr>`; return; }
+  const sup = isSuper(), cols = sup ? 6 : 5;
+  const groups = [...new Set([...CD.groups, ...CD.defs.map(d => d.grp)])];
+  $('cdGroups').innerHTML = `<button class="chip ${CD.grp ? '' : 'active'}" data-g="">All (${CD.defs.length})</button>` +
+    groups.map(g => `<button class="chip ${CD.grp === g ? 'active' : ''}" data-g="${escA(g)}">${esc(g)} (${CD.defs.filter(d => d.grp === g).length})</button>`).join('');
+  const list = CD.defs.filter(d => (!CD.grp || d.grp === CD.grp) && (d.type + ' ' + d.name).toLowerCase().includes(CD.q));
+  let html = '<tr><th>Sr#</th><th>Type</th><th>Name</th><th>Level</th><th>Points</th>' + (sup ? '<th></th>' : '') + '</tr>';
+  const shown = groups.filter(g => list.some(d => d.grp === g));
+  shown.forEach(g => {
+    html += `<tr><td colspan="${cols}" style="background:var(--input);font-weight:700;color:var(--primary)">${esc(g)}</td></tr>`;
+    list.filter(d => d.grp === g).forEach((d, i) => {
+      html += `<tr><td class="muted">${i + 1}</td><td>${esc(d.type)}</td><td><b>${esc(d.name)}</b></td><td>${d.level}</td><td>${fmt(d.points)}</td>` +
+        (sup ? `<td><div class="act"><button class="mini" data-act="edit" data-id="${d.id}" title="Edit"><i class="fas fa-pen"></i></button><button class="mini bad" data-act="del" data-id="${d.id}" title="Delete"><i class="fas fa-trash"></i></button></div></td>` : '') + '</tr>';
+    });
+  });
+  if (!shown.length) html += `<tr><td colspan="${cols}" class="muted">No chest definitions yet.</td></tr>`;
+  $('cdTable').innerHTML = html;
+}
+function initChestDefs() {
+  $('cdSearch').oninput = (e) => { CD.q = e.target.value.toLowerCase(); renderChestDefs(); };
+  $('cdGroups').onclick = (e) => { const b = e.target.closest('.chip'); if (b) { CD.grp = b.dataset.g; renderChestDefs(); } };
+  if (isSuper()) {
+    $('cdAdd').style.display = ''; $('cdBulk').style.display = '';
+    $('cdAdd').onclick = () => openDefModal(null);
+    $('cdBulk').onclick = openBulkModal;
+    $('cdTable').onclick = async (e) => {
+      const b = e.target.closest('[data-act]'); if (!b) return;
+      const d = CD.defs.find(x => x.id === +b.dataset.id); if (!d) return;
+      if (b.dataset.act === 'edit') return openDefModal(d);
+      if (!confirm('Delete "' + d.name + '" (level ' + d.level + ')?')) return;
+      const r = await api('/chest-defs/' + d.id, 'DELETE');
+      toast(r.success ? 'Chest deleted' : (r.error || 'Failed'), r.success ? 'ok' : 'err'); loadChestDefs();
+    };
+  }
+  loadChestDefs();
+}
+const cdGroupList = () => `<datalist id="cd_groups">${[...new Set([...CD.groups, ...CD.defs.map(d => d.grp)])].map(g => `<option value="${escA(g)}">`).join('')}</datalist>`;
+function openDefModal(d) {
+  d = d || { id: 0, grp: CD.grp || '', type: '', name: '', level: 1, points: 0 };
+  const types = [...new Set(CD.defs.map(x => x.type))];
+  $('modal').classList.remove('wide');
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    <h2>${d.id ? 'Edit chest' : 'Add chest'}</h2>
+    <label class="l">Group (pick one or type a new group)</label><input class="input" id="cm_g" list="cd_groups" maxlength="40" value="${escA(d.grp)}">${cdGroupList()}
+    <label class="l">Type</label><input class="input" id="cm_t" list="cd_types" maxlength="40" value="${escA(d.type)}"><datalist id="cd_types">${types.map(t => `<option value="${escA(t)}">`).join('')}</datalist>
+    <label class="l">Name</label><input class="input" id="cm_n" maxlength="60" value="${escA(d.name)}">
+    <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px"><div><label class="l">Level</label><input class="input" type="number" min="0" id="cm_l" value="${+d.level}"></div>
+    <div><label class="l">Points</label><input class="input" type="number" min="0" id="cm_p" value="${+d.points}"></div></div>
+    <div style="display:flex;gap:10px;margin-top:18px"><button class="btn" id="cm_save">Save</button><button class="btn outline" onclick="closeModal()">Cancel</button></div>`;
+  $('modalBg').classList.add('show');
+  $('cm_save').onclick = async () => {
+    const body = { grp: $('cm_g').value, type: $('cm_t').value, name: $('cm_n').value, level: $('cm_l').value, points: $('cm_p').value };
+    $('cm_save').disabled = true;
+    const r = d.id ? await api('/chest-defs/' + d.id, 'PATCH', body) : await api('/chest-defs', 'POST', body);
+    $('cm_save').disabled = false;
+    if (r.success) { toast('Chest saved', 'ok'); closeModal(); loadChestDefs(); } else toast(r.error || 'Failed', 'err');
+  };
+}
+function openBulkModal() {
+  $('modal').classList.remove('wide');
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    <h2>Bulk add chests</h2>
+    <p class="muted" style="font-size:13px">One chest per line: <b>Type, Name, Level, Points</b>. Separate with a comma, semicolon or tab (you can paste straight from Excel). Do not use thousands separators in the points.</p>
+    <label class="l">Group</label><input class="input" id="bk_g" list="cd_groups" maxlength="40" value="${escA(CD.grp)}">${cdGroupList()}
+    <label class="l">Rows</label><textarea class="input codebox" id="bk_rows" spellcheck="false" style="min-height:220px" placeholder="Crypt, Common Crypt Chest, 1, 100&#10;Crypt, Common Crypt Chest, 2, 150"></textarea>
+    <div style="display:flex;gap:10px;margin-top:18px"><button class="btn" id="bk_save">Add all</button><button class="btn outline" onclick="closeModal()">Cancel</button></div>`;
+  $('modalBg').classList.add('show');
+  $('bk_save').onclick = async () => {
+    const rows = $('bk_rows').value.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const p = l.split(/\t|;|,/).map(x => x.trim()); return { type: p[0], name: p[1], level: p[2], points: p[3] }; });
+    $('bk_save').disabled = true;
+    const r = await api('/chest-defs/bulk', 'POST', { grp: $('bk_g').value, rows });
+    $('bk_save').disabled = false;
+    if (r.success) { toast(r.added + ' chests added', 'ok'); closeModal(); loadChestDefs(); } else toast(r.error || 'Failed', 'err');
+  };
+}
+
+/* ---------- Calculators (each one has its own page: #calc-name) ---------- */
+const cF = (id, label, val = 0) => `<div><label class="l">${label}</label><input type="number" min="0" class="input" id="${id}" value="${val}"></div>`;
+const cN = (id) => +document.getElementById(id).value || 0;
+const cDur = (m) => { m = Math.max(0, Math.round(m)); const d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60); return (d ? d + 'd ' : '') + h + 'h ' + (m % 60) + 'm'; };
+const cDHM = (p) => `<div class="grid" style="grid-template-columns:repeat(3,1fr);gap:10px">${cF(p + 'd', 'Days')}${cF(p + 'h', 'Hours')}${cF(p + 'm', 'Minutes')}</div>`;
+const cMin = (p) => cN(p + 'd') * 1440 + cN(p + 'h') * 60 + cN(p + 'm');
+const SPEEDUPS = [['1 min', 1], ['5 min', 5], ['10 min', 10], ['15 min', 15], ['30 min', 30], ['1 hour', 60], ['3 hours', 180], ['8 hours', 480], ['15 hours', 900], ['24 hours', 1440]];
+
+const CALCS = [
+  { id: 'speed', title: 'Speed Bonus Time', icon: 'fa-hourglass-half', desc: 'Real duration with your speed bonus',
+    html: () => cDHM('c1') + cF('c1b', 'Speed bonus (%)'),
+    run: () => { const base = cMin('c1'), b = cN('c1b'); if (base <= 0) return 'Enter a duration above.';
+      const real = base / (1 + b / 100); return `Real time: <b>${cDur(real)}</b><br><span class="muted">You save ${cDur(base - real)} (${(100 - 100 / (1 + b / 100)).toFixed(1)}% faster).</span>`; } },
+  { id: 'gap', title: 'Resource Gap Planner', icon: 'fa-boxes-stacked', desc: 'How much you still need to gather',
+    html: () => `<div class="table-wrap"><table><tr><th>Resource</th><th>Needed</th><th>You have</th></tr>${CONTENT.resources.map((r, i) =>
+      `<tr><td><b>${esc(r)}</b></td><td><input type="number" min="0" class="input" id="c2n${i}" placeholder="0" style="min-width:110px"></td><td><input type="number" min="0" class="input" id="c2h${i}" placeholder="0" style="min-width:110px"></td></tr>`).join('')}</table></div>`,
+    run: () => CONTENT.resources.map((r, i) => { const g = cN('c2n' + i) - cN('c2h' + i); return esc(r) + ': ' + (g > 0 ? `<b>${fmt(g)}</b> still needed` : '<span style="color:var(--ok)">enough ✔</span>'); }).join('<br>') },
+  { id: 'speedups', title: 'Speed-up Items', icon: 'fa-bolt', desc: 'Total time of your speed-up items',
+    html: () => `<div class="grid g4" style="gap:10px">${SPEEDUPS.map(([l], i) => cF('c3_' + i, l)).join('')}</div><h4 style="margin:16px 0 4px">Time you need (optional)</h4>${cDHM('c3')}`,
+    run: () => { const total = SPEEDUPS.reduce((s, [, v], i) => s + cN('c3_' + i) * v, 0), need = cMin('c3');
+      return `Total speed-up: <b>${cDur(total)}</b>` + (need ? (total >= need ? `<br><span style="color:var(--ok)">Enough, ${cDur(total - need)} left over ✔</span>` : `<br>Still missing <b>${cDur(need - total)}</b>`) : ''); } },
+  { id: 'finish', title: 'Finish Date & Time', icon: 'fa-calendar-check', desc: 'When will an upgrade or training finish?',
+    html: () => cDHM('c4') + cF('c4b', 'Speed bonus (%)'),
+    run: () => { const base = cMin('c4'); if (base <= 0) return 'Enter a duration above.';
+      const real = base / (1 + cN('c4b') / 100), end = new Date(Date.now() + real * 6e4);
+      return `Takes <b>${cDur(real)}</b><br>Finishes (UTC): <b>${end.toUTCString().slice(0, 22)}</b><br>Finishes (your time): <b>${end.toLocaleString([], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</b><br><span class="muted">Counted from the moment you last changed a number.</span>`; } },
+  { id: 'chestpoints', title: 'Chest Points', icon: 'fa-box-open', desc: 'Points from the chests you collected', lazy: true,
+    html: () => !CD.defs.length ? '<p class="muted">No chest definitions yet. The Super Admin adds them under Clan Chests → Chest Definitions.</p>'
+      : `<div class="table-wrap"><table><tr><th>Group</th><th>Type</th><th>Name</th><th>Lvl</th><th>Pts</th><th>Qty</th></tr>${CD.defs.map(d =>
+        `<tr><td class="muted">${esc(d.grp)}</td><td>${esc(d.type)}</td><td>${esc(d.name)}</td><td>${d.level}</td><td>${fmt(d.points)}</td><td><input type="number" min="0" class="input c5q" data-p="${d.points}" value="0" style="width:90px"></td></tr>`).join('')}</table></div>`,
+    run: () => { let ch = 0, pts = 0; document.querySelectorAll('.c5q').forEach(i => { const q = +i.value || 0; ch += q; pts += q * (+i.dataset.p); });
+      return `Chests: <b>${fmt(ch)}</b> · Points: <b>${fmt(pts)}</b><br><span class="muted">${(pts / Math.max(1, CH.target) * 100).toFixed(1)}% of the weekly target (${fmt(CH.target)})</span>`; } },
+  { id: 'target', title: 'Weekly Target Planner', icon: 'fa-bullseye', desc: 'How many points per day to reach the target', lazy: true,
+    html: () => cF('c6p', 'Points you have now') + cF('c6t', 'Weekly target (points)', CH.target) + cF('c6d', 'Days left until reset', ((chNextReset() - Date.now()) / 864e5).toFixed(1)),
+    run: () => { const p = cN('c6p'), t = cN('c6t'), d = cN('c6d'), left = Math.max(0, t - p);
+      return `Progress: <b>${t ? Math.min(100, p / t * 100).toFixed(1) : 0}%</b><br>Still needed: <b>${fmt(left)}</b>` +
+        (d > 0 && left > 0 ? `<br>Per day: <b>${fmt(Math.ceil(left / d))}</b> · Per hour: <b>${fmt(Math.ceil(left / (d * 24)))}</b>` : left === 0 ? '<br><span style="color:var(--ok)">Target reached ✔</span>' : ''); } },
+  { id: 'haul', title: 'Troop Haul', icon: 'fa-truck', desc: 'How many trips to carry your resources',
+    html: () => cF('c7t', 'Troops in the march') + cF('c7l', 'Carry capacity per troop') + cF('c7n', 'Resources to move'),
+    run: () => { const cap = cN('c7t') * cN('c7l'), need = cN('c7n'); if (cap <= 0) return 'Enter troops and carry capacity.';
+      return `Capacity per trip: <b>${fmt(cap)}</b><br>Trips needed: <b>${need > 0 ? fmt(Math.ceil(need / cap)) : 0}</b>`; } },
+  { id: 'xp', title: 'XP Items', icon: 'fa-star', desc: 'How many XP items a hero or captain needs',
+    html: () => cF('c8c', 'Current XP') + cF('c8t', 'Target XP') + cF('c8i', 'XP per item') + cF('c8o', 'Items you own'),
+    run: () => { const need = Math.max(0, cN('c8t') - cN('c8c')), per = cN('c8i'), own = cN('c8o'); if (per <= 0) return 'Enter the XP value of one item.';
+      const items = Math.ceil(need / per); return `XP needed: <b>${fmt(need)}</b><br>Items required: <b>${fmt(items)}</b><br>` + (own >= items ? '<span style="color:var(--ok)">You have enough ✔</span>' : `Missing <b>${fmt(items - own)}</b> items`); } }
+];
+
+function calcMount(c) {
+  const box = $('cp-' + c.id); if (!box) return;
+  box.innerHTML = c.html() + `<div class="result" id="cr-${c.id}"></div>`;
+  const out = () => { $('cr-' + c.id).innerHTML = c.run(); };
+  box.oninput = out; out();
+}
+function renderTools() {                                   // replaces the old two-card calculators page
+  if (!$('calcGrid')) return;
+  $('calcGrid').innerHTML = CALCS.map(c => `<a class="calc-btn" href="#calc-${c.id}"><span class="ci"><i class="fas ${c.icon}"></i></span><span><b>${esc(c.title)}</b><small>${esc(c.desc)}</small></span></a>`).join('');
+  const host = $('calcPages'); host.innerHTML = '';
+  CALCS.forEach(c => {
+    TITLES['calc-' + c.id] = c.title; PERM_OF['calc-' + c.id] = 'tools';
+    const s = document.createElement('section'); s.className = 'section'; s.id = 's-calc-' + c.id;
+    s.innerHTML = `<div class="page-head"><p><a href="#tools">← All calculators</a></p><h1><i class="fas ${c.icon}" style="color:var(--primary)"></i> ${esc(c.title)}</h1><p>${esc(c.desc)}</p></div><div class="card" id="cp-${c.id}" style="max-width:760px"></div>`;
+    host.appendChild(s); calcMount(c);
+  });
+  window.addEventListener('hashchange', () => CALCS.filter(c => c.lazy && location.hash === '#calc-' + c.id).forEach(calcMount));
+}
 
   
 function startApp() {
@@ -1987,8 +2142,8 @@ function startApp() {
 
   $('heroRole').textContent = currentUser.roleLabel || currentUser.role;
   applyPermissions();
-  renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies(); renderCheatSheets();
-  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents(); initChests();
+  renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies();
+  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents(); initChests(); initChestDefs();
 
   document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
   $('nav').addEventListener('click', (e) => {
