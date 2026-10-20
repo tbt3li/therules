@@ -1966,16 +1966,33 @@ PERM_OF.chestdefs = 'members';                     // sub menu uses the Clan Che
 TITLES.chestdefs = 'Chest Definitions';            // without this entry the router sends you back to Overview
 
 function ensureChestDefsPage() {                   // creates the page itself if it is missing from the HTML
-  if ($('s-chestdefs')) return;
-  const s = document.createElement('section'); s.className = 'section'; s.id = 's-chestdefs';
-  s.innerHTML = `<div class="page-head"><h1>📖 Chest Definitions</h1><p>Chest types, levels and points. Maintained by the Super Admin.</p></div>
-    <div class="chips"><a class="chip" href="#members">Clan Chests</a><a class="chip active" href="#chestdefs">Chest Definitions</a></div>
-    <div class="chips" id="cdGroups"></div>
-    <div class="toolbar"><input class="input" id="cdSearch" placeholder="Search type or name...">
-      <button class="btn" id="cdAdd" style="display:none"><i class="fas fa-plus"></i> Add chest</button>
-      <button class="btn outline" id="cdBulk" style="display:none"><i class="fas fa-table-list"></i> Bulk add</button></div>
-    <div class="card"><div class="table-wrap"><table id="cdTable"></table></div></div>`;
-  (document.querySelector('main.content') || document.querySelector('main')).appendChild(s);
+  if (!$('cdStyle')) {
+    const st = document.createElement('style'); st.id = 'cdStyle';
+    st.textContent = `.cdgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+      @media(max-width:1100px){.cdgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.cdgrid{grid-template-columns:1fr}}
+      .cdbox{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+      .cdbox h4{margin:0;padding:6px 10px;font-size:13px;background:var(--input);color:var(--primary);border-bottom:1px solid var(--border)}
+      .cdbox table{width:100%;border-collapse:collapse;font-size:12.5px}
+      .cdbox th,.cdbox td{padding:1px 6px;line-height:1.35;white-space:normal;border-bottom:1px solid var(--border);cursor:default}
+      .cdbox th{font-size:10.5px}.cdbox tr:last-child td{border-bottom:none}.cdbox td.n,.cdbox th.n{text-align:right;font-variant-numeric:tabular-nums}
+      .cdbox .mini{width:20px;height:20px;font-size:10px}.cdbox .act{gap:3px}`;
+    document.head.appendChild(st);
+  }
+  if (!$('s-chestdefs')) {
+    const s = document.createElement('section'); s.className = 'section'; s.id = 's-chestdefs';
+    s.innerHTML = `<div class="page-head"><h1>📖 Chest Definitions</h1><p>Chest types, levels and points. Maintained by the Super Admin.</p></div>
+      <div class="chips"><a class="chip" href="#members">Clan Chests</a><a class="chip active" href="#chestdefs">Chest Definitions</a></div>
+      <div class="chips" id="cdGroups"></div>
+      <div class="toolbar"><input class="input" id="cdSearch" placeholder="Search type, name or level...">
+        <button class="btn" id="cdAdd" style="display:none"><i class="fas fa-plus"></i> Add chest</button>
+        <button class="btn outline" id="cdBulk" style="display:none"><i class="fas fa-table-list"></i> Bulk add</button></div>
+      <div id="cdGrid" class="cdgrid"></div>`;
+    (document.querySelector('main.content') || document.querySelector('main')).appendChild(s);
+  }
+  if (!$('cdGrid') && $('cdTable')) {              // page was pasted earlier with the old single table: swap it
+    const g = document.createElement('div'); g.id = 'cdGrid'; g.className = 'cdgrid';
+    ($('cdTable').closest('.card') || $('cdTable')).replaceWith(g);
+  }
 }
 
 /* ---------- Chest Definitions ---------- */
@@ -1988,24 +2005,21 @@ async function loadChestDefs() {
   if (location.hash === '#calc-chestpoints') calcMount(CALCS.find(c => c.id === 'chestpoints'));
 }
 function renderChestDefs() {
-  if (!$('cdTable')) return;
-  if (!CD.ok) { $('cdGroups').innerHTML = ''; $('cdTable').innerHTML = `<tr><td class="muted">${esc(CD.err || 'Loading...')}</td></tr>`; return; }
-  const sup = isSuper(), cols = sup ? 6 : 5;
+  if (!$('cdGrid')) return;
+  if (!CD.ok) { $('cdGroups').innerHTML = ''; $('cdGrid').innerHTML = `<p class="muted">${esc(CD.err || 'Loading...')}</p>`; return; }
+  const sup = isSuper();
   const groups = [...new Set([...CD.groups, ...CD.defs.map(d => d.grp)])];
   $('cdGroups').innerHTML = `<button class="chip ${CD.grp ? '' : 'active'}" data-g="">All (${CD.defs.length})</button>` +
     groups.map(g => `<button class="chip ${CD.grp === g ? 'active' : ''}" data-g="${escA(g)}">${esc(g)} (${CD.defs.filter(d => d.grp === g).length})</button>`).join('');
-  const list = CD.defs.filter(d => (!CD.grp || d.grp === CD.grp) && (d.type + ' ' + d.name).toLowerCase().includes(CD.q));
-  let html = '<tr><th>Sr#</th><th>Type</th><th>Name</th><th>Level</th><th>Points</th>' + (sup ? '<th></th>' : '') + '</tr>';
-  const shown = groups.filter(g => list.some(d => d.grp === g));
-  shown.forEach(g => {
-    html += `<tr><td colspan="${cols}" style="background:var(--input);font-weight:700;color:var(--primary)">${esc(g)}</td></tr>`;
-    list.filter(d => d.grp === g).forEach((d, i) => {
-      html += `<tr><td class="muted">${i + 1}</td><td>${esc(d.type)}</td><td><b>${esc(d.name)}</b></td><td>${d.level}</td><td>${fmt(d.points)}</td>` +
-        (sup ? `<td><div class="act"><button class="mini" data-act="edit" data-id="${d.id}" title="Edit"><i class="fas fa-pen"></i></button><button class="mini bad" data-act="del" data-id="${d.id}" title="Delete"><i class="fas fa-trash"></i></button></div></td>` : '') + '</tr>';
-    });
+  const list = CD.defs.filter(d => (!CD.grp || d.grp === CD.grp) && (d.type + ' ' + d.name + ' ' + d.level).toLowerCase().includes(CD.q));
+  const boxes = groups.filter(g => list.some(d => d.grp === g)).map(g => {
+    const rows = list.filter(d => d.grp === g);
+    return `<div class="cdbox"><h4>${esc(g)} (${rows.length})</h4><table><tr><th>#</th><th>Type</th><th>Name-Level</th><th class="n">Points</th>${sup ? '<th></th>' : ''}</tr>` +
+      rows.map((d, i) => `<tr><td class="muted">${i + 1}</td><td>${esc(d.type)}</td><td><b>${esc(d.name)}-${d.level}</b></td><td class="n">${fmt(d.points)}</td>` +
+        (sup ? `<td><div class="act"><button class="mini" data-act="edit" data-id="${d.id}" title="Edit"><i class="fas fa-pen"></i></button><button class="mini bad" data-act="del" data-id="${d.id}" title="Delete"><i class="fas fa-trash"></i></button></div></td>` : '') + '</tr>').join('') +
+      '</table></div>';
   });
-  if (!shown.length) html += `<tr><td colspan="${cols}" class="muted">No chest definitions yet.</td></tr>`;
-  $('cdTable').innerHTML = html;
+  $('cdGrid').innerHTML = boxes.length ? boxes.join('') : '<p class="muted">No chest definitions yet.</p>';
 }
 function initChestDefs() {
   ensureChestDefsPage();
@@ -2015,7 +2029,7 @@ function initChestDefs() {
     $('cdAdd').style.display = ''; $('cdBulk').style.display = '';
     $('cdAdd').onclick = () => openDefModal(null);
     $('cdBulk').onclick = openBulkModal;
-    $('cdTable').onclick = async (e) => {
+    $('cdGrid').onclick = async (e) => {
       const b = e.target.closest('[data-act]'); if (!b) return;
       const d = CD.defs.find(x => x.id === +b.dataset.id); if (!d) return;
       if (b.dataset.act === 'edit') return openDefModal(d);
@@ -2131,6 +2145,7 @@ function renderTools() {                                   // replaces the old t
   });
   window.addEventListener('hashchange', () => CALCS.filter(c => c.lazy && location.hash === '#calc-' + c.id).forEach(calcMount));
 }
+
 
 
   
