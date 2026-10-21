@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post Editor</title>
+<link href="https://thefamily.pages.dev/editor/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script type="module" src="https://thefamily.pages.dev/editor/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<style>
+:root{--ink:#1d2433;--mute:#667085;--line:#d9dee7;--bg:#f3f5f9;--panel:#fff;--accent:#2457d6;--accent-soft:#e6edff}
+@media (prefers-color-scheme:dark){:root{--ink:#e7eaf1;--mute:#98a2b3;--line:#2f3748;--bg:#12151c;--panel:#1a1f2b;--accent:#7ea2ff;--accent-soft:#25304d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
+.app{max-width:1100px;margin:0 auto;padding:16px}
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.top h1{font-size:18px;margin:0;font-weight:650}
+.status{color:var(--mute);font-size:13px}
+.meta{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-bottom:8px}
+.meta input,.meta textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit}
+.meta .title{grid-column:1/-1;font-size:22px;font-weight:650}
+.meta textarea{grid-column:1/-1;resize:vertical;min-height:50px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tabs{display:flex;gap:2px;padding:6px 8px 0;border-bottom:1px solid var(--line);background:var(--bg)}
+.tab{border:0;background:none;color:var(--mute);padding:8px 14px;cursor:pointer;border-radius:6px 6px 0 0;font:inherit;font-weight:600}
+.tab[aria-selected=true]{background:var(--panel);color:var(--accent);box-shadow:inset 0 -2px var(--accent)}
+.tools{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:5}
+.grp{display:flex;gap:2px;padding-right:6px;margin-right:2px;border-right:1px solid var(--line);align-items:center}
+.grp:last-child{border:0}
+.tb{min-width:32px;height:32px;padding:0 8px;border:1px solid transparent;background:none;color:var(--ink);border-radius:5px;cursor:pointer;font:inherit;font-size:14px}
+.tb:hover{background:var(--accent-soft)}
+.tb.on{background:var(--accent-soft);border-color:var(--accent)}
+.tools select,.tools input[type=color]{height:32px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:inherit;font-size:13px}
+.tools input[type=color]{width:32px;padding:2px;cursor:pointer}
+.pane{display:none}.pane.show{display:block}
+#visual{min-height:480px;max-height:70vh;overflow:auto;padding:24px 28px;outline:none;line-height:1.7}
+#visual:empty:before{content:attr(data-ph);color:var(--mute)}
+#visual img,#visual video,#visual iframe{max-width:100%}
+#visual blockquote{border-left:4px solid var(--accent);margin:1em 0;padding:.2em 1em;color:var(--mute)}
+#visual pre{background:#1e2430;color:#e8ecf4;padding:14px;border-radius:6px;overflow:auto}
+#visual table{border-collapse:collapse;width:100%}
+#visual td,#visual th{border:1px solid var(--line);padding:8px}
+#visual .ratio{position:relative;padding-top:56.25%;margin:1em 0}
+#visual .ratio iframe{position:absolute;inset:0;width:100%;height:100%}
+#visual img.sel{outline:3px solid var(--accent)}
+#code{width:100%;min-height:480px;height:70vh;border:0;padding:16px;background:#1e2430;color:#e8ecf4;font:13px/1.6 ui-monospace,Consolas,monospace;resize:vertical;tab-size:2;outline:none}
+.pv-bar{display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--line);align-items:center}
+.pv-wrap{background:var(--bg);padding:12px;display:flex;justify-content:center}
+#preview{width:100%;height:70vh;border:1px solid var(--line);background:#fff;border-radius:6px;transition:width .2s}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:8px 12px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+.act{display:flex;gap:6px;flex-wrap:wrap}
+.btn2{padding:7px 12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;cursor:pointer;font:inherit;font-size:14px}
+.btn2:hover{border-color:var(--accent)}
+.btn2.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);padding:18px;width:min(440px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 12px;font-size:17px}
+dialog label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+dialog input,dialog select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+dialog .row{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.or{font-size:12px;color:var(--mute);margin:8px 0 0}
+@media(max-width:640px){.meta{grid-template-columns:1fr}#visual{padding:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <h1>Post editor</h1>
+    <div class="act">
+      <span class="status" id="status">Not saved yet</span>
+      <button class="btn2" id="btnNew">New</button>
+      <button class="btn2" id="btnImport">Import HTML</button>
+      <button class="btn2" id="btnCopy">Copy HTML</button>
+      <button class="btn2 pri" id="btnExport">Download .html</button>
+    </div>
+  </div>
+
+  <div class="meta">
+    <input class="title" id="title" placeholder="Post title">
+    <input id="slug" placeholder="url-slug">
+    <input id="tags" placeholder="Tags, comma separated">
+    <textarea id="excerpt" placeholder="Short excerpt / meta description"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="visual" aria-selected="true">Write</button>
+      <button class="tab" role="tab" data-tab="code" aria-selected="false">Code</button>
+      <button class="tab" role="tab" data-tab="preview" aria-selected="false">Preview</button>
+    </div>
+
+    <div class="pane show" id="pane-visual">
+      <div class="tools" id="tools">
+        <div class="grp">
+          <button class="tb" data-cmd="undo" title="Undo (Ctrl+Z)">↶</button>
+          <button class="tb" data-cmd="redo" title="Redo (Ctrl+Y)">↷</button>
+        </div>
+        <div class="grp">
+          <select id="block" title="Block style">
+            <option value="p">Paragraph</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option>
+            <option value="h3">Heading 3</option><option value="h4">Heading 4</option><option value="blockquote">Quote</option><option value="pre">Code block</option>
+          </select>
+          <select id="font" title="Font">
+            <option value="">Font</option><option>Georgia</option><option>Arial</option><option>Verdana</option><option>Trebuchet MS</option><option>Courier New</option><option>Times New Roman</option>
+          </select>
+          <select id="size" title="Size">
+            <option value="">Size</option><option value="1">Tiny</option><option value="2">Small</option><option value="3">Normal</option><option value="5">Large</option><option value="6">Huge</option><option value="7">Max</option>
+          </select>
+        </div>
+        <div class="grp">
+          <button class="tb" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+          <button class="tb" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+          <button class="tb" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+          <button class="tb" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+          <button class="tb" data-cmd="subscript" title="Subscript">x₂</button>
+          <button class="tb" data-cmd="superscript" title="Superscript">x²</button>
+        </div>
+        <div class="grp">
+          <input type="color" id="fore" value="#d12f2f" title="Text colour">
+          <input type="color" id="back" value="#ffe066" title="Highlight">
+          <button class="tb" data-cmd="removeFormat" title="Clear formatting">Tx</button>
+        </div>
+        <div class="grp">
+          <button class="tb" data-cmd="justifyLeft" title="Align left">⇤</button>
+          <button class="tb" data-cmd="justifyCenter" title="Centre">↔</button>
+          <button class="tb" data-cmd="justifyRight" title="Align right">⇥</button>
+          <button class="tb" data-cmd="justifyFull" title="Justify">☰</button>
+        </div>
+        <div class="grp">
+          <button class="tb" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+          <button class="tb" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+          <button class="tb" data-cmd="outdent" title="Outdent">«</button>
+          <button class="tb" data-cmd="indent" title="Indent">»</button>
+        </div>
+        <div class="grp">
+          <button class="tb" data-dlg="dLink" title="Insert link (Ctrl+K)">Link</button>
+          <button class="tb" data-cmd="unlink" title="Remove link">Unlink</button>
+          <button class="tb" data-dlg="dImg" title="Insert image">Image</button>
+          <button class="tb" data-dlg="dVid" title="Insert video / embed">Video</button>
+          <button class="tb" data-dlg="dTbl" title="Insert table">Table</button>
+          <button class="tb" data-dlg="dBtn" title="Insert button">Button</button>
+          <button class="tb" data-cmd="insertHorizontalRule" title="Divider">―</button>
+          <button class="tb" data-act="alert" title="Callout box">Callout</button>
+        </div>
+        <div class="grp">
+          <button class="tb" data-dlg="dFind" title="Find and replace (Ctrl+H)">Find</button>
+        </div>
+      </div>
+      <div id="visual" contenteditable="true" spellcheck="true" data-ph="Start writing your post here…"></div>
+    </div>
+
+    <div class="pane" id="pane-code">
+      <div class="pv-bar">
+        <button class="btn2" id="btnFormat">Format code</button>
+        <button class="btn2" id="btnMin">Minify</button>
+        <span class="status">Edits here sync back to the Write tab.</span>
+      </div>
+      <textarea id="code" spellcheck="false" aria-label="HTML source"></textarea>
+    </div>
+
+    <div class="pane" id="pane-preview">
+      <div class="pv-bar">
+        <button class="btn2" data-w="100%">Desktop</button>
+        <button class="btn2" data-w="768px">Tablet</button>
+        <button class="btn2" data-w="390px">Mobile</button>
+        <label class="status" style="margin-left:auto"><input type="checkbox" id="dark"> Dark preview</label>
+      </div>
+      <div class="pv-wrap"><iframe id="preview" title="Preview"></iframe></div>
+    </div>
+
+    <div class="foot"><span id="count">0 words · 0 characters</span><span id="read">0 min read</span></div>
+  </div>
+</div>
+
+<dialog id="dLink"><h2>Insert link</h2>
+  <label>URL</label><input id="lUrl" placeholder="https://">
+  <label>Open</label><select id="lTarget"><option value="">Same tab</option><option value="_blank">New tab</option></select>
+  <div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="lOk">Insert</button></div></dialog>
+
+<dialog id="dImg"><h2>Insert image</h2>
+  <label>Image URL</label><input id="iUrl" placeholder="https://…">
+  <p class="or">or upload from your device (embedded in the post)</p>
+  <input type="file" id="iFile" accept="image/*">
+  <label>Alt text</label><input id="iAlt" placeholder="Describe the image">
+  <label>Caption (optional)</label><input id="iCap">
+  <label>Size</label><select id="iSize"><option value="100%">Full width</option><option value="75%">75%</option><option value="50%">Half</option><option value="25%">Quarter</option></select>
+  <label>Alignment</label><select id="iAlign"><option value="block">Centre</option><option value="left">Float left</option><option value="right">Float right</option></select>
+  <div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="iOk">Insert</button></div></dialog>
+
+<dialog id="dVid"><h2>Insert video or embed</h2>
+  <label>YouTube, Vimeo, or video file URL</label><input id="vUrl" placeholder="https://youtube.com/watch?v=…">
+  <p class="or">Paste a link; it becomes a responsive embed.</p>
+  <div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="vOk">Insert</button></div></dialog>
+
+<dialog id="dTbl"><h2>Insert table</h2>
+  <label>Rows</label><input type="number" id="tR" value="3" min="1" max="30">
+  <label>Columns</label><input type="number" id="tC" value="3" min="1" max="12">
+  <label>Style</label><select id="tS"><option value="table">Basic</option><option value="table table-striped">Striped</option><option value="table table-bordered">Bordered</option></select>
+  <div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="tOk">Insert</button></div></dialog>
+
+<dialog id="dBtn"><h2>Insert button</h2>
+  <label>Label</label><input id="bTxt" value="Read more">
+  <label>URL</label><input id="bUrl" placeholder="https://">
+  <label>Style</label><select id="bCls"><option value="btn btn-primary">Primary</option><option value="btn btn-secondary">Secondary</option><option value="btn btn-success">Success</option><option value="btn btn-danger">Danger</option><option value="btn btn-outline-primary">Outline</option></select>
+  <div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="bOk">Insert</button></div></dialog>
+
+<dialog id="dFind"><h2>Find and replace</h2>
+  <label>Find</label><input id="fFind"><label>Replace with</label><input id="fRep">
+  <div class="row"><button class="btn2" data-close>Close</button><button class="btn2 pri" id="fOk">Replace all</button></div></dialog>
+
+<dialog id="dImp"><h2>Import HTML</h2>
+  <label>Paste HTML</label><textarea id="impTxt" rows="8" style="width:100%;font:13px monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px"></textarea>
+  <div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="impOk">Import</button></div></dialog>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const V=$('#visual'),C=$('#code'),KEY='post-editor-v1';
+let range=null,tab='visual',timer;
+
+/* selection memory so dialogs don't lose the caret */
+document.addEventListener('selectionchange',()=>{const s=getSelection();if(s.rangeCount&&V.contains(s.anchorNode))range=s.getRangeAt(0).cloneRange();updateState()});
+function restore(){V.focus();if(range){const s=getSelection();s.removeAllRanges();s.addRange(range)}}
+function exec(c,v=null){restore();document.execCommand('styleWithCSS',false,c==='hiliteColor'||c==='foreColor');document.execCommand(c,false,v);changed()}
+function insertHTML(h){restore();document.execCommand('insertHTML',false,h);changed()}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* toolbar */
+$('#tools').addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
+$$('[data-cmd]').forEach(b=>b.onclick=()=>exec(b.dataset.cmd));
+$$('[data-dlg]').forEach(b=>b.onclick=()=>$('#'+b.dataset.dlg).showModal());
+$$('dialog [data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+$('#block').onchange=e=>{exec('formatBlock',e.target.value)};
+$('#font').onchange=e=>{if(e.target.value)exec('fontName',e.target.value);e.target.value=''};
+$('#size').onchange=e=>{if(e.target.value)exec('fontSize',e.target.value);e.target.value=''};
+$('#fore').oninput=e=>exec('foreColor',e.target.value);
+$('#back').oninput=e=>exec('hiliteColor',e.target.value);
+$('[data-act=alert]').onclick=()=>insertHTML('<div class="alert alert-info" style="padding:12px 16px;border-radius:6px;background:#e6f2ff;border:1px solid #b6d4fe;color:#084298">Write your note here…</div><p><br></p>');
+
+function updateState(){['bold','italic','underline','strikeThrough','insertUnorderedList','insertOrderedList'].forEach(c=>{const b=$(`[data-cmd=${c}]`);if(b)b.classList.toggle('on',document.queryCommandState(c))});
+  const f=document.queryCommandValue('formatBlock').toLowerCase().replace(/[<>]/g,'');$('#block').value=['h1','h2','h3','h4','blockquote','pre'].includes(f)?f:'p'}
+
+/* dialogs */
+$('#lOk').onclick=()=>{const u=$('#lUrl').value.trim();if(u){exec('createLink',u);if($('#lTarget').value){const s=getSelection();let a=s.anchorNode&&(s.anchorNode.parentElement||{}).closest?.('a');if(a){a.target='_blank';a.rel='noopener'}}}$('#dLink').close();$('#lUrl').value=''};
+$('#iOk').onclick=async()=>{
+  let src=$('#iUrl').value.trim();const f=$('#iFile').files[0];
+  if(f)src=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(f)});
+  if(!src)return;
+  const w=$('#iSize').value,al=$('#iAlign').value,cap=$('#iCap').value.trim();
+  const st=al==='block'?`display:block;margin:1em auto;width:${w};max-width:100%`:`float:${al};margin:.4em 1em;width:${w==='100%'?'50%':w};max-width:100%`;
+  const img=`<img src="${src}" alt="${esc($('#iAlt').value)}" class="img-fluid" style="${st}">`;
+  insertHTML(cap?`<figure style="margin:1em 0">${img}<figcaption style="text-align:center;color:#667085;font-size:.9em">${esc(cap)}</figcaption></figure><p><br></p>`:img+'<p><br></p>');
+  $('#dImg').close();['#iUrl','#iFile','#iAlt','#iCap'].forEach(s=>$(s).value='')};
+$('#vOk').onclick=()=>{
+  const u=$('#vUrl').value.trim();if(!u)return;let m,h;
+  if(m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/))h=`<div class="ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen loading="lazy"></iframe></div>`;
+  else if(m=u.match(/vimeo\.com\/(\d+)/))h=`<div class="ratio ratio-16x9"><iframe src="https://player.vimeo.com/video/${m[1]}" allowfullscreen loading="lazy"></iframe></div>`;
+  else if(/\.(mp4|webm|ogg)(\?|$)/i.test(u))h=`<video controls style="max-width:100%" src="${esc(u)}"></video>`;
+  else h=`<div class="ratio ratio-16x9"><iframe src="${esc(u)}" allowfullscreen loading="lazy"></iframe></div>`;
+  insertHTML(h+'<p><br></p>');$('#dVid').close();$('#vUrl').value=''};
+$('#tOk').onclick=()=>{
+  const r=+$('#tR').value,c=+$('#tC').value;let h=`<table class="${$('#tS').value}"><thead><tr>`;
+  for(let j=0;j<c;j++)h+=`<th>Heading</th>`;h+='</tr></thead><tbody>';
+  for(let i=1;i<r;i++){h+='<tr>';for(let j=0;j<c;j++)h+='<td>&nbsp;</td>';h+='</tr>'}
+  insertHTML(h+'</tbody></table><p><br></p>');$('#dTbl').close()};
+$('#bOk').onclick=()=>{insertHTML(`<a class="${$('#bCls').value}" href="${esc($('#bUrl').value||'#')}">${esc($('#bTxt').value)}</a>&nbsp;`);$('#dBtn').close()};
+$('#fOk').onclick=()=>{const f=$('#fFind').value;if(f){V.innerHTML=V.innerHTML.split(f).join($('#fRep').value);changed()}$('#dFind').close()};
+
+/* tabs */
+function show(t){
+  if(tab==='code')V.innerHTML=C.value;
+  tab=t;$$('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  $$('.pane').forEach(p=>p.classList.toggle('show',p.id==='pane-'+t));
+  if(t==='code')C.value=clean(V.innerHTML);
+  if(t==='preview')renderPreview();
+}
+$$('.tab').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+C.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{V.innerHTML=C.value;stats();save()},300)});
+C.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=C.selectionStart;C.setRangeText('  ',s,C.selectionEnd,'end')}});
+
+/* code tools */
+function clean(h){return h.replace(/<div><br><\/div>/g,'<p><br></p>')}
+function pretty(h){
+  const blk=/^(div|p|h[1-6]|ul|ol|li|table|thead|tbody|tr|blockquote|figure|section|article|pre|hr)$/i;let out='',ind=0;
+  h.replace(/>\s+</g,'><').replace(/(<\/?([a-z0-9]+)[^>]*>)/gi,(t,_,n)=>blk.test(n)?'\n'+t+'\n':t).split('\n').map(x=>x.trim()).filter(Boolean).forEach(l=>{
+    const m=l.match(/^<\/?([a-z0-9]+)/i),n=m&&m[1];
+    if(/^<\//.test(l)&&n&&blk.test(n))ind=Math.max(0,ind-1);
+    out+='  '.repeat(ind)+l+'\n';
+    if(/^<[a-z]/i.test(l)&&n&&blk.test(n)&&!/\/>$/.test(l)&&!/^<(hr)/i.test(l)&&!new RegExp('</'+n+'>$','i').test(l))ind++});
+  return out.trim()}
+$('#btnFormat').onclick=()=>{C.value=pretty(C.value);V.innerHTML=C.value};
+$('#btnMin').onclick=()=>{C.value=C.value.replace(/\n\s*/g,'').replace(/>\s+</g,'><');V.innerHTML=C.value};
+
+/* preview */
+function doc(body,dark){
+  return `<!doctype html><html${dark?' data-bs-theme="dark"':''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://thefamily.pages.dev/editor/bootstrap.min.css" rel="stylesheet"><style>body{padding:24px;max-width:780px;margin:auto;line-height:1.7${dark?';background:#14171f;color:#e7eaf1':''}}img,video{max-width:100%;height:auto}.ratio{position:relative;padding-top:56.25%;margin:1em 0}.ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:0}blockquote{border-left:4px solid #2457d6;margin:1em 0;padding:.2em 1em;color:#667085}pre{background:#1e2430;color:#e8ecf4;padding:14px;border-radius:6px;overflow:auto}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccd;padding:8px}</style></head><body><h1>${esc($('#title').value||'Untitled')}</h1>${body}</body></html>`}
+function renderPreview(){$('#preview').srcdoc=doc(V.innerHTML,$('#dark').checked)}
+$$('[data-w]').forEach(b=>b.onclick=()=>$('#preview').style.width=b.dataset.w);
+$('#dark').onchange=renderPreview;
+
+/* stats + autosave */
+function stats(){const t=V.innerText.trim(),w=t?t.split(/\s+/).length:0;$('#count').textContent=`${w} words · ${t.length} characters`;$('#read').textContent=Math.max(1,Math.round(w/220))+' min read'}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({t:$('#title').value,s:$('#slug').value,g:$('#tags').value,e:$('#excerpt').value,h:V.innerHTML}));$('#status').textContent='Saved '+new Date().toLocaleTimeString()}catch(e){$('#status').textContent='Autosave unavailable'}}
+function changed(){stats();clearTimeout(changed.t);changed.t=setTimeout(save,500)}
+V.addEventListener('input',changed);
+['#title','#slug','#tags','#excerpt'].forEach(s=>$(s).addEventListener('input',changed));
+$('#title').addEventListener('input',()=>{if(!$('#slug').dataset.man)$('#slug').value=$('#title').value.toLowerCase().trim().replace(/[^\w\s-]/g,'').replace(/[\s_]+/g,'-')});
+$('#slug').addEventListener('input',()=>$('#slug').dataset.man=1);
+
+/* paste: strip messy styles, accept pasted images */
+V.addEventListener('paste',e=>{
+  const it=[...(e.clipboardData.items||[])].find(i=>i.type.startsWith('image/'));
+  if(it){e.preventDefault();const fr=new FileReader();fr.onload=()=>insertHTML(`<img src="${fr.result}" alt="" class="img-fluid" style="max-width:100%">`);fr.readAsDataURL(it.getAsFile())}
+});
+V.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){e.preventDefault();const fr=new FileReader();fr.onload=()=>insertHTML(`<img src="${fr.result}" alt="" class="img-fluid" style="max-width:100%">`);fr.readAsDataURL(f)}});
+V.addEventListener('click',e=>{$$('#visual img.sel').forEach(i=>i.classList.remove('sel'));if(e.target.tagName==='IMG')e.target.classList.add('sel')});
+V.addEventListener('keydown',e=>{if(e.key==='Delete'||e.key==='Backspace'){const i=$('#visual img.sel');if(i){e.preventDefault();i.remove();changed()}}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&tab==='visual'){if(e.key==='k'){e.preventDefault();$('#dLink').showModal()}if(e.key==='h'){e.preventDefault();$('#dFind').showModal()}}});
+
+/* file actions */
+function fullHTML(){return `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${esc($('#title').value||'Untitled')}</title>\n<meta name="description" content="${esc($('#excerpt').value)}">\n<link href="https://thefamily.pages.dev/editor/bootstrap.min.css" rel="stylesheet">\n</head>\n<body>\n<article class="container">\n<h1>${esc($('#title').value)}</h1>\n${pretty(clean(V.innerHTML))}\n</article>\n</body>\n</html>`}
+$('#btnExport').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([fullHTML()],{type:'text/html'}));a.download=($('#slug').value||'post')+'.html';a.click()};
+$('#btnCopy').onclick=async()=>{const h=tab==='code'?C.value:pretty(clean(V.innerHTML));try{await navigator.clipboard.writeText(h);$('#status').textContent='HTML copied'}catch{show('code');C.select()}};
+$('#btnImport').onclick=()=>$('#dImp').showModal();
+$('#impOk').onclick=()=>{const d=new DOMParser().parseFromString($('#impTxt').value,'text/html');V.innerHTML=d.body.innerHTML;$('#dImp').close();changed()};
+$('#btnNew').onclick=()=>{if(confirm('Clear the editor and start a new post?')){V.innerHTML='';['#title','#slug','#tags','#excerpt'].forEach(s=>$(s).value='');delete $('#slug').dataset.man;C.value='';save();stats()}};
+
+/* load */
+try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d){$('#title').value=d.t;$('#slug').value=d.s;$('#slug').dataset.man=d.s?1:'';$('#tags').value=d.g;$('#excerpt').value=d.e;V.innerHTML=d.h;$('#status').textContent='Draft restored'}}catch(e){}
+stats();
+</script>
+</body>
+</html>
