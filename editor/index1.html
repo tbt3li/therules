@@ -58,6 +58,18 @@ dialog label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
 dialog input,dialog select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
 dialog .row{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
 .or{font-size:12px;color:var(--mute);margin:8px 0 0}
+#ip{position:fixed;right:14px;top:70px;width:310px;max-height:calc(100vh - 90px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.28);z-index:50}
+#ip[hidden]{display:none}
+.iph{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:1}
+.ipb{padding:2px 12px 14px}.ipb h4{margin:16px 0 4px;font-size:13px;color:var(--accent)}
+.ipr{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;margin:6px 0}
+.ipr input[type=text],.ipr select{width:58%;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.ipr input[type=range]{width:40%}.ipr output{width:34px;text-align:right;font-size:12px;color:var(--mute)}
+.sz,.acts{flex-wrap:wrap;justify-content:flex-start}.sz .btn2,.acts .btn2{padding:3px 9px;font-size:12px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}.pg label{margin:0}
+#dPar{width:min(620px,94vw);max-height:90vh;overflow:auto}
+#visual::after{content:"";display:block;clear:both}#visual figure img{cursor:pointer}
+@media(max-width:900px){#ip{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:50vh}.pg{grid-template-columns:1fr}}
 @media(max-width:640px){.meta{grid-template-columns:1fr}#visual{padding:16px}}
 </style>
 </head>
@@ -179,7 +191,7 @@ dialog .row{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
 <dialog id="dImg"><h2>Insert image</h2>
   <label>Image URL</label><input id="iUrl" placeholder="https://…">
   <p class="or">or upload from your device (embedded in the post)</p>
-  <input type="file" id="iFile" accept="image/*">
+  <input type="file" id="iFile" accept="image/*" multiple>
   <label>Alt text</label><input id="iAlt" placeholder="Describe the image">
   <label>Caption (optional)</label><input id="iCap">
   <label>Size</label><select id="iSize"><option value="100%">Full width</option><option value="75%">75%</option><option value="50%">Half</option><option value="25%">Quarter</option></select>
@@ -326,6 +338,127 @@ $('#btnNew').onclick=()=>{if(confirm('Clear the editor and start a new post?')){
 /* load */
 try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d){$('#title').value=d.t;$('#slug').value=d.s;$('#slug').dataset.man=d.s?1:'';$('#tags').value=d.g;$('#excerpt').value=d.e;V.innerHTML=d.h;$('#status').textContent='Draft restored'}}catch(e){}
 stats();
+</script>
+<script>
+/* ===== v2: images, galleries, paragraph settings, list styles ===== */
+const PECSS=`.pl{--mk:currentColor}.pl li::marker{color:var(--mk)}
+.pl-check{list-style-type:"✔  "}.pl-box{list-style-type:"☐  "}.pl-arrow{list-style-type:"➜  "}.pl-chev{list-style-type:"›  "}.pl-star{list-style-type:"★  "}.pl-diamond{list-style-type:"◆  "}.pl-heart{list-style-type:"❤  "}.pl-cross{list-style-type:"✖  "}.pl-plus{list-style-type:"＋  "}.pl-bolt{list-style-type:"⚡  "}.pl-pin{list-style-type:"📌  "}.pl-tip{list-style-type:"💡  "}
+.pl-nc,.pl-ns,.pl-tl,.pl-cards,.pl-lines,.pl-tags{list-style:none;padding-left:0;counter-reset:pl}
+.pl-nc,.pl-ns,.pl-tl,.pl-cards,.pl-tags{--mk:#2457d6}
+.pl-nc>li,.pl-ns>li{counter-increment:pl;position:relative;padding-left:2.5em;margin:.6em 0;min-height:1.8em}
+.pl-nc>li:before,.pl-ns>li:before{content:counter(pl);position:absolute;left:0;top:0;width:1.8em;height:1.8em;line-height:1.8em;text-align:center;background:var(--mk);color:#fff;border-radius:50%;font-size:.85em;font-weight:600}
+.pl-ns>li:before{border-radius:6px}
+.pl-tl{border-left:2px solid var(--mk);margin-left:.5em}.pl-tl>li{position:relative;padding:0 0 1em 1.4em}
+.pl-tl>li:before{content:"";position:absolute;left:-.48em;top:.45em;width:.8em;height:.8em;border-radius:50%;background:var(--mk)}
+.pl-cards>li{border:1px solid #d0d5dd;border-left:4px solid var(--mk);border-radius:6px;padding:.6em .9em;margin:.5em 0;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.pl-lines>li{padding:.6em 0;border-bottom:1px solid #d0d5dd}
+.pl-tags>li{display:inline-block;background:var(--mk);color:#fff;border-radius:99px;padding:.2em .9em;margin:.2em .3em .2em 0;font-size:.9em}
+.pl-tight>li{margin-top:.1em;margin-bottom:.1em}.pl-loose>li{margin-top:.8em;margin-bottom:.8em}
+.pe-drop:first-letter{float:left;font-size:3.4em;line-height:.9;padding:.05em .12em 0 0;font-weight:700}
+.pe-gal>figure{margin:0}.pe-gal[data-l=m]>figure{margin:0 0 var(--g);break-inside:avoid}`;
+document.head.insertAdjacentHTML('beforeend',`<style>${PECSS}</style>`);
+const _doc=doc;doc=(b,d)=>_doc(b,d).replace('</style>',PECSS+'</style>');
+const _full=fullHTML;fullHTML=()=>_full().replace('</head>',`<style>${PECSS}</style>\n</head>`);
+const _cl=clean;clean=h=>_cl(h).replace(/ class="sel"/g,'').replace(/ class=""/g,'');
+const rd=f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(f)});
+
+/* ---- image model ---- */
+const D={w:100,align:'center',m:12,aspect:'',fit:'cover',radius:0,bw:0,bs:'solid',bc:'#cccccc',pad:0,shadow:'',op:100,gs:0,sep:0,blur:0,br:100,ct:100,sat:100,rot:0,fh:0,fv:0,cap:'',link:'',blank:0,lazy:1};
+const SH={'':'',soft:'0 2px 8px rgba(0,0,0,.18)',medium:'0 6px 20px rgba(0,0,0,.28)',strong:'0 14px 40px rgba(0,0,0,.42)',glow:'0 0 24px rgba(36,87,214,.6)'};
+let fig=null;const get=f=>({...D,...JSON.parse((f||fig).dataset.s||'{}')});
+function apply(f,s,fromCap){
+  const img=f.querySelector('img'),g=f.parentElement&&f.parentElement.classList.contains('pe-gal'),m=s.m;
+  const A={left:`margin:${m}px auto ${m}px 0`,center:`margin:${m}px auto`,right:`margin:${m}px 0 ${m}px auto`,fl:`float:left;margin:${m}px ${m*1.5}px ${m}px 0`,fr:`float:right;margin:${m}px 0 ${m}px ${m*1.5}px`,inline:`display:inline-block;vertical-align:top;margin:${m}px`};
+  f.style.cssText=g?'':`width:${s.w}%;max-width:100%;${A[s.align]||A.center}`;
+  const fl=[s.gs&&`grayscale(${s.gs}%)`,s.blur&&`blur(${s.blur}px)`,s.br!=100&&`brightness(${s.br}%)`,s.ct!=100&&`contrast(${s.ct}%)`,s.sep&&`sepia(${s.sep}%)`,s.sat!=100&&`saturate(${s.sat}%)`].filter(Boolean).join(' ');
+  const tf=[s.rot&&`rotate(${s.rot}deg)`,s.fh&&'scaleX(-1)',s.fv&&'scaleY(-1)'].filter(Boolean).join(' ');
+  img.style.cssText=`display:block;width:100%;height:auto;${s.aspect?`aspect-ratio:${s.aspect};object-fit:${s.fit};`:''}${s.radius?`border-radius:${s.radius}%;`:''}${s.bw?`border:${s.bw}px ${s.bs} ${s.bc};`:''}${s.shadow?`box-shadow:${SH[s.shadow]};`:''}${s.op<100?`opacity:${s.op/100};`:''}${s.pad?`padding:${s.pad}px;background:#fff;box-sizing:border-box;`:''}${fl?`filter:${fl};`:''}${tf?`transform:${tf};`:''}`;
+  s.lazy?img.setAttribute('loading','lazy'):img.removeAttribute('loading');
+  let c=f.querySelector('figcaption');if(!fromCap&&c)s.cap=c.textContent;
+  if(s.cap){if(!c){c=document.createElement('figcaption');f.appendChild(c)}if(c.textContent!==s.cap)c.textContent=s.cap;c.style.cssText='text-align:center;font-size:.9em;color:#667085;margin-top:.4em'}else if(c)c.remove();
+  let a=img.parentElement.tagName=='A'?img.parentElement:null;
+  if(s.link){if(!a){a=document.createElement('a');img.replaceWith(a);a.appendChild(img)}a.href=s.link;if(s.blank){a.target='_blank';a.rel='noopener'}else{a.removeAttribute('target');a.removeAttribute('rel')}}else if(a)a.replaceWith(img);
+  f.dataset.s=JSON.stringify(s);
+}
+function mkFig(src,alt,s,par){const f=document.createElement('figure'),i=document.createElement('img');f.className='pe-fig';i.src=src;i.alt=alt||'';f.appendChild(i);if(par)par.appendChild(f);apply(f,{...D,...s});return f}
+function ensureFig(i){if(i.closest('figure'))return;const t=i.parentElement.tagName=='A'?i.parentElement:i,f=document.createElement('figure');f.className='pe-fig';t.replaceWith(f);f.appendChild(t);apply(f,{...D,link:t!==i?t.getAttribute('href'):'',blank:t!==i&&t.target?1:0})}
+function gal(g,k,v){
+  if(k=='aspect'){[...g.children].forEach(f=>{const s=get(f);s.aspect=v;apply(f,s)});return changed()}
+  if(k)g.dataset[k=='cols'?'c':k=='gap'?'gap':'l']=v;const{c,gap,l}=g.dataset;
+  g.style.cssText=l=='m'?`column-count:${c};column-gap:${gap}px;--g:${gap}px;margin:12px 0`:`display:grid;grid-template-columns:repeat(${c},1fr);gap:${gap}px;margin:12px 0`;changed()}
+function newGal(c,gap,l){const g=document.createElement('div');g.className='pe-gal';Object.assign(g.dataset,{c,gap,l});gal(g);return g}
+function toGal(f){const p=f.parentElement;if(p.classList.contains('pe-gal'))return p;const g=newGal(2,12,'g');f.before(g);g.appendChild(f);apply(f,get(f));return g}
+
+/* ---- image properties panel ---- */
+const N=(a,b)=>Object.fromEntries(Array.from({length:b-a+1},(_,i)=>[a+i,a+i]));
+const F=[['_h','Content'],['src','Image URL','text'],['alt','Alt text','text'],['title','Title (tooltip)','text'],['cap','Caption','text'],['link','Link to URL','text'],['blank','Open link in new tab','chk'],['lazy','Lazy loading','chk'],
+['_h','Size and position'],['_sz'],['w','Width (%)','rng',[5,100,1]],['align','Alignment','sel',{center:'Centre',left:'Left',right:'Right',fl:'Float left (text wraps)',fr:'Float right (text wraps)',inline:'Inline'}],['m','Spacing (px)','rng',[0,80,1]],['aspect','Crop shape','sel',{'':'Original','1/1':'Square 1:1','4/3':'4:3','3/2':'3:2','16/9':'Wide 16:9','21/9':'Cinema 21:9','3/4':'Portrait 3:4','9/16':'Tall 9:16'}],['fit','Crop fit','sel',{cover:'Fill (crop)',contain:'Fit (letterbox)'}],
+['_h','Frame and style'],['_pr'],['radius','Roundness (%)','rng',[0,50,1]],['bw','Border width','rng',[0,20,1]],['bs','Border style','sel',{solid:'Solid',dashed:'Dashed',dotted:'Dotted',double:'Double'}],['bc','Border colour','col'],['pad','Frame padding','rng',[0,30,1]],['shadow','Shadow','sel',{'':'None',soft:'Soft',medium:'Medium',strong:'Strong',glow:'Glow'}],
+['_h','Effects'],['op','Opacity','rng',[10,100,1]],['gs','Greyscale','rng',[0,100,1]],['sep','Sepia','rng',[0,100,1]],['blur','Blur','rng',[0,10,.5]],['br','Brightness','rng',[40,200,1]],['ct','Contrast','rng',[40,200,1]],['sat','Saturation','rng',[0,300,1]],
+['_h','Transform'],['rot','Rotate (°)','rng',[-180,180,1]],['fh','Flip horizontal','chk'],['fv','Flip vertical','chk']];
+const PR={polaroid:{pad:12,bw:1,bc:'#dddddd',shadow:'medium',rot:-2},card:{radius:4,shadow:'medium'},avatar:{aspect:'1/1',radius:50,w:30,align:'center',shadow:'soft'},vintage:{sep:70,ct:90,br:95,pad:10,bw:1,bc:'#d9c9a3'},bw:{gs:100,ct:110},clean:{}};
+const ip=document.createElement('aside');ip.id='ip';ip.hidden=true;
+ip.innerHTML=`<div class="iph"><b>Image properties</b><button class="btn2" id="ipx" title="Close">×</button></div><div class="ipb">
+<div class="ipr acts"><button class="btn2" id="iprep">Replace</button><button class="btn2" id="ipadd">Add beside</button><button class="btn2" id="ipdup">Duplicate</button><button class="btn2" id="iprst">Reset</button><button class="btn2" id="ipdel">Delete</button></div>
+<div id="gal" hidden><h4>Image row / gallery</h4><label class="ipr">Columns<select data-g="cols">${[1,2,3,4,5,6].map(n=>`<option>${n}</option>`).join('')}</select></label><label class="ipr">Gap (px)<input type="range" data-g="gap" min="0" max="48"></label><label class="ipr">Layout<select data-g="lay"><option value="g">Equal grid</option><option value="m">Masonry</option></select></label><label class="ipr">Crop all<select data-g="aspect"><option value="">Original</option><option value="1/1">Square</option><option value="4/3">4:3</option><option value="16/9">16:9</option><option value="3/4">3:4</option></select></label></div>
+${F.map(([k,l,t,o])=>k=='_h'?`<h4>${l}</h4>`:k=='_sz'?`<div class="ipr sz">${[25,33,50,66,75,100].map(n=>`<button class="btn2" data-sz="${n}">${n}%</button>`).join('')}</div>`:k=='_pr'?`<label class="ipr">Preset<select id="ippr"><option value="">Choose…</option><option value="polaroid">Polaroid</option><option value="card">Rounded card</option><option value="avatar">Circle avatar</option><option value="vintage">Vintage</option><option value="bw">Black and white</option><option value="clean">Plain</option></select></label>`:`<label class="ipr">${l}${t=='sel'?`<select data-k="${k}">${Object.entries(o).map(([v,n])=>`<option value="${v}">${n}</option>`).join('')}</select>`:t=='rng'?`<input type="range" data-k="${k}" min="${o[0]}" max="${o[1]}" step="${o[2]}"><output></output>`:t=='chk'?`<input type="checkbox" data-k="${k}">`:`<input type="${t=='col'?'color':'text'}" data-k="${k}">`}</label>`).join('')}</div>`;
+document.body.appendChild(ip);
+function hide(){ip.hidden=true;fig=null}
+function load(){const s=get(),img=fig.querySelector('img'),c=fig.querySelector('figcaption');if(c)s.cap=c.textContent;
+  ip.querySelectorAll('[data-k]').forEach(t=>{const k=t.dataset.k;let v=['src','alt','title'].includes(k)?img.getAttribute(k)||'':s[k];if(k=='src'&&v.startsWith('data:'))v='';if(t.type=='checkbox')t.checked=!!v;else t.value=v;if(t.nextElementSibling&&t.nextElementSibling.tagName=='OUTPUT')t.nextElementSibling.textContent=v});
+  const p=fig.parentElement,g=p.classList.contains('pe-gal');$('#gal').hidden=!g;if(g)ip.querySelectorAll('[data-g]').forEach(t=>{const k=t.dataset.g;t.value=k=='cols'?p.dataset.c:k=='gap'?p.dataset.gap:k=='lay'?p.dataset.l:''})}
+ip.addEventListener('input',e=>{const t=e.target,k=t.dataset.k;if(!fig)return;
+  if(t.dataset.g){gal(fig.parentElement,t.dataset.g,t.value);if(t.dataset.g!='aspect'){}return}
+  if(!k)return;const v=t.type=='checkbox'?+t.checked:t.type=='range'?+t.value:t.value,img=fig.querySelector('img');
+  if(['src','alt','title'].includes(k)){v?img.setAttribute(k,v):k!='src'&&img.removeAttribute(k);return changed()}
+  const s=get();s[k]=v;apply(fig,s,k=='cap');if(t.nextElementSibling&&t.nextElementSibling.tagName=='OUTPUT')t.nextElementSibling.textContent=v;changed()});
+ip.addEventListener('change',e=>{if(e.target.id=='ippr'&&fig&&e.target.value){const s=get();['radius','bw','pad','shadow','rot','gs','sep','ct','br','aspect','op','blur','sat','fh','fv'].forEach(k=>s[k]=D[k]);Object.assign(s,PR[e.target.value]);apply(fig,s);load();changed();e.target.value=''}});
+ip.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!fig)return;if(b.dataset.sz){const s=get();s.w=+b.dataset.sz;apply(fig,s);load();changed()}});
+$('#ipx').onclick=hide;
+$('#ipdup').onclick=()=>{fig.after(fig.cloneNode(true));changed()};
+$('#ipdel').onclick=()=>{const p=fig.parentElement;fig.remove();if(p.classList.contains('pe-gal')&&!p.children.length)p.remove();hide();changed()};
+$('#iprst').onclick=()=>{apply(fig,{...D});load();changed()};
+function pick(add){const i=document.createElement('input');i.type='file';i.accept='image/*';i.multiple=add;i.onchange=async()=>{const u=await Promise.all([...i.files].map(rd));if(!u.length)return;
+  if(!add){fig.querySelector('img').src=u[0]}else{const g=toGal(fig);let at=fig;u.forEach(x=>{const f=mkFig(x,'',{},null);at.after(f);at=f;apply(f,{...D})});if(+g.dataset.c<Math.min(g.children.length,4))gal(g,'cols',Math.min(g.children.length,4))}
+  load();changed()};i.click()}
+$('#iprep').onclick=()=>pick(0);$('#ipadd').onclick=()=>pick(1);
+V.addEventListener('click',e=>{const i=e.target.closest('img');if(!i||!V.contains(i))return hide();ensureFig(i);fig=i.closest('figure');load();ip.hidden=false});
+V.addEventListener('keydown',e=>{if(e.key=='Delete'||e.key=='Backspace')setTimeout(()=>{V.querySelectorAll('figure').forEach(f=>{if(!f.querySelector('img'))f.remove()});hide()},0)});
+$$('.tab').forEach(b=>b.addEventListener('click',hide));
+
+/* ---- image insert + gallery dialogs ---- */
+$('#iOk').onclick=async()=>{const u=$('#iUrl').value.trim(),srcs=[...(u?[u]:[]),...await Promise.all([...$('#iFile').files].map(rd))];if(!srcs.length)return;
+  const alt=$('#iAlt').value;let h;
+  if(srcs.length>1){const g=newGal(Math.min(srcs.length,3),12,'g');srcs.forEach(x=>mkFig(x,alt,{},g));h=g.outerHTML}
+  else h=mkFig(srcs[0],alt,{w:parseInt($('#iSize').value),align:{block:'center',left:'fl',right:'fr'}[$('#iAlign').value],cap:$('#iCap').value.trim()}).outerHTML;
+  insertHTML(h+'<p><br></p>');$('#dImg').close();['#iUrl','#iFile','#iAlt','#iCap'].forEach(s=>$(s).value='')};
+document.body.insertAdjacentHTML('beforeend',`<dialog id="dGal"><h2>Insert image row / gallery</h2><label>Image URLs (one per line)</label><textarea id="gU" rows="3" style="width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px"></textarea><p class="or">or upload several images at once</p><input type="file" id="gF" accept="image/*" multiple><label>Images per row</label><select id="gC">${[2,3,4,5,6].map(n=>`<option>${n}</option>`).join('')}</select><label>Layout</label><select id="gL"><option value="g">Equal grid (side by side)</option><option value="m">Masonry</option></select><label>Gap (px)</label><input type="number" id="gG" value="12" min="0" max="48"><div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2 pri" id="gOk">Insert</button></div></dialog>`);
+$('#gOk').onclick=async()=>{const srcs=[...$('#gU').value.split('\n').map(x=>x.trim()).filter(Boolean),...await Promise.all([...$('#gF').files].map(rd))];if(!srcs.length)return;
+  const g=newGal($('#gC').value,$('#gG').value,$('#gL').value);srcs.forEach(x=>mkFig(x,'',{},g));insertHTML(g.outerHTML+'<p><br></p>');$('#dGal').close();$('#gU').value='';$('#gF').value=''};
+
+/* ---- paragraph settings ---- */
+const PF=[['Line height','lineHeight','sel',['1','1.2','1.4','1.6','1.8','2','2.4']],['Font size (px)','fontSize','num','px'],['Font weight','fontWeight','sel',['300','400','500','600','700','800']],['Font style','fontStyle','sel',['normal','italic']],['Letter spacing (px)','letterSpacing','num','px'],['Word spacing (px)','wordSpacing','num','px'],['Alignment','textAlign','sel',['left','center','right','justify']],['Direction (RTL for Urdu)','direction','sel',['ltr','rtl']],['Space above (px)','marginTop','num','px'],['Space below (px)','marginBottom','num','px'],['Left indent (px)','marginLeft','num','px'],['Right indent (px)','marginRight','num','px'],['First-line indent (px)','textIndent','num','px'],['Padding (px)','padding','num','px'],['Text case','textTransform','sel',['none','uppercase','lowercase','capitalize']],['Columns','columnCount','sel',['1','2','3','4']],['Text colour','color','col'],['Background','background','col'],['Border width (px)','_bw','num'],['Border colour','_bc','col'],['Corner radius (px)','borderRadius','num','px'],['Drop cap','_dc','sel',['on','off']],['Hyphenation','hyphens','sel',['auto','none']]];
+document.body.insertAdjacentHTML('beforeend',`<dialog id="dPar"><h2>Paragraph settings</h2><p class="or">Applies to the selected paragraph(s). Leave a field empty to keep it unchanged.</p><div class="pg">${PF.map(([l,p,t,u])=>`<label>${l}${t=='sel'?`<select data-p="${p}"><option value="">—</option>${u.map(v=>`<option>${v}</option>`).join('')}</select>`:`<input data-p="${p}" type="${t=='col'?'color':'number'}"${t=='num'?' placeholder="auto"':''}${u?` data-u="${u}"`:''}>`}</label>`).join('')}</div><div class="row"><button class="btn2" data-close>Cancel</button><button class="btn2" id="parRst">Clear formatting</button><button class="btn2 pri" id="parOk">Apply</button></div></dialog>`);
+$('#dPar').addEventListener('input',e=>{if(e.target.type=='color')e.target.dataset.d=1});
+document.addEventListener('click',e=>{if(e.target.matches('dialog [data-close]'))e.target.closest('dialog').close()});
+function blocks(){const r=range;if(!r)return[];const q=()=>[...V.querySelectorAll('p,h1,h2,h3,h4,h5,h6,blockquote,li,pre,div:not(.pe-gal):not(.ratio)')].filter(n=>r.intersectsNode(n)&&!n.querySelector('p,li,h1,h2,h3,h4,blockquote,pre,div,figure'));let b=q();if(!b.length){exec('formatBlock','p');b=q()}return b}
+$('#parOk').onclick=()=>{const f={};$$('#dPar [data-p]').forEach(t=>{if(t.value!==''&&(t.type!='color'||t.dataset.d))f[t.dataset.p]=t.dataset.u?t.value+t.dataset.u:t.value});
+  blocks().forEach(b=>{for(const[k,v]of Object.entries(f)){if(k=='_bw'||k=='_bc')continue;k=='_dc'?b.classList.toggle('pe-drop',v=='on'):b.style[k]=v}
+    if(f._bw)b.style.border=`${f._bw}px solid ${f._bc||'#2457d6'}`;else if(f._bc)b.style.borderColor=f._bc;if(f.columnCount)b.style.columnGap='28px'});
+  $('#dPar').close();changed()};
+$('#parRst').onclick=()=>{blocks().forEach(b=>{b.removeAttribute('style');b.classList.remove('pe-drop')});$('#dPar').close();changed()};
+
+/* ---- list styles ---- */
+const LT=[['Standard',[['disc','● Disc'],['circle','○ Circle'],['square','■ Square'],['decimal','1. Numbers'],['decimal-leading-zero','01. Zero-padded'],['lower-alpha','a. Letters'],['upper-alpha','A. Capital letters'],['lower-roman','i. Roman'],['upper-roman','I. Capital roman'],['lower-greek','α. Greek'],['arabic-indic','١ Arabic-Indic'],['persian','۱ Persian / Urdu'],['none','No marker']]],
+['Symbols',[['pl-check','✔ Check'],['pl-box','☐ Checkbox'],['pl-arrow','➜ Arrow'],['pl-chev','› Chevron'],['pl-star','★ Star'],['pl-diamond','◆ Diamond'],['pl-heart','❤ Heart'],['pl-cross','✖ Cross'],['pl-plus','＋ Plus'],['pl-bolt','⚡ Bolt'],['pl-pin','📌 Pin'],['pl-tip','💡 Idea']]],
+['Designer lists',[['pl-nc','Numbered circles'],['pl-ns','Numbered squares'],['pl-tl','Timeline'],['pl-cards','Cards'],['pl-lines','Divided rows'],['pl-tags','Tag pills']]]];
+const STY=[...LT[1][1],...LT[2][1]].map(x=>x[0]);
+$('#tools').insertAdjacentHTML('beforeend',`<div class="grp"><select id="lst" title="Bullet / list style"><option value="">List style</option>${LT.map(([g,o])=>`<optgroup label="${g}">${o.map(([v,n])=>`<option value="${v}">${n}</option>`).join('')}</optgroup>`).join('')}</select><select id="lsp" title="Item spacing"><option value="">Item spacing</option><option value="pl-tight">Tight</option><option value="n">Normal</option><option value="pl-loose">Relaxed</option></select><input type="color" id="lmk" value="#2457d6" title="Marker colour"></div><div class="grp"><button class="tb" id="bPar" title="Paragraph settings">Paragraph</button><button class="tb" id="bGal" title="Insert side-by-side images / gallery">Gallery</button></div>`);
+function setList(fn){let ls=[...V.querySelectorAll('ul,ol')].filter(l=>range&&range.intersectsNode(l));if(!ls.length){exec('insertUnorderedList');ls=[...V.querySelectorAll('ul,ol')].filter(l=>range&&range.intersectsNode(l))}ls.forEach(fn);changed()}
+$('#lst').onchange=e=>{const v=e.target.value;if(v)setList(l=>{STY.forEach(c=>l.classList.remove(c));l.classList.add('pl');l.style.listStyleType='';v.startsWith('pl-')?l.classList.add(v):l.style.listStyleType=v});e.target.value=''};
+$('#lsp').onchange=e=>{const v=e.target.value;if(v)setList(l=>{l.classList.add('pl');l.classList.remove('pl-tight','pl-loose');if(v!='n')l.classList.add(v)});e.target.value=''};
+$('#lmk').oninput=e=>setList(l=>{l.classList.add('pl');l.style.setProperty('--mk',e.target.value)});
+$('#bPar').onclick=()=>$('#dPar').showModal();$('#bGal').onclick=()=>$('#dGal').showModal();
 </script>
 </body>
 </html>
