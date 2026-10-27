@@ -1279,7 +1279,7 @@ function guideDoc(html) {
 function mountGuideFrame(host, html) {
   const f = document.createElement('iframe');
   f.className = 'gframe'; f.title = 'Guide content';
-  f.setAttribute('sandbox', 'allow-scripts allow-popups');   // no scripts can run
+  f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');   // no scripts can run
   const fit = () => { try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {} };
   f.onload = () => { fit(); f.contentDocument.querySelectorAll('img').forEach(i => i.addEventListener('load', fit)); setTimeout(fit, 400); };
   let w = 0; if (window.ResizeObserver) new ResizeObserver(() => { if (host.clientWidth !== w) { w = host.clientWidth; fit(); } }).observe(host);
