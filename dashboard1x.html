@@ -24,45 +24,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-/* ===== THEME TOKENS: FlexAdmin colours (light + dark) ===== */
+/* ===== THEME TOKENS (names follow the new admin theme; old names kept as aliases) ===== */
 :root{
-  --background-color:#f4f7fb; --default-color:#1c2635; --heading-color:#0f1728; --accent-color:#0ea5a4; --surface-color:#ffffff; --contrast-color:#ffffff;
-  --muted-color:#5f6e83; --light-color:#8ea0b8;
-  --border-color:#dde5f1; --border-color-light:#eef3fa; --border-color-dark:#c4d2e6;
-  --success-color:#16a34a; --success-color-light:#dcfce7; --warning-color:#d97706; --warning-color-light:#ffedd5;
-  --danger-color:#dc2626; --danger-color-light:#fee2e2; --info-color:#0284c7; --info-color-light:#e0f2fe;
-  --header-bg:rgba(255,255,255,.9); --header-shadow:0 1px 0 rgb(14 26 47 / .06); --header-border:var(--border-color);
-  --sidebar-bg:#ffffff; --sidebar-border:#d9e3f1; --sidebar-color:#223248; --sidebar-muted-color:#6b809d;
-  --sidebar-hover-bg:rgba(14,165,164,.1); --sidebar-active-bg:rgba(14,165,164,.16); --sidebar-active-color:#ffffff;
-  --table-header-bg:#edf3fb; --table-hover-bg:#e9f0fa; --input-bg:#ffffff; --input-focus-ring:rgb(14 165 164 / .25);
-  --shadow-sm:0 1px 3px 0 rgb(0 0 0 / .04),0 1px 2px -1px rgb(0 0 0 / .04);
-  --shadow-md:0 8px 20px -10px rgb(2 12 27 / .18),0 6px 12px -8px rgb(2 12 27 / .12);
-  --radius-sm:.375rem; --radius-md:.5rem; --radius-lg:.75rem; --radius-xl:1rem; --radius-full:9999px;
-  --spacing-sm:.5rem; --spacing-md:1rem;
-  --transition-fast:150ms ease; --transition-base:200ms ease;
-  --header-height:64px; --sidebar-width:280px;
-  /* names used by the dashboard code (aliases of the theme colours above) */
-  --primary:var(--accent-color); --primary-dark:color-mix(in srgb,var(--accent-color),black 12%); --accent:var(--info-color); --gold:#d9a400;
-  --bg:var(--background-color); --card:var(--surface-color); --text:var(--default-color); --muted:var(--muted-color); --border:var(--border-color);
-  --sidebar:var(--sidebar-bg); --sidebar-text:var(--sidebar-color); --input:var(--border-color-light);
-  --ok:var(--success-color); --warn:var(--warning-color); --bad:var(--danger-color);
-  --shadow:var(--shadow-md); --radius:.75rem; --hdr:var(--header-height); --sbw:var(--sidebar-width);
+  --accent-color:#4f6df5; --primary:#4f6df5; --primary-dark:#3c56d4; --accent:#8b5cf6; --gold:#d9a400;
+  --bg:#f4f6fb; --card:#ffffff; --surface-color:#ffffff; --text:#1f2a44; --muted:#6b7690; --muted-color:#6b7690;
+  --border:#e6e9f2; --border-color:#e6e9f2; --sidebar:#ffffff; --sidebar-text:#55607a; --input:#f5f7fc;
+  --ok:#16a34a; --success-color:#16a34a; --warn:#f59e0b; --warning-color:#f59e0b; --bad:#dc3545; --info-color:#0ea5e9;
+  --shadow:0 1px 3px rgba(20,30,60,.06),0 6px 20px rgba(20,30,60,.05); --radius:14px;
+  --hdr:64px; --sbw:262px;
+  /* SIDEBAR / HEADER COLOURS: change these to restyle the left menu */
+  --sb-hover-bg:var(--input); --sb-hover-text:var(--text); --sb-active-bg:rgba(79,109,245,.13); --sb-active-text:var(--primary); --sb-heading:var(--muted); --sb-border:var(--border);
   --bs-body-font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 [data-theme="dark"]{
-  --background-color:#08141a; --default-color:#d2e1e7; --heading-color:#f3f7ff; --accent-color:#22d3ce; --surface-color:#11222c;
-  --muted-color:#95aebe; --light-color:#6f8a9d;
-  --border-color:#2a4458; --border-color-light:#1d3141; --border-color-dark:#3b5e77;
-  --success-color:#4ade80; --success-color-light:rgba(74,222,128,.16); --warning-color:#f59e0b; --warning-color-light:rgba(245,158,11,.16);
-  --danger-color:#fb7185; --danger-color-light:rgba(251,113,133,.16); --info-color:#38bdf8; --info-color-light:rgba(56,189,248,.16);
-  --header-bg:rgba(17,34,44,.9); --header-shadow:0 1px 0 rgb(129 161 185 / .16);
-  --sidebar-bg:#081018; --sidebar-border:var(--border-color); --sidebar-color:#b9cde0; --sidebar-muted-color:#7b92a8;
-  --sidebar-hover-bg:rgba(34,211,206,.14); --sidebar-active-bg:rgba(34,211,206,.2);
-  --table-header-bg:#0d1a24; --table-hover-bg:#173042; --input-bg:#0c1822; --input-focus-ring:rgb(34 211 206 / .25);
-  --shadow-md:0 14px 36px -20px rgb(0 0 0 / .75),0 8px 18px -12px rgb(6 14 21 / .82);
+  --bg:#0e1120; --card:#161a2e; --surface-color:#161a2e; --text:#e7eaf6; --muted:#98a0bd; --muted-color:#98a0bd;
+  --border:#262b45; --border-color:#262b45; --sidebar:#121528; --sidebar-text:#9aa3c0; --input:#1d2239;
+  --primary:#6f8bff; --primary-dark:#566fe6; --accent-color:#6f8bff; --sb-active-bg:rgba(111,139,255,.16); --shadow:0 1px 3px rgba(0,0,0,.45),0 6px 20px rgba(0,0,0,.3);
 }
 
 /* ===== BASE (neutralises Bootstrap defaults that would shift the layout) ===== */
@@ -77,7 +56,7 @@ a{color:var(--primary);text-decoration:none}
 a:hover{color:var(--primary-dark);text-decoration:none}
 .card{display:block;color:var(--text);height:auto}
 .btn{--bs-btn-color:#fff;--bs-btn-bg:var(--primary);--bs-btn-hover-color:#fff;--bs-btn-hover-bg:var(--primary-dark);--bs-btn-active-color:#fff;--bs-btn-active-bg:var(--primary-dark);
-  --bs-btn-border-color:transparent;--bs-btn-hover-border-color:transparent;--bs-btn-active-border-color:transparent;--bs-btn-disabled-color:#fff;--bs-btn-disabled-bg:var(--primary);--bs-btn-focus-shadow-rgb:14,165,164;line-height:1.4}
+  --bs-btn-border-color:transparent;--bs-btn-hover-border-color:transparent;--bs-btn-active-border-color:transparent;--bs-btn-disabled-color:#fff;--bs-btn-disabled-bg:var(--primary);--bs-btn-focus-shadow-rgb:79,109,245;line-height:1.4}
 .btn.outline{--bs-btn-color:var(--primary);--bs-btn-bg:transparent;--bs-btn-hover-color:#fff;--bs-btn-hover-bg:var(--primary);--bs-btn-active-color:#fff;--bs-btn-active-bg:var(--primary);--bs-btn-border-color:var(--primary);--bs-btn-hover-border-color:var(--primary);--bs-btn-active-border-color:var(--primary)}
 .btn.ghost{--bs-btn-bg:rgba(255,255,255,.18);--bs-btn-hover-bg:rgba(255,255,255,.3);--bs-btn-active-bg:rgba(255,255,255,.3)}
 .btn.danger{--bs-btn-bg:var(--bad);--bs-btn-hover-bg:#b02a37;--bs-btn-active-bg:#b02a37}
@@ -100,7 +79,7 @@ a.chip{text-decoration:none;display:inline-block}
 .hsearch{position:relative;flex:1;max-width:380px;margin-left:8px;min-width:120px}
 .hsearch i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
 .hsearch input{width:100%;height:40px;padding:0 14px 0 38px;border:1px solid var(--border);border-radius:10px;background:var(--input);color:var(--text);outline:none}
-.hsearch input:focus{border-color:var(--primary)}
+.hsearch input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,109,245,.15)}
 .hright{margin-left:auto;display:flex;align-items:center;gap:10px}
 .utc{font-size:12px;color:var(--muted);text-align:right;line-height:1.25}
 .utc b{display:block;color:var(--text);font-size:14px;font-variant-numeric:tabular-nums}
@@ -114,423 +93,22 @@ a.chip{text-decoration:none;display:inline-block}
 .icon-btn:hover{background:var(--input)}
 
 /* ===== LAYOUT: sidebar + main ===== */
-/* ===== SIDEBAR (ported from the FlexAdmin template) ===== */
-.sidebar{position:fixed;top:var(--hdr);left:0;bottom:0;width:var(--sbw);background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);box-shadow:14px 0 34px -26px rgba(15,23,40,.38);z-index:200;display:flex;flex-direction:column;transition:transform var(--transition-base);overflow:hidden}
-[data-theme="dark"] .sidebar{box-shadow:18px 0 44px -28px rgba(0,0,0,.8)}
-/*--------------------------------------------------------------
-# Navigation
---------------------------------------------------------------*/
-.sidebar-nav {
-  flex: 1;
-  padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--sidebar-muted-color), transparent 42%) transparent;
-}
-
-.sidebar-nav::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--sidebar-muted-color), transparent 42%);
-  border-radius: 4px;
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--sidebar-muted-color), transparent 24%);
-}
-
-.sidebar .nav-menu,
-.sidebar .nav-submenu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar .nav-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.sidebar .nav-heading {
-  padding: 16px 12px 6px;
-  font-size: 0.64rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--sidebar-muted-color);
-  white-space: nowrap;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sidebar .nav-heading::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: color-mix(in srgb, var(--sidebar-muted-color), transparent 78%);
-}
-
-.sidebar .nav-item {
-  position: relative;
-}
-
-.sidebar .nav-item>.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: var(--radius-lg);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--sidebar-color);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-  position: relative;
-}
-
-.sidebar .nav-item>.nav-link:hover {
-  background: var(--sidebar-hover-bg);
-  color: var(--heading-color);
-}
-
-.sidebar .nav-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--accent-color), transparent 92%);
-  color: color-mix(in srgb, var(--accent-color), black 12%);
-  flex-shrink: 0;
-  transition: all var(--transition-fast);
-}
-
-.sidebar .nav-icon i {
-  font-size: 1.125rem;
-}
-
-.sidebar .nav-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-}
-
-.sidebar .nav-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 7px;
-  height: 18px;
-  border-radius: var(--radius-full);
-  background: var(--accent-color);
-  color: var(--contrast-color);
-  font-size: 0.625rem;
-  font-weight: 700;
-  line-height: 1;
-  margin-left: auto;
-}
-
-.sidebar .nav-badge-soft {
-  background: color-mix(in srgb, var(--accent-color), transparent 84%);
-  color: color-mix(in srgb, var(--accent-color), black 8%);
-}
-
-.sidebar .nav-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  color: var(--sidebar-muted-color);
-  transition: transform var(--transition-fast), color var(--transition-fast);
-}
-
-.sidebar .nav-arrow i {
-  font-size: 0.625rem;
-}
-
-.sidebar .nav-link[aria-expanded=true]>.nav-arrow,
-.sidebar .has-submenu.open>.nav-link>.nav-arrow {
-  transform: rotate(90deg);
-  color: var(--accent-color);
-}
-
-.sidebar .nav-item>.nav-link.active {
-  color: var(--contrast-color);
-  background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color), black 12%));
-  box-shadow: 0 12px 20px -14px color-mix(in srgb, var(--accent-color), black 18%);
-}
-
-.sidebar .nav-item>.nav-link.active .nav-icon {
-  background: rgba(255, 255, 255, 0.18);
-  color: var(--contrast-color);
-}
-
-.sidebar .nav-item>.nav-link.active .nav-badge-soft,
-.sidebar .nav-item>.nav-link.active .nav-badge {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--contrast-color);
-}
-
-.sidebar .nav-item>.nav-link.active .nav-arrow {
-  color: var(--contrast-color);
-}
-
-.sidebar .nav-item.has-submenu.open>.nav-link:not(.active) {
-  background: color-mix(in srgb, var(--accent-color), transparent 90%);
-  color: var(--heading-color);
-}
-
-.sidebar .nav-item.has-submenu.open>.nav-link:not(.active) .nav-icon {
-  background: color-mix(in srgb, var(--accent-color), transparent 84%);
-}
-
-/*--------------------------------------------------------------
-# Submenus
---------------------------------------------------------------*/
-.sidebar .nav-submenu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--transition-base);
-}
-
-.sidebar .has-submenu.open>.nav-submenu,
-.sidebar .nav-submenu.show {
-  margin-top: 4px;
-}
-
-.sidebar .nav-submenu>li {
-  position: relative;
-}
-
-.sidebar .nav-submenu>li>.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 14px;
-  padding: 7px 10px 7px 12px;
-  border-radius: var(--radius-md);
-  font-size: 0.785rem;
-  font-weight: 500;
-  color: var(--sidebar-muted-color);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.sidebar .nav-submenu>li>.nav-link:hover {
-  color: var(--sidebar-color);
-  background: color-mix(in srgb, var(--accent-color), transparent 92%);
-}
-
-.sidebar .nav-submenu>li>.nav-link.active {
-  color: color-mix(in srgb, var(--accent-color), black 8%);
-  background: color-mix(in srgb, var(--accent-color), transparent 86%);
-  font-weight: 700;
-}
-
-.sidebar .nav-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  border: 2px solid currentColor;
-  opacity: 0.34;
-  flex-shrink: 0;
-  transition: all var(--transition-fast);
-}
-
-.sidebar .nav-submenu>li>.nav-link:hover .nav-dot,
-.sidebar .nav-submenu>li>.nav-link.active .nav-dot {
-  opacity: 1;
-  background: currentColor;
-}
-
-.sidebar .nav-submenu .has-submenu>.nav-link {
-  font-weight: 600;
-}
-
-.sidebar .nav-submenu .has-submenu>.nav-link .nav-arrow {
-  margin-left: auto;
-}
-
-.sidebar .nav-submenu .has-submenu.open>.nav-link>.nav-arrow {
-  transform: rotate(90deg);
-}
-
-.sidebar .nav-submenu .has-submenu.open>.nav-submenu {
-  margin-top: 4px;
-}
-
-.sidebar .nav-submenu .nav-submenu>li>.nav-link {
-  margin-left: 28px;
-  font-size: 0.75rem;
-}
-
-.sidebar .nav-submenu .nav-submenu .nav-dot {
-  width: 6px;
-  height: 6px;
-}
-
-/*--------------------------------------------------------------
-# Footer
---------------------------------------------------------------*/
-.sidebar-footer {
-  margin-top: auto;
-  padding: var(--spacing-sm);
-  border-top: 1px solid var(--sidebar-border);
-}
-
-.sidebar-footer-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: var(--radius-xl);
-  background: color-mix(in srgb, var(--accent-color), transparent 93%);
-  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 82%);
-}
-
-.sidebar-footer-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  flex: 1;
-  text-decoration: none;
-}
-
-.sidebar-footer-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  -o-object-fit: cover;
-  object-fit: cover;
-  border: 2px solid color-mix(in srgb, var(--accent-color), transparent 70%);
-  flex-shrink: 0;
-}
-
-.sidebar-footer-info {
-  min-width: 0;
-}
-
-.sidebar-footer-name {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--heading-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sidebar-footer-role {
-  font-size: 0.675rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--sidebar-muted-color);
-  font-weight: 600;
-}
-
-.sidebar-footer-actions {
-  display: flex;
-  gap: 4px;
-}
-
-.sidebar-footer-action {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: var(--sidebar-muted-color);
-  transition: all var(--transition-fast);
-}
-
-.sidebar-footer-action:hover {
-  background: var(--sidebar-hover-bg);
-  color: var(--sidebar-color);
-}
-
-.sidebar-footer-action i {
-  font-size: 0.9rem;
-}
-
-.sidebar-footer-logout:hover {
-  color: var(--danger-color);
-  background: color-mix(in srgb, var(--danger-color), transparent 86%);
-}
-
-.sidebar-help-card {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: var(--radius-lg);
-  border: 1px dashed color-mix(in srgb, var(--accent-color), transparent 72%);
-  padding: 8px 10px;
-  text-decoration: none;
-  color: var(--sidebar-muted-color);
-  font-size: 0.72rem;
-  font-weight: 600;
-  transition: all var(--transition-fast);
-}
-
-.sidebar-help-card:hover {
-  border-color: color-mix(in srgb, var(--accent-color), transparent 46%);
-  background: color-mix(in srgb, var(--accent-color), transparent 93%);
-  color: var(--sidebar-color);
-}
-
-.sidebar-help-card i {
-  font-size: 0.78rem;
-}
-
-.sidebar-help-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color), transparent 88%);
-  flex-shrink: 0;
-}
-
-.sidebar-help-text {
-  flex: 1;
-  line-height: 1.25;
-}
-
-
-.sidebar-footer-avatar{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;font-weight:700;font-size:14px}
-.sidebar-footer-role .badge{display:none}
-.sidebar-copy{padding:8px 4px 2px;text-align:center;font-size:11px;color:var(--sidebar-muted-color)}
-.sidebar .nav-link.locked{opacity:.55;cursor:not-allowed}
-.sidebar .nav-link.locked:hover{background:transparent;color:var(--sidebar-color)}
-.sidebar .pill{margin-left:auto;display:inline-flex;align-items:center;gap:4px;height:18px;padding:0 7px;border-radius:var(--radius-full);background:linear-gradient(135deg,#f5c542,#d9a400);color:#201f1e;font-size:.6rem;font-weight:700;white-space:nowrap;flex-shrink:0}
-.sidebar .nav-text{min-width:0}
-.sidebar .nav-link{text-decoration:none}
-/* header + buttons in the template style */
-.header{background:var(--header-bg);-webkit-backdrop-filter:saturate(140%) blur(8px);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--header-border);box-shadow:var(--header-shadow)}
-.hbtn{border-radius:12px}
-.hbtn:hover{border-color:color-mix(in srgb,var(--accent-color),transparent 40%);color:var(--accent-color);background:color-mix(in srgb,var(--accent-color),transparent 92%)}
-.hsearch input:focus,.input:focus{box-shadow:0 0 0 3px var(--input-focus-ring)}
-.input,select.input,textarea.input{background:var(--input-bg)}
-th{background:var(--table-header-bg)}
-.cdbox th{background:var(--table-header-bg)}
-tr:hover td{background:var(--table-hover-bg)}
-.page-head h1,.card h3{color:var(--heading-color)}
-.card{border-radius:var(--radius-lg)}
-
+.sidebar{position:fixed;top:var(--hdr);left:0;bottom:0;width:var(--sbw);background:var(--sidebar);border-right:1px solid var(--sb-border);display:flex;flex-direction:column;overflow-y:auto;z-index:200;transition:transform .25s ease}
+.snav{padding:8px 12px;flex:1}
+.nav-heading{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sb-heading);opacity:.85;padding:16px 12px 6px}
+.snav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--sidebar-text);font-weight:600;font-size:14px;margin-bottom:2px;transition:.15s}
+.snav a>i:first-child{font-size:18px;width:20px;text-align:center}
+.snav a:hover{background:var(--sb-hover-bg);color:var(--sb-hover-text)}
+.snav a.active{background:var(--sb-active-bg);color:var(--sb-active-text)}
+.snav .chev{margin-left:auto;font-size:12px;transition:.2s}
+.has-sub.open>a .chev{transform:rotate(90deg)}
+.sub-list{display:none;margin:2px 0 6px 20px;padding-left:10px;border-left:1px solid var(--border)}
+.has-sub.open .sub-list{display:block}
+.sub-list a{font-weight:500;font-size:13.5px;padding:8px 10px;gap:10px}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5;flex-shrink:0}
+.pill{margin-left:auto;font-size:10px;background:var(--gold);color:#201f1e;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap}
+.pill.lock{display:inline-flex;align-items:center;gap:4px}
+.side-foot{padding:14px 18px;font-size:12px;color:var(--muted);border-top:1px solid var(--border)}
 .main{margin-left:var(--sbw);padding-top:var(--hdr);min-height:100vh;display:flex;flex-direction:column;transition:margin .25s ease}
 .content{padding:24px;max-width:1300px;width:100%;margin:0 auto;flex:1}
 .section{display:none}
@@ -561,7 +139,7 @@ tr:hover td{background:var(--table-hover-bg)}
 .page-head h1{font-size:26px;margin-bottom:4px}
 .page-head p{color:var(--muted)}
 .hero{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:var(--radius);padding:30px;margin-bottom:20px;
-  box-shadow:0 10px 24px -12px rgba(14,165,164,.55)}
+  box-shadow:0 6px 18px rgba(0,120,212,.25)}
 .hero h1{font-size:28px;margin-bottom:6px}
 .hero p{opacity:.92;max-width:640px}
 .hero .btns{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
@@ -590,7 +168,7 @@ tr:hover td{background:var(--table-hover-bg)}
 .chip.active,.chip:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
 .input,select.input,textarea.input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--input);
   color:var(--text);font-size:14px}
-.input:focus{outline:none;border-color:var(--primary)}
+.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,120,212,.2)}
 label.l{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
 .toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
 .toolbar .input{max-width:340px}
@@ -658,6 +236,9 @@ details .body ul{padding-left:20px;margin-top:6px}
 .progress>div{height:100%;background:linear-gradient(90deg,var(--ok),#7bd88f);transition:width .3s}
 
 /* locked (premium) menu items */
+.snav a.locked{opacity:.55;cursor:not-allowed}
+.snav a.locked:hover{background:rgba(255,255,255,.04);color:var(--sidebar-text)}
+.snav a .pill.lock{background:linear-gradient(135deg,#f5c542,#d9a400);display:inline-flex;align-items:center;gap:4px}
 .mini{width:32px;height:32px;font-size:13px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)}
 .mini:hover:not(:disabled){background:var(--primary);color:#fff;border-color:var(--primary)}
 .mini.bad:hover:not(:disabled){background:var(--bad);border-color:var(--bad)}
@@ -778,7 +359,7 @@ img{max-width:100%}
   <div class="hright">
     <div class="utc">Server time (UTC)<b id="utcClock">--:--:--</b></div>
     <button class="btn hbtn-refresh" id="refreshBtn" title="Refresh data"><i class="bi bi-arrow-repeat"></i><span>Refresh</span></button>
-    <button class="hbtn" id="themeBtn" title="Toggle dark mode"><i class="ph-light ph-moon-stars"></i></button>
+    <button class="hbtn" id="themeBtn" title="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
     <div class="dropdown">
       <button class="user-trigger dropdown-toggle" id="userChip" data-bs-toggle="dropdown" aria-expanded="false">
         <div class="avatar" id="avatar">?</div>
@@ -794,40 +375,40 @@ img{max-width:100%}
 </header>
 
 <aside class="sidebar" id="sidebar">
-  <nav class="sidebar-nav" id="nav"><ul class="nav-menu">
-    <li class="nav-heading"><span>Main</span></li>
-    <li class="nav-item"><a class="nav-link" href="#overview" data-s="overview"><span class="nav-icon"><i class="ph-light ph-squares-four"></i></span><span class="nav-text">Overview</span></a></li>
-    <li class="nav-item has-submenu"><a class="nav-link sub-toggle" href="#" aria-expanded="false"><span class="nav-icon"><i class="ph-light ph-calendar-blank"></i></span><span class="nav-text">Events &amp; Calendar</span><span class="nav-arrow"><i class="bi bi-chevron-right"></i></span></a><ul class="nav-submenu"><li><a class="nav-link" href="#events" data-s="events"><span class="nav-dot"></span>Calendar</a></li><li><a class="nav-link" href="#eventlist" data-s="eventlist"><span class="nav-dot"></span>All Events</a></li></ul></li>
-    <li class="nav-item has-submenu"><a class="nav-link sub-toggle" href="#" aria-expanded="false"><span class="nav-icon"><i class="ph-light ph-treasure-chest"></i></span><span class="nav-text">Clan Chests</span><span class="nav-arrow"><i class="bi bi-chevron-right"></i></span></a><ul class="nav-submenu"><li><a class="nav-link" href="#members" data-s="members"><span class="nav-dot"></span>Weekly Chests</a></li><li><a class="nav-link" href="#chestdefs" data-s="chestdefs"><span class="nav-dot"></span>Chest Definitions</a></li></ul></li>
-    <li class="nav-heading"><span>Premium Resources</span></li>
-    <li class="nav-item"><a class="nav-link" href="#tutorials" data-s="tutorials"><span class="nav-icon"><i class="ph-light ph-graduation-cap"></i></span><span class="nav-text">Premium Tutorials</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#loadouts" data-s="loadouts"><span class="nav-icon"><i class="ph-light ph-shield-check"></i></span><span class="nav-text">Equipment Loadouts</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#strategies" data-s="strategies"><span class="nav-icon"><i class="ph-light ph-strategy"></i></span><span class="nav-text">Pro Strategies</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#guides" data-s="guides"><span class="nav-icon"><i class="ph-light ph-book-open-text"></i></span><span class="nav-text">Game Guides</span></a></li>
-    <li class="nav-heading"><span>Tools</span></li>
-    <li class="nav-item"><a class="nav-link" href="#checklist" data-s="checklist"><span class="nav-icon"><i class="ph-light ph-check-square"></i></span><span class="nav-text">Daily Checklist</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#tools" data-s="tools"><span class="nav-icon"><i class="ph-light ph-calculator"></i></span><span class="nav-text">Calculators</span></a></li>
-    <li class="nav-heading"><span>Clan</span></li>
-    <li class="nav-item"><a class="nav-link" href="#rules" data-s="rules"><span class="nav-icon"><i class="ph-light ph-scroll"></i></span><span class="nav-text">Clan Rules &amp; Contact</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#account" data-s="account"><span class="nav-icon"><i class="ph-light ph-user-gear"></i></span><span class="nav-text">My Account</span></a></li>
-    <li class="nav-heading" id="adminLabel" style="display:none"><span>Administration</span></li>
-    <li class="nav-item" id="navRoles" style="display:none"><a class="nav-link" href="#roles" data-s="roles"><span class="nav-icon"><i class="ph-light ph-users-three"></i></span><span class="nav-text">User Roles</span></a></li>
-    <li class="nav-item" id="navGuideAdmin" style="display:none"><a class="nav-link" href="#guideadmin" data-s="guideadmin"><span class="nav-icon"><i class="ph-light ph-books"></i></span><span class="nav-text">Manage Guides</span></a></li>
-    <li class="nav-item" id="navEventAdmin" style="display:none"><a class="nav-link" href="#eventadmin" data-s="eventadmin"><span class="nav-icon"><i class="ph-light ph-calendar-plus"></i></span><span class="nav-text">Manage Events</span></a></li>
-  </ul></nav>
-  <div class="sidebar-footer">
-    <div class="sidebar-footer-user">
-      <a href="#account" class="sidebar-footer-profile">
-        <div class="sidebar-footer-avatar" id="sbAvatar">?</div>
-        <div class="sidebar-footer-info"><div class="sidebar-footer-name" id="sbName">...</div><div class="sidebar-footer-role" id="sbRole"></div></div>
-      </a>
-      <div class="sidebar-footer-actions">
-        <a href="#account" class="sidebar-footer-action" title="My account"><i class="bi bi-gear"></i></a>
-        <a href="#" class="sidebar-footer-action sidebar-footer-logout" id="sbLogout" title="Sign out"><i class="bi bi-box-arrow-right"></i></a>
+    <nav class="snav" id="nav">
+      <div class="nav-heading">Main</div>
+      <a href="#overview" data-s="overview"><i class="bi bi-grid-1x2"></i><span>Overview</span></a>
+      <div class="has-sub">
+        <a href="#" class="sub-toggle"><i class="bi bi-calendar3"></i><span>Events &amp; Calendar</span><i class="bi bi-chevron-right chev"></i></a>
+        <div class="sub-list">
+          <a href="#events" data-s="events"><span class="dot"></span>Calendar</a>
+          <a href="#eventlist" data-s="eventlist"><span class="dot"></span>All Events</a>
+        </div>
       </div>
-    </div>
-    <div class="sidebar-copy">&copy; 2026 THE Family Gang · 웃 T3li</div>
-  </div>
+      <div class="has-sub">
+        <a href="#" class="sub-toggle"><i class="bi bi-box2-heart"></i><span>Clan Chests</span><i class="bi bi-chevron-right chev"></i></a>
+        <div class="sub-list">
+          <a href="#members" data-s="members"><span class="dot"></span>Weekly Chests</a>
+          <a href="#chestdefs" data-s="chestdefs"><span class="dot"></span>Chest Definitions</a>
+        </div>
+      </div>
+      <div class="nav-heading">Premium Resources</div>
+      <a href="#tutorials" data-s="tutorials"><i class="bi bi-mortarboard"></i><span>Premium Tutorials</span></a>
+      <a href="#loadouts" data-s="loadouts"><i class="bi bi-shield-check"></i><span>Equipment Loadouts</span></a>
+      <a href="#strategies" data-s="strategies"><i class="bi bi-diagram-3"></i><span>Pro Strategies</span></a>
+      <a href="#guides" data-s="guides"><i class="bi bi-journal-richtext"></i><span>Game Guides</span></a>
+      <div class="nav-heading">Tools</div>
+      <a href="#checklist" data-s="checklist"><i class="bi bi-check2-square"></i><span>Daily Checklist</span></a>
+      <a href="#tools" data-s="tools"><i class="bi bi-calculator"></i><span>Calculators</span></a>
+      <div class="nav-heading">Clan</div>
+      <a href="#rules" data-s="rules"><i class="bi bi-journal-text"></i><span>Clan Rules &amp; Contact</span></a>
+      <a href="#account" data-s="account"><i class="bi bi-person-gear"></i><span>My Account</span></a>
+      <div class="nav-heading" id="adminLabel" style="display:none">Administration</div>
+      <a href="#roles" data-s="roles" id="navRoles" style="display:none"><i class="bi bi-person-lock"></i><span>User Roles</span></a>
+      <a href="#guideadmin" data-s="guideadmin" id="navGuideAdmin" style="display:none"><i class="bi bi-book"></i><span>Manage Guides</span></a>
+      <a href="#eventadmin" data-s="eventadmin" id="navEventAdmin" style="display:none"><i class="bi bi-calendar-plus"></i><span>Manage Events</span></a>
+    </nav>
+  <div class="side-foot">&copy; 2026 THE Family Gang<br>웃 T3li · Members only</div>
 </aside>
 <div class="overlay" id="overlay"></div>
 
@@ -1268,18 +849,12 @@ function showSection(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
   const navName = name.startsWith('calc-') ? 'tools' : name;
   document.querySelectorAll('#nav a[data-s]').forEach(a => a.classList.toggle('active', a.dataset.s === navName));
-  document.querySelectorAll('#nav .has-submenu').forEach(g => { if (g.querySelector('.nav-submenu a.active')) setSub(g, true); });
+  document.querySelectorAll('#nav .has-sub').forEach(g => { if (g.querySelector('a.active')) g.classList.add('open'); });
   $('pageTitle').textContent = TITLES[name] || '';
   closeMenu();
   window.scrollTo({ top: 0 });
 }
 const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
-function setSub(g, open) {                                // open/close a sidebar submenu (same behaviour as the template)
-  g.classList.toggle('open', open);
-  const ul = g.querySelector(':scope > .nav-submenu'), a = g.querySelector(':scope > .nav-link');
-  if (ul) ul.style.maxHeight = open ? ul.scrollHeight + 'px' : '';
-  if (a) a.setAttribute('aria-expanded', open ? 'true' : 'false');
-}
 function toggleSidebar() {
   if (window.innerWidth >= 992) {
     document.body.classList.toggle('sb-collapsed');
@@ -1291,7 +866,7 @@ window.addEventListener('hashchange', () => showSection(location.hash.slice(1)))
 function applyTheme(t) {
   document.documentElement.dataset.theme = t;
   document.documentElement.setAttribute('data-bs-theme', t);
-  const b = $('themeBtn'); if (b) b.innerHTML = '<i class="ph-light ph-' + (t === 'dark' ? 'sun' : 'moon-stars') + '"></i>';
+  const b = $('themeBtn'); if (b) b.innerHTML = '<i class="bi bi-' + (t === 'dark' ? 'sun' : 'moon-stars') + '"></i>';
   try { localStorage.setItem('tb_theme', t); } catch (e) {}
 }
 
@@ -1301,10 +876,10 @@ function applyTheme(t) {
 function renderOverview() {
   const ps = CH.players || [];
   $('statCards').innerHTML = [
-    ['fa-users', '#0ea5a4', ps.length || '-', 'Clan Members'],
-    ['fa-bullseye', '#0284c7', fmt(CH.target), 'Weekly Chest Target'],
-    ['fa-graduation-cap', '#d97706', CONTENT.tutorials.length, 'Tutorials'],
-    ['fa-book-open', '#16a34a', GD.guides.length || '-', 'Game Guides']
+    ['fa-users', '#0078d4', ps.length || '-', 'Clan Members'],
+    ['fa-bullseye', '#7c4dbd', fmt(CH.target), 'Weekly Chest Target'],
+    ['fa-graduation-cap', '#d9a400', CONTENT.tutorials.length, 'Tutorials'],
+    ['fa-book-open', '#28a745', GD.guides.length || '-', 'Game Guides']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
     <div><b style="font-size:${String(v).length > 9 ? 16 : 24}px">${esc(v)}</b><span>${l}</span></div></div>`).join('');
 
@@ -1704,7 +1279,7 @@ function guideDoc(html) {
 function mountGuideFrame(host, html) {
   const f = document.createElement('iframe');
   f.className = 'gframe'; f.title = 'Guide content';
-  f.setAttribute('sandbox', 'allow-same-origin allow-popups');   // no scripts can run
+  f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');   // no scripts can run
   const fit = () => { try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {} };
   f.onload = () => { fit(); f.contentDocument.querySelectorAll('img').forEach(i => i.addEventListener('load', fit)); setTimeout(fit, 400); };
   let w = 0; if (window.ResizeObserver) new ResizeObserver(() => { if (host.clientWidth !== w) { w = host.clientWidth; fit(); } }).observe(host);
@@ -2162,10 +1737,10 @@ function renderMembers() {                       // Clan Chests page
   if (!CH.ok) { $('chStats').innerHTML = ''; $('chTable').innerHTML = `<tr><td class="muted">${esc(CH.err || 'Loading chest data...')}</td></tr>`; return; }
   const ps = CH.players;
   $('chStats').innerHTML = [
-    ['fa-users', '#0ea5a4', fmt(ps.length), 'Total Members'],
-    ['fa-bullseye', '#d97706', fmt(CH.target), 'Required Chests / Week'],
-    ['fa-box-open', '#16a34a', fmt(ps.reduce((s, p) => s + chN(p.chests), 0)), 'Total Chests Collected'],
-    ['fa-star', '#0284c7', fmt(ps.reduce((s, p) => s + chN(p.points), 0)), 'Total Points Collected']
+    ['fa-users', '#0078d4', fmt(ps.length), 'Total Members'],
+    ['fa-bullseye', '#d9a400', fmt(CH.target), 'Required Chests / Week'],
+    ['fa-box-open', '#28a745', fmt(ps.reduce((s, p) => s + chN(p.chests), 0)), 'Total Chests Collected'],
+    ['fa-star', '#7c4dbd', fmt(ps.reduce((s, p) => s + chN(p.points), 0)), 'Total Points Collected']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div><div><b>${v}</b><span>${l}</span></div></div>`).join('');
   $('chTopWeek').innerHTML = chBars([...ps].sort((a, b) => chN(b.points) - chN(a.points)).slice(0, 5).map(p => ({ name: p.name, points: chN(p.points) })));
   $('chMonthName').textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -2410,7 +1985,6 @@ async function refreshAll() {
     currentUser = r.user;
     $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
     $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
-    $('sbRole').textContent = currentUser.roleLabel || currentUser.role;
     applyPermissions(); renderAccount();
     const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
     if (isAdmin()) jobs.push(loadAdmin());
@@ -2430,8 +2004,6 @@ function startApp() {
   $('heroName').textContent = name;
   $('avatar').textContent = name.charAt(0).toUpperCase();
   $('topName').textContent = name;
-  $('sbName').textContent = name; $('sbAvatar').textContent = name.charAt(0).toUpperCase();
-  $('sbRole').textContent = currentUser.roleLabel || currentUser.role;
   $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
   $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
   applyPermissions();
@@ -2442,7 +2014,7 @@ function startApp() {
   document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
   $('nav').addEventListener('click', (e) => {
     const t = e.target.closest('.sub-toggle');
-    if (t) { e.preventDefault(); setSub(t.parentElement, !t.parentElement.classList.contains('open')); return; }
+    if (t) { e.preventDefault(); t.parentElement.classList.toggle('open'); return; }
     const a = e.target.closest('a.locked');
     if (a) { e.preventDefault(); toast('🔒 "' + TITLES[a.dataset.s] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err'); }
   });
@@ -2451,7 +2023,6 @@ function startApp() {
   $('overlay').onclick = closeMenu;
   $('themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
   $('logoutTop').onclick = logout; $('logoutBtn').onclick = logout;
-  $('sbLogout').onclick = (e) => { e.preventDefault(); logout(); };
   $('refreshBtn').onclick = refreshAll;
   $('modalBg').onclick = (e) => { if (e.target === $('modalBg')) closeModal(); };
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
