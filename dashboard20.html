@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  
 <script>
 
 (function () {
@@ -16,117 +17,64 @@
   window.__AUTH.catch(function () {});   // avoid unhandled-rejection noise; authInit handles errors
 })();
 </script>
-<script>try{var __t=localStorage.getItem('tb_theme')||'light';document.documentElement.dataset.theme=__t;document.documentElement.setAttribute('data-bs-theme',__t);}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THE Family Gang | Member Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-/* ===== THEME TOKENS (names follow the new admin theme; old names kept as aliases) ===== */
 :root{
-  --accent-color:#4f6df5; --primary:#4f6df5; --primary-dark:#3c56d4; --accent:#8b5cf6; --gold:#d9a400;
-  --bg:#f4f6fb; --card:#ffffff; --surface-color:#ffffff; --text:#1f2a44; --muted:#6b7690; --muted-color:#6b7690;
-  --border:#e6e9f2; --border-color:#e6e9f2; --sidebar:#ffffff; --sidebar-text:#55607a; --input:#f5f7fc;
-  --ok:#16a34a; --success-color:#16a34a; --warn:#f59e0b; --warning-color:#f59e0b; --bad:#dc3545; --info-color:#0ea5e9;
-  --shadow:0 1px 3px rgba(20,30,60,.06),0 6px 20px rgba(20,30,60,.05); --radius:14px;
-  --hdr:64px; --sbw:262px;
-  /* SIDEBAR / HEADER COLOURS: change these to restyle the left menu */
-  --sb-hover-bg:var(--input); --sb-hover-text:var(--text); --sb-active-bg:rgba(79,109,245,.13); --sb-active-text:var(--primary); --sb-heading:var(--muted); --sb-border:var(--border);
-  --bs-body-font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --primary:#0078d4; --primary-dark:#005a9e; --accent:#7c4dbd; --gold:#d9a400;
+  --bg:#f3f2f1; --card:#ffffff; --text:#323130; --muted:#605e5c; --border:#e1dfdd;
+  --sidebar:#201f1e; --sidebar-text:#c8c6c4; --input:#faf9f8;
+  --ok:#28a745; --warn:#f0a500; --bad:#dc3545;
+  --shadow:0 2px 8px rgba(0,0,0,.08); --radius:12px;
 }
 [data-theme="dark"]{
-  --bg:#0e1120; --card:#161a2e; --surface-color:#161a2e; --text:#e7eaf6; --muted:#98a0bd; --muted-color:#98a0bd;
-  --border:#262b45; --border-color:#262b45; --sidebar:#121528; --sidebar-text:#9aa3c0; --input:#1d2239;
-  --primary:#6f8bff; --primary-dark:#566fe6; --accent-color:#6f8bff; --sb-active-bg:rgba(111,139,255,.16); --shadow:0 1px 3px rgba(0,0,0,.45),0 6px 20px rgba(0,0,0,.3);
+  --bg:#141413; --card:#1f1e1d; --text:#f3f2f1; --muted:#a19f9d; --border:#3b3a39;
+  --sidebar:#0f0f0e; --input:#2b2a29; --shadow:0 2px 8px rgba(0,0,0,.4);
 }
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
 
-/* ===== BASE (neutralises Bootstrap defaults that would shift the layout) ===== */
-html{scroll-behavior:smooth}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.45;font-size:14.5px}
-p,h1,h2,h3,h4,h5,h6,ul,ol,dl,figure,blockquote,label,pre,hr{margin:0}
-h1,h2,h3,h4,h5,h6{font-family:'Sora','Manrope',sans-serif;font-weight:600;line-height:1.25}
-button,input,select,textarea{font-family:inherit}
-button{cursor:pointer}
-a{color:var(--primary);text-decoration:none}
-a:hover{color:var(--primary-dark);text-decoration:none}
-.card{display:block;color:var(--text);height:auto}
-.btn{--bs-btn-color:#fff;--bs-btn-bg:var(--primary);--bs-btn-hover-color:#fff;--bs-btn-hover-bg:var(--primary-dark);--bs-btn-active-color:#fff;--bs-btn-active-bg:var(--primary-dark);
-  --bs-btn-border-color:transparent;--bs-btn-hover-border-color:transparent;--bs-btn-active-border-color:transparent;--bs-btn-disabled-color:#fff;--bs-btn-disabled-bg:var(--primary);--bs-btn-focus-shadow-rgb:79,109,245;line-height:1.4}
-.btn.outline{--bs-btn-color:var(--primary);--bs-btn-bg:transparent;--bs-btn-hover-color:#fff;--bs-btn-hover-bg:var(--primary);--bs-btn-active-color:#fff;--bs-btn-active-bg:var(--primary);--bs-btn-border-color:var(--primary);--bs-btn-hover-border-color:var(--primary);--bs-btn-active-border-color:var(--primary)}
-.btn.ghost{--bs-btn-bg:rgba(255,255,255,.18);--bs-btn-hover-bg:rgba(255,255,255,.3);--bs-btn-active-bg:rgba(255,255,255,.3)}
-.btn.danger{--bs-btn-bg:var(--bad);--bs-btn-hover-bg:#b02a37;--bs-btn-active-bg:#b02a37}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-a.chip{text-decoration:none;display:inline-block}
-.dropdown-menu{--bs-dropdown-bg:var(--card);--bs-dropdown-color:var(--text);--bs-dropdown-border-color:var(--border);--bs-dropdown-link-color:var(--text);--bs-dropdown-link-hover-bg:var(--input);--bs-dropdown-link-hover-color:var(--text);--bs-dropdown-divider-bg:var(--border);font-size:14px;box-shadow:var(--shadow)}
-.dropdown-item i{margin-right:8px;color:var(--muted)}
-
-/* ===== LAYOUT: header ===== */
-.header{position:fixed;top:0;left:0;right:0;height:var(--hdr);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 16px;z-index:300}
-.hbtn{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);display:inline-flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.hbtn:hover{background:var(--input)}
-.brand{display:flex;align-items:center;gap:10px;color:var(--text)}
-.brand:hover{color:var(--text)}
-.brand-icon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.navbar-logo{height:26px;width:auto;object-fit:contain;filter:brightness(0) invert(1)}
-.brand-text b{display:block;font-family:'Sora',sans-serif;font-size:15px;line-height:1.15;white-space:nowrap}
-.brand-text small{color:var(--muted);font-size:11.5px;white-space:nowrap}
-.page-title-top{font-size:15px;font-weight:600;padding-left:14px;margin-left:4px;border-left:1px solid var(--border);white-space:nowrap}
-.hsearch{position:relative;flex:1;max-width:380px;margin-left:8px;min-width:120px}
-.hsearch i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
-.hsearch input{width:100%;height:40px;padding:0 14px 0 38px;border:1px solid var(--border);border-radius:10px;background:var(--input);color:var(--text);outline:none}
-.hsearch input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,109,245,.15)}
-.hright{margin-left:auto;display:flex;align-items:center;gap:10px}
-.utc{font-size:12px;color:var(--muted);text-align:right;line-height:1.25}
-.utc b{display:block;color:var(--text);font-size:14px;font-variant-numeric:tabular-nums}
-.hbtn-refresh{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:10px;font-size:13.5px}
-.user-trigger{display:flex;align-items:center;gap:10px;padding:4px 12px 4px 4px;border:1px solid var(--border);border-radius:40px;background:var(--input);color:var(--text)}
-.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
-.user-brief{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left}
-.user-name{font-weight:700;font-size:13px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.user-brief .badge{margin-top:2px;font-size:9.5px;padding:1px 7px}
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--sidebar);color:var(--sidebar-text);display:flex;flex-direction:column;
+  position:fixed;inset:0 auto 0 0;z-index:200;transition:transform .25s ease;overflow-y:auto}
+.brand{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px}
+.brand-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0}
+.brand h1{font-size:16px;color:#fff;line-height:1.2}
+.brand small{font-size:12px;color:#8a8886}
+.nav{padding:12px 10px;flex:1}
+.nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#6e6c6a;padding:14px 12px 6px}
+.nav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;color:var(--sidebar-text);
+  text-decoration:none;font-size:14.5px;margin-bottom:2px;transition:.15s}
+.nav a i{width:20px;text-align:center;font-size:15px}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.active{background:var(--primary);color:#fff}
+.nav a .pill{margin-left:auto;font-size:10px;background:var(--gold);color:#201f1e;padding:2px 7px;border-radius:20px;font-weight:700}
+.side-foot{padding:14px 18px;font-size:12px;color:#6e6c6a;border-top:1px solid rgba(255,255,255,.08)}
+.main{flex:1;margin-left:260px;min-width:0;display:flex;flex-direction:column}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;
+  gap:14px;position:sticky;top:0;z-index:100}
+.topbar h2{font-size:19px;flex:1}
 .icon-btn{background:none;border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:8px;font-size:15px}
 .icon-btn:hover{background:var(--input)}
-
-/* ===== LAYOUT: sidebar + main ===== */
-.sidebar{position:fixed;top:var(--hdr);left:0;bottom:0;width:var(--sbw);background:var(--sidebar);border-right:1px solid var(--sb-border);display:flex;flex-direction:column;overflow-y:auto;z-index:200;transition:transform .25s ease}
-.snav{padding:8px 12px;flex:1}
-.nav-heading{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sb-heading);opacity:.85;padding:16px 12px 6px}
-.snav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--sidebar-text);font-weight:600;font-size:14px;margin-bottom:2px;transition:.15s}
-.snav a>i:first-child{font-size:18px;width:20px;text-align:center}
-.snav a:hover{background:var(--sb-hover-bg);color:var(--sb-hover-text)}
-.snav a.active{background:var(--sb-active-bg);color:var(--sb-active-text)}
-.snav .chev{margin-left:auto;font-size:12px;transition:.2s}
-.has-sub.open>a .chev{transform:rotate(90deg)}
-.sub-list{display:none;margin:2px 0 6px 20px;padding-left:10px;border-left:1px solid var(--border)}
-.has-sub.open .sub-list{display:block}
-.sub-list a{font-weight:500;font-size:13.5px;padding:8px 10px;gap:10px}
-.dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5;flex-shrink:0}
-.pill{margin-left:auto;font-size:10px;background:var(--gold);color:#201f1e;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap}
-.pill.lock{display:inline-flex;align-items:center;gap:4px}
-.side-foot{padding:14px 18px;font-size:12px;color:var(--muted);border-top:1px solid var(--border)}
-.main{margin-left:var(--sbw);padding-top:var(--hdr);min-height:100vh;display:flex;flex-direction:column;transition:margin .25s ease}
-.content{padding:24px;max-width:1300px;width:100%;margin:0 auto;flex:1}
+#menuBtn{display:none}
+.utc{font-size:13px;color:var(--muted);text-align:right;line-height:1.3}
+.utc b{color:var(--text);font-size:15px;font-variant-numeric:tabular-nums}
+.user-chip{display:flex;align-items:center;gap:10px;padding:5px 12px 5px 5px;border:1px solid var(--border);border-radius:30px;
+  background:var(--input);cursor:pointer}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.user-chip span{font-size:13px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.content{padding:26px;max-width:1250px;width:100%;margin:0 auto}
 .section{display:none}
 .section.active{display:block;animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150}
-.footer{padding:16px 24px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-@media(min-width:992px){body.sb-collapsed .sidebar{transform:translateX(-100%)}body.sb-collapsed .main{margin-left:0}}
-@media(max-width:991px){
-  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none}.overlay.show{display:block}
-  .main{margin-left:0}.utc{display:none}.page-title-top,.brand-text small{display:none}
-  .hbtn-refresh span{display:none}.hbtn-refresh{padding:0 12px}.content{padding:16px}
-  .bar-row{grid-template-columns:90px 1fr 70px}
-}
-@media(max-width:600px){.hsearch,.user-brief{display:none}.brand-text{display:none}.user-trigger{padding:4px 8px 4px 4px}}
-@media print{.sidebar,.header,.toolbar,.btn,.overlay{display:none!important}.main{margin:0;padding:0}}
 
-/* ===== components ===== */
 /* ---------- components ---------- */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
 .card h3{font-size:17px;margin-bottom:12px}
@@ -236,9 +184,9 @@ details .body ul{padding-left:20px;margin-top:6px}
 .progress>div{height:100%;background:linear-gradient(90deg,var(--ok),#7bd88f);transition:width .3s}
 
 /* locked (premium) menu items */
-.snav a.locked{opacity:.55;cursor:not-allowed}
-.snav a.locked:hover{background:rgba(255,255,255,.04);color:var(--sidebar-text)}
-.snav a .pill.lock{background:linear-gradient(135deg,#f5c542,#d9a400);display:inline-flex;align-items:center;gap:4px}
+.nav a.locked{opacity:.55;cursor:not-allowed}
+.nav a.locked:hover{background:rgba(255,255,255,.04);color:var(--sidebar-text)}
+.nav a .pill.lock{background:linear-gradient(135deg,#f5c542,#d9a400);display:inline-flex;align-items:center;gap:4px}
 .mini{width:32px;height:32px;font-size:13px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)}
 .mini:hover:not(:disabled){background:var(--primary);color:#fff;border-color:var(--primary)}
 .mini.bad:hover:not(:disabled){background:var(--bad);border-color:var(--bad)}
@@ -253,39 +201,75 @@ details .body ul{padding-left:20px;margin-top:6px}
 /* modal */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:20px}
 .modal-bg.show{display:flex}
-.dmodal{background:var(--card);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;position:relative}
-.dmodal .x{position:absolute;top:14px;right:14px}
-.dmodal h2{margin-bottom:6px;padding-right:40px}
-.dmodal ol{padding-left:22px;margin:12px 0;line-height:1.7;font-size:14.5px}
+.modal{background:var(--card);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;position:relative}
+.modal .x{position:absolute;top:14px;right:14px}
+.modal h2{margin-bottom:6px;padding-right:40px}
+.modal ol{padding-left:22px;margin:12px 0;line-height:1.7;font-size:14.5px}
 .result{margin-top:14px;padding:14px;border-radius:10px;background:var(--input);border:1px solid var(--border);font-size:14px;line-height:1.6}
 .result b{color:var(--primary)}
 
 /* toast + loading */
-.dtoast{position:fixed;bottom:24px;right:24px;background:#323130;color:#fff;padding:13px 20px;border-radius:10px;z-index:900;
+.toast{position:fixed;bottom:24px;right:24px;background:#323130;color:#fff;padding:13px 20px;border-radius:10px;z-index:900;
   box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:14px;animation:fade .2s}
-.dtoast.ok{background:#1e7e34}.dtoast.err{background:#b02a37}
+.toast.ok{background:#1e7e34}.toast.err{background:#b02a37}
 #loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px}
 .spinner{border:4px solid var(--border);border-top:4px solid var(--primary);border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .overlay.show{display:block}
+  .main{margin-left:0}
+  #menuBtn{display:inline-block}
+  .content{padding:16px}
+  .topbar{padding:10px 16px}
+  .utc{display:none}
+  .user-chip span{display:none}
+  .user-chip{padding:5px}
+  .bar-row{grid-template-columns:90px 1fr 70px}
+}
+@media print{.sidebar,.topbar,.toolbar,.btn,.overlay{display:none!important}.main{margin:0}}
 
-/* ===== guides ===== */
+.top-center{display:flex;align-items:center;justify-content:center;gap:10px;flex:0 1 auto;min-width:0}
+.top-center b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.top-right{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:14px}
+#chipName{display:none}            /* name now lives in the center, so keep only the avatar in the chip */
+@media(max-width:900px){.top-center{display:none}}
+
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* guides */
 .gthumb{position:relative;height:130px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-size:38px;margin-bottom:12px}
 .gthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .gcard{cursor:pointer;transition:.2s}.gcard:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
 .gcard.locked{opacity:.6}.gcard h4{font-size:16px;margin-bottom:4px}.gcard p{font-size:13.5px;color:var(--muted)}
+.gread img{width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:12px 0}
+.gread p{margin:0 0 12px;line-height:1.65;font-size:14.5px}
+
+/* guide colours: one light colour per category */
 .gcard.gtint{background:var(--gc);border-color:var(--ga);color:#323130}
 .gcard.gtint p{color:#4a4846}
 .gcard.gtint .gthumb{background:var(--ga)}
 .chip.gcol{background:var(--gc);border-color:var(--ga);color:#323130}
 .chip.gcol:hover,.chip.gcol.active{background:var(--ga);border-color:var(--ga);color:#fff}
+
+/* inline reader + HTML editor */
 .gbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .gart{padding:24px}
 .gframe{width:100%;border:0;display:block;background:transparent}
-.dmodal.wide{max-width:980px}
+.modal.wide{max-width:980px}
 .codebox{font-family:Consolas,Menlo,monospace;font-size:13px;min-height:340px;white-space:pre;tab-size:2;resize:vertical}
 @media(max-width:600px){.gart{padding:14px}}
-/* ===== events + calendar ===== */
+
+/* events */
+.nav a.sub{margin-left:12px;font-size:14px}
+a.chip{text-decoration:none;display:inline-block}
 .evmini{width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--input);border:1px solid var(--border);cursor:pointer}
 .evbig{width:56px;height:56px}
 .evph{display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:700}
@@ -293,51 +277,110 @@ details .body ul{padding-left:20px;margin-top:6px}
 .evrow:last-child{border-bottom:none}.evrow b{font-size:14.5px}.evrow small{color:var(--muted);display:block}
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .mhead{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0}
-.mcell{min-height:78px;border:1px solid var(--border);border-radius:8px;padding:4px;background:var(--card);overflow:hidden}
+.mcell{min-height:78px;border:1px solid #cdcac7;border-radius:8px;padding:4px;background:var(--card);overflow:hidden}
 .mcell.empty{background:transparent;border-color:transparent}
+.mcell.today{border:2px solid #dc354559;background:rgba(220,53,69,.12)}
+.mcell.today .dn{color:#dc3545}
+.mcell.next{border:2px solid #28a74559;background:rgba(40,167,69,.12)}
+.mcell.next .dn{color:#28a745}
+.evd-now{color:#dc3545;font-weight:700}.evd-next{color:#28a745;font-weight:700}
 .mcell.past{opacity:.55}
 .mcell .dn{font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px}
 .mcell .imgs{display:flex;flex-wrap:wrap;gap:3px}
 .mcell .evmini{width:26px;height:26px;border-radius:6px;font-size:11px}
-.mcell.today{border:2px solid #dc3545;background:rgba(220,53,69,.12)}.mcell.today .dn{color:#dc3545}
-.mcell.next{border:2px solid #28a745;background:rgba(40,167,69,.12)}.mcell.next .dn{color:#28a745}
-.evd-now{color:#dc3545;font-weight:700}.evd-next{color:#28a745;font-weight:700}
 @media(max-width:600px){.mcell{min-height:56px;padding:2px}.mcell .evmini{width:18px;height:18px;font-size:9px}.mcell .dn{font-size:10px}.mgrid{gap:2px}}
+
+/* month cells: image only on narrow, image + full name when the calendar is wide */
 #evM1,#evM2{container-type:inline-size}
 .mev{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
 .mname{display:none;font-size:10px;line-height:1.2;overflow-wrap:anywhere;color:var(--text)}
-@container (min-width:640px){.mcell{min-height:110px;padding:5px}.mcell .imgs{flex-direction:column;gap:4px}.mev{display:flex;width:100%}.mcell .evmini{width:22px;height:22px}.mname{display:block}}
-/* ===== clan chests ===== */
+@container (min-width:640px){
+  .mcell{min-height:110px;padding:5px}
+  .mcell .imgs{flex-direction:column;gap:4px}
+  .mev{display:flex;width:100%}
+  .mcell .evmini{width:22px;height:22px}
+  .mname{display:block}
+}
+
+@media(max-width:600px){#refreshBtn span{display:none}}
+
+/* clan chests */
 .chbar{position:relative;height:20px;min-width:150px;border-radius:6px;background:var(--input);border:1px solid var(--border);overflow:hidden}
 .chfill{height:100%}
-.chbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.chbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#cdcdcd;text-shadow:0 1px 2px rgba(0,0,0,.7)}
 .chalias{display:block;font-weight:400;font-size:11px;color:var(--muted)}
 #chTable th,#chTable td{padding:5px 10px;font-size:13.5px}
 #chTable .num{text-align:right}
 #chTable tfoot td{font-weight:700;border-top:2px solid var(--primary);border-bottom:none}
+
 .chhead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
-.chnav{text-align:right}.chbtns{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
-.chnav small{display:block;margin-top:6px;font-weight:600}
+.chnav{text-align:right}
+.chbtns{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.chnav small{display:block;margin-top:6px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:900px){.chhead{grid-template-columns:1fr}.chnav{text-align:left}.chbtns{justify-content:flex-start}}
-/* ===== calculators ===== */
+
+.chnav small{font-weight:600}
+
+.evr-title {
+    font-weight: 700;
+    border-bottom: 3px solid #E53935;
+    padding-bottom: 2px;
+}
+.evg-title {
+    font-weight: 700;
+    border-bottom: 3px solid #3ca647;
+    padding-bottom: 2px;
+}
+
+/* downward glow/shadow under the two event boxes */
+/* ---------- events running now (red) ---------- */
+#evNow .evmini{
+  border:2px solid #dc35450d;
+  box-shadow:0 4px 10px -2px rgba(220,53,69,.65),
+             0 0 0 2px rgba(220,53,69,.15);
+}
+#evNow .evrow{ border-bottom:1px solid rgba(220,53,69,.25); }
+#evNow .evph{ background:rgba(220,53,69,.12); color:var(--bad); }
+
+/* ---------- events coming next (green) ---------- */
+#evNext .evmini{
+  border:2px solid #28a7450d;
+  box-shadow:0 4px 10px -2px rgba(40,167,69,.65),
+             0 0 0 2px rgba(40,167,69,.15);
+}
+#evNext .evrow{ border-bottom:1px solid rgba(40,167,69,.25); }
+#evNext .evph{ background:rgba(40,167,69,.12); color:var(--ok); }
+
+/* dark mode: same colours already read well, just soften the halo */
+[data-theme="dark"] #evNow .evmini { box-shadow:0 4px 12px -2px rgba(220,53,69,.5); }
+[data-theme="dark"] #evNext .evmini{ box-shadow:0 4px 12px -2px rgba(40,167,69,.5); }
+/* End downward glow/shadow under the two event boxes *
+  
+/* Updating website on daily basis start */
+.top-alert{
+  color:#00a00e;
+  font-weight:600;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:340px;
+}
+@media(max-width:900px){.top-alert{display:none}}
+
+.top-alert{animation:blink 0.5s ease-in-out infinite}
+@keyframes blink{50%{opacity:.45}}
+/* Updating website on daily basis end */
+
 .calc-btn{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);text-decoration:none;transition:.15s}
-.calc-btn:hover{border-color:var(--primary);transform:translateY(-2px);color:var(--text)}
+.calc-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
 .calc-btn b{display:block;font-size:15px}.calc-btn small{color:var(--muted);font-size:12.5px}
 .ci{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--accent))}
-@media(max-width:600px){#refreshBtn span{display:none}}
-/* ===== modal close button + event big picture ===== */
-.dmodal .x{z-index:5;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.35)}
-.evbanner{display:block;width:calc(100% + 56px);max-width:none;height:220px;object-fit:cover;margin:-28px -28px 16px;border-radius:14px 14px 0 0}
-@media(max-width:600px){.evbanner{height:160px}}
 
-/* ===== images always fit completely inside their box (nothing is cut off or spills out) ===== */
-img{max-width:100%}
-.gthumb img{object-fit:contain;background:var(--input)}
-.evmini{object-fit:contain;padding:1px}
-.evbanner{width:calc(100% + 56px);max-width:none;height:auto;min-height:120px;max-height:300px;object-fit:contain;background:var(--input)}
-.gbanner{display:block;width:100%;max-width:100%;height:auto;max-height:340px;object-fit:contain;background:var(--input);border-radius:10px;margin-bottom:16px}
-.dmodal{overflow-x:hidden}
-
+.cdbox td, th {
+    border-bottom: 1px solid #e1dfdd4a !important;
+}
 </style>
 </head>
 <body>
@@ -348,78 +391,69 @@ img{max-width:100%}
   <button class="btn" id="retryBtn" style="display:none" onclick="location.reload()">Retry</button>
 </div>
 
-<header class="header">
-  <button class="hbtn" id="menuBtn" aria-label="Toggle menu"><i class="bi bi-layout-sidebar-inset"></i></button>
-  <a class="brand" href="#overview">
-    <div class="brand-icon"><img src="assets/img/logo.png" class="navbar-logo" alt="" onerror="this.style.display='none'"></div>
-    <div class="brand-text"><b>THE Family Gang</b><small>Kingdom 34 · Total Battle</small></div>
-  </a>
-  <h2 id="pageTitle" class="page-title-top">Overview</h2>
-  <form class="hsearch" id="topSearch" autocomplete="off"><i class="bi bi-search"></i><input type="search" id="topSearchInput" placeholder="Search guides..."></form>
-  <div class="hright">
-    <div class="utc">Server time (UTC)<b id="utcClock">--:--:--</b></div>
-    <button class="btn hbtn-refresh" id="refreshBtn" title="Refresh data"><i class="bi bi-arrow-repeat"></i><span>Refresh</span></button>
-    <button class="hbtn" id="themeBtn" title="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
-    <div class="dropdown">
-      <button class="user-trigger dropdown-toggle" id="userChip" data-bs-toggle="dropdown" aria-expanded="false">
-        <div class="avatar" id="avatar">?</div>
-        <div class="user-brief"><span class="user-name" id="topName">...</span><span id="topRole"></span></div>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#account"><i class="bi bi-person"></i> My Account</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><button class="dropdown-item" id="logoutTop"><i class="bi bi-box-arrow-right"></i> Sign Out</button></li>
-      </ul>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><img src="assets/img/logo.png" class="img-fluid navbar-logo" alt=""></div>
+      <div><h1>THE Family Gang</h1><small>Kingdom 34 · Total Battle</small></div>
     </div>
-  </div>
-</header>
-
-<aside class="sidebar" id="sidebar">
-    <nav class="snav" id="nav">
-      <div class="nav-heading">Main</div>
-      <a href="#overview" data-s="overview"><i class="bi bi-grid-1x2"></i><span>Overview</span></a>
-      <div class="has-sub">
-        <a href="#" class="sub-toggle"><i class="bi bi-calendar3"></i><span>Events &amp; Calendar</span><i class="bi bi-chevron-right chev"></i></a>
-        <div class="sub-list">
-          <a href="#events" data-s="events"><span class="dot"></span>Calendar</a>
-          <a href="#eventlist" data-s="eventlist"><span class="dot"></span>All Events</a>
-        </div>
-      </div>
-      <div class="has-sub">
-        <a href="#" class="sub-toggle"><i class="bi bi-box2-heart"></i><span>Clan Chests</span><i class="bi bi-chevron-right chev"></i></a>
-        <div class="sub-list">
-          <a href="#members" data-s="members"><span class="dot"></span>Weekly Chests</a>
-          <a href="#chestdefs" data-s="chestdefs"><span class="dot"></span>Chest Definitions</a>
-        </div>
-      </div>
-      <div class="nav-heading">Premium Resources</div>
-      <a href="#tutorials" data-s="tutorials"><i class="bi bi-mortarboard"></i><span>Premium Tutorials</span></a>
-      <a href="#loadouts" data-s="loadouts"><i class="bi bi-shield-check"></i><span>Equipment Loadouts</span></a>
-      <a href="#strategies" data-s="strategies"><i class="bi bi-diagram-3"></i><span>Pro Strategies</span></a>
-      <a href="#guides" data-s="guides"><i class="bi bi-journal-richtext"></i><span>Game Guides</span></a>
-      <div class="nav-heading">Tools</div>
-      <a href="#checklist" data-s="checklist"><i class="bi bi-check2-square"></i><span>Daily Checklist</span></a>
-      <a href="#tools" data-s="tools"><i class="bi bi-calculator"></i><span>Calculators</span></a>
-      <div class="nav-heading">Clan</div>
-      <a href="#rules" data-s="rules"><i class="bi bi-journal-text"></i><span>Clan Rules &amp; Contact</span></a>
-      <a href="#account" data-s="account"><i class="bi bi-person-gear"></i><span>My Account</span></a>
-      <div class="nav-heading" id="adminLabel" style="display:none">Administration</div>
-      <a href="#roles" data-s="roles" id="navRoles" style="display:none"><i class="bi bi-person-lock"></i><span>User Roles</span></a>
-      <a href="#guideadmin" data-s="guideadmin" id="navGuideAdmin" style="display:none"><i class="bi bi-book"></i><span>Manage Guides</span></a>
-      <a href="#eventadmin" data-s="eventadmin" id="navEventAdmin" style="display:none"><i class="bi bi-calendar-plus"></i><span>Manage Events</span></a>
+    <nav class="nav" id="nav">
+      <div class="nav-label">Main</div>
+      <a href="#overview" data-s="overview"><i class="fas fa-house"></i> Overview</a>
+      <div class="nav-label" style="padding-top:10px">Events &amp; Calendar</div>
+      <a href="#events" data-s="events" class="sub"><i class="fas fa-calendar-days"></i> Calendar</a>
+      <a href="#eventlist" data-s="eventlist" class="sub"><i class="fas fa-flag"></i> All Events</a>
+      <a href="#members" data-s="members"><i class="fas fa-users"></i> Clan Chests</a>
+       <a href="#chestdefs" data-s="chestdefs" class="sub"><i class="fas fa-list-ol"></i> Chest Definitions</a>
+      <div class="nav-label">Premium Resources</div>
+      <a href="#tutorials" data-s="tutorials"><i class="fas fa-graduation-cap"></i> Premium Tutorials</a>
+      <a href="#loadouts" data-s="loadouts"><i class="fas fa-shield-halved"></i> Equipment Loadouts</a>
+      <a href="#strategies" data-s="strategies"><i class="fas fa-chess"></i> Pro Strategies</a>
+      <a href="#guides" data-s="guides"><i class="fas fa-book-open"></i> Game Guides</a>
+      <div class="nav-label">Tools</div>
+      <a href="#checklist" data-s="checklist"><i class="fas fa-list-check"></i> Daily Checklist</a>
+      <a href="#tools" data-s="tools"><i class="fas fa-calculator"></i> Calculators</a>
+      <div class="nav-label">Clan</div>
+      <a href="#rules" data-s="rules"><i class="fas fa-scroll"></i> Clan Rules &amp; Contact</a>
+      <a href="#account" data-s="account"><i class="fas fa-user-gear"></i> My Account</a>
+      <div class="nav-label" id="adminLabel" style="display:none">Administration</div>
+      <a href="#roles" data-s="roles" id="navRoles" style="display:none"><i class="fas fa-user-shield"></i> User Roles</a>
+      <a href="#guideadmin" data-s="guideadmin" id="navGuideAdmin" style="display:none"><i class="fas fa-book-bookmark"></i> Manage Guides</a>
+      <a href="#eventadmin" data-s="eventadmin" id="navEventAdmin" style="display:none"><i class="fas fa-calendar-plus"></i> Manage Events</a>
     </nav>
-  <div class="side-foot">&copy; 2026 THE Family Gang<br>웃 T3li · Members only</div>
-</aside>
-<div class="overlay" id="overlay"></div>
+    <div class="side-foot">&copy; 2026 THE Family Gang<br>웃 T3li · Members only</div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
 
-<main class="main">
-  <div class="content">
+  <div class="main">
+    <header class="topbar">
+        <button class="icon-btn" id="menuBtn" aria-label="Menu"><i class="fas fa-bars"></i></button>
+        <h2 id="pageTitle">Overview</h2>
+      
+        <span class="top-alert">We are updating website on <b>Daily Basis</b></span>
+      
+        <div class="top-center">
+          <b id="topName">...</b>
+          <span id="topRole"></span>
+        </div>
+      
+        <div class="top-right">
+          <button class="btn outline sm" id="refreshBtn" title="Refresh data"><i class="fas fa-rotate"></i> <span>Refresh</span></button>
+          <div class="utc">Server time (UTC)<br><b id="utcClock">--:--:--</b></div>
+          <button class="icon-btn" id="themeBtn" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+          <div class="user-chip" id="userChip" title="My account"><div class="avatar" id="avatar">?</div><span id="chipName">...</span></div>
+          <button class="icon-btn" id="logoutTop" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+    <main class="content">
+
       <!-- OVERVIEW -->
       <section class="section" id="s-overview">
         <div class="hero">
-          <h1>Welcome back, <span id="heroName">Member</span>! ⚔️</h1>
+          <h1>Welcome back, <span id="heroName">Member</span>! ⚔️</h1><p style="color:#00ff68;"> We are updating website on <b>Daily Basis</b>, so stay tune, Thanks</p>
           <p style="margin-bottom:10px"><span class="badge" id="heroRole" style="background:rgba(255,255,255,.22);color:#fff"></span></p>
-          <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34): premium tutorials, loadouts, strategies, game guides and clan stats, all in one place.</p>
+          <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34):</p><p>premium tutorials, loadouts, strategies, cheat sheets and clan stats, all in one place.</p>
           <div class="btns">
             <button class="btn ghost" data-go="tutorials"><i class="fas fa-graduation-cap"></i> Browse Tutorials</button>
             <button class="btn ghost" data-go="events"><i class="fas fa-calendar-days"></i> Upcoming Events</button>
@@ -466,32 +500,30 @@ img{max-width:100%}
         <div id="stratList"></div>
       </section>
 
-
-      <!-- GAME GUIDES -->
-      <section class="section" id="s-guides">
-        <div class="page-head"><h1>📚 Game Guides</h1><p>Beginner help, captain profiles, equipment, city, combat, clan and research. Premium guides unlock by role.</p></div>
-        <div class="toolbar" id="gToolbar"><input class="input" id="gSearch" placeholder="Search all guides..."></div>
-        <div class="chips" id="gChips"></div>
-        <div class="grid g3" id="gGrid"><p class="muted">Loading guides...</p></div>
-        <div id="gReader" style="display:none"></div>
+      <!-- CHEAT SHEETS -->
+      <section class="section" id="s-cheatsheets">
+        <div class="page-head"><h1>📄 Exclusive Cheat Sheets</h1><p>Quick references you can copy and share with your squad.</p></div>
+        <div class="grid g3" id="cheatGrid"></div>
       </section>
 
-      <!-- EVENTS & CALENDAR -->
+      <!-- EVENTS -->
       <section class="section" id="s-events">
         <div class="page-head"><h1>📅 Events &amp; Calendar</h1><p>The game day changes at <b>17:00 UTC</b>. Click any picture for details.</p></div>
         <div class="chips"><a class="chip active" href="#events">Calendar</a><a class="chip" href="#eventlist">All Events</a></div>
         <div class="grid g2" style="margin-bottom:20px">
-          <div class="card"><h3><i class="fas fa-play"></i> Running now <small id="evNowDate" class="evd-now"></small></h3><div id="evNow"></div>
-            <p class="muted" style="margin-top:10px;font-size:13px">⏳ Resets in <b class="evtimer" style="color:#dc3545">--:--:--</b></p></div>
-          <div class="card"><h3><i class="fas fa-forward"></i> Coming next <small id="evNextDate" class="evd-next"></small></h3><div id="evNext"></div>
-            <p class="muted" style="margin-top:10px;font-size:13px">Starts in <b class="evtimer" style="color:#28a745">--:--:--</b></p></div>
+          <div class="card"><h3><i class="fas fa-play"></i> <span class="evr-title">Events Running Now</span> <small id="evNowDate" class="evd-now"></small></h3>
+          <p class="muted" style="margin-top:10px;font-size:13px">⏳ Remaining Time <b class="evtimer" style="color:#dc3545">--:--:--</b></p>
+          <div id="evNow"></div></div>
+          <div class="card"><h3><i class="fas fa-forward"></i> <span class="evg-title">Up Coming Events</span> <small id="evNextDate" class="evd-next"></small></h3>
+          <p class="muted" style="margin-top:10px;font-size:13px">⏳ Starts in <b class="evtimer" style="color:#28a745">--:--:--</b></p>
+          <div id="evNext"></div></div>
         </div>
-        <div class="grid" style="grid-template-columns:1fr">
-          <div class="card"><h3 id="evM1T"></h3><div id="evM1"></div></div>
-          <div class="card"><h3 id="evM2T"></h3><div id="evM2"></div></div>
-        </div>
+          <div class="grid" style="grid-template-columns:1fr">
+            <div class="card"><h3 id="evM1T"></h3><div id="evM1"></div></div>
+            <div class="card"><h3 id="evM2T"></h3><div id="evM2"></div></div>
+          </div>
       </section>
-
+      
       <section class="section" id="s-eventlist">
         <div class="page-head"><h1>🎯 All Events</h1><p>Every event with its picture and a short description. Click one for the full details.</p></div>
         <div class="chips"><a class="chip" href="#events">Calendar</a><a class="chip active" href="#eventlist">All Events</a></div>
@@ -499,11 +531,23 @@ img{max-width:100%}
         <div class="chips" id="elChips"></div>
         <div class="grid g3" id="elGrid"></div>
       </section>
+      
+      <section class="section" id="s-eventadmin">
+        <div class="page-head"><h1>🗓️ Manage Events</h1><p>Add each event once, with its picture path, description and HTML details.</p></div>
+        <div id="eaMissing"></div>
+        <div class="toolbar">
+          <input class="input" id="eaSearch" placeholder="Search events...">
+          <button class="btn" id="eaAdd"><i class="fas fa-plus"></i> Add event</button>
+          <button class="btn outline" id="eaRefresh"><i class="fas fa-rotate"></i> Reload Excel now</button>
+        </div>
+        <div class="card"><div class="table-wrap"><table id="eaTable"></table></div></div>
+      </section>
 
+      <!-- MEMBERS -->
       <!-- CLAN CHESTS -->
       <section class="section" id="s-members">
         <div class="page-head chhead">
-          <div><h1>🎁 Clan Chests</h1><p>Live weekly chest leaderboard for THE Family Gang.</p></div>
+          <div><h1>🎁 Clan Chests</h1><p><text style="color:#1c8716 !important;">Live weekly chest leaderboard</text> for THE Family Gang.</p></div>
           <div class="card" style="padding:10px 18px;text-align:center">
             <small class="muted">Weekly reset in</small><br>
             <b id="chTimer" style="font-size:22px;font-variant-numeric:tabular-nums;color:var(--bad)">--</b><br>
@@ -534,7 +578,7 @@ img{max-width:100%}
         <div class="card" id="chTargetBox" style="display:none;margin-top:20px">
           <h3><i class="fas fa-bullseye"></i> Weekly chest target (Super Admin)</h3>
           <div class="toolbar" style="margin-bottom:0"><input class="input" type="number" min="1" id="chTargetInput" style="max-width:220px"><button class="btn" id="chTargetSave">Save target</button></div>
-          <p class="muted" style="font-size:12px;margin-top:8px">Used for the % column, the points bars and the Required Chests card. Members see the new value on their next refresh.</p>
+          <p class="muted" style="font-size:12px;margin-top:8px">Used for the % column, the points bars and the Required Chests / Week card. Members see the new value on their next refresh.</p>
         </div>
       </section>
 
@@ -542,51 +586,14 @@ img{max-width:100%}
         <div class="page-head"><h1>📖 Chest Definitions</h1><p>Chest types, levels and points. Maintained by the Super Admin.</p></div>
         <div class="chips"><a class="chip" href="#members">Clan Chests</a><a class="chip active" href="#chestdefs">Chest Definitions</a></div>
         <div class="chips" id="cdGroups"></div>
-        <div class="toolbar"><input class="input" id="cdSearch" placeholder="Search type, name or level...">
-          <button class="btn" id="cdAdd" style="display:none"><i class="fas fa-plus"></i> Add chest</button>
-          <button class="btn outline" id="cdBulk" style="display:none"><i class="fas fa-table-list"></i> Bulk add</button></div>
-        <div id="cdGrid" class="cdgrid"></div>
-      </section>
-
-      <!-- CALCULATORS -->
-      <section class="section" id="s-tools">
-        <div class="page-head"><h1>🧮 Calculators</h1><p>Pick a calculator. Each one has its own page link.</p></div>
-        <div class="grid g3" id="calcGrid"></div>
-      </section>
-      <div id="calcPages"></div>
-
-      <!-- MANAGE GUIDES (Super Admin only) -->
-      <section class="section" id="s-guideadmin">
-        <div class="page-head"><h1>🗂️ Manage Guides</h1><p>Add, edit, hide or delete guides, set Free/Premium access and change category pictures.</p></div>
-        <div class="chips" id="gaTabs">
-          <button class="chip active" data-tab="guides"><i class="fas fa-book"></i> Guides</button>
-          <button class="chip" data-tab="cats"><i class="fas fa-images"></i> Categories &amp; pictures</button>
-        </div>
-        <div id="ga-guides">
-          <div class="toolbar">
-            <input class="input" id="gaSearch" placeholder="Search title...">
-            <select class="input" id="gaCat" style="max-width:240px"></select>
-            <button class="btn" id="gaAdd"><i class="fas fa-plus"></i> Add guide</button>
-          </div>
-          <div class="card"><div class="table-wrap"><table id="gaTable"></table></div></div>
-        </div>
-        <div id="ga-cats" style="display:none">
-          <div class="note"><b>Pictures:</b> upload your screenshots to your GitHub repo (for example <code>assets/img/guides/captains.jpg</code>) and enter that path, or paste an <b>https://</b> link.</div>
-          <div class="card"><div class="table-wrap"><table id="gaCats"></table></div></div>
-        </div>
-      </section>
-
-      <!-- MANAGE EVENTS (Super Admin only) -->
-      <section class="section" id="s-eventadmin">
-        <div class="page-head"><h1>🗓️ Manage Events</h1><p>Add each event once, with its picture path, description and HTML details.</p></div>
-        <div id="eaMissing"></div>
         <div class="toolbar">
-          <input class="input" id="eaSearch" placeholder="Search events...">
-          <button class="btn" id="eaAdd"><i class="fas fa-plus"></i> Add event</button>
-          <button class="btn outline" id="eaRefresh"><i class="fas fa-rotate"></i> Reload Excel now</button>
+          <input class="input" id="cdSearch" placeholder="Search type or name...">
+          <button class="btn" id="cdAdd" style="display:none"><i class="fas fa-plus"></i> Add chest</button>
+          <button class="btn outline" id="cdBulk" style="display:none"><i class="fas fa-table-list"></i> Bulk add</button>
         </div>
-        <div class="card"><div class="table-wrap"><table id="eaTable"></table></div></div>
+        <div class="card"><div class="table-wrap"><table id="cdTable"></table></div></div>
       </section>
+      
       <!-- CHECKLIST -->
       <section class="section" id="s-checklist">
         <div class="page-head"><h1>✅ Daily &amp; Weekly Checklist</h1><p>Your progress is saved on this device. Dailies reset at 00:00 UTC, weeklies on Monday.</p></div>
@@ -596,17 +603,24 @@ img{max-width:100%}
         </div>
       </section>
 
+      <!-- TOOLS -->
+      <section class="section" id="s-tools">
+        <div class="page-head"><h1>🧮 Calculators</h1><p>Pick a calculator. Each one has its own page link.</p></div>
+        <div class="grid g3" id="calcGrid"></div>
+      </section>
+      <div id="calcPages"></div>
+
       <!-- RULES -->
       <section class="section" id="s-rules">
         <div class="page-head"><h1>📜 Clan Rules &amp; Contact</h1><p>Keep Kingdom 34 strong by following the clan code.</p></div>
         <div class="grid g2">
           <div class="card"><h3><i class="fas fa-gavel"></i> Clan Rules</h3><ul class="list" id="ruleList"></ul></div>
           <div class="grid" style="align-content:start">
-            <div class="card"><h3><i class="fas fa-envelope"></i> Contact Us</h3>
+           <div class="card"><h3><i class="fas fa-envelope"></i> Contact Us</h3>
               <p class="muted" style="margin-bottom:14px">Questions, feedback or need help? Send us a message on the website.</p>
               <a class="btn" href="/contact" target="_blank" rel="noopener">Contact</a></div>
             <div class="card"><h3><i class="fas fa-headset"></i> Need Help?</h3>
-              <p class="muted">Contact the clan leader <b>T3li</b> in-game or on Discord for access issues, role requests or password resets.</p></div>
+              <p class="muted">Contact the clan leader <b>WOLFICH</b> or <b>T3li</b> in-game or <a href="https://thefamily.pages.dev/contact" target="_blank">Contact us</a> page, role requests or password resets.</p></div>
           </div>
         </div>
       </section>
@@ -621,7 +635,7 @@ img{max-width:100%}
               <li><i class="fas fa-envelope"></i><div><b>Email</b><br><span class="muted" id="accEmail">-</span></div></li>
               <li><i class="fas fa-at"></i><div><b>Username</b><br><span class="muted" id="accUser">-</span></div></li>
               <li><i class="fas fa-shield-halved"></i><div><b>Role</b><br><span id="accRole">-</span></div></li>
-                            <li><i class="fas fa-calendar-check"></i><div><b>Member since</b><br><span class="muted" id="accSince">-</span></div></li>
+              <li><i class="fas fa-calendar-check"></i><div><b>Member since</b><br><span class="muted" id="accSince">-</span></div></li>
             </ul>
             <button class="btn danger" id="logoutBtn" style="margin-top:14px"><i class="fas fa-right-from-bracket"></i> Logout</button>
           </div>
@@ -661,18 +675,48 @@ img{max-width:100%}
         </div>
       </section>
 
+    
+      <!-- GAME GUIDES -->
+      <section class="section" id="s-guides">
+        <div class="page-head"><h1>📚 Game Guides</h1><p>Beginner help, captain profiles, equipment, city, combat, clan and research. Premium guides unlock by role.</p></div>
+        <div class="toolbar" id="gToolbar"><input class="input" id="gSearch" placeholder="Search all guides..."></div>
+        <div class="chips" id="gChips"></div>
+        <div class="grid g3" id="gGrid"><p class="muted">Loading guides...</p></div>
+        <div id="gReader" style="display:none"></div>
+      </section>
+
+      <!-- MANAGE GUIDES (admin only) -->
+      <section class="section" id="s-guideadmin">
+        <div class="page-head"><h1>🗂️ Manage Guides</h1><p>Add, edit, hide or delete guides, set Free/Premium access and change category pictures.</p></div>
+        <div class="chips" id="gaTabs">
+          <button class="chip active" data-tab="guides"><i class="fas fa-book"></i> Guides</button>
+          <button class="chip" data-tab="cats"><i class="fas fa-images"></i> Categories &amp; pictures</button>
+        </div>
+        <div id="ga-guides">
+          <div class="toolbar">
+            <input class="input" id="gaSearch" placeholder="Search title...">
+            <select class="input" id="gaCat" style="max-width:240px"></select>
+            <button class="btn" id="gaAdd"><i class="fas fa-plus"></i> Add guide</button>
+          </div>
+          <div class="card"><div class="table-wrap"><table id="gaTable"></table></div></div>
+        </div>
+        <div id="ga-cats" style="display:none">
+          <div class="note"><b>Pictures:</b> upload your screenshots to your GitHub repo (for example <code>assets/img/guides/captains.jpg</code>) and enter that path, or paste an <b>https://</b> link.</div>
+          <div class="card"><div class="table-wrap"><table id="gaCats"></table></div></div>
+        </div>
+      </section>
+    </main>
   </div>
-  <footer class="footer">
-    <span>&copy; 2026 THE Family Gang</span>
-    <span>Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a></span>
-  </footer>
-</main>
+</div>
 
-<div class="modal-bg" id="modalBg"><div class="dmodal" id="modal"></div></div>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* 1. CLAN CONTENT: edit the text, tutorials, loadouts, rules here */
+/* =====================================================================
+   1. CLAN CONTENT  -  EDIT THIS PART  (all text, events, members, guides)
+   Everything below is PLACEHOLDER content. Replace it with your real
+   clan information. No other code needs to change.
+   ===================================================================== */
 const CONTENT = {
   clan: { name: 'THE Family Gang', kingdom: 'Kingdom 34', discord: 'https://discord.gg/your-invite' },
 
@@ -755,6 +799,37 @@ const CONTENT = {
     { title: 'Protect your troops', points: ['Do not waste troops on unwinnable fights.', 'Heal and rebuild between attacks.', 'Use scouting and retreat when needed.'] }
   ],
 
+  cheatsheets: [
+    { title: 'New Player Quick Start', icon: 'fa-rocket', items: ['Finish tutorial quests', 'Upgrade core buildings', 'Join Discord', 'Contribute to clan daily', 'Pick a main hero'] },
+    { title: 'Before You Log Off', icon: 'fa-moon', items: ['Spend resources', 'Fill all upgrade / training queues', 'Send troops on safe PvE runs', 'Check protection status', 'Claim daily rewards'] },
+    { title: 'War Day Checklist', icon: 'fa-flag-checkered', items: ['Join Discord voice', 'Check leader orders', 'Heal / refill troops', 'Equip your attack loadout', 'Report results afterwards'] },
+    { title: 'Scouting Checklist', icon: 'fa-binoculars', items: ['Target power / strength', 'Is the owner online?', 'Estimated troop count', 'Nearby allies', 'Your expected losses'] },
+    { title: 'Resource Priorities', icon: 'fa-scale-balanced', items: ['Upgrades for main hero first', 'Keep economy buildings current', 'Do not hoard', 'Plan the next 3 upgrades', 'Use Resource Gap Planner'] },
+    { title: 'Common Mistakes', icon: 'fa-triangle-exclamation', items: ['Attacking without scouting', 'Spreading XP across many heroes', 'Leaving resources unspent', 'Ignoring clan calls', 'Dismantling gear too early'] }
+  ],
+
+  // day: 0=Sunday ... 6=Saturday, or 'daily'. time = UTC (HH:MM)
+  events: [
+    { name: 'Daily Reset',         day: 'daily', time: '00:00', desc: 'Dailies reset. Claim rewards and start your checklist.', icon: 'fa-rotate' },
+    { name: 'Clan Meeting',        day: 6,       time: '18:00', desc: 'Weekly clan meeting on Discord voice.',               icon: 'fa-microphone' },
+    { name: 'Clan War Preparation',day: 5,       time: '16:00', desc: 'Gear up, heal troops and wait for leader orders.',    icon: 'fa-shield-halved' },
+    { name: 'Crypt Run (Group)',   day: 3,       time: '19:00', desc: 'Group PvE run. Bring your PvE loadout.',              icon: 'fa-dungeon' },
+    { name: 'Weekly Reset',        day: 1,       time: '00:00', desc: 'Weekly tasks reset.',                                 icon: 'fa-calendar-week' }
+  ],
+
+  members: [
+    { name: 'T3li',       role: 'Superior',  power: 98500000, kills: 1250000, joined: '2023-01-10' },
+    { name: 'MemberTwo',  role: 'Officer', power: 74200000, kills: 880000, joined: '2023-02-14' },
+    { name: 'MemberThree',role: 'Officer', power: 61800000, kills: 640000, joined: '2023-03-02' },
+    { name: 'MemberFour', role: 'Officer', power: 54300000, kills: 710000, joined: '2023-04-21' },
+    { name: 'MemberFive', role: 'Elite',   power: 41000000, kills: 390000, joined: '2023-06-05' },
+    { name: 'MemberSix',  role: 'Elite',   power: 36700000, kills: 420000, joined: '2023-07-18' },
+    { name: 'MemberSeven',role: 'Member',  power: 25400000, kills: 180000, joined: '2023-09-09' },
+    { name: 'MemberEight',role: 'Member',  power: 19800000, kills: 120000, joined: '2024-01-12' },
+    { name: 'MemberNine', role: 'Member',  power: 12300000, kills: 65000,  joined: '2024-05-30' },
+    { name: 'MemberTen',  role: 'Recruit', power: 6400000,  kills: 21000,  joined: '2024-11-02' }
+  ],
+
   resources: ['Food', 'Wood', 'Stone', 'Ore', 'Gold'],
 
   checklist: {
@@ -791,8 +866,8 @@ const clearToken = () => { localStorage.removeItem('family_token'); sessionStora
 const goToLogin = () => { clearToken(); window.location.replace(LOGIN_URL); };
 
 function toast(msg, type = '') {
-  const old = document.querySelector('.dtoast'); if (old) old.remove();
-  const t = document.createElement('div'); t.className = 'dtoast ' + type; t.textContent = msg;
+  const old = document.querySelector('.toast'); if (old) old.remove();
+  const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg;
   document.body.appendChild(t); setTimeout(() => t.remove(), 3500);
 }
 
@@ -800,6 +875,7 @@ async function authInit() {
   TOKEN = getToken();
   if (!TOKEN) return goToLogin();
   try {
+    // reuse the check that was started in <head>; fall back to a fresh one if it is missing
     const out = await (window.__AUTH || fetch(API_URL + '/check', { headers: { Authorization: 'Bearer ' + TOKEN } })
       .then(r => r.json().then(d => ({ status: r.status, data: d }))));
     const data = out.data;
@@ -816,6 +892,8 @@ async function authInit() {
     document.querySelector('#loading .spinner').style.display = 'none';
   }
 }
+
+// If the user logs out and presses Back, the browser may show a cached copy: re-check the token
 window.addEventListener('pageshow', (e) => { if (e.persisted && !getToken()) goToLogin(); });
 
 async function logout() {
@@ -828,56 +906,68 @@ async function logout() {
    ===================================================================== */
 const fmt = (n) => Number(n).toLocaleString('en-US');
 const fmtShort = (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : String(n);
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_S = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+
+function nextOccurrence(ev) {
+  const [h, m] = ev.time.split(':').map(Number);
+  const now = new Date();
+  let d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), h, m));
+  if (ev.day === 'daily') { if (d <= now) d = new Date(d.getTime() + 864e5); return d; }
+  const diff = (ev.day - d.getUTCDay() + 7) % 7;
+  d = new Date(d.getTime() + diff * 864e5);
+  if (d <= now) d = new Date(d.getTime() + 7 * 864e5);
+  return d;
+}
+function countdownText(target) {
+  let s = Math.max(0, Math.floor((target - Date.now()) / 1000));
+  const d = Math.floor(s / 86400); s %= 86400;
+  const h = Math.floor(s / 3600); s %= 3600;
+  const m = Math.floor(s / 60); s %= 60;
+  const p = (x) => String(x).padStart(2, '0');
+  return (d > 0 ? d + 'd ' : '') + p(h) + ':' + p(m) + ':' + p(s);
+}
+const sortedEvents = () => CONTENT.events.map(e => ({ ...e, next: nextOccurrence(e) })).sort((a, b) => a.next - b.next);
 
 /* =====================================================================
    4. NAVIGATION / THEME
    ===================================================================== */
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
-  events:'Events & Calendar', eventlist:'All Events', members:'Clan Chests', chestdefs:'Chest Definitions', guides:'Game Guides',
-  checklist:'Daily Checklist', tools:'Calculators', rules:'Clan Rules & Contact', account:'My Account',
-  roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events' };
-const PERM_OF = { eventlist: 'events', chestdefs: 'members' };       // sub pages share their parent's right
-const RESTRICTED = ['roles', 'guideadmin', 'eventadmin'];
+  events:'Events & Calendar', members:'Clan Chests', checklist:'Daily Checklist', tools:'Calculators',
+  rules:'Clan Rules & Contact', account:'My Account', roles:'User Roles & Rights', guides:'Game Guides', guideadmin:'Manage Guides', eventlist:'All Events', eventadmin:'Manage Events' };
 
 function showSection(name) {
   if (!TITLES[name]) name = 'overview';
   if (currentUser && !PERMS.has(PERM_OF[name] || name)) {
-    toast(RESTRICTED.includes(name) ? 'This area is restricted.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
+    toast((name === 'roles' || name === 'guideadmin' || name === 'eventadmin') ? 'This area is for Admins only.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
     if (location.hash.slice(1) !== 'overview') location.hash = 'overview';
     name = 'overview';
   }
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
-  const navName = name.startsWith('calc-') ? 'tools' : name;
-  document.querySelectorAll('#nav a[data-s]').forEach(a => a.classList.toggle('active', a.dataset.s === navName));
-  document.querySelectorAll('#nav .has-sub').forEach(g => { if (g.querySelector('a.active')) g.classList.add('open'); });
-  $('pageTitle').textContent = TITLES[name] || '';
+  document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('active', a.dataset.s === (name.startsWith('calc-') ? 'tools' : name)));
+  $('pageTitle').textContent = TITLES[name];
   closeMenu();
   window.scrollTo({ top: 0 });
 }
 const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
-function toggleSidebar() {
-  if (window.innerWidth >= 992) {
-    document.body.classList.toggle('sb-collapsed');
-    try { localStorage.setItem('tb_sb', document.body.classList.contains('sb-collapsed') ? '1' : '0'); } catch (e) {}
-  } else { $('sidebar').classList.toggle('open'); $('overlay').classList.toggle('show'); }
-}
 window.addEventListener('hashchange', () => showSection(location.hash.slice(1)));
 
 function applyTheme(t) {
   document.documentElement.dataset.theme = t;
-  document.documentElement.setAttribute('data-bs-theme', t);
-  const b = $('themeBtn'); if (b) b.innerHTML = '<i class="bi bi-' + (t === 'dark' ? 'sun' : 'moon-stars') + '"></i>';
-  try { localStorage.setItem('tb_theme', t); } catch (e) {}
+  $('themeBtn').innerHTML = '<i class="fas fa-' + (t === 'dark' ? 'sun' : 'moon') + '"></i>';
+  localStorage.setItem('tb_theme', t);
 }
 
 /* =====================================================================
    5. RENDERERS
    ===================================================================== */
 function renderOverview() {
-  const ps = CH.players || [];
+  const members = CONTENT.members;
+  const totalPower = members.reduce((a, m) => a + m.power, 0);
+  const nextEv = sortedEvents()[0];
   $('statCards').innerHTML = [
-    ['fa-users', '#0078d4', ps.length || '-', 'Clan Members'],
-    ['fa-bullseye', '#7c4dbd', fmt(CH.target), 'Weekly Chest Target'],
+    ['fa-users', '#0078d4', CH.players.length || '-', 'Clan Members'],
+    ['fa-bullseye', '#d366b7', fmt(CH.target), 'Weekly Chest Target'],
     ['fa-graduation-cap', '#d9a400', CONTENT.tutorials.length, 'Tutorials'],
     ['fa-book-open', '#28a745', GD.guides.length || '-', 'Game Guides']
   ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div>
@@ -886,6 +976,7 @@ function renderOverview() {
   $('announcements').innerHTML = '<ul class="list">' + CONTENT.announcements.map(a =>
     `<li class="ann"><i class="fas fa-circle-info"></i><div><h4>${esc(a.title)} <span class="badge b-lvl">${esc(a.tag)}</span></h4>
      <small>${esc(a.date)}</small><p>${esc(a.body)}</p></div></li>`).join('') + '</ul>';
+
   drawOverviewEvents();
   updateProgress();
 }
@@ -941,6 +1032,58 @@ function renderStrategies() {
     <div class="body"><ul>${s.points.map(p => '<li>' + esc(p) + '</li>').join('')}</ul></div></details>`).join('');
 }
 
+function renderCheatSheets() {
+  $('cheatGrid').innerHTML = CONTENT.cheatsheets.map((c, i) => `<div class="card">
+    <h3><i class="fas ${c.icon}"></i> ${esc(c.title)}</h3>
+    <ul class="list">${c.items.map(x => '<li><i class="fas fa-check"></i>' + esc(x) + '</li>').join('')}</ul>
+    <button class="btn outline sm" data-copy="${i}" style="margin-top:12px"><i class="far fa-copy"></i> Copy</button></div>`).join('');
+  $('cheatGrid').onclick = async (e) => {
+    const b = e.target.closest('[data-copy]'); if (!b) return;
+    const c = CONTENT.cheatsheets[b.dataset.copy];
+    const text = c.title + '\n' + c.items.map(x => '- ' + x).join('\n');
+    try { await navigator.clipboard.writeText(text); toast('Copied to clipboard', 'ok'); } catch { toast('Copy failed', 'err'); }
+  };
+}
+
+function renderEvents() {
+  $('eventList').innerHTML = sortedEvents().map(e => {
+    const local = e.next.toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+    return `<div class="event"><div class="date"><b>${e.next.getUTCDate()}</b><small>${DAYS_S[e.next.getUTCDay()]}</small></div>
+      <div class="info"><h4><i class="fas ${e.icon || 'fa-calendar'}" style="color:var(--primary)"></i> ${esc(e.name)}</h4>
+      <p>${esc(e.desc)}</p><p>${e.day === 'daily' ? 'Every day' : 'Every ' + DAYS[e.day]} · <b>${e.time} UTC</b> · your time: ${esc(local)}</p></div>
+      <div class="countdown" data-target="${e.next.getTime()}">${countdownText(e.next)}<small>until start</small></div></div>`;
+  }).join('');
+}
+
+function renderMembers() {
+  const ms = CONTENT.members;
+  const totalP = ms.reduce((a, m) => a + m.power, 0), totalK = ms.reduce((a, m) => a + m.kills, 0);
+  $('memberStats').innerHTML = [
+    ['fa-users', '#0078d4', ms.length, 'Total Members'],
+    ['fa-bolt', '#7c4dbd', fmtShort(totalP), 'Total Power'],
+    ['fa-skull', '#dc3545', fmtShort(totalK), 'Total Kills'],
+    ['fa-chart-simple', '#28a745', fmtShort(Math.round(totalP / ms.length)), 'Avg Power']
+  ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div><div><b>${v}</b><span>${l}</span></div></div>`).join('');
+
+  const bars = (key) => { const top = [...ms].sort((a, b) => b[key] - a[key]).slice(0, 5), max = top[0][key];
+    return top.map(m => `<div class="bar-row"><span>${esc(m.name)}</span><div class="bar"><div style="width:${(m[key] / max * 100).toFixed(1)}%"></div></div><span>${fmtShort(m[key])}</span></div>`).join(''); };
+  $('topPower').innerHTML = bars('power'); $('topKills').innerHTML = bars('kills');
+
+  let sort = { key: 'power', dir: -1 }, q = '';
+  const cols = [['#', null], ['Name', 'name'], ['Role', 'role'], ['Power', 'power'], ['Kills', 'kills'], ['Joined', 'joined']];
+  const draw = () => {
+    const rows = ms.filter(m => (m.name + m.role).toLowerCase().includes(q))
+      .sort((a, b) => (a[sort.key] > b[sort.key] ? 1 : -1) * sort.dir);
+    $('memTable').innerHTML = '<tr>' + cols.map(([l, k]) => `<th data-k="${k || ''}">${l}${k && sort.key === k ? (sort.dir === 1 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr>' +
+      rows.map((m, i) => `<tr><td class="rank">${i + 1}</td><td><b>${esc(m.name)}</b></td><td><span class="badge b-role">${esc(m.role)}</span></td>
+        <td>${fmt(m.power)}</td><td>${fmt(m.kills)}</td><td class="muted">${esc(m.joined)}</td></tr>`).join('');
+  };
+  $('memTable').onclick = (e) => { const th = e.target.closest('th'); if (!th || !th.dataset.k) return;
+    sort = { key: th.dataset.k, dir: sort.key === th.dataset.k ? -sort.dir : -1 }; draw(); };
+  $('memSearch').oninput = (e) => { q = e.target.value.toLowerCase(); draw(); };
+  draw();
+}
+
 /* ---------- checklist (saved per user on this device, auto reset) ---------- */
 function periodKeys() {
   const n = new Date(), day = n.toISOString().slice(0, 10);
@@ -978,8 +1121,9 @@ function updateProgress() {
     <div class="progress"><div style="width:${pct}%"></div></div><button class="btn outline sm" data-go="checklist">Open checklist</button>`;
 }
 
+
 function renderRules() {
-  $('ruleList').innerHTML = CONTENT.rules.map((r) => `<li><i class="fas fa-circle-check"></i><div>${esc(r)}</div></li>`).join('');
+  $('ruleList').innerHTML = CONTENT.rules.map((r, i) => `<li><i class="fas fa-circle-${i + 1 <= 50 ? 'check' : 'dot'}"></i><div>${esc(r)}</div></li>`).join('');
 }
 
 function renderAccount() {
@@ -1010,22 +1154,24 @@ function renderAccount() {
 }
 
 /* =====================================================================
-   5b. ROLE BADGES, PERMISSIONS + ADMIN (User Roles)
+   5b. PERMISSIONS + ADMIN (User Roles)
    ===================================================================== */
+const roleBadgeRaw = (label, color) => { const c = /^#[0-9a-fA-F]{3,8}$/.test(color || '') ? color : '#6c757d';
+  return `<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}66">${roleIcon(label, c)}${esc(label)}</span>`; };
+
 const ROLE_ICON = { superadmin: ['fa-crown', '👑'], admin: ['fa-user-shield', '🛡️'], superior: ['fa-gem', '💎'],
   officer: ['fa-user-tie', '⚔️'], veteran: ['fa-award', '🏅'], member: ['fa-handshake', '🤝'] };
 const roleKeyOf = (label) => String(label || '').toLowerCase().replace(/[^a-z]/g, '');
 const roleIcon = (label, color) => { const k = roleKeyOf(label), r = ROLE_ICON[k]; if (!r) return '';
   return `<i class="fas ${r[0]}" style="color:${k === 'admin' ? '#dc3545' : color};margin-right:5px"></i>`; };
 const roleEmoji = (label) => { const r = ROLE_ICON[roleKeyOf(label)]; return r ? r[1] + ' ' : ''; };
-const roleBadgeRaw = (label, color) => { const c = /^#[0-9a-fA-F]{3,8}$/.test(color || '') ? color : '#6c757d';
-  return `<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}66">${roleIcon(label, c)}${esc(label)}</span>`; };
 
+  
 function applyPermissions() {
   PERMS = new Set(currentUser.permissions || ['overview', 'account']);
   document.querySelectorAll('#nav a[data-s]').forEach(a => {
     const k = a.dataset.s;
-    if (RESTRICTED.includes(k)) return;                  // admin entries are handled in initAdmin
+    if (k === 'roles' || k === 'guideadmin' || k === 'eventadmin') return;
     const locked = !PERMS.has(PERM_OF[k] || k), pill = a.querySelector('.pill');
     a.classList.toggle('locked', locked);
     a.title = locked ? 'Premium: ask an admin to unlock this section' : '';
@@ -1039,7 +1185,7 @@ async function api(path, method = 'GET', body) {
   const attempts = (method === 'POST' || method === 'DELETE') ? 1 : 2;
   for (let i = 1; i <= attempts; i++) {
     const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), 15000);
+    const timer = setTimeout(() => ctl.abort(), 15000);          // give up after 15s instead of hanging
     try {
       const res = await fetch((path.startsWith('http') ? '' : API_URL) + path, { method, signal: ctl.signal,
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + TOKEN },
@@ -1058,26 +1204,6 @@ async function api(path, method = 'GET', body) {
 const ADM = { users: [], roles: [], menus: [], matrix: {} };
 const roleBadge = (key) => { const r = ADM.roles.find(x => x.role_key === key); return roleBadgeRaw(r ? r.label : key, r ? r.color : '#6c757d'); };
 
-/* ---- presence (Super Admin only) ---- */
-const timeAgo = (ms) => {
-  if (!ms) return 'Never logged in';
-  const d = new Date(ms), n = new Date();
-  const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-  const days = Math.round((day(n) - day(d)) / 864e5);
-  if (days <= 0) return 'Today logged in (' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ')';
-  if (days === 1) return 'Yesterday logged in';
-  return days + ' days ago';
-};
-function presenceCells(u) {
-  const on = !!u.online, col = on ? '#28a745' : '#dc3545';
-  const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};box-shadow:0 0 6px ${col};margin-right:6px"></span>`;
-  const seen = on ? '' : `<br><small class="muted">${esc(timeAgo(u.last_seen))}</small>`;
-  const cc = /^[A-Z]{2}$/.test(u.last_country || '') ? u.last_country.toLowerCase() : '';
-  const flag = cc ? `<img src="https://flagcdn.com/24x18/${cc}.png" width="20" height="15" alt="" style="vertical-align:middle;margin-right:4px;border-radius:2px" onerror="this.style.display='none'">` : '';
-  const loc = u.last_ip ? `${esc(u.last_ip)} (${flag}${esc(u.country_name || u.last_country || 'Unknown')})` : '<span class="muted">-</span>';
-  return `<td style="white-space:nowrap">${dot}<b style="color:${col}">${on ? 'Online' : 'Offline'}</b>${seen}</td><td style="white-space:nowrap">${loc}</td>`;
-}
-
 function initAdmin() {
   $('navRoles').style.display = ''; $('adminLabel').style.display = '';
   $('roleTabs').onclick = (e) => { const b = e.target.closest('.chip'); if (!b) return;
@@ -1089,7 +1215,7 @@ function initAdmin() {
   $('addUserBtn').onclick = () => openUserModal(null);
   $('usrTable').onclick = onUserAction;
   $('saveRights').onclick = saveRights;
-  if (isSuper()) { initGuideAdmin(); initEventAdmin(); }      // Super Admin only
+  if (isSuper()) { initGuideAdmin(); initEventAdmin(); }   // Super Admin only
   loadAdmin();
 }
 
@@ -1103,26 +1229,25 @@ async function loadAdmin() {
 async function refreshUsers() { const u = await api('/admin/users'); if (u.success) { ADM.users = u.users; renderUsers(); } }
 
 function renderUsers() {
-  const q = $('usrSearch').value.toLowerCase(), rf = $('usrRole').value, sup = isSuper();
-  const onf = sup ? $('usrOnline').value : '';
-  const rows = ADM.users.filter(u => (!rf || u.role === rf) && (!onf || (onf === 'on') === !!u.online) &&
-    (u.username + ' ' + u.email + ' ' + (u.name || '')).toLowerCase().includes(q));
+  const q = $('usrSearch').value.toLowerCase(), rf = $('usrRole').value;
+  const onf = isSuper() ? $('usrOnline').value : '';
+  const rows = ADM.users.filter(u => (!rf || u.role === rf) && (!onf || (onf === 'on') === !!u.online) && (u.username + ' ' + u.email + ' ' + (u.name || '')).toLowerCase().includes(q));
   const ri = (k) => ADM.roles.findIndex(r => r.role_key === k);
-  $('usrTable').innerHTML = '<tr><th>User</th><th>Email</th><th>Role</th>' + (sup ? '<th>Presence</th><th>IP (Country)</th>' : '') + '<th>Status</th><th>Joined</th><th>Actions</th></tr>' +
-    (rows.map(u => { const me = u.id === currentUser.id, i = ri(u.role), lk = !sup && u.role === 'superadmin';
+  $('usrTable').innerHTML = '<tr><th>User</th><th>Email</th><th>Role</th>' + (isSuper() ? '<th>Presence</th><th>IP (Country)</th>' : '') + '<th>Status</th><th>Joined</th><th>Actions</th></tr>' +
+    (rows.map(u => { const me = u.id === currentUser.id, i = ri(u.role), lk = !isSuper() && u.role === 'superadmin';
       return `<tr>
       <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${esc((u.username || u.email).charAt(0).toUpperCase())}</div>
         <div><b>${esc(u.username || '-')}</b>${me ? ' <span class="badge b-lvl">You</span>' : ''}<br><small class="muted">${esc(u.name || '')}</small></div></div></td>
-      <td>${esc(u.email)}</td><td>${roleBadge(u.role)}</td>${sup ? presenceCells(u) : ''}
+      <td>${esc(u.email)}</td><td>${roleBadge(u.role)}</td>${isSuper() ? presenceCells(u) : ''}
       <td><span class="badge ${u.is_active ? 'st-on' : 'st-off'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
       <td class="muted">${esc(String(u.created_at).slice(0, 10))}</td>
       <td><div class="act">
-        <button class="mini" data-act="promote" data-id="${u.id}" title="Promote" ${me || lk || i <= 0 || (!sup && ADM.roles[i - 1] && ADM.roles[i - 1].role_key === 'superadmin') ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+        <button class="mini" data-act="promote" data-id="${u.id}" title="Promote" ${me || lk || i <= 0 || (!isSuper() && ADM.roles[i - 1] && ADM.roles[i - 1].role_key === 'superadmin') ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
         <button class="mini" data-act="demote" data-id="${u.id}" title="Demote" ${me || lk || i >= ADM.roles.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
         <button class="mini" data-act="edit" data-id="${u.id}" title="Edit login details" ${lk ? 'disabled' : ''}><i class="fas fa-pen"></i></button>
         <button class="mini" data-act="toggle" data-id="${u.id}" title="${u.is_active ? 'Disable' : 'Enable'} account" ${me || lk ? 'disabled' : ''}><i class="fas fa-${u.is_active ? 'ban' : 'circle-check'}"></i></button>
         <button class="mini bad" data-act="delete" data-id="${u.id}" title="Delete" ${me || lk ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
-      </div></td></tr>`; }).join('') || `<tr><td colspan="${sup ? 8 : 6}" class="muted">No users found.</td></tr>`);
+      </div></td></tr>`; }).join('') || '<tr><td colspan="6" class="muted">No users found.</td></tr>');
 }
 
 async function saveUser(id, body, okMsg) {
@@ -1138,7 +1263,7 @@ async function onUserAction(e) {
   if (act === 'promote' || act === 'demote') {
     const i = ADM.roles.findIndex(r => r.role_key === u.role), nr = ADM.roles[act === 'promote' ? i - 1 : i + 1];
     if (!nr) return;
-    if ((nr.role_key === 'admin' || nr.role_key === 'superadmin') && !confirm('Promote ' + u.username + ' to ' + nr.label.toUpperCase() + '? This role has wide control of the dashboard.')) return;
+    if ((nr.role_key === 'admin' || nr.role_key === 'superadmin') && !confirm('Promote ' + u.username + ' to ADMIN? Admins have full control of this dashboard.')) return;
     await saveUser(id, { role: nr.role_key }, u.username + ' is now ' + nr.label);
   } else if (act === 'toggle') {
     if (u.is_active && !confirm('Disable ' + u.username + '? They will be logged out and cannot sign in.')) return;
@@ -1159,11 +1284,11 @@ function openUserModal(u) {
   $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
     <h2>${isNew ? 'Add user' : 'Edit user'}</h2>
     <p class="muted" style="margin-bottom:6px">${isNew ? 'Create a login for a new member.' : 'Change login details, role or status.'}</p>
-    <label class="l">Username</label><input class="input" id="mu_user" value="${escA(u ? u.username || '' : '')}" placeholder="3-24 letters, numbers . _ -">
-    <label class="l">Display name</label><input class="input" id="mu_name" value="${escA(u ? u.name || '' : '')}">
-    <label class="l">Email</label><input class="input" id="mu_email" type="email" value="${escA(u ? u.email : '')}">
+    <label class="l">Username</label><input class="input" id="mu_user" value="${esc(u ? u.username || '' : '')}" placeholder="3-24 letters, numbers . _ -">
+    <label class="l">Display name</label><input class="input" id="mu_name" value="${esc(u ? u.name || '' : '')}">
+    <label class="l">Email</label><input class="input" id="mu_email" type="email" value="${esc(u ? u.email : '')}">
     <label class="l">${isNew ? 'Password' : 'New password (leave empty to keep current)'}</label>
-    <div class="pw-row"><input class="input" id="mu_pw" type="text" autocomplete="off" placeholder="min 6 characters"><button class="btn outline sm" type="button" id="mu_gen">Generate</button>${isSuper() ? '<button class="btn outline sm" type="button" id="mu_copy">Copy</button>' : ''}</div>
+    <div class="pw-row"><input class="input" id="mu_pw" type="text" autocomplete="off" placeholder="min 6 characters"><button class="btn outline sm" type="button" id="mu_gen">Generate</button></div>
     <label class="l">Role</label><select class="input" id="mu_role" ${me ? 'disabled' : ''}>${opts}</select>
     ${isNew ? '' : `<label class="check" style="margin-top:14px"><input type="checkbox" id="mu_active" ${u.is_active ? 'checked' : ''} ${me ? 'disabled' : ''}><span>Account active (can log in)</span></label>`}
     ${me ? '<p class="muted" style="font-size:12px;margin-top:8px">You cannot change your own role or disable your own account.</p>' : ''}
@@ -1172,7 +1297,6 @@ function openUserModal(u) {
   $('modalBg').classList.add('show');
   $('mu_gen').onclick = () => { const c = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let p = '';
     const a = new Uint32Array(12); crypto.getRandomValues(a); a.forEach(n => p += c[n % c.length]); $('mu_pw').value = p; };
-  if ($('mu_copy')) $('mu_copy').onclick = async () => { try { await navigator.clipboard.writeText($('mu_pw').value); toast('Copied', 'ok'); } catch { toast('Copy failed', 'err'); } };
   $('mu_save').onclick = async () => {
     const body = { username: $('mu_user').value.trim(), name: $('mu_name').value.trim(), email: $('mu_email').value.trim(), role: $('mu_role').value };
     const pw = $('mu_pw').value; if (pw) body.password = pw;
@@ -1188,10 +1312,9 @@ function openUserModal(u) {
 function renderRights() {
   const roles = ADM.roles;
   $('rightsTable').innerHTML = '<tr><th>Menu</th>' + roles.map(r => `<th>${roleBadgeRaw(r.label, r.color)}</th>`).join('') + '</tr>' +
-    ADM.menus.map(m => '<tr><td><b>' + esc(m.label) + '</b>' + (m.always ? ' <span class="badge b-lvl">always on</span>' : '') +
-      (m.superOnly ? ' <span class="badge b-lvl">super admin only</span>' : m.adminOnly ? ' <span class="badge b-lvl">admin only</span>' : '') + '</td>' +
+    ADM.menus.map(m => '<tr><td><b>' + esc(m.label) + '</b>' + (m.always ? ' <span class="badge b-lvl">always on</span>' : '') + (m.superOnly ? ' <span class="badge b-lvl">super admin only</span>' : m.adminOnly ? ' <span class="badge b-lvl">admin only</span>' : '') + '</td>' +
       roles.map(r => { const isAdm = r.role_key === 'admin' || r.role_key === 'superadmin', locked = isAdm || m.always || m.adminOnly;
-        const checked = r.role_key === 'superadmin' || (r.role_key === 'admin' && !m.superOnly) || (!isAdm && !m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
+const checked = r.role_key === 'superadmin' || (r.role_key === 'admin' && !m.superOnly) || (!isAdm && !m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
         return `<td style="text-align:center"><input type="checkbox" class="rt" data-r="${esc(r.role_key)}" data-m="${esc(m.key)}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}></td>`; }).join('') + '</tr>').join('');
 }
 
@@ -1207,6 +1330,9 @@ async function saveRights() {
 }
 
 /* =====================================================================
+   6. START
+   ===================================================================== */
+/* =====================================================================
    5c. GAME GUIDES
    ===================================================================== */
 const GD = { cats: [], guides: [], cat: '', q: '' };
@@ -1215,9 +1341,16 @@ const safeImg = (u) => /^(https:\/\/|\/?assets\/)[^\s"'<>]+$/.test(u || '') ? u 
 const thumb = (img, icon) => `<div class="gthumb"><i class="fas ${escA(icon || 'fa-book')}"></i>` +
   (safeImg(img) ? `<img src="${escA(safeImg(img))}" alt="" loading="lazy" onerror="this.style.display='none'">` : '') + '</div>';
 const catOf = (k) => GD.cats.find(c => c.category_key === k) || {};
+
 const GCOL = {            // [light background, accent]
-  beginner:  ['#dff6dd', '#6bbf6a'], heroes:    ['#e1efff', '#5b9bd5'], captains:  ['#fff3cd', '#d9a400'], equipment: ['#ffe3d3', '#e8885a'],
-  city:      ['#d9f3f1', '#3fb3ab'], combat:    ['#fde1e4', '#e0707e'], clan:      ['#ece3fa', '#9a78d6'], research:  ['#fde4f1', '#d96aa7']
+  beginner:  ['#dff6dd60', '#6bbf6a60'],
+  heroes:    ['#e1efff60', '#5b9bd560'],
+  captains:  ['#fff3cd60', '#d9a40060'],
+  equipment: ['#ffe3d360', '#e8885a60'],
+  city:      ['#d9f3f160', '#3fb3ab60'],
+  combat:    ['#fde1e460', '#e0707e60'],
+  clan:      ['#ece3fa60', '#9a78d660'],
+  research:  ['#fde4f160', '#d96aa760']
 };
 const gtint = (k) => GCOL[k] ? `style="--gc:${GCOL[k][0]};--ga:${GCOL[k][1]}"` : '';
 
@@ -1282,7 +1415,7 @@ function mountGuideFrame(host, html) {
   f.setAttribute('sandbox', 'allow-same-origin allow-popups');   // no scripts can run
   const fit = () => { try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {} };
   f.onload = () => { fit(); f.contentDocument.querySelectorAll('img').forEach(i => i.addEventListener('load', fit)); setTimeout(fit, 400); };
-  let w = 0; if (window.ResizeObserver) new ResizeObserver(() => { if (host.clientWidth !== w) { w = host.clientWidth; fit(); } }).observe(host);
+  let w = 0; new ResizeObserver(() => { if (host.clientWidth !== w) { w = host.clientWidth; fit(); } }).observe(host);
   host.innerHTML = ''; host.appendChild(f); f.srcdoc = guideDoc(html);
 }
 
@@ -1311,7 +1444,7 @@ async function openGuide(id) {
       <span class="badge ${g.is_premium ? 'b-prem' : 'b-free'}">${g.is_premium ? '★ Premium' : 'Free'}</span>
       <h1 style="font-size:26px;margin:10px 0 4px">${esc(g.title)}</h1>
       <p class="muted" style="margin-bottom:14px">${esc(c.label || '')}</p>
-      ${img ? `<img class="gbanner" src="${escA(img)}" alt="" onerror="this.style.display='none'">` : ''}
+      ${img ? `<img src="${escA(img)}" alt="" style="width:100%;max-height:320px;object-fit:cover;border-radius:10px;margin-bottom:16px" onerror="this.style.display='none'">` : ''}
       <div id="gBody"></div>
     </article>`;
   $('gBack').onclick = () => closeReader(g.category_key);
@@ -1319,7 +1452,6 @@ async function openGuide(id) {
   mountGuideFrame($('gBody'), toHtml(g.content));
   window.scrollTo({ top: 0 });
 }
-
 
 /* ---- admin: manage guides ---- */
 const GA = { guides: [], cats: [] };
@@ -1390,7 +1522,7 @@ async function openGuideModal(id) {
     <label class="check" style="margin-top:12px"><input type="checkbox" id="gm_prem" ${g.is_premium ? 'checked' : ''}><span>Premium (needs "Premium Guides" right)</span></label>
     <label class="check"><input type="checkbox" id="gm_pub" ${g.is_published ? 'checked' : ''}><span>Published (visible to members)</span></label>
     <label class="l" style="display:flex;justify-content:space-between;align-items:center;gap:8px">Content (HTML)
-      <span><button type="button" class="btn outline sm" id="gm_tcode">HTML code</button> <button type="button" class="btn outline sm" id="gm_tprev">Preview</button></span></label>
+    <span><button type="button" class="btn outline sm" id="gm_tcode">HTML code</button> <button type="button" class="btn outline sm" id="gm_tprev">Preview</button></span></label>
     <textarea class="input codebox" id="gm_content" spellcheck="false" placeholder="<h2>Heading</h2><p>Paste or write your HTML here...</p>">${esc(g.content || '')}</textarea>
     <div id="gm_prev" style="display:none;border:1px solid var(--border);border-radius:8px;padding:12px;background:var(--card)"></div>
     <p class="muted" style="font-size:12px;margin-top:6px">Any HTML and inline CSS works: headings, lists, tables, images, links. Scripts and embedded players do not run. Max about 90,000 characters.</p>
@@ -1432,12 +1564,12 @@ function openCatModal(key) {
   };
 }
 
-
 /* =====================================================================
-   5d. EVENTS (Excel schedule + event catalog)  -  paste ABOVE "function startApp() {"
+   5d. EVENTS (Excel schedule + event catalog)
    ===================================================================== */
 const EV_URL = 'https://events.t3li.workers.dev/api';
 const RESET_HOUR = 17;                                   // daily reset, UTC
+const PERM_OF = { eventlist: 'events' };                 // sub menus share the Events right
 const EV = { schedule: {}, catalog: {}, unknown: [], ok: false, err: '', gd: '' };
 const evApi = (p, m, b) => api(EV_URL + p, m, b);
 const evNorm = (s) => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -1451,7 +1583,7 @@ const evTitle = (e) => (e.c && e.c.title) || e.name.replace(/-/g, ' ');
 const evOn = (d) => (EV.schedule[d] || []).map(n => { const k = evNorm(n); return { key: k, name: n, c: EV.catalog[k] || null }; });
 
 function evMini(e, cls = '') {
-  const t = evTitle(e), img = e.c && evSafeImg(e.c.icon_url || e.c.image_url);     // small icon first
+  const t = evTitle(e), img = e.c && evSafeImg(e.c.image_url);
   return img
     ? `<img class="evmini ${cls}" src="${escA(img)}" alt="${escA(t)}" title="${escA(t)}" data-ev="${escA(e.key)}" loading="lazy" onerror="this.style.visibility='hidden'">`
     : `<div class="evmini evph ${cls}" title="${escA(t)}" data-ev="${escA(e.key)}">${esc(t.charAt(0).toUpperCase())}</div>`;
@@ -1476,6 +1608,7 @@ function evMonthHtml(y, m, gd) {
   }
   return `<div class="mgrid">${h}</div>`;
 }
+  
 const evMonthName = (y, m) => new Date(Date.UTC(y, m, 1)).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 function renderEvents() {                                // Calendar page (replaces the old placeholder version)
@@ -1497,7 +1630,7 @@ function renderEventList() {
   const nextDate = (k) => dates.find(d => EV.schedule[d].some(n => evNorm(n) === k));
   const list = Object.values(EV.catalog).filter(c => (!elCat || c.category === elCat) && (c.title + ' ' + c.short_desc).toLowerCase().includes(elQ))
     .sort((a, b) => a.title.localeCompare(b.title));
-  $('elGrid').innerHTML = list.length ? list.map(c => { const nd = nextDate(c.event_key), img = evSafeImg(c.image_url || c.icon_url);
+  $('elGrid').innerHTML = list.length ? list.map(c => { const nd = nextDate(c.event_key), img = evSafeImg(c.image_url);
     return `<div class="card gcard" data-ev="${escA(c.event_key)}"><div class="gthumb"><i class="fas fa-calendar-day"></i>${img ? `<img src="${escA(img)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}</div>
       <div style="display:flex;justify-content:space-between;gap:8px"><h4>${esc(c.title)}</h4>${running.has(c.event_key) ? '<span class="badge st-on">Running</span>' : ''}</div>
       <p>${esc(c.short_desc)}</p><p class="muted" style="margin-top:8px;font-size:12px">${c.category ? esc(c.category) + ' · ' : ''}${nd ? 'Next: ' + evDate(nd) : 'Not scheduled'}</p></div>`; }).join('')
@@ -1505,11 +1638,11 @@ function renderEventList() {
 }
 
 function openEvent(key) {                                // detail window (opens when a picture is clicked)
-  const c = EV.catalog[key], img = c && evSafeImg(c.image_url || c.icon_url);   // big picture first
+  const c = EV.catalog[key], img = c && evSafeImg(c.image_url);
   const dates = Object.keys(EV.schedule).sort().filter(d => d >= evGameDate() && EV.schedule[d].some(n => evNorm(n) === key)).slice(0, 8);
   $('modal').classList.add('wide');
   $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
-    ${img ? `<img class="evbanner" src="${escA(img)}" alt="" onerror="this.style.display='none'">` : ''}
+    ${img ? `<img src="${escA(img)}" alt="" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin-bottom:12px" onerror="this.style.display='none'">` : ''}
     <h2>${esc(c ? c.title : key.replace(/-/g, ' '))}</h2><p class="muted">${esc((c && c.category) || '')}</p>
     <p style="margin:10px 0">${esc(c ? c.short_desc : 'No description added yet.')}</p>
     <div id="evBody"></div>
@@ -1559,7 +1692,7 @@ function initEventAdmin() {
   renderEventAdmin();
 }
 function renderEventAdmin() {
-  if (!$('eaTable') || !isAdmin()) return;
+  if (!$('eaTable') || !isSuper()) return;
   const q = $('eaSearch').value.toLowerCase();
   $('eaMissing').innerHTML = EV.unknown.length ? '<div class="note"><b>Used in the Excel file but not added yet (click to add):</b><br>' +
     EV.unknown.map(u => `<button class="chip" style="margin:6px 6px 0 0" data-miss="${escA(u.name)}">${esc(u.name)}</button>`).join('') + '</div>' : '';
@@ -1570,15 +1703,14 @@ function renderEventAdmin() {
       <button class="mini bad" data-act="del" data-ek="${c.id}" title="Delete"><i class="fas fa-trash"></i></button></div></td></tr>`).join('') || '<tr><td colspan="5" class="muted">No events yet.</td></tr>');
 }
 function openEventModal(c, prefill) {
-  c = c || { id: 0, title: (prefill || '').replace(/-/g, ' '), category: '', icon_url: '', image_url: '', short_desc: '', details_html: '' };
+  c = c || { id: 0, title: (prefill || '').replace(/-/g, ' '), category: '', image_url: '', short_desc: '', details_html: '' };
   const cats = [...new Set(Object.values(EV.catalog).map(x => x.category).filter(Boolean))];
   $('modal').classList.add('wide');
   $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
     <h2>${c.id ? 'Edit event' : 'Add event'}</h2>
     <label class="l">Event name (Rise of Ancient and Rise-of-Ancient in Excel both match)</label><input class="input" id="em_title" maxlength="80" value="${escA(c.title)}">
     <label class="l">Category</label><input class="input" id="em_cat" list="em_cats" maxlength="40" value="${escA(c.category)}" placeholder="e.g. PvE, Clan, Daily"><datalist id="em_cats">${cats.map(x => `<option value="${escA(x)}">`).join('')}</datalist>
-    <label class="l">Icon picture: small square, shown in the calendar and lists (e.g. event-images/icons/rise-of-ancient.png)</label><input class="input" id="em_icon" value="${escA(c.icon_url || '')}">
-    <label class="l">Big picture: shown at the top when the event opens (e.g. event-images/rise-of-ancient.png)</label><input class="input" id="em_img" value="${escA(c.image_url)}">
+    <label class="l">Picture path (e.g. event-images/rise-of-ancient.png)</label><input class="input" id="em_img" value="${escA(c.image_url)}">
     <label class="l">Short description (max 300)</label><input class="input" id="em_desc" maxlength="300" value="${escA(c.short_desc)}">
     <label class="l" style="display:flex;justify-content:space-between;align-items:center;gap:8px">Details (HTML)
       <span><button type="button" class="btn outline sm" id="em_tcode">HTML code</button> <button type="button" class="btn outline sm" id="em_tprev">Preview</button></span></label>
@@ -1589,13 +1721,59 @@ function openEventModal(c, prefill) {
   $('em_tcode').onclick = () => { $('em_prev').style.display = 'none'; $('em_html').style.display = ''; };
   $('em_tprev').onclick = () => { $('em_html').style.display = 'none'; $('em_prev').style.display = 'block'; mountGuideFrame($('em_prev'), toHtml($('em_html').value)); };
   $('em_save').onclick = async () => {
-    const body = { title: $('em_title').value, category: $('em_cat').value, icon_url: $('em_icon').value.trim(), image_url: $('em_img').value.trim(), short_desc: $('em_desc').value, details_html: $('em_html').value };
+    const body = { title: $('em_title').value, category: $('em_cat').value, image_url: $('em_img').value.trim(), short_desc: $('em_desc').value, details_html: $('em_html').value };
     $('em_save').disabled = true;
     const r = c.id ? await evApi('/events/admin/catalog/' + c.id, 'PATCH', body) : await evApi('/events/admin/catalog', 'POST', body);
     $('em_save').disabled = false;
     if (r.success) { toast('Event saved', 'ok'); closeModal(); loadEvents(); } else toast(r.error || 'Failed', 'err');
   };
 }
+
+/* ---- presence (Super Admin only) ---- */
+const timeAgo = (ms) => {
+  if (!ms) return 'Never logged in';
+  const d = new Date(ms), n = new Date();
+  const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((day(n) - day(d)) / 864e5);
+  if (days <= 0) return 'Today logged in (' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ')';
+  if (days === 1) return 'Yesterday logged in';
+  return days + ' days ago';
+};
+  
+function presenceCells(u) {
+  const on = !!u.online, col = on ? '#28a745' : '#dc3545';
+  const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};box-shadow:0 0 6px ${col};margin-right:6px"></span>`;
+  const seen = on ? '' : `<br><small class="muted">${esc(timeAgo(u.last_seen))}</small>`;
+  const cc = /^[A-Z]{2}$/.test(u.last_country || '') ? u.last_country.toLowerCase() : '';
+  const flag = cc ? `<img src="https://flagcdn.com/24x18/${cc}.png" width="20" height="15" alt="" style="vertical-align:middle;margin-right:4px;border-radius:2px" onerror="this.style.display='none'">` : '';
+  const loc = u.last_ip ? `${esc(u.last_ip)} (${flag}${esc(u.country_name || u.last_country || 'Unknown')})` : '<span class="muted">-</span>';
+  return `<td style="white-space:nowrap">${dot}<b style="color:${col}">${on ? 'Online' : 'Offline'}</b>${seen}</td><td style="white-space:nowrap">${loc}</td>`;
+}
+
+async function refreshAll() {
+  const btn = $('refreshBtn'); if (btn.disabled) return;
+  btn.disabled = true; btn.querySelector('i').classList.add('fa-spin');
+  try {
+    const r = await api('/check');                       // also logs you out if the session ended
+    if (!r.success) return toast(r.error || 'Could not refresh.', 'err');
+    if (r.user.role !== currentUser.role) { location.reload(); return; }   // role changed: rebuild the whole page
+    currentUser = r.user;
+    $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
+    $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
+    applyPermissions(); renderAccount();
+    const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
+    if (isAdmin()) jobs.push(loadAdmin());               // users, online status, menu rights
+    if (isSuper()) jobs.push(loadGuideAdmin());
+    await Promise.all(jobs);
+    showSection(location.hash.slice(1));                 // leaves a section that just became locked
+    toast('Refreshed', 'ok');
+  } catch (e) {
+    toast('Refresh failed. Check your connection.', 'err');
+  } finally {
+    btn.disabled = false; btn.querySelector('i').classList.remove('fa-spin');
+  }
+}
+
 
 /* =====================================================================
    5e. CLAN CHESTS  -  paste ABOVE "function startApp() {"
@@ -1778,7 +1956,7 @@ function initChests() {
       $('chTargetSave').disabled = true;
       const r = await api('/settings/chest-target', 'PUT', { target: t });
       $('chTargetSave').disabled = false;
-      if (r.success) { CH.target = t; toast('Weekly target saved', 'ok'); renderMembers(); } else toast(r.error || 'Failed', 'err');
+      if (r.success) { CH.target = t; toast('Weekly target saved', 'ok'); renderMembers(); renderOverview(); } else toast(r.error || 'Failed', 'err');
     };
   }
   setInterval(chTick, 1000); chTick(); loadChests();
@@ -1972,69 +2150,46 @@ function renderTools() {                                   // replaces the old t
   window.addEventListener('hashchange', () => CALCS.filter(c => c.lazy && location.hash === '#calc-' + c.id).forEach(calcMount));
 }
 
-/* =====================================================================
-   6. REFRESH + START
-   ===================================================================== */
-async function refreshAll() {
-  const btn = $('refreshBtn'); if (btn.disabled) return;
-  btn.disabled = true; btn.querySelector('i').classList.add('fa-spin');
-  try {
-    const r = await api('/check');                       // also logs you out if the session ended
-    if (!r.success) return toast(r.error || 'Could not refresh.', 'err');
-    if (r.user.role !== currentUser.role) { location.reload(); return; }   // role changed: rebuild the page
-    currentUser = r.user;
-    $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
-    $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
-    applyPermissions(); renderAccount();
-    const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
-    if (isAdmin()) jobs.push(loadAdmin());
-    if (isSuper()) jobs.push(loadGuideAdmin());
-    await Promise.all(jobs);
-    showSection(location.hash.slice(1));
-    toast('Refreshed', 'ok');
-  } catch (e) {
-    toast('Refresh failed. Check your connection.', 'err');
-  } finally {
-    btn.disabled = false; btn.querySelector('i').classList.remove('fa-spin');
-  }
-}
-
+  
 function startApp() {
   const name = currentUser.name || currentUser.email.split('@')[0];
   $('heroName').textContent = name;
+  $('chipName').textContent = name;
   $('avatar').textContent = name.charAt(0).toUpperCase();
   $('topName').textContent = name;
   $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
-  $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
+
+ $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
   applyPermissions();
-  renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies(); renderEvents(); renderMembers();
-  renderChecklist(); renderTools(); renderRules(); renderAccount();
-  initGuides(); initEvents(); initChests(); initChestDefs();
+  renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies();
+  renderEvents(); renderMembers(); renderChecklist(); renderTools(); renderRules(); renderAccount(); initGuides(); initEvents(); initChests(); initChestDefs();
 
   document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
   $('nav').addEventListener('click', (e) => {
-    const t = e.target.closest('.sub-toggle');
-    if (t) { e.preventDefault(); t.parentElement.classList.toggle('open'); return; }
     const a = e.target.closest('a.locked');
     if (a) { e.preventDefault(); toast('🔒 "' + TITLES[a.dataset.s] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err'); }
   });
   if (isAdmin()) initAdmin();
-  $('menuBtn').onclick = toggleSidebar;
+  $('menuBtn').onclick = () => { $('sidebar').classList.add('open'); $('overlay').classList.add('show'); };
   $('overlay').onclick = closeMenu;
   $('themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-  $('logoutTop').onclick = logout; $('logoutBtn').onclick = logout;
+  $('userChip').onclick = () => { location.hash = 'account'; };
   $('refreshBtn').onclick = refreshAll;
+  $('logoutTop').onclick = logout; $('logoutBtn').onclick = logout;
   $('modalBg').onclick = (e) => { if (e.target === $('modalBg')) closeModal(); };
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-  $('topSearch').onsubmit = (e) => {                     // header search = search the guides
-    e.preventDefault();
-    const q = $('topSearchInput').value.trim().toLowerCase();
-    if ($('gReader').style.display !== 'none') closeReader();
-    GD.cat = ''; GD.q = q; $('gSearch').value = $('topSearchInput').value.trim(); drawGuides();
-    location.hash = 'guides'; showSection('guides');
-  };
 
-  const tick = () => { $('utcClock').textContent = new Date().toISOString().slice(11, 19); };
+  // live clock + countdowns
+  const tick = () => {
+    $('utcClock').textContent = new Date().toISOString().slice(11, 19);
+    document.querySelectorAll('.countdown[data-target]').forEach(el => {
+      const t = +el.dataset.target;
+      if (t - Date.now() <= 0) { renderEvents(); renderOverview(); return; }
+      const small = el.querySelector('small');
+      el.firstChild.nodeValue = countdownText(t);
+      if (!small && el.childNodes.length === 1) el.textContent = countdownText(t);
+    });
+  };
   tick(); setInterval(tick, 1000);
   setInterval(() => { fetch(API_URL + '/ping', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN } }).catch(() => {}); }, 120000);
 
@@ -2042,10 +2197,8 @@ function startApp() {
   $('loading').style.display = 'none';
 }
 
-try { if (localStorage.getItem('tb_sb') === '1') document.body.classList.add('sb-collapsed'); } catch (e) {}
 applyTheme(localStorage.getItem('tb_theme') || 'light');
 authInit();
-
 </script>
 </body>
 </html>
