@@ -1482,17 +1482,23 @@ function applyPermissions() {
 }
 
 async function api(path, method = 'GET', body) {
+  const isOwn = !path.startsWith('http');          // login.t3li.workers.dev vs. another worker (events, counts, inquiries)
   // GET/PATCH/PUT are safe to repeat, so retry them once on a network failure
   const attempts = (method === 'POST' || method === 'DELETE') ? 1 : 2;
   for (let i = 1; i <= attempts; i++) {
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 15000);
     try {
-      const res = await fetch((path.startsWith('http') ? '' : API_URL) + path, { method, signal: ctl.signal,
+      const res = await fetch((isOwn ? API_URL : '') + path, { method, signal: ctl.signal,
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + TOKEN },
         body: body ? JSON.stringify(body) : undefined });
       clearTimeout(timer);
-      if (res.status === 401) { goToLogin(); return { success: false, error: 'Session expired' }; }
+      // Only a 401 from OUR OWN session worker means the member session actually expired.
+      // A 401 from another worker (e.g. admininquiry not yet configured) must never log the person out.
+      if (res.status === 401) {
+        if (isOwn) { goToLogin(); return { success: false, error: 'Session expired' }; }
+        return { success: false, error: 'Not authorized for this request. Check that worker\'s setup.' };
+      }
       return await res.json();
     } catch (e) {
       clearTimeout(timer);
