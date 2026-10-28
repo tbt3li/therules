@@ -2574,7 +2574,7 @@ async function loadResearchHelper(slug) {
     </div>`;
 
   try {
-    const res = await fetch(`helper/tables/${slug}.html`);
+    const res = await fetch(`helper/${slug}.html`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const html = await res.text();
     HELPER_CACHE[slug] = html;
