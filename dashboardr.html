@@ -788,106 +788,6 @@ img{max-width:100%}
 .helper-table-wrapper .bl{font-weight:700;color:var(--primary)}
 .helper-table-wrapper tr[style*="color: green"]{color:var(--success-color) !important}
 
-/* ===== RESEARCH HELPER ===== */
-.helper-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
-.helper-btn {
-  padding: 7px 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-.helper-btn:hover { background: var(--sidebar-hover-bg); border-color: var(--primary); color: var(--primary); }
-.helper-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-.helper-btn.active i { color: #fff; }
-.helper-group-title {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.helper-toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
-.helper-table-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-sm);
-}
-.helper-table-header { padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.helper-table-title { font-size: 18px; font-weight: 700; color: var(--heading-color); }
-.helper-table-wrapper {
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  overflow: auto;
-  max-height: 72vh;
-  background: var(--card);
-}
-.helper-table-wrapper table {
-  width: 100%;
-  font-size: 13px;
-  border-collapse: separate;
-  border-spacing: 0;
-  white-space: nowrap;
-  margin-bottom: 0;
-}
-.helper-table-wrapper th, .helper-table-wrapper td {
-  padding: 8px 12px;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  color: var(--text);
-}
-/* Sticky column headers (Level 1-10) */
-.helper-table-wrapper thead th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--table-header-bg);
-  color: var(--heading-color);
-  font-weight: 700;
-  border-bottom: 2px solid var(--border);
-}
-/* Sticky Row # Column */
-.helper-table-wrapper th:first-child, .helper-table-wrapper td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 5;
-  background: var(--card);
-  border-right: 1px solid var(--border);
-  min-width: 44px;
-  width: 44px;
-}
-.helper-table-wrapper thead th:first-child { z-index: 15; background: var(--table-header-bg); }
-/* Sticky Research Name Column */
-.helper-table-wrapper th:nth-child(2), .helper-table-wrapper td:nth-child(2) {
-  position: sticky;
-  left: 44px;
-  z-index: 5;
-  background: var(--card);
-  border-right: 2px solid var(--border);
-  text-align: left;
-  box-shadow: 3px 0 6px -2px rgba(0,0,0,.08);
-}
-.helper-table-wrapper thead th:nth-child(2) { z-index: 15; background: var(--table-header-bg); }
-.helper-table-wrapper tbody tr:hover td, .helper-table-wrapper tbody tr:hover th { background: var(--table-hover-bg); }
-.helper-table-wrapper .tdl { text-align: left !important; font-weight: 600; }
-.helper-table-wrapper .bl { font-weight: 700; color: var(--primary); }
-.helper-table-wrapper tr[style*="color: green"] { color: var(--success-color) !important; }
-
 </style>
 </head>
 <body>
@@ -932,7 +832,6 @@ img{max-width:100%}
     <li class="nav-item has-submenu"><a class="nav-link sub-toggle" href="#" aria-expanded="false"><span class="nav-icon"><i class="ph-light ph-treasure-chest"></i></span><span class="nav-text">Clan Chests</span><span class="nav-arrow"><i class="bi bi-chevron-right"></i></span></a><ul class="nav-submenu"><li><a class="nav-link" href="#members" data-s="members"><span class="nav-dot"></span>Weekly Chests</a></li><li><a class="nav-link" href="#chestdefs" data-s="chestdefs"><span class="nav-dot"></span>Chest Definitions</a></li></ul></li>
     <li class="nav-heading"><span>Premium Resources</span></li>
     <li class="nav-item"><a class="nav-link" href="#tutorials" data-s="tutorials"><span class="nav-icon"><i class="ph-light ph-graduation-cap"></i></span><span class="nav-text">Premium Tutorials</span></a></li>
-	<li class="nav-item"><a class="nav-link" href="#helper" data-s="helper"><span class="nav-icon"><i class="ph-light ph-flask"></i></span><span class="nav-text">Research Helper</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#loadouts" data-s="loadouts"><span class="nav-icon"><i class="ph-light ph-shield-check"></i></span><span class="nav-text">Equipment Loadouts</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#strategies" data-s="strategies"><span class="nav-icon"><i class="ph-light ph-strategy"></i></span><span class="nav-text">Pro Strategies</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#guides" data-s="guides"><span class="nav-icon"><i class="ph-light ph-book-open-text"></i></span><span class="nav-text">Game Guides</span></a></li>
@@ -1029,42 +928,7 @@ img{max-width:100%}
         <div class="grid g3" id="gGrid"><p class="muted">Loading guides...</p></div>
         <div id="gReader" style="display:none"></div>
       </section>
-	  <!-- RESEARCH HELPER -->
-	<section class="section" id="s-helper">
-	  <div class="page-head">
-		<h1>🔬 Research Helper</h1>
-		<p>Complete cost and requirement breakdown for all 14 research unlock trees and boosts.</p>
-	  </div>
 
-	  <!-- Tree Selector Card -->
-	  <div class="card mb-4" style="padding:16px 20px">
-		<div class="mb-3">
-		  <div class="helper-group-title"><i class="bi bi-unlock-fill" style="color:var(--primary)"></i> Unlock Trees (10)</div>
-		  <div class="helper-tabs" id="helperUnlockTabs"></div>
-		</div>
-		<div>
-		  <div class="helper-group-title"><i class="bi bi-lightning-charge-fill" style="color:var(--warning-color)"></i> Boost Trees (4)</div>
-		  <div class="helper-tabs" id="helperBoostTabs"></div>
-		</div>
-	  </div>
-
-	  <!-- Filter & Toolbar -->
-	  <div class="helper-toolbar">
-		<div style="flex:1;min-width:260px;position:relative">
-		  <i class="bi bi-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)"></i>
-		  <input type="search" class="input" id="helperSearch" placeholder="Filter research rows (e.g. Archers, Strength, Health)..." style="padding-left:38px;width:100%">
-		</div>
-		<span class="badge" id="helperMatchCount" style="background:var(--input-bg);color:var(--muted);border:1px solid var(--border);padding:8px 12px;font-size:12.5px;font-weight:600">Loading...</span>
-	  </div>
-
-	  <!-- Table Viewport -->
-	  <div id="helperTableContainer">
-		<div class="card p-5 text-center text-muted">
-		  <i class="fas fa-spinner fa-spin fa-2x mb-3" style="color:var(--primary)"></i>
-		  <p>Loading research data table...</p>
-		</div>
-	  </div>
-	</section>
       <!-- RESEARCH HELPER -->
       <section class="section" id="s-helper">
         <div class="page-head">
@@ -1472,19 +1336,15 @@ const fmtShort = (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).t
 /* =====================================================================
    4. NAVIGATION / THEME
    ===================================================================== */
-const TITLES = { 
-  overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
+const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
   events:'Events & Calendar', eventlist:'All Events', members:'Clan Chests', chestdefs:'Chest Definitions', guides:'Game Guides',
-  helper:'Research Helper', // <-- Added
+  helper:'Research Helper',
   checklist:'Daily Checklist', tools:'Calculators', rules:'Clan Rules & Contact', account:'My Account',
-  roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events', inquiries:'Contact Inquiries' 
-};
-
-// Shares 'guides' permission so role rights apply automatically
-const PERM_OF = { eventlist: 'events', chestdefs: 'members', helper: 'guides' };
+  roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events', inquiries:'Contact Inquiries' };
+const PERM_OF = { eventlist: 'events', chestdefs: 'members', helper: 'guides' };       // sub pages share their parent's right
+const RESTRICTED = ['roles', 'guideadmin', 'eventadmin', 'inquiries'];
 
 function showSection(name) {
-  // Support deep links like #helper-ba or #helper-ugi
   if (name.startsWith('helper-')) {
     const slug = name.replace('helper-', '');
     name = 'helper';
@@ -1504,13 +1364,11 @@ function showSection(name) {
   closeMenu();
   window.scrollTo({ top: 0 });
 
-  // Load the helper tabs and table on first visit
   if (name === 'helper') {
     renderHelperTabs();
     loadResearchHelper(currentHelperTree);
   }
 }
-
 const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
 function setSub(g, open) {                                // open/close a sidebar submenu (same behaviour as the template)
   g.classList.toggle('open', open);
@@ -2645,7 +2503,7 @@ function renderTools() {                                   // replaces the old t
 /* =====================================================================
    5e. RESEARCH HELPER
    ===================================================================== */
-const RESEARCH_TREES = [
+var RESEARCH_TREES = window.RESEARCH_TREES || [
   { id: 'ugi', name: "Guardsmen-I", group: 'Unlock', icon: 'bi-shield-fill-plus' },
   { id: 'usi', name: "Specialists-I", group: 'Unlock', icon: 'bi-shield-fill-check' },
   { id: 'umi', name: "Monster-I", group: 'Unlock', icon: 'bi-emoji-angry' },
@@ -2662,9 +2520,9 @@ const RESEARCH_TREES = [
   { id: 'bl', name: "Logistics", group: 'Boost', icon: 'bi-battery-charging' }
 ];
 
-const HELPER_CACHE = {};
-let currentHelperTree = 'ba';
-let helperTabsRendered = false;
+var HELPER_CACHE = window.HELPER_CACHE || {};
+var currentHelperTree = window.currentHelperTree || 'ba';
+var helperTabsRendered = window.helperTabsRendered || false;
 
 function renderHelperTabs() {
   if (helperTabsRendered) return;
@@ -2752,8 +2610,6 @@ function filterHelperTable(q) {
     }
   }
 }
-
-
 
 /* =====================================================================
    6. REFRESH + START
