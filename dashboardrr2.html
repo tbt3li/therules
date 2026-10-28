@@ -798,34 +798,6 @@ img{max-width:100%}
 .gift-table td:nth-child(5) a{background:color-mix(in srgb,var(--success-color),transparent 88%);color:var(--success-color);border:1px solid color-mix(in srgb,var(--success-color),transparent 70%)}
 .gift-table td:nth-child(5) a:hover{background:var(--success-color);color:#fff}
 
-/* ===== RULES HUB (Kingdom / Clan / CP) ===== */
-.rules-hero{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;background:linear-gradient(135deg,color-mix(in srgb,var(--primary),transparent 88%),color-mix(in srgb,var(--accent),transparent 92%));border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px}
-.rules-hero h2{font-size:20px;margin:8px 0 6px;color:var(--heading-color)}
-.rules-hero p{color:var(--muted);font-size:14px;max-width:780px;line-height:1.6}
-.rules-hero .rh-actions{display:flex;gap:8px;flex-wrap:wrap}
-.rules-hero .rh-actions .btn{white-space:nowrap}
-.rule-group{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px}
-.rule-group summary{padding:13px 16px;font-size:14.5px;gap:10px}
-.rule-group summary .rg-count{margin-left:auto;background:var(--input);color:var(--muted);border:1px solid var(--border);border-radius:20px;font-size:11px;font-weight:700;padding:2px 9px}
-.rule-group summary i.chev{font-size:12px;color:var(--muted)}
-.rule-group .body{padding:2px 16px 14px}
-.rule-item{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:9px 0;border-bottom:1px dashed var(--border);font-size:14px;line-height:1.6;color:var(--text)}
-.rule-item:last-child{border-bottom:none}
-.rule-item.plain{grid-template-columns:1fr}
-.rule-item .rn{font-weight:800;color:var(--primary);font-size:12.5px;letter-spacing:.02em;padding-top:2px;font-variant-numeric:tabular-nums}
-.rule-def{display:grid;grid-template-columns:190px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--border);font-size:13.5px;line-height:1.55;color:var(--text)}
-.rule-def:last-child{border-bottom:none}
-.rule-def b{color:var(--heading-color)}
-.rule-table{margin:6px 0 2px;font-size:13px}
-.rule-table th{position:static;cursor:default;background:var(--table-header-bg);color:var(--heading-color);border-bottom:2px solid var(--border)}
-.rule-table td,.rule-table th{white-space:normal;padding:7px 10px}
-.rule-table td{color:var(--text)}
-.rule-table tbody tr:hover td{background:var(--table-hover-bg,var(--input))}
-.rule-lede{font-size:13px;color:var(--muted);margin:2px 0 10px}
-mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
-[data-theme="dark"] mark.rh{background:#7a5c00;color:#fff}
-@media(max-width:640px){.rule-item{grid-template-columns:44px 1fr}.rule-def{grid-template-columns:1fr;gap:2px}}
-
 </style>
 </head>
 <body>
@@ -879,7 +851,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
     <li class="nav-item"><a class="nav-link" href="#checklist" data-s="checklist"><span class="nav-icon"><i class="ph-light ph-check-square"></i></span><span class="nav-text">Daily Checklist</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#tools" data-s="tools"><span class="nav-icon"><i class="ph-light ph-calculator"></i></span><span class="nav-text">Calculators</span></a></li>
     <li class="nav-heading"><span>Clan</span></li>
-    <li class="nav-item has-submenu"><a class="nav-link sub-toggle" href="#" aria-expanded="false"><span class="nav-icon"><i class="ph-light ph-scroll"></i></span><span class="nav-text">Rules</span><span class="nav-arrow"><i class="bi bi-chevron-right"></i></span></a><ul class="nav-submenu"><li><a class="nav-link" href="#rules-kingdom" data-s="rules-kingdom"><span class="nav-dot"></span>Kingdom Rules</a></li><li><a class="nav-link" href="#rules-clan" data-s="rules-clan"><span class="nav-dot"></span>Clan Rules</a></li><li><a class="nav-link" href="#rules-cp" data-s="rules-cp"><span class="nav-dot"></span>CP Run Rules</a></li></ul></li>
+    <li class="nav-item"><a class="nav-link" href="#rules" data-s="rules"><span class="nav-icon"><i class="ph-light ph-scroll"></i></span><span class="nav-text">Clan Rules &amp; Contact</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#account" data-s="account"><span class="nav-icon"><i class="ph-light ph-user-gear"></i></span><span class="nav-text">My Account</span></a></li>
     <li class="nav-heading" id="adminLabel" style="display:none"><span>Administration</span></li>
     <li class="nav-item" id="navRoles" style="display:none"><a class="nav-link" href="#roles" data-s="roles"><span class="nav-icon"><i class="ph-light ph-users-three"></i></span><span class="nav-text">User Roles</span></a></li>
@@ -1177,23 +1149,18 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
         </div>
       </section>
 
-      <!-- RULES: Kingdom / Clan / CP - always open to every member -->
+      <!-- RULES -->
       <section class="section" id="s-rules">
-        <div class="page-head"><h1>📜 Rules</h1><p>Kingdom, clan and CP run rules — open to every member, no premium lock.</p></div>
-        <div class="chips" id="ruleTabs"></div>
-        <div class="rules-hero" id="rulesHero"></div>
-        <div class="toolbar">
-          <input class="input" id="ruleSearch" type="search" placeholder="Search these rules — try vault, tax, troops...">
-          <button class="btn outline" id="ruleToggleAll" type="button"><i class="fas fa-angles-up"></i> Collapse all</button>
-          <span class="badge b-free" id="ruleCount" style="align-self:center">–</span>
-        </div>
-        <div id="rulesBody"></div>
-        <div class="grid g2" style="margin-top:18px">
-          <div class="card"><h3><i class="fas fa-envelope"></i> Contact Us</h3>
-            <p class="muted" style="margin-bottom:14px">Questions, feedback or need help? Send us a message on the website.</p>
-            <a class="btn" href="/contact" target="_blank" rel="noopener">Contact</a></div>
-          <div class="card"><h3><i class="fas fa-headset"></i> Need Help?</h3>
-            <p class="muted">Contact the clan leader <b>WOLFICH</b> or <b>T3li</b> in-game or on Discord for access issues, role requests or password resets.</p></div>
+        <div class="page-head"><h1>📜 Clan Rules &amp; Contact</h1><p>Keep Kingdom 34 strong by following the clan code.</p></div>
+        <div class="grid g2">
+          <div class="card"><h3><i class="fas fa-gavel"></i> Clan Rules</h3><ul class="list" id="ruleList"></ul></div>
+          <div class="grid" style="align-content:start">
+            <div class="card"><h3><i class="fas fa-envelope"></i> Contact Us</h3>
+              <p class="muted" style="margin-bottom:14px">Questions, feedback or need help? Send us a message on the website.</p>
+              <a class="btn" href="/contact" target="_blank" rel="noopener">Contact</a></div>
+            <div class="card"><h3><i class="fas fa-headset"></i> Need Help?</h3>
+              <p class="muted">Contact the clan leader <b>WOLFICH</b> or <b>T3li</b> in-game or on Discord for access issues, role requests or password resets.</p></div>
+          </div>
         </div>
       </section>
 
@@ -1222,7 +1189,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
 
       <!-- USER ROLES (admin only) -->
       <section class="section" id="s-roles">
-        <div class="page-head"><h1>🛡️ User Roles &amp; Rights</h1><p>Promote or demote members, edit logins, disable accounts and decide which menus each group can open.</p></div>
+        <div class="page-head"><h1>🛡️ User Roles &amp; Rights <span style="font-size:14px; color:red;">(Admin Only)</span></h1><p>Promote or demote members, edit logins, disable accounts and decide which menus each group can open.</p></div>
         <div class="chips" id="roleTabs">
           <button class="chip active" data-tab="users"><i class="fas fa-users-gear"></i> Users</button>
           <button class="chip" data-tab="rights"><i class="fas fa-table-cells"></i> Menu Rights</button>
@@ -1239,7 +1206,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
         </div>
 
         <div id="tab-rights" style="display:none">
-          <div class="note"><b>How it works:</b> tick a box to give that group access to a menu. Menus a group cannot open stay <u>visible</u> in their sidebar but are greyed out with a <b>PREMIUM</b> tag. Changes apply the next time those members load the dashboard. <b>Rules (Kingdom / Clan / CP) are always open to every member and can’t be locked.</b></div>
+          <div class="note"><b>How it works:</b> tick a box to give that group access to a menu. Menus a group cannot open stay <u>visible</u> in their sidebar but are greyed out with a <b>PREMIUM</b> tag. Changes apply the next time those members load the dashboard.</div>
           <div class="card">
             <div class="table-wrap"><table class="matrix" id="rightsTable"></table></div>
             <button class="btn" id="saveRights" style="margin-top:16px"><i class="fas fa-floppy-disk"></i> Save Rights</button>
@@ -1346,7 +1313,17 @@ const CONTENT = {
   checklist: {
     daily:  ['Claim daily login reward', 'Contribute to the clan', 'Collect resources', 'Fill training / upgrade queues', 'Complete daily quests', 'Run PvE (crypts / monsters)', 'Check Discord for orders'],
     weekly: ['Take part in the clan meeting', 'Join the group crypt run', 'Complete weekly clan tasks', 'Review your gear and hero build']
-  }
+  },
+
+  rules: [
+    'Be respectful to all clan members. No insults, spam or drama.',
+    'Be active: log in daily and contribute to the clan.',
+    'Follow leader calls during wars and events.',
+    'Never attack clan members, allies or neutral players without approval.',
+    'Do not share dashboard access or passwords with outsiders.',
+    'Tell a leader if you will be inactive for more than 3 days.',
+    'Help new members: share knowledge and be patient.'
+  ]
 };
 
 /* =====================================================================
@@ -1411,15 +1388,12 @@ const fmtShort = (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).t
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
   events:'Events & Calendar', eventlist:'All Events', members:'Clan Chests', chestdefs:'Chest Definitions', guides:'Game Guides',
   helper:'Research Helper', gifts:'Clan Gifts',
-  checklist:'Daily Checklist', tools:'Calculators', rules:'Rules', account:'My Account',
-  'rules-kingdom':'Kingdom Rules', 'rules-clan':'Clan Rules', 'rules-cp':'CP Run Rules',
+  checklist:'Daily Checklist', tools:'Calculators', rules:'Clan Rules & Contact', account:'My Account',
   roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events', inquiries:'Contact Inquiries' };
 const PERM_OF = { eventlist: 'events', chestdefs: 'members', helper: 'guides', gifts: 'overview' };       // sub pages share their parent's right
 const RESTRICTED = ['roles', 'guideadmin', 'eventadmin', 'inquiries'];
-const OPEN_TO_ALL = ['rules', 'rules-kingdom', 'rules-clan', 'rules-cp'];                                  // never locked, for every role
 
 function showSection(name) {
-  let navName = name;
   if (name.startsWith('helper-')) {
     const slug = name.replace('helper-', '');
     name = 'helper';
@@ -1430,20 +1404,14 @@ function showSection(name) {
     name = 'gifts';
     currentGiftCategory = slug;
   }
-  if (name.startsWith('rules-')) {                    // #rules-kingdom / #rules-clan / #rules-cp open the hub on that tab
-    const tab = name.slice(6);
-    rulesTab = RULES[tab] ? tab : 'kingdom';
-    name = 'rules';
-    navName = 'rules-' + rulesTab;
-  }
   if (!TITLES[name]) name = 'overview';
-  if (currentUser && !OPEN_TO_ALL.includes(name) && !PERMS.has(PERM_OF[name] || name)) {
+  if (currentUser && !PERMS.has(PERM_OF[name] || name)) {
     toast(RESTRICTED.includes(name) ? 'This area is restricted.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
     if (location.hash.slice(1) !== 'overview') location.hash = 'overview';
     name = 'overview';
-    navName = 'overview';
   }
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
+  const navName = name.startsWith('calc-') ? 'tools' : name;
   document.querySelectorAll('#nav a[data-s]').forEach(a => a.classList.toggle('active', a.dataset.s === navName));
   document.querySelectorAll('#nav .has-submenu').forEach(g => { if (g.querySelector('.nav-submenu a.active')) setSub(g, true); });
   $('pageTitle').textContent = TITLES[name] || '';
@@ -1458,7 +1426,6 @@ function showSection(name) {
     renderGiftTabs();
     loadGiftTable(currentGiftCategory);
   }
-  if (name === 'rules') drawRules();
 }
 const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
 function setSub(g, open) {                                // open/close a sidebar submenu (same behaviour as the template)
@@ -1590,429 +1557,8 @@ function updateProgress() {
     <div class="progress"><div style="width:${pct}%"></div></div><button class="btn outline sm" data-go="checklist">Open checklist</button>`;
 }
 
-/* =====================================================================
-   RULES HUB — Kingdom Rule / Clan Rule / CP Rule
-   Always open to every member (see OPEN_TO_ALL). Edit the text below to
-   change what members read; the public pages are still the source of truth.
-   ===================================================================== */
-const RULES = {
-  kingdom: {
-    label: 'Kingdom Rules', short: 'ROE K34', icon: 'bi-shield-shaded', source: 'roek34.html',
-    title: 'Kingdom Rules — ROE K34',
-    desc: 'Rules of Engagement (ROE) govern fair play across Kingdom 34: resources, peace and war time, titles, taxes and conflicts. Every clan and player in K34 is expected to follow them.',
-    groups: [
-      { t: 'Definitions', kind: 'defs', items: [
-        ['ROE', 'Rules of Engagement — the kingdom law which governs fair play within Kingdom-34.'],
-        ['IKFPA', 'Inter Kingdom Fair play Agreement — an agreement among participating kingdoms for fair play.'],
-        ['Clan Territory', 'The border which surrounds a clan.'],
-        ['Clan Buildings', 'Clan forts, capital and resource production buildings.'],
-        ['RSS Tiles', 'Can be game spawned or player created; players send a captain and troops to collect the respective resources in the tile.'],
-        ['Clan RSS', 'RSS tile within a clan territory.'],
-        ['Wild RSS', 'RSS tile outside of clan territories.'],
-        ['Wild', 'Area outside of clan territories.'],
-        ['Dragon Mounds (DM)', 'Game spawned RSS tile which contains gold to be collected by a player.'],
-        ['Gold Mines', 'Player generated tiles used to mine gold. They are always protected and require permission from the owner to be mined.'],
-        ['Might', 'A nominal metric used to evaluate a player’s strength.'],
-        ['Diplomacy', 'Conversation to resolve conflict.'],
-        ['Compensation', 'Payment to resolve loss or inconvenience.'],
-        ['Peace Time', 'The time between each Clash for the Throne (COT).'],
-        ['Clash for the Throne (COT)', '48 hour tournament when players gain points via attacks on other players.'],
-        ['Conquest Points (CP)', 'Points obtained through attacks on other players.'],
-        ['CP Exchange', 'An agreed attack for the sole purpose of gaining Conquest Points. Can be arranged player vs. player or via clan march on one player with significant Might.'],
-        ['Spam Attacks', 'More than 3 consecutive attacks from a single player within a 6 hour timeframe.'],
-        ['Clan March', 'A joint attack on a target using a single march.']
-      ]},
-      { t: '1. Kingdom', items: [
-        ['1.1', 'K34 is not part of the Inter Kingdom Agreement (IKA), but attacking clan buildings and/or memorial portals, inside or outside K34, will result immediately in outlaw status, unless approved by the King in advance or attacking outlaw clans.'],
-        ['1.2', 'Be respectful and kind to everyone. Any discussion on any topic must be done with respect, no swearing at each other.'],
-        ['1.3', 'Any expression of hate, familial insults, harassment, racism and other toxic communications directed at or toward other player(s) is not acceptable and must be reported to game support and may even be punished by the kingdom court.']
-      ]},
-      { t: '2. Clans', items: [
-        'Clans which support the RoE should:',
-        ['2.1', 'State this in the first line of their clan description.'],
-        ['2.2', 'Appoint a diplomat to deal with ROE violations and name the individual/s in their clan description.']
-      ]},
-      { t: '3. Resources (RSS)', items: [
-        ['3.1', 'Dragon mounds and Wellspring ruins.'],
-        ['3.1.1', 'To collect a DM or 10k WR, a player must register it on the proper chat, by using either WR/DM and the last three y coordinates, and occupy it within 10 minutes. NB. It is not required to register 3k ruins; these are permitted to be mined on a ‘first come first served’ basis.'],
-        ['3.1.2', 'Collection from DM or 10k WR sites is limited to one of each type per player per 24hrs. The time stamp from the individual’s last registration in the chat will be used as the basis of the 24 hr period.'],
-        ['3.1.3', 'A player may ‘gift’ their DM or WR to another player as long as the new player registers it and neither breaks the 24hr time period.'],
-        ['3.1.4', 'If a player illegally occupies a DM/WR, or fails to occupy it within 10 minutes, the DM/WR is free to be registered and occupied by another player. If help is needed to remove a player from an illegally occupied DM/WR, ask for it on the Kingdom Chat.'],
-        ['3.1.5', 'Violations will be punished by a 7 days ban from registering, or outlaw status for repeated offenders.'],
-        ['3.2', 'Common resource tiles.'],
-        ['3.2.1', 'All resource tiles (quarries, villages, dragon mounds etc.) on a clan’s territory belong to that clan and need not be registered.'],
-        ['3.2.2', 'Any player-built resource tiles belong to the player who built them and may only be occupied by others with prior consent.'],
-        ['3.2.3', 'Any other resource may be harvested by any player, on a first-come-first-served basis.']
-      ]},
-      { t: '4. Peace Time', items: [
-        'K34 is always considered at peace except during the Clash of Thrones (COT) Tournament.',
-        ['4.1', 'Players and clans shall not attack or scout each other during peace time unless under the following circumstances:'],
-        ['4.1.1', 'Mutually agreed upon by both sides.'],
-        ['4.1.2', 'Removal of an intruder of a resource site.'],
-        ['4.1.3', 'Attacking outlawed players and/or clans.'],
-        ['4.1.4', 'Attacking players who are without a clan.'],
-        ['4.1.5', 'Closing a hostile portal, provided by a battle report proving the hostility.'],
-        ['4.2', 'In the event that attack occurs from within the kingdom, the attacked player has the choice of going to court or carrying out a retaliatory attack. (In the latter case no 50% rule applies.)'],
-        ['4.3', 'The attacked player may also designate a champion in their clan who inherits the right to retaliation. A message to this effect will constitute proof of the transfer. If the retaliation is carried out, it extinguishes any action before the court.']
-      ]},
-      { t: '5. War Time', items: [
-        'K34 is only considered at war during the Clash of Thrones (COT) Tournament. There are no other exceptions even when a system quest prompts to attack another player.',
-        'During the attack phase of CoT you must NOT attack the following:',
-        ['5.1', 'Any player under 50% of your might, unless by prior arrangement or as a singular act of retaliation for a proven attack with BR.'],
-        ['5.2', 'Any K34 player using the Ayrin hero.'],
-        'NB: Players using the hero Ayrin are also prevented from attacking in kingdom 34 by this rule, other than for tax collection purposes, closing of hostile portals or clearing of illegally occupied RSS tiles.',
-        ['5.3', 'Any clan building.'],
-        ['5.4', 'Any occupied RSS tile.'],
-        ['5.5', 'Any portal within clan territory or any tournament event portal, unless proof of an attack originating from it can be supplied by way of valid BR.'],
-        ['5.6', 'It should be noted that during the voting stage of CoT the use of the hero Faron is strongly discouraged, other than to protect the realm in the instance of attempted invasion of the senate from overseas.']
-      ]},
-      { t: '6. Titles', items: [
-        'Titles may be requested on the proper chat by clan leaders and superiors, and the king will try to grant them as fairly as possible. Negative titles may also be distributed as part of court sentencing.'
-      ]},
-      { t: '7. Taxes & Royal Gifts', items: [
-        ['7.1', 'Every player in K34 must pay taxes to the Royal Treasury, unless by prior acknowledgement to the palace of participation in King’s Mercy.'],
-        ['7.2', 'When not protected by a “Shield of Peace”, a player is allowed to hold up to 3 days of the city capital gold ingot production. In case of violation of this rule, any member of the Royal Guard may warn the player by a private message. If the player has not put on a shield or deposited the ingots in the Royal Treasury within 10 minutes of being notified, they may be attacked by any member of the Royal Guard.'],
-        ['7.3', 'Any city holding more ingots than the 3 day production limit that is being attacked by another kingdom may be attacked by the Royal Guard without warning.'],
-        ['7.4', 'Any attempts from the offender’s clan to prevent authorised persons from collecting taxes will be considered as tax evasion and will be punished.'],
-        ['7.5', 'Royal Gifts may be given by the King at his personal discretion.']
-      ]},
-      { t: '8. Conflicts', items: [
-        ['8.1', 'In case of a conflict, a player must try to come to an agreement with the other party for at least 24h. After that, clan leaders/superiors must try to reach a solution for another 24h. After that, the case may be taken to the court at the proper chat, by the clan leader/superior.'],
-        ['8.2', 'Once the case goes to the court, the judge has the authority to determine the compensation (if any) and to grant outlaw status if the player refuses the decision.'],
-        ['8.3', 'A clan may pay the compensation on behalf of the player to avoid the player becoming an outlaw. Alternatively, the clan may kick the outlaw player out within 24h of the notification by the judge, to avoid the clan being declared outlaw too.'],
-        ['8.4', 'Outlaw status can only be removed by order of the King, or Judges, or by a majority of K34 Council decision.']
-      ]}
-    ]
-  },
-
-  clan: {
-    label: 'Clan Rules', short: 'THE Family Gang', icon: 'bi-people-fill', source: 'therules.html',
-    title: 'Clan Rules — THE Family Gang',
-    desc: 'The clan code for THE Family Gang in Kingdom 34: general rules, event participation, clan structure, ranks, alt accounts and official chats.',
-    groups: [
-      { t: '1. Respect', items: [
-        ['1.1', 'Be respectful to all players — no bullying, harassment, or discrimination of any kind will be tolerated.']
-      ]},
-      { t: '2. Communication', items: [
-        ['2.1', 'Maintain respectful and clear communication at all times.'],
-        ['2.2', 'Keep all event and clan chats free of spam.'],
-        ['2.3', 'Moderators will issue warnings for off-topic or obstructive messages. Continued violations may lead to removal from the clan.']
-      ]},
-      { t: '3. Kingdom Rules', items: [
-        ['3.1', 'Obey all kingdom rules.'],
-        ['3.2', 'Breaking kingdom rules may result in immediate expulsion.']
-      ]},
-      { t: '4. Clan Reputation', items: [
-        ['4.1', 'Any interactions with enemies that could affect the clan’s image must be discussed with leadership beforehand. Unauthorized actions will result in removal.']
-      ]},
-      { t: '5. Stay Informed & Absences', items: [
-        ['5.1', 'Regularly check the journal, clan chats, and Message of the Day (MotD).'],
-        ['5.2', 'Players ignoring messages for 3+ days while online will be warned; 5+ days without response or notice may result in removal.'],
-        ['5.3', 'Notify leadership of any absences as early as possible, preferably in the “Absent-THE” chat, with estimated duration.']
-      ]},
-      { t: '6. Resource Ownership and Registration', items: [
-        ['6.1', 'Players must register Silver Villages or Gold Mines they want to keep exclusive.'],
-        ['6.2', 'Unregistered villages/mines are considered free for occupation.'],
-        ['6.3', 'If occupying someone’s registered property, vacate promptly and provide fair compensation.'],
-        ['6.4', 'Do not register game-generated Silver Villages.'],
-        ['6.5', 'Always check Silver/Gold Registration chats before occupying any site.'],
-        ['6.6', 'Dragon Mounds and Wellsprings must be registered according to Kingdom Rules of Engagement (K34-RoE).']
-      ]},
-      { t: '7. Active Contribution', items: [
-        ['7.1', 'No freeloaders. Players only farming without contributing will be removed.'],
-        ['7.2', 'Contributions include sending resources/silver to clan buildings and securing chests from crypts, arenas, citadels, etc. (Level 5 and 10 regular crypts do not count).']
-      ]},
-      { t: '8. Leadership Exclusivity', items: [
-        ['8.1', 'Leadership members cannot hold leadership or superior roles in other clans, to avoid conflicts of interest.'],
-        ['8.2', 'Violations may result in removal from the leadership team.']
-      ]},
-      { t: '9. Resource Protection', items: [
-        ['9.1', 'Keep silver/resources below protected limits to avoid frequent attacks.'],
-        ['9.2', 'Contact leadership for guidance if unsure about protection limits.']
-      ]},
-      { t: '10. Kingdom Rules', items: [
-        ['10.1', 'Do not share clan-related messages or attack reports externally without leadership approval (personal reports exempt).']
-      ]},
-      { t: '11. War Time', items: [
-        ['11.1', 'During war, all players must protect the clan and act quickly as needed.'],
-        ['11.2', 'Players must participate actively in war events.'],
-        ['11.3', 'Alternate or seasonal accounts found online but not assisting the main clan during war, or players avoiding participation, will be removed and banned from rejoining.'],
-        ['11.4', 'Players unwilling to stand with the clan during war should leave voluntarily. There is no place for fair-weather members.'],
-        ['11.5', 'Exemptions due to unavoidable real-life circumstances must be requested through leadership.'],
-        ['11.6', 'All main clan members must have kingdom teleporters ready within 35 days of joining or rejoining.']
-      ]},
-      { t: 'Ancient Treasure — Vault Ownership', items: [
-        ['1.1', 'All vaults belong to the clan.'],
-        ['1.2', 'Only leaders, superiors, and officers may initiate raids.'],
-        ['1.3', 'Raid initiators must post attack reports (including vault owner) in “Vault Reports-THE”. Failure to do so may lead to demotion.'],
-        ['1.4', 'Players must send correct troops or risk exclusion from raids.'],
-        ['1.5', 'Points must be allocated as instructed.']
-      ]},
-      { t: 'Ancient Treasure — Vault Responsibilities', items: [
-        ['2.1', 'Players must build and register vaults by posting coordinates in the “Vaults” chat.'],
-        ['2.2', 'Failure to build or register without explanation may result in removal or demotion.']
-      ]},
-      { t: 'Ancient Treasure — Summons', items: [
-        ['3.1', 'Use combat captains only (e.g. Hercules, Beowulf, Skadi, Cleo, Aydae).'],
-        ['3.2', 'Do not use Stror, Carter, Helen, or similar captains for summons.']
-      ]},
-      { t: 'Alt Accounts — Main Account Priority', items: [
-        'Main clan accounts must remain active and contribute.',
-        'Alt accounts in other clans are allowed only if they do not interfere with your main account’s activity and contribution.',
-        'Alt accounts must be declared to leadership for transparency.',
-        'If unable to commit to your main account, consider joining the second clan or another clan.',
-        'Notify leadership promptly of extended absences, with estimated return date if possible.'
-      ]},
-      { t: 'Mandatory Events — Ancient’s Treasure', items: [
-        '(Main clan players only)',
-        'Building vaults/towers is mandatory.',
-        'Participating in summon (Tinman/Goldenboy) attacks is mandatory.',
-        'Players must achieve at least the first clan chest rewards; those with zero points post-summon will be removed after a warning.'
-      ]},
-      { t: 'Mandatory Events — Ragnarok', items: [
-        '(Main clan players only)',
-        'Collecting all clan chests and red books is mandatory.'
-      ]},
-      { t: 'Mandatory Events — Olympus', items: [
-        '(Main clan players only)',
-        'Participation is mandatory.'
-      ]},
-      { t: 'Mandatory Events — Clash of Kingdoms', items: [
-        '(Main clan players only)',
-        'Players unwilling to participate should activate their Shield of Peace.',
-        'Contributions through bunker reinforcement, target spotting, and portal opening are expected.',
-        'Notice: absence from mandatory events without prior notice will result in a warning first, then removal if no improvement is shown.'
-      ]},
-      { t: 'Clan Structure — THE Family Gang (main clan)', items: [
-        'One account per player; no alt accounts unless necessary for clan function.',
-        '96 of 100 spots reserved for members.',
-        '1 spot reserved for the CP city and 1 for the clan bank; these do not participate in clan events.',
-        '2 spots reserved for ally clan players (cross-clan rotations), exempt from clan requirements but subject to clan rules.',
-        'At the end of each Triumphal Challenge cycle, the 2 best performing players from THE OLD Pervy clan rotate with the 2 worst performing players from the main clan. Exceptions apply for valid real-life commitments.',
-        'Rotation maintains motivation; refusal to rotate will result in a request to find a new clan.',
-        'New members should have Guardsman level 6 troops and clear level 20 regular crypts in one attempt. Rare exceptions possible.',
-        'Existing members should focus on growth; help is provided for those who seek it.',
-        'No Golden Pass requirement; no purchase obligations.'
-      ]},
-      { t: 'Clan Structure — THE OLD Pervy Friends (2nd clan)', items: [
-        'For developing players, learners, less active members, alt accounts, silver, and storage cities.'
-      ]},
-      { t: 'Clan Structure — THE Beast Mode', items: [
-        'Spare capital for possible rotations if the Tinman level in the main clan becomes too strong to be killed.'
-      ]},
-      { t: 'Clan Structure — THE Week OFF', items: [
-        'No active players or specific functions.'
-      ]},
-      { t: 'Rank — Superior', items: [
-        'Only players with active duties can hold this rank.',
-        'Examples of duties include: Diplomats, Buildings/Research, Recruiters, CP Run organizers, etc.',
-        'Exception: during the “Clash of Kingdoms” event, players who plan to hold banners may request to become Superiors for 24 hours, allowing them to kick their city out of the clan territory if needed. During this time they are not allowed to interfere with any other clan duties, accept requests, kick players, or perform any other actions. If they break this rule, they will be immediately removed from the clan.',
-        'Note: the rank is not based on the time spent in the clan.'
-      ]},
-      { t: 'Rank — Officer', items: [
-        'Players in this rank must have a strong understanding of the kingdom and clan rules, as well as the inner regulations regarding clan events (such as Ancient’s Treasure, CP Run, etc.).',
-        'They should be able to replace Superiors when needed, in case the Superior is unavailable or decides to quit their duties. Officers must be able to register vault attack reports, send the correct troops and captains to raids and CP Runs, and control the raids they initiate, ensuring all players send the proper troops and captains. They must also ensure that points are allocated correctly.'
-      ]},
-      { t: 'Rank — Veteran', items: [
-        'Players who know the clan and kingdom rules, as well as how to build and register the vault, but do not meet the other requirements for the Officer rank.'
-      ]},
-      { t: 'Rank — Soldier', items: [
-        'This is the rank for new players who are still adjusting to the clan, as well as players who have broken clan rules and were temporarily demoted to this rank.'
-      ]},
-      { t: 'Official Clan Chats', items: [
-        'All official chat names are listed in the “Message of the Day” (MotD) under the clan description.',
-        'Kingdom chats and summoning schedules will always be posted there.',
-        'Players are responsible for joining and staying informed.',
-        'Alt accounts outside THE Family are prohibited from clan chats except the #Family chat.'
-      ]}
-    ]
-  },
-
-  cp: {
-    label: 'CP Run Rules', short: 'Conquest Points', icon: 'bi-clipboard-check-fill', source: 'cprules.html',
-    title: 'CP Run Rules — Conquest Points',
-    desc: 'How a Conquest Point run works: what to bring, what to leave at home, and the exact troops to send for each level.',
-    groups: [
-      { t: 'How the run works', items: [
-        'Everyone is responsible for following the rules; failure may result in your army being rejected without immediate explanation. (While we are finding our feet, this will only apply to things that are likely to cause major disruption to the raid.)',
-        'You can bring as many stacks of different types (see the chart below) as you can, subject to your available leadership and any restrictions given below. Respect the limit of units per stack (type and level).',
-        'Fewer full squads are better than lots of smaller squads.',
-        'To join the CP run, send your troops to the city designated as the host city. You can send your troops at any time you are ready once the city has un-bubbled. This may expose your troops to attack.'
-      ]},
-      { t: 'Leadership', items: [
-        'You can bring these:',
-        'Hero (optional).',
-        'Dragon.',
-        'Captains allowed: Amanitore, Dastan, Cleo, Aydae, Logos, Beowolf and Skadi.',
-        'All other captains will be sent back home.'
-      ]},
-      { t: 'Equipment', items: [
-        'No armour / cloths — hero and captains must be naked.',
-        'Artifacts are allowed (see the guidelines below).'
-      ]},
-      { t: 'Artifact Guidelines', items: [
-        'Players without -Specialist5: 1. Fan, 2. Flask, 3. Belt — alternate: Mask, Ring, Knight or Quiver.',
-        'Players with +Specialist5 or better specialists: 1. Fan, 2. Stone, 3. Mask — alternate: Belt, Ring, Diadem, Knight or Quiver.',
-        ['1', 'Artifacts other than the above are of no assistance in a CP run.'],
-        ['2', 'The artifacts listed are in priority order and assume the artifacts are developed to the same level.'],
-        ['3', 'Consider the amount of strength bonus and the proportion of your force that this will affect in choosing artifacts.'],
-        ['4', 'The selected artifacts can be allocated to any captain being used on the run.']
-      ]},
-      { t: 'Bonuses', items: [
-        'Activate clan Army Strength bonus (Superiors).',
-        'Activate player Army Strength / Health bonuses.',
-        'Activate player Conquest Point bonus.',
-        'Activate player Experience bonus.'
-      ]},
-      { t: 'Reporting & Payment', items: [
-        'Reporting: to be advised separately if required.',
-        'Payment: to be advised separately if required.'
-      ]},
-      { t: 'Prohibited Units', items: [
-        'No mercenaries.',
-        'No Captain Stror / Carter.',
-        'No siege engines.',
-        'No spies / scouts.',
-        'Exceptions to the above will be coordinated by the clan CP Coordinators to provide a meat shield and to destroy CP city walls if required. These forces will normally be provided by G6 or higher clan members.'
-      ]},
-      { t: 'Troops Detail — Guardsman / Specialist',
-        table: { note: 'Follow the chart exactly. If you send the wrong troop numbers, they will be sent back at the time of the CP run.',
-          head: ['#', 'Level', 'Type', 'Category', 'Troops amount'],
-          rows: [
-            ['1', 'Level-9', 'Guardman / Specialist', 'Ranges / Melee', '1200'],
-            ['2', 'Level-9', 'Guardman / Specialist', 'Mounted', '600'],
-            ['3', 'Level-9', 'Guardman / Specialist', 'Corax-II', '300'],
-            ['4', 'Level-8', 'Guardman / Specialist', 'Ranges / Melee', '2000'],
-            ['5', 'Level-8', 'Guardman / Specialist', 'Mounted', '1000'],
-            ['6', 'Level-8', 'Guardman / Specialist', 'Corax-I / Lions', '550'],
-            ['7', 'Level-7', 'Guardman / Specialist', 'Ranges / Melee / Flying', '3400'],
-            ['8', 'Level-7', 'Guardman / Specialist', 'Mounted', '1700'],
-            ['9', 'Level-7', 'Guardman', 'Flying', '1000'],
-            ['10', 'Level-6', 'Guardman', 'Ranged / Melee', '5000'],
-            ['11', 'Level-6', 'Guardman', 'Mounted', '3000'],
-            ['12', 'Level-6', 'Guardman', 'Flying', '1800'],
-            ['13', 'Level-6', 'Specialist', 'Flying / Ranges / Melee', '3000'],
-            ['14', 'Level-6', 'Specialist', 'Mounted', '1500'],
-            ['15', 'Level-5', 'Guardman', 'Ranges / Melee', '10,000'],
-            ['16', 'Level-5', 'Guardman', 'Mounted', '5000'],
-            ['17', 'Level-5', 'Guardman', 'Flying', '500'],
-            ['18', 'Level-5', 'Specialist', 'Flying / Ranges / Melee', '6000'],
-            ['19', 'Level-5', 'Specialist', 'Mounted', '3000'],
-            ['20', 'Level-4', 'Guardman', 'Ranges / Melee', '16,000'],
-            ['21', 'Level-4', 'Guardman', 'Mounted', '8000'],
-            ['22', 'Level-4', 'Specialist', 'Melee', '16,000'],
-            ['23', 'Level-3', 'Guardman', 'Ranges / Melee', '16,000'],
-            ['24', 'Level-3', 'Guardman', 'Mounted', '8000'],
-            ['25', 'Level-3', 'Specialist', 'Melee', '16,000'],
-            ['26', 'Level-2', 'Guardman', 'Ranges / Melee', '16,000'],
-            ['27', 'Level-2', 'Guardman', 'Mounted', '8,000'],
-            ['28', 'Level-2', 'Specialist', 'Melee', '16,000'],
-            ['29', 'Level-1', 'Guardman', 'Ranges / Melee', '16,000'],
-            ['30', 'Level-1', 'Guardman', 'Mounted', '8,000'],
-            ['31', 'Level-1', 'Specialist', 'Melee', '16,000']
-          ] } },
-      { t: 'Meat Shield Units (tech levels update)',
-        table: { note: 'Update for tech levels and meat shield units.',
-          head: ['#', 'Category / Type', 'Amount'],
-          rows: [
-            ['1', 'Monsters - Lvl-9', '7'],
-            ['2', 'Monsters - Lvl-8', '10'],
-            ['3', 'Monsters - Lvl-7', '12'],
-            ['4', 'Monsters - Lvl-6', '15'],
-            ['5', 'Monsters - Lvl-5', '25'],
-            ['6', 'Monsters - Lvl-4', '50'],
-            ['7', 'Monsters - Lvl-3', '50'],
-            ['8', 'Monsters (Water Elemental III) - Lvl-3', '100']
-          ] } }
-    ]
-  }
-};
-
-const RULE_TAB_ORDER = ['kingdom', 'clan', 'cp'];
-let rulesTab = 'kingdom';
-let ruleQuery = '';
-let ruleOpenAll = true;                                 // groups render expanded; the toolbar can collapse them
-
-function ruleHL(text, q) {
-  const safe = esc(text);
-  if (!q) return safe;
-  const needle = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  try { return safe.replace(new RegExp('(' + needle + ')', 'ig'), '<mark class="rh">$1</mark>'); }
-  catch (e) { return safe; }
-}
-
-function ruleTableHtml(tb, q) {
-  const rows = tb.rows.filter(r => !q || r.join(' ').toLowerCase().includes(q));
-  if (!rows.length) return { html: '', shown: 0, total: tb.rows.length };
-  const head = tb.head.map(h => `<th>${esc(h)}</th>`).join('');
-  const body = rows.map(r => '<tr>' + r.map(c => `<td>${ruleHL(c, q)}</td>`).join('') + '</tr>').join('');
-  return { html: `<div class="table-wrap"><table class="rule-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`,
-           shown: q ? rows.length : tb.rows.length, total: tb.rows.length };
-}
-
-function drawRules() {
-  const set = RULES[rulesTab] || RULES.kingdom;
-  const q = ruleQuery.trim().toLowerCase();
-  document.querySelectorAll('#ruleTabs [data-rtab]').forEach(b => b.classList.toggle('active', b.dataset.rtab === rulesTab));
-  $('rulesHero').innerHTML = `
-    <div>
-      <span class="badge b-free"><i class="bi bi-unlock"></i> Open to all</span>
-      <h2>${esc(set.title)}</h2>
-      <p>${esc(set.desc)}</p>
-    </div>
-    <div class="rh-actions">
-      <a class="btn outline" href="${esc(set.source)}" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Full page</a>
-    </div>`;
-
-  let shown = 0, total = 0, html = '';
-  set.groups.forEach((g) => {
-    const titleHit = !!q && g.t.toLowerCase().includes(q);
-    let rows = '', groupShown = 0, groupTotal = 0;
-    (g.items || []).forEach((it) => {
-      const num = Array.isArray(it) ? String(it[0]) : '';
-      const txt = Array.isArray(it) ? String(it[1]) : String(it);
-      groupTotal++;
-      if (q && !titleHit && !txt.toLowerCase().includes(q) && !num.toLowerCase().includes(q)) return;
-      groupShown++;
-      rows += g.kind === 'defs'
-        ? `<div class="rule-def"><b>${ruleHL(num, q)}</b><div>${ruleHL(txt, q)}</div></div>`
-        : `<div class="rule-item${num ? '' : ' plain'}">${num ? `<span class="rn">${ruleHL(num, q)}</span>` : ''}<div>${ruleHL(txt, q)}</div></div>`;
-    });
-    let tableHtml = '';
-    if (g.table) {
-      const tb = ruleTableHtml(g.table, q);
-      groupTotal += tb.total; groupShown += tb.shown;
-      if (tb.html) tableHtml = `${g.table.note ? `<p class="rule-lede">${esc(g.table.note)}</p>` : ''}${tb.html}`;
-    }
-    total += groupTotal; shown += groupShown;
-    if (q && !groupShown) return;
-    html += `<details class="rule-group" ${(q || ruleOpenAll) ? 'open' : ''}>
-      <summary><span>${esc(g.t)}</span><span class="rg-count">${q ? groupShown + ' / ' + groupTotal : groupTotal}</span><i class="fas fa-chevron-down chev"></i></summary>
-      <div class="body">${rows}${tableHtml}</div>
-    </details>`;
-  });
-  $('rulesBody').innerHTML = html || `<div class="note">No rules match “${esc(ruleQuery)}”. Try a different word.</div>`;
-  $('ruleCount').textContent = q ? shown + ' of ' + total + ' rules' : total + ' rules';
-}
-
 function renderRules() {
-  $('ruleTabs').innerHTML = RULE_TAB_ORDER.map((k) => {
-    const t = RULES[k];
-    return `<button type="button" class="chip${k === rulesTab ? ' active' : ''}" data-rtab="${k}"><i class="bi ${t.icon}"></i> ${esc(t.label)}</button>`;
-  }).join('');
-  $('ruleTabs').onclick = (e) => {
-    const b = e.target.closest('[data-rtab]'); if (!b) return;
-    if (b.dataset.rtab === rulesTab) return drawRules();
-    location.hash = 'rules-' + b.dataset.rtab;
-  };
-  $('ruleSearch').oninput = (e) => { ruleQuery = e.target.value; drawRules(); };
-  $('ruleToggleAll').onclick = () => {
-    ruleOpenAll = !ruleOpenAll;
-    document.querySelectorAll('#rulesBody details').forEach(d => { d.open = ruleOpenAll; });
-    $('ruleToggleAll').innerHTML = ruleOpenAll ? '<i class="fas fa-angles-up"></i> Collapse all' : '<i class="fas fa-angles-down"></i> Expand all';
-  };
-  $('ruleToggleAll').innerHTML = ruleOpenAll ? '<i class="fas fa-angles-up"></i> Collapse all' : '<i class="fas fa-angles-down"></i> Expand all';
-  drawRules();
+  $('ruleList').innerHTML = CONTENT.rules.map((r) => `<li><i class="fas fa-circle-check"></i><div>${esc(r)}</div></li>`).join('');
 }
 
 function renderAccount() {
@@ -2059,11 +1605,6 @@ function applyPermissions() {
   document.querySelectorAll('#nav a[data-s]').forEach(a => {
     const k = a.dataset.s;
     if (RESTRICTED.includes(k)) return;                  // admin entries are handled in initAdmin
-    if (OPEN_TO_ALL.includes(k)) {                       // rules stay unlocked for every role
-      a.classList.remove('locked'); a.removeAttribute('title');
-      const openPill = a.querySelector('.pill'); if (openPill) openPill.remove();
-      return;
-    }
     const locked = !PERMS.has(PERM_OF[k] || k), pill = a.querySelector('.pill');
     a.classList.toggle('locked', locked);
     a.title = locked ? 'Premium: ask an admin to unlock this section' : '';
@@ -2232,14 +1773,11 @@ function openUserModal(u) {
 function renderRights() {
   const roles = ADM.roles;
   $('rightsTable').innerHTML = '<tr><th>Menu</th>' + roles.map(r => `<th>${roleBadgeRaw(r.label, r.color)}</th>`).join('') + '</tr>' +
-    ADM.menus.map(m => {
-      const alwaysOn = m.always || m.key === 'rules';     // Rules hub is open to every member, whatever the matrix says
-      return '<tr><td><b>' + esc(m.label) + '</b>' + (alwaysOn ? ' <span class="badge b-lvl">always on</span>' : '') +
+    ADM.menus.map(m => '<tr><td><b>' + esc(m.label) + '</b>' + (m.always ? ' <span class="badge b-lvl">always on</span>' : '') +
       (m.superOnly ? ' <span class="badge b-lvl">super admin only</span>' : m.adminOnly ? ' <span class="badge b-lvl">admin only</span>' : '') + '</td>' +
-      roles.map(r => { const isAdm = r.role_key === 'admin' || r.role_key === 'superadmin', locked = isAdm || alwaysOn || m.adminOnly;
-        const checked = alwaysOn || r.role_key === 'superadmin' || (r.role_key === 'admin' && !m.superOnly) || (!isAdm && !m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
-        return `<td style="text-align:center"><input type="checkbox" class="rt" data-r="${esc(r.role_key)}" data-m="${esc(m.key)}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}></td>`; }).join('') + '</tr>';
-    }).join('');
+      roles.map(r => { const isAdm = r.role_key === 'admin' || r.role_key === 'superadmin', locked = isAdm || m.always || m.adminOnly;
+        const checked = r.role_key === 'superadmin' || (r.role_key === 'admin' && !m.superOnly) || (!isAdm && !m.adminOnly && (ADM.matrix[r.role_key] || []).includes(m.key));
+        return `<td style="text-align:center"><input type="checkbox" class="rt" data-r="${esc(r.role_key)}" data-m="${esc(m.key)}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}></td>`; }).join('') + '</tr>').join('');
 }
 
 async function saveRights() {
