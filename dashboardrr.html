@@ -764,40 +764,6 @@ img{max-width:100%}
 .gbanner{display:block;width:100%;max-width:100%;height:auto;max-height:340px;object-fit:contain;background:var(--input);border-radius:10px;margin-bottom:16px}
 .dmodal{overflow-x:hidden}
 
-/* ===== RESEARCH HELPER ===== */
-.helper-tabs{display:flex;flex-wrap:wrap;gap:8px}
-.helper-btn{padding:7px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all var(--transition-fast);white-space:nowrap}
-.helper-btn:hover{background:var(--sidebar-hover-bg);border-color:var(--primary);color:var(--primary)}
-.helper-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
-.helper-btn.active i{color:#fff}
-.helper-group-title{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.helper-toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-.helper-table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm)}
-.helper-table-header{padding-bottom:12px;border-bottom:1px solid var(--border)}
-.helper-table-title{font-size:18px;font-weight:700;color:var(--heading-color)}
-.helper-table-wrapper{border-radius:var(--radius-md);border:1px solid var(--border);overflow:auto;max-height:72vh;background:var(--card)}
-.helper-table-wrapper table{width:100%;font-size:13px;border-collapse:separate;border-spacing:0;white-space:nowrap;margin-bottom:0}
-.helper-table-wrapper th,.helper-table-wrapper td{padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);border-right:1px solid var(--border);color:var(--text)}
-.helper-table-wrapper thead th{position:sticky;top:0;z-index:10;background:var(--table-header-bg);color:var(--heading-color);font-weight:700;border-bottom:2px solid var(--border)}
-.helper-table-wrapper th:first-child,.helper-table-wrapper td:first-child{position:sticky;left:0;z-index:5;background:var(--card);border-right:1px solid var(--border);min-width:44px;width:44px}
-.helper-table-wrapper thead th:first-child{z-index:15;background:var(--table-header-bg)}
-.helper-table-wrapper th:nth-child(2),.helper-table-wrapper td:nth-child(2){position:sticky;left:44px;z-index:5;background:var(--card);border-right:2px solid var(--border);text-align:left;box-shadow:3px 0 6px -2px rgba(0,0,0,.08)}
-.helper-table-wrapper thead th:nth-child(2){z-index:15;background:var(--table-header-bg)}
-.helper-table-wrapper tbody tr:hover td,.helper-table-wrapper tbody tr:hover th{background:var(--table-hover-bg)}
-.helper-table-wrapper .tdl{text-align:left !important;font-weight:600}
-.helper-table-wrapper .bl{font-weight:700;color:var(--primary)}
-.helper-table-wrapper tr[style*="color: green"]{color:var(--success-color) !important}
-
-/* ===== CLAN GIFTS LINKS ===== */
-.gift-table thead th{background:var(--table-header-bg) !important;color:var(--heading-color) !important;font-weight:700;border-bottom:2px solid var(--border)}
-.gift-table a{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none !important;transition:all var(--transition-fast)}
-.gift-table td:nth-child(3) a{background:color-mix(in srgb,var(--primary),transparent 88%);color:var(--primary);border:1px solid color-mix(in srgb,var(--primary),transparent 70%)}
-.gift-table td:nth-child(3) a:hover{background:var(--primary);color:#fff}
-.gift-table td:nth-child(4) a{background:color-mix(in srgb,var(--info-color),transparent 88%);color:var(--info-color);border:1px solid color-mix(in srgb,var(--info-color),transparent 70%)}
-.gift-table td:nth-child(4) a:hover{background:var(--info-color);color:#fff}
-.gift-table td:nth-child(5) a{background:color-mix(in srgb,var(--success-color),transparent 88%);color:var(--success-color);border:1px solid color-mix(in srgb,var(--success-color),transparent 70%)}
-.gift-table td:nth-child(5) a:hover{background:var(--success-color);color:#fff}
-
 </style>
 </head>
 <body>
@@ -845,8 +811,6 @@ img{max-width:100%}
     <li class="nav-item"><a class="nav-link" href="#loadouts" data-s="loadouts"><span class="nav-icon"><i class="ph-light ph-shield-check"></i></span><span class="nav-text">Equipment Loadouts</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#strategies" data-s="strategies"><span class="nav-icon"><i class="ph-light ph-strategy"></i></span><span class="nav-text">Pro Strategies</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#guides" data-s="guides"><span class="nav-icon"><i class="ph-light ph-book-open-text"></i></span><span class="nav-text">Game Guides</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#helper" data-s="helper"><span class="nav-icon"><i class="ph-light ph-flask"></i></span><span class="nav-text">Research Helper</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="#gifts" data-s="gifts"><span class="nav-icon"><i class="ph-light ph-gift"></i></span><span class="nav-text">Clan Gifts</span></a></li>
     <li class="nav-heading"><span>Tools</span></li>
     <li class="nav-item"><a class="nav-link" href="#checklist" data-s="checklist"><span class="nav-icon"><i class="ph-light ph-check-square"></i></span><span class="nav-text">Daily Checklist</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#tools" data-s="tools"><span class="nav-icon"><i class="ph-light ph-calculator"></i></span><span class="nav-text">Calculators</span></a></li>
@@ -885,8 +849,6 @@ img{max-width:100%}
           <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34): premium tutorials, loadouts, strategies, game guides and clan stats, all in one place.</p>
           <div class="btns">
             <button class="btn ghost" data-go="tutorials"><i class="fas fa-graduation-cap"></i> Browse Tutorials</button>
-            <button class="btn ghost" data-go="helper"><i class="fas fa-flask"></i> Research Helper</button>
-            <button class="btn ghost" data-go="gifts"><i class="fas fa-gift"></i> Clan Gifts</button>
             <button class="btn ghost" data-go="events"><i class="fas fa-calendar-days"></i> Upcoming Events</button>
             <button class="btn ghost" data-go="checklist"><i class="fas fa-list-check"></i> Daily Checklist</button>
           </div>
@@ -939,80 +901,6 @@ img{max-width:100%}
         <div class="chips" id="gChips"></div>
         <div class="grid g3" id="gGrid"><p class="muted">Loading guides...</p></div>
         <div id="gReader" style="display:none"></div>
-      </section>
-
-      <!-- RESEARCH HELPER -->
-      <section class="section" id="s-helper">
-        <div class="page-head">
-          <h1>🔬 Research Helper</h1>
-          <p>Complete cost and requirement breakdown for all 14 research unlock trees and boosts.</p>
-        </div>
-
-        <!-- Tree Selector Card -->
-        <div class="card mb-4" style="padding:16px 20px">
-          <div class="mb-3">
-            <div class="helper-group-title"><i class="bi bi-unlock-fill" style="color:var(--primary)"></i> Unlock Trees (10)</div>
-            <div class="helper-tabs" id="helperUnlockTabs"></div>
-          </div>
-          <div>
-            <div class="helper-group-title"><i class="bi bi-lightning-charge-fill" style="color:var(--warning-color)"></i> Boost Trees (4)</div>
-            <div class="helper-tabs" id="helperBoostTabs"></div>
-          </div>
-        </div>
-
-        <!-- Filter & Toolbar -->
-        <div class="helper-toolbar">
-          <div style="flex:1;min-width:260px;position:relative">
-            <i class="bi bi-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)"></i>
-            <input type="search" class="input" id="helperSearch" placeholder="Filter research rows (e.g. Archers, Strength, Health)..." style="padding-left:38px;width:100%">
-          </div>
-          <span class="badge" id="helperMatchCount" style="background:var(--input-bg);color:var(--muted);border:1px solid var(--border);padding:8px 12px;font-size:12.5px;font-weight:600">Loading...</span>
-        </div>
-
-        <!-- Table Viewport -->
-        <div id="helperTableContainer">
-          <div class="card p-5 text-center text-muted">
-            <i class="fas fa-spinner fa-spin fa-2x mb-3" style="color:var(--primary)"></i>
-            <p>Loading research data table...</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- CLAN GIFTS -->
-      <section class="section" id="s-gifts">
-        <div class="page-head">
-          <h1>🎁 Clan Gifts &amp; Freebies</h1>
-          <p>Claim your daily Total Battle gifts, promotional codes, and event roulette coins.</p>
-        </div>
-
-        <!-- Gift Category Selector Card -->
-        <div class="card mb-4" style="padding:16px 20px">
-          <div class="mb-3">
-            <div class="helper-group-title"><i class="bi bi-gift-fill" style="color:var(--primary)"></i> Active &amp; Recurring Gifts</div>
-            <div class="helper-tabs" id="giftActiveTabs"></div>
-          </div>
-          <div>
-            <div class="helper-group-title"><i class="bi bi-archive-fill" style="color:var(--warning-color)"></i> Past Years Archive</div>
-            <div class="helper-tabs" id="giftArchiveTabs"></div>
-          </div>
-        </div>
-
-        <!-- Filter & Toolbar -->
-        <div class="helper-toolbar">
-          <div style="flex:1;min-width:260px;position:relative">
-            <i class="bi bi-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)"></i>
-            <input type="search" class="input" id="giftSearch" placeholder="Filter gifts (e.g. Gold, XP, Speedup, Tar, Christmas)..." style="padding-left:38px;width:100%">
-          </div>
-          <span class="badge" id="giftMatchCount" style="background:var(--input-bg);color:var(--muted);border:1px solid var(--border);padding:8px 12px;font-size:12.5px;font-weight:600">Loading...</span>
-        </div>
-
-        <!-- Gift Table Viewport -->
-        <div id="giftTableContainer">
-          <div class="card p-5 text-center text-muted">
-            <i class="fas fa-spinner fa-spin fa-2x mb-3" style="color:var(--primary)"></i>
-            <p>Loading gift links...</p>
-          </div>
-        </div>
       </section>
 
       <!-- EVENTS & CALENDAR -->
@@ -1189,7 +1077,7 @@ img{max-width:100%}
 
       <!-- USER ROLES (admin only) -->
       <section class="section" id="s-roles">
-        <div class="page-head"><h1>🛡️ User Roles &amp; Rights <span style="font-size:14px; color:red;">(Admin Only)</span></h1><p>Promote or demote members, edit logins, disable accounts and decide which menus each group can open.</p></div>
+        <div class="page-head"><h1>🛡️ User Roles &amp; Rights</h1><p>Promote or demote members, edit logins, disable accounts and decide which menus each group can open.</p></div>
         <div class="chips" id="roleTabs">
           <button class="chip active" data-tab="users"><i class="fas fa-users-gear"></i> Users</button>
           <button class="chip" data-tab="rights"><i class="fas fa-table-cells"></i> Menu Rights</button>
@@ -1217,7 +1105,7 @@ img{max-width:100%}
   </div>
   <footer class="footer">
     <span>&copy; 2026 THE Family Gang</span>
-    <span>Designed by <a href="https://thefamily.pages.dev/">웃 T3li</a></span>
+    <span>Designed by <a href="https://thefamily.pages.dev/">T3li</a></span>
   </footer>
 </main>
 
@@ -1387,23 +1275,12 @@ const fmtShort = (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).t
    ===================================================================== */
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
   events:'Events & Calendar', eventlist:'All Events', members:'Clan Chests', chestdefs:'Chest Definitions', guides:'Game Guides',
-  helper:'Research Helper', gifts:'Clan Gifts',
   checklist:'Daily Checklist', tools:'Calculators', rules:'Clan Rules & Contact', account:'My Account',
   roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events', inquiries:'Contact Inquiries' };
-const PERM_OF = { eventlist: 'events', chestdefs: 'members', helper: 'guides', gifts: 'overview' };       // sub pages share their parent's right
+const PERM_OF = { eventlist: 'events', chestdefs: 'members' };       // sub pages share their parent's right
 const RESTRICTED = ['roles', 'guideadmin', 'eventadmin', 'inquiries'];
 
 function showSection(name) {
-  if (name.startsWith('helper-')) {
-    const slug = name.replace('helper-', '');
-    name = 'helper';
-    currentHelperTree = slug;
-  }
-  if (name.startsWith('gifts-')) {
-    const slug = name.replace('gifts-', '');
-    name = 'gifts';
-    currentGiftCategory = slug;
-  }
   if (!TITLES[name]) name = 'overview';
   if (currentUser && !PERMS.has(PERM_OF[name] || name)) {
     toast(RESTRICTED.includes(name) ? 'This area is restricted.' : '🔒 "' + TITLES[name] + '" is a Premium section. Ask an admin to unlock it for your group.', 'err');
@@ -1417,15 +1294,6 @@ function showSection(name) {
   $('pageTitle').textContent = TITLES[name] || '';
   closeMenu();
   window.scrollTo({ top: 0 });
-
-  if (name === 'helper') {
-    renderHelperTabs();
-    loadResearchHelper(currentHelperTree);
-  }
-  if (name === 'gifts') {
-    renderGiftTabs();
-    loadGiftTable(currentGiftCategory);
-  }
 }
 const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
 function setSub(g, open) {                                // open/close a sidebar submenu (same behaviour as the template)
@@ -1858,8 +1726,7 @@ function guideDoc(html) {
   th,td{border:1px solid ${bd};padding:8px 10px;text-align:left}th{background:${bg2}}
   blockquote{margin:0 0 1em;padding:8px 14px;border-left:4px solid ${pr};background:${bg2}}
   pre,code{font-family:Consolas,monospace;background:${bg2};border-radius:6px}pre{padding:12px;overflow-x:auto}code{padding:1px 5px}
-  hr{border:0;border-top:1px solid ${bd}}
-</style></head><body>${html}</body></html>`;
+  hr{border:0;border-top:1px solid ${bd}}</style></head><body>${html}</body></html>`;
 }
 
 function mountGuideFrame(host, html) {
@@ -2556,220 +2423,6 @@ function renderTools() {                                   // replaces the old t
     host.appendChild(s); calcMount(c);
   });
   window.addEventListener('hashchange', () => CALCS.filter(c => c.lazy && location.hash === '#calc-' + c.id).forEach(calcMount));
-}
-
-/* =====================================================================
-   5e. RESEARCH HELPER
-   ===================================================================== */
-var RESEARCH_TREES = window.RESEARCH_TREES || [
-  { id: 'ugi', name: "Guardsmen-I", group: 'Unlock', icon: 'bi-shield-fill-plus' },
-  { id: 'usi', name: "Specialists-I", group: 'Unlock', icon: 'bi-shield-fill-check' },
-  { id: 'umi', name: "Monster-I", group: 'Unlock', icon: 'bi-emoji-angry' },
-  { id: 'uei', name: "Engineer Corps-I", group: 'Unlock', icon: 'bi-car-front' },
-  { id: 'ua',  name: "Archaeology", group: 'Unlock', icon: 'bi-fire' },
-  { id: 'ub',  name: "Blacksmithing", group: 'Unlock', icon: 'bi-hammer' },
-  { id: 'ugii', name: "Guardsmen-II", group: 'Unlock', icon: 'bi-shield-shaded' },
-  { id: 'usii', name: "Specialists-II", group: 'Unlock', icon: 'bi-shield-slash-fill' },
-  { id: 'ueii', name: "Engineer Corps-II", group: 'Unlock', icon: 'bi-car-front-fill' },
-  { id: 'umii', name: "Monster-II", group: 'Unlock', icon: 'bi-emoji-angry-fill' },
-  { id: 'ba', name: "Army Modernization", group: 'Boost', icon: 'bi-airplane-engines-fill' },
-  { id: 'be', name: "Economy", group: 'Boost', icon: 'bi-house-check-fill' },
-  { id: 'bm', name: "Monsters Boost", group: 'Boost', icon: 'bi-emoji-sunglasses-fill' },
-  { id: 'bl', name: "Logistics", group: 'Boost', icon: 'bi-battery-charging' }
-];
-
-var HELPER_CACHE = window.HELPER_CACHE || {};
-var currentHelperTree = window.currentHelperTree || 'ba';
-var helperTabsRendered = window.helperTabsRendered || false;
-
-function renderHelperTabs() {
-  if (helperTabsRendered) return;
-  const uHost = $('helperUnlockTabs');
-  const bHost = $('helperBoostTabs');
-  if (!uHost || !bHost) return;
-
-  const btnHtml = (t) => `
-    <button type="button" class="helper-btn ${t.id === currentHelperTree ? 'active' : ''}" data-tree="${t.id}" onclick="loadResearchHelper('${t.id}')">
-      <i class="bi ${t.icon}"></i>
-      <span>${esc(t.name)}</span>
-    </button>`;
-
-  uHost.innerHTML = RESEARCH_TREES.filter(t => t.group === 'Unlock').map(btnHtml).join('');
-  bHost.innerHTML = RESEARCH_TREES.filter(t => t.group === 'Boost').map(btnHtml).join('');
-  helperTabsRendered = true;
-
-  const searchInput = $('helperSearch');
-  if (searchInput && !searchInput.dataset.bound) {
-    searchInput.dataset.bound = '1';
-    searchInput.addEventListener('input', () => filterHelperTable(searchInput.value));
-  }
-}
-
-async function loadResearchHelper(slug) {
-  if (!slug) slug = currentHelperTree || 'ba';
-  currentHelperTree = slug;
-
-  document.querySelectorAll('.helper-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.tree === slug);
-  });
-
-  const host = $('helperTableContainer');
-  if (!host) return;
-
-  const searchInput = $('helperSearch');
-  if (searchInput) searchInput.value = '';
-
-  if (HELPER_CACHE[slug]) {
-    host.innerHTML = `<div class="card helper-table-card">${HELPER_CACHE[slug]}</div>`;
-    filterHelperTable('');
-    return;
-  }
-
-  host.innerHTML = `
-    <div class="card p-5 text-center text-muted">
-      <i class="fas fa-spinner fa-spin fa-2x mb-3" style="color:var(--primary)"></i>
-      <p>Loading research data table...</p>
-    </div>`;
-
-  try {
-    const res = await fetch(`helper/${slug}.html`);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const html = await res.text();
-    HELPER_CACHE[slug] = html;
-    host.innerHTML = `<div class="card helper-table-card">${html}</div>`;
-    filterHelperTable('');
-  } catch (e) {
-    host.innerHTML = `
-      <div class="card p-4 text-center text-danger">
-        <i class="fas fa-triangle-exclamation fa-2x mb-2"></i>
-        <p>Could not load <b>${esc(slug)}</b> research data table.</p>
-      </div>`;
-  }
-}
-
-function filterHelperTable(q) {
-  const query = (q || '').toLowerCase().trim();
-  const rows = document.querySelectorAll('#helperTableContainer tbody tr');
-  let matched = 0;
-  rows.forEach(tr => {
-    const text = tr.textContent.toLowerCase();
-    const show = !query || text.includes(query);
-    tr.style.display = show ? '' : 'none';
-    if (show) matched++;
-  });
-  const countBadge = $('helperMatchCount');
-  if (countBadge) {
-    if (!rows.length) {
-      countBadge.textContent = 'No data';
-    } else if (query) {
-      countBadge.textContent = `${matched} of ${rows.length} rows`;
-    } else {
-      countBadge.textContent = `${rows.length} total rows`;
-    }
-  }
-}
-
-/* =====================================================================
-   5f. CLAN GIFTS
-   ===================================================================== */
-var GIFT_CATEGORIES = window.GIFT_CATEGORIES || [
-  { id: 'daily',       name: 'Daily Links',       group: 'Active',  icon: 'bi-calendar-heart' },
-  { id: 'active',      name: 'Active One-Time',    group: 'Active',  icon: 'bi-stars' },
-  { id: 'roulette',    name: 'Roulette Events',    group: 'Active',  icon: 'bi-disc' },
-  { id: 'archive2025', name: '2025 Archive',       group: 'Archive', icon: 'bi-archive' },
-  { id: 'archive2024', name: '2024 Archive',       group: 'Archive', icon: 'bi-archive' },
-  { id: 'archive2023', name: '2023 Archive',       group: 'Archive', icon: 'bi-archive' }
-];
-
-var GIFTS_CACHE = window.GIFTS_CACHE || {};
-var currentGiftCategory = window.currentGiftCategory || 'daily';
-var giftTabsRendered = window.giftTabsRendered || false;
-
-function renderGiftTabs() {
-  if (giftTabsRendered) return;
-  const aHost = $('giftActiveTabs');
-  const arcHost = $('giftArchiveTabs');
-  if (!aHost || !arcHost) return;
-
-  const btnHtml = (c) => `
-    <button type="button" class="helper-btn ${c.id === currentGiftCategory ? 'active' : ''}" data-gift="${c.id}" onclick="loadGiftTable('${c.id}')">
-      <i class="bi ${c.icon}"></i>
-      <span>${esc(c.name)}</span>
-    </button>`;
-
-  aHost.innerHTML = GIFT_CATEGORIES.filter(c => c.group === 'Active').map(btnHtml).join('');
-  arcHost.innerHTML = GIFT_CATEGORIES.filter(c => c.group === 'Archive').map(btnHtml).join('');
-  giftTabsRendered = true;
-
-  const searchInput = $('giftSearch');
-  if (searchInput && !searchInput.dataset.bound) {
-    searchInput.dataset.bound = '1';
-    searchInput.addEventListener('input', () => filterGiftTable(searchInput.value));
-  }
-}
-
-async function loadGiftTable(slug) {
-  if (!slug) slug = currentGiftCategory || 'daily';
-  currentGiftCategory = slug;
-
-  document.querySelectorAll('[data-gift]').forEach(b => {
-    b.classList.toggle('active', b.dataset.gift === slug);
-  });
-
-  const host = $('giftTableContainer');
-  if (!host) return;
-
-  const searchInput = $('giftSearch');
-  if (searchInput) searchInput.value = '';
-
-  if (GIFTS_CACHE[slug]) {
-    host.innerHTML = `<div class="card helper-table-card">${GIFTS_CACHE[slug]}</div>`;
-    filterGiftTable('');
-    return;
-  }
-
-  host.innerHTML = `
-    <div class="card p-5 text-center text-muted">
-      <i class="fas fa-spinner fa-spin fa-2x mb-3" style="color:var(--primary)"></i>
-      <p>Loading gift links...</p>
-    </div>`;
-
-  try {
-    const res = await fetch(`gifts/tables/${slug}.html`);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const html = await res.text();
-    GIFTS_CACHE[slug] = html;
-    host.innerHTML = `<div class="card helper-table-card">${html}</div>`;
-    filterGiftTable('');
-  } catch (e) {
-    host.innerHTML = `
-      <div class="card p-4 text-center text-danger">
-        <i class="fas fa-triangle-exclamation fa-2x mb-2"></i>
-        <p>Could not load <b>${esc(slug)}</b> gifts table.</p>
-      </div>`;
-  }
-}
-
-function filterGiftTable(q) {
-  const query = (q || '').toLowerCase().trim();
-  const rows = document.querySelectorAll('#giftTableContainer tbody tr');
-  let matched = 0;
-  rows.forEach(tr => {
-    const text = tr.textContent.toLowerCase();
-    const show = !query || text.includes(query);
-    tr.style.display = show ? '' : 'none';
-    if (show) matched++;
-  });
-  const countBadge = $('giftMatchCount');
-  if (countBadge) {
-    if (!rows.length) {
-      countBadge.textContent = 'No data';
-    } else if (query) {
-      countBadge.textContent = `${matched} of ${rows.length} links`;
-    } else {
-      countBadge.textContent = `${rows.length} total links`;
-    }
-  }
 }
 
 /* =====================================================================
