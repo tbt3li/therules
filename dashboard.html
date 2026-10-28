@@ -749,6 +749,13 @@ details .body ul{padding-left:20px;margin-top:6px}
 .evbanner{display:block;width:calc(100% + 56px);max-width:none;height:220px;object-fit:cover;margin:-28px -28px 16px;border-radius:14px 14px 0 0}
 @media(max-width:600px){.evbanner{height:160px}}
 
+/* ===== Contact Inquiries (Super Admin) ===== */
+.badge-pending{background:var(--warning-color-light);color:var(--warning-color)}
+.badge-replied{background:var(--success-color-light);color:var(--success-color)}
+.iq-msg{max-width:280px;overflow-wrap:anywhere}
+.iq-stars{color:var(--warning-color);letter-spacing:2px;font-size:13px}
+#iqTable th,#iqTable td{white-space:normal}
+
 /* ===== images always fit completely inside their box (nothing is cut off or spills out) ===== */
 img{max-width:100%}
 .gthumb img{object-fit:contain;background:var(--input)}
@@ -814,6 +821,7 @@ img{max-width:100%}
     <li class="nav-item" id="navRoles" style="display:none"><a class="nav-link" href="#roles" data-s="roles"><span class="nav-icon"><i class="ph-light ph-users-three"></i></span><span class="nav-text">User Roles</span></a></li>
     <li class="nav-item" id="navGuideAdmin" style="display:none"><a class="nav-link" href="#guideadmin" data-s="guideadmin"><span class="nav-icon"><i class="ph-light ph-books"></i></span><span class="nav-text">Manage Guides</span></a></li>
     <li class="nav-item" id="navEventAdmin" style="display:none"><a class="nav-link" href="#eventadmin" data-s="eventadmin"><span class="nav-icon"><i class="ph-light ph-calendar-plus"></i></span><span class="nav-text">Manage Events</span></a></li>
+    <li class="nav-item" id="navInquiries" style="display:none"><a class="nav-link" href="#inquiries" data-s="inquiries"><span class="nav-icon"><i class="ph-light ph-envelope-simple-open"></i></span><span class="nav-text">Contact Inquiries</span></a></li>
   </ul></nav>
   <div class="sidebar-footer">
     <div class="sidebar-footer-user">
@@ -849,8 +857,8 @@ img{max-width:100%}
         <div class="grid g2">
           <div class="card"><h3><i class="fas fa-bullhorn"></i> Clan Announcements</h3><div id="announcements"></div></div>
           <div class="grid" style="align-content:start">
-            <div class="card" style="background: #fff8f8;"><h3><i class="fas fa-play"></i> Events Running Now</h3><div id="nextEvents"></div></div>
-            <div class="card" style="background: #f8fff9;"><h3><i class="fas fa-list-check"></i> Today's Progress</h3><div id="overviewProgress"></div></div>
+            <div class="card"><h3><i class="fas fa-play"></i> Events Running Now</h3><div id="nextEvents"></div></div>
+            <div class="card"><h3><i class="fas fa-list-check"></i> Today's Progress</h3><div id="overviewProgress"></div></div>
           </div>
         </div>
       </section>
@@ -993,6 +1001,20 @@ img{max-width:100%}
           <div class="note"><b>Pictures:</b> upload your screenshots to your GitHub repo (for example <code>assets/img/guides/captains.jpg</code>) and enter that path, or paste an <b>https://</b> link.</div>
           <div class="card"><div class="table-wrap"><table id="gaCats"></table></div></div>
         </div>
+      </section>
+
+      <!-- CONTACT INQUIRIES (Super Admin only) -->
+      <section class="section" id="s-inquiries">
+        <div class="page-head"><h1>📬 Contact Inquiries</h1><p>Messages submitted on the public contact form, with ratings and replies.</p></div>
+        <div class="grid g4" id="iqStats" style="margin-bottom:20px"></div>
+        <div class="toolbar">
+          <input class="input" id="iqSearch" placeholder="Search by name, email or subject...">
+          <select class="input" id="iqStatus" style="max-width:190px">
+            <option value="">All Status</option><option value="pending">Pending</option><option value="replied">Replied</option>
+          </select>
+          <button class="btn outline" id="iqRefresh"><i class="fas fa-rotate"></i> Refresh</button>
+        </div>
+        <div class="card"><div class="table-wrap"><table id="iqTable"></table></div></div>
       </section>
 
       <!-- MANAGE EVENTS (Super Admin only) -->
@@ -1254,9 +1276,9 @@ const fmtShort = (n) => n >= 1e9 ? (n/1e9).toFixed(2)+'B' : n >= 1e6 ? (n/1e6).t
 const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'Equipment Loadouts', strategies:'Pro Strategies',
   events:'Events & Calendar', eventlist:'All Events', members:'Clan Chests', chestdefs:'Chest Definitions', guides:'Game Guides',
   checklist:'Daily Checklist', tools:'Calculators', rules:'Clan Rules & Contact', account:'My Account',
-  roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events' };
+  roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events', inquiries:'Contact Inquiries' };
 const PERM_OF = { eventlist: 'events', chestdefs: 'members' };       // sub pages share their parent's right
-const RESTRICTED = ['roles', 'guideadmin', 'eventadmin'];
+const RESTRICTED = ['roles', 'guideadmin', 'eventadmin', 'inquiries'];
 
 function showSection(name) {
   if (!TITLES[name]) name = 'overview';
@@ -1514,7 +1536,7 @@ function initAdmin() {
   $('addUserBtn').onclick = () => openUserModal(null);
   $('usrTable').onclick = onUserAction;
   $('saveRights').onclick = saveRights;
-  if (isSuper()) { initGuideAdmin(); initEventAdmin(); }      // Super Admin only
+  if (isSuper()) { initGuideAdmin(); initEventAdmin(); initInquiries(); }      // Super Admin only
   loadAdmin();
 }
 
@@ -2414,7 +2436,7 @@ async function refreshAll() {
     applyPermissions(); renderAccount();
     const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
     if (isAdmin()) jobs.push(loadAdmin());
-    if (isSuper()) jobs.push(loadGuideAdmin());
+    if (isSuper()) jobs.push(loadGuideAdmin(), loadInquiries());
     await Promise.all(jobs);
     showSection(location.hash.slice(1));
     toast('Refreshed', 'ok');
@@ -2423,6 +2445,81 @@ async function refreshAll() {
   } finally {
     btn.disabled = false; btn.querySelector('i').classList.remove('fa-spin');
   }
+}
+
+
+/* =====================================================================
+   5g. CONTACT INQUIRIES (Super Admin only)  -  paste ABOVE "function startApp() {"
+   ===================================================================== */
+const INQ_URL = 'https://admininquiry.t3li.workers.dev/api';
+const IQ = { items: [], q: '', status: '' };
+
+async function loadInquiries() {
+  if (!isSuper()) return;
+  const params = new URLSearchParams();
+  if (IQ.q) params.set('search', IQ.q);
+  if (IQ.status) params.set('status', IQ.status);
+  const r = await api(INQ_URL + '/inquiries?' + params.toString());
+  if (!r || !('inquiries' in r)) { $('iqTable').innerHTML = `<tr><td class="muted">${esc((r && r.error) || 'Could not load inquiries.')}</td></tr>`; $('iqStats').innerHTML = ''; return; }
+  IQ.items = r.inquiries || [];
+  renderInquiries();
+}
+function iqStars(rating) {
+  const r = Math.round(rating || 0);
+  return '★'.repeat(r) + '☆'.repeat(5 - r);
+}
+function renderInquiries() {
+  if (!$('iqTable')) return;
+  const items = IQ.items;
+  const pending = items.filter(i => i.reply_status !== 'replied').length;
+  const replied = items.length - pending;
+  const rated = items.filter(i => i.rating);
+  const avg = rated.length ? (rated.reduce((s, i) => s + i.rating, 0) / rated.length).toFixed(1) : '—';
+  $('iqStats').innerHTML = [
+    ['fa-inbox', '#0ea5a4', items.length, 'Total Messages'],
+    ['fa-hourglass-half', '#d97706', pending, 'Pending'],
+    ['fa-circle-check', '#16a34a', replied, 'Replied'],
+    ['fa-star', '#0284c7', avg, 'Avg Rating']
+  ].map(([i, c, v, l]) => `<div class="card stat"><div class="ico" style="background:${c}"><i class="fas ${i}"></i></div><div><b>${esc(v)}</b><span>${l}</span></div></div>`).join('');
+
+  const fmtDate = (d) => { if (!d) return '—'; const dt = new Date(d); return isNaN(dt) ? esc(d) : dt.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }); };
+  $('iqTable').innerHTML = items.length ? ('<tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Rating</th><th>Date</th><th>Status</th><th>Action</th></tr>' +
+    items.map(it => `<tr>
+      <td class="muted">${it.id}</td><td><b>${esc(it.name)}</b></td><td>${esc(it.email)}</td><td>${esc(it.subject)}</td>
+      <td class="iq-msg">${esc((it.message || '').slice(0, 140))}${it.message && it.message.length > 140 ? '…' : ''}</td>
+      <td><span class="iq-stars">${iqStars(it.rating)}</span></td><td class="muted">${fmtDate(it.created_at)}</td>
+      <td><span class="badge ${it.reply_status === 'replied' ? 'badge-replied' : 'badge-pending'}">${it.reply_status === 'replied' ? 'Replied' : 'Pending'}</span></td>
+      <td><button class="btn sm ${it.reply_status === 'replied' ? 'outline' : ''}" data-reply="${it.id}" ${it.reply_status === 'replied' ? 'disabled' : ''}>${it.reply_status === 'replied' ? 'Done' : 'Reply'}</button></td>
+    </tr>`).join(''))
+    : '<tr><td class="muted">No inquiries found.</td></tr>';
+}
+function openReplyModal(id) {
+  const it = IQ.items.find(x => x.id == id); if (!it) return;
+  $('modal').classList.remove('wide');
+  $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    <h2>Reply to Inquiry</h2>
+    <p class="muted" style="margin-bottom:4px">To:</p><p><b>${esc(it.name)}</b> &lt;${esc(it.email)}&gt;</p>
+    <p class="muted" style="margin:14px 0 4px">Subject: ${esc(it.subject)}</p>
+    <div class="result" style="margin:0 0 14px">${esc(it.message)}</div>
+    <label class="l">Reply message</label><textarea class="input" id="iq_reply" rows="6" style="resize:vertical" placeholder="Type your reply..."></textarea>
+    <div style="display:flex;gap:10px;margin-top:18px"><button class="btn" id="iq_send">Send Reply</button><button class="btn outline" onclick="closeModal()">Cancel</button></div>`;
+  $('modalBg').classList.add('show');
+  $('iq_send').onclick = async () => {
+    const text = $('iq_reply').value.trim();
+    if (!text) return toast('Please write a reply message.', 'err');
+    $('iq_send').disabled = true;
+    const r = await api(INQ_URL + '/inquiries/' + id + '/reply', 'POST', { reply_message: text });
+    $('iq_send').disabled = false;
+    if (r && r.success) { toast('Reply recorded', 'ok'); closeModal(); loadInquiries(); } else toast((r && r.error) || 'Failed to send reply.', 'err');
+  };
+}
+function initInquiries() {
+  $('navInquiries').style.display = '';
+  $('iqSearch').oninput = (e) => { IQ.q = e.target.value.trim(); loadInquiries(); };
+  $('iqStatus').onchange = (e) => { IQ.status = e.target.value; loadInquiries(); };
+  $('iqRefresh').onclick = () => loadInquiries();
+  $('iqTable').onclick = (e) => { const b = e.target.closest('[data-reply]'); if (b && !b.disabled) openReplyModal(b.dataset.reply); };
+  loadInquiries();
 }
 
 function startApp() {
