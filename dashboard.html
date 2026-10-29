@@ -868,6 +868,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
 .chat-line.them .chat-bubble{background:var(--card);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:5px}
 .chat-sender{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--primary);margin:0 0 3px 5px}
 .chat-sender i{font-size:10px}
+.chat-sender-time{font-weight:600;color:var(--muted)}
 .chat-time{font-size:10.5px;color:var(--muted);margin-top:3px;padding:0 4px}
 .chat-day{text-align:center;font-size:11px;color:var(--muted);margin:10px 0;text-transform:uppercase;letter-spacing:.05em}
 .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);align-items:flex-end;background:var(--card)}
@@ -3401,8 +3402,9 @@ function filterGiftTable(q) {
    the heartbeat (members) or the 5s inbox poll (admins).
    ===================================================================== */
 const CHAT = {
-  open: false, messages: [], conv: null, sig: '', timer: null,
-  admin: { list: [], now: 0, convId: null, conv: null, q: '', threadSig: '', tick: null, thread: null }
+  open: false, messages: [], conv: null, sig: '', timer: null, lastId: 0, clearedAt: null,
+  admin: { list: [], now: 0, convId: null, conv: null, q: '', threadSig: '', tick: null, thread: null,
+           messages: [], lastId: 0, clearedAt: null, threadFor: null }
 };
 
 const chatClock = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -3413,9 +3415,10 @@ function chatMessagesHtml(msgs) {
   msgs.forEach((m) => {
     const d = chatDay(m.created_at);
     if (d !== day) { day = d; html += `<div class="chat-day">${esc(d)}</div>`; }
-    const who = (!m.mine && m.sender_role !== 'member')
-      ? `<div class="chat-sender"><i class="fas fa-headset"></i>${esc(m.sender_username || (m.sender_role === 'superadmin' ? 'Super Admin' : 'Support'))}</div>` : '';
-    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}">${who}<div class="chat-bubble">${esc(m.message)}</div><div class="chat-time">${chatClock(m.created_at)}</div></div>`;
+    const staff = !m.mine && m.sender_role !== 'member';
+    const who = staff
+      ? `<div class="chat-sender"><i class="fas fa-headset"></i>${esc(m.sender_username || (m.sender_role === 'superadmin' ? 'Super Admin' : 'Support'))} <span class="chat-sender-time">(${chatClock(m.created_at)})</span></div>` : '';
+    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}">${who}<div class="chat-bubble">${esc(m.message)}</div>${staff ? '' : `<div class="chat-time">${chatClock(m.created_at)}</div>`}</div>`;
   });
   return html;
 }
@@ -3447,14 +3450,27 @@ async function chatHeartbeat() {
 }
 
 async function chatLoadMine(initial) {
-  const r = await api('/chat/me');
+  const q = (!initial && CHAT.lastId) ? ('?after=' + CHAT.lastId) : '';
+  const r = await api('/chat/me' + q);
   if (!r || !r.success) return;
-  const last = r.messages[r.messages.length - 1];
-  const sig = r.messages.length + ':' + (last ? last.id : 0) + ':' + (r.unread || 0);
-  if (!initial && sig === CHAT.sig) return;
+  const nowCleared = r.conversation ? (r.conversation.cleared_at || null) : null;
+  const clearedChanged = CHAT.clearedAt !== null && nowCleared !== CHAT.clearedAt;
+  if (clearedChanged && !initial) { CHAT.clearedAt = nowCleared; return chatLoadMine(true); }
+  const full = !!initial;
+  const incoming = Array.isArray(r.messages) ? r.messages : [];
+  if (full) { CHAT.messages = []; CHAT.lastId = 0; CHAT.sig = ''; }
+  if (incoming.length) {
+    const seen = new Set(CHAT.messages.map((m) => m.id));
+    incoming.forEach((m) => { if (!seen.has(m.id)) { CHAT.messages.push(m); seen.add(m.id); } });
+    CHAT.messages.sort((a, b) => a.id - b.id);
+  }
+  CHAT.clearedAt = nowCleared;
+  CHAT.conv = r.conversation || CHAT.conv;
+  const last = CHAT.messages[CHAT.messages.length - 1];
+  if (last) CHAT.lastId = Math.max(CHAT.lastId, last.id);
+  const sig = CHAT.messages.length + ':' + (last ? last.id : 0) + ':' + (r.unread || 0) + ':' + (nowCleared || 0);
+  if (!full && sig === CHAT.sig) return;
   CHAT.sig = sig;
-  CHAT.messages = r.messages || [];
-  CHAT.conv = r.conversation || null;
   const body = $('chatPanelBody');
   body.innerHTML = CHAT.messages.length ? chatMessagesHtml(CHAT.messages)
     : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>Start the conversation</b><span>Send a message and the clan team will reply here.</span></div>';
@@ -3470,7 +3486,7 @@ function chatOpenWidget() {
   $('chatPanelBody').innerHTML = '<div class="chat-empty"><i class="fas fa-spinner fa-spin"></i><span>Loading messages…</span></div>';
   chatLoadMine(true);
   clearInterval(CHAT.timer);
-  CHAT.timer = setInterval(() => { if (!document.hidden && CHAT.open) chatLoadMine(false); }, 4000);
+  CHAT.timer = setInterval(() => { if (!document.hidden && CHAT.open) chatLoadMine(false); }, 2000);
   setTimeout(() => { const i = $('chatInput'); if (i) i.focus(); }, 120);
 }
 function chatCloseWidget() {
@@ -3489,8 +3505,14 @@ async function chatSendMine() {
   btn.disabled = false;
   if (!r || !r.success) return toast((r && r.error) || 'Message not sent.', 'err');
   inp.value = ''; chatAutoGrow(inp);
-  CHAT.sig = '';
-  await chatLoadMine(false);
+  if (r.message) {                                    // show instantly, no extra round trip
+    if (!CHAT.messages.some((m) => m.id === r.message.id)) CHAT.messages.push(r.message);
+    CHAT.lastId = Math.max(CHAT.lastId, r.message.id);
+    CHAT.sig = '';
+    const body = $('chatPanelBody');
+    body.innerHTML = chatMessagesHtml(CHAT.messages);
+    chatScroll(body);
+  }
 }
 
 function initChatUser() {
@@ -3551,12 +3573,16 @@ function chatAdminHead(c) {
 
 function chatAdminResume() {
   if (CHAT.admin.thread || !CHAT.admin.convId) return;
-  CHAT.admin.thread = setInterval(() => { if (!document.hidden && CHAT.admin.convId) chatAdminLoadThread(false); }, 4000);
+  CHAT.admin.thread = setInterval(() => { if (!document.hidden && CHAT.admin.convId) chatAdminLoadThread(false); }, 2000);
 }
 
 function chatAdminOpen(id) {
   CHAT.admin.convId = id;
   CHAT.admin.threadSig = '';
+  CHAT.admin.messages = [];
+  CHAT.admin.lastId = 0;
+  CHAT.admin.clearedAt = null;
+  CHAT.admin.threadFor = id;
   $('chatThreadEmpty').hidden = true;
   $('chatThreadInner').hidden = false;
   chatAdminRenderList();
@@ -3567,25 +3593,42 @@ function chatAdminOpen(id) {
   chatAdminResume();
 }
 
+function chatAdminRenderThread() {
+  const body = $('chatThreadBody');
+  body.innerHTML = CHAT.admin.messages.length ? chatMessagesHtml(CHAT.admin.messages)
+    : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>No messages</b><span>This conversation is empty or was cleared. Send a reply to start it again.</span></div>';
+  chatScroll(body);
+}
+
 async function chatAdminLoadThread(initial) {
   if (!CHAT.admin.convId) return;
   const id = CHAT.admin.convId;
-  const r = await api('/chat/conversations/' + id);
+  const q = (!initial && CHAT.admin.lastId) ? ('?after=' + CHAT.admin.lastId) : '';
+  const r = await api('/chat/conversations/' + id + q);
   if (!r || !r.success) { if (initial) toast((r && r.error) || 'Could not load this conversation.', 'err'); return; }
   CHAT.admin.conv = r.conversation;
-  const msgs = Array.isArray(r.messages) ? r.messages : [];
+  const nowCleared = (r.conversation && r.conversation.cleared_at) || null;
+  const clearedChanged = CHAT.admin.clearedAt !== null && nowCleared !== CHAT.admin.clearedAt;
+  if (clearedChanged && !initial) { CHAT.admin.clearedAt = nowCleared; return chatAdminLoadThread(true); }
+  const full = !!initial || CHAT.admin.threadFor !== id;
+  const incoming = Array.isArray(r.messages) ? r.messages : [];
+  if (full) { CHAT.admin.messages = []; CHAT.admin.lastId = 0; CHAT.admin.threadSig = ''; CHAT.admin.threadFor = id; }
+  if (incoming.length) {
+    const seen = new Set(CHAT.admin.messages.map((m) => m.id));
+    incoming.forEach((m) => { if (!seen.has(m.id)) { CHAT.admin.messages.push(m); seen.add(m.id); } });
+    CHAT.admin.messages.sort((a, b) => a.id - b.id);
+  }
+  CHAT.admin.clearedAt = nowCleared;
+  const last = CHAT.admin.messages[CHAT.admin.messages.length - 1];
+  if (last) CHAT.admin.lastId = Math.max(CHAT.admin.lastId, last.id);
   const item = CHAT.admin.list.find((c) => c.id === id);
   chatAdminHead(Object.assign({}, r.conversation || {}, item ? { online: item.online } : {}));
-  const last = msgs[msgs.length - 1];
-  const sig = id + ':' + msgs.length + ':' + (last ? last.id : 0) + ':' + ((r.conversation && r.conversation.cleared_at) || 0);
-  if (sig !== CHAT.admin.threadSig) {
+  const sig = id + ':' + CHAT.admin.messages.length + ':' + (last ? last.id : 0) + ':' + (nowCleared || 0);
+  if (full || sig !== CHAT.admin.threadSig) {
     CHAT.admin.threadSig = sig;
-    const body = $('chatThreadBody');
-    body.innerHTML = msgs.length ? chatMessagesHtml(msgs)
-      : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>No messages</b><span>This conversation is empty or was cleared. Send a reply to start it again.</span></div>';
-    chatScroll(body);
+    chatAdminRenderThread();
   }
-  if (msgs.some((m) => !m.mine && !m.read_at)) {
+  if (incoming.some((m) => !m.mine && !m.read_at)) {
     await api('/chat/conversations/' + id + '/read', 'POST', {});
     chatAdminLoadList();
   }
@@ -3601,8 +3644,12 @@ async function chatAdminReply() {
   btn.disabled = false;
   if (!r || !r.success) return toast((r && r.error) || 'Reply not sent.', 'err');
   inp.value = ''; chatAutoGrow(inp);
-  CHAT.admin.threadSig = '';
-  await chatAdminLoadThread(true);
+  if (r.message) {                                    // show instantly, no extra round trip
+    if (!CHAT.admin.messages.some((m) => m.id === r.message.id)) CHAT.admin.messages.push(r.message);
+    CHAT.admin.lastId = Math.max(CHAT.admin.lastId, r.message.id);
+    CHAT.admin.threadSig = '';
+    chatAdminRenderThread();
+  }
   chatAdminLoadList();
 }
 
@@ -3636,7 +3683,7 @@ function initChatAdmin() {
   $('chatReplyInput').addEventListener('keydown', chatKey);
   $('chatReplyInput').addEventListener('input', (e) => chatAutoGrow(e.target));
   clearInterval(CHAT.admin.tick);
-  CHAT.admin.tick = setInterval(() => { if (!document.hidden) chatAdminTick(); }, 5000);
+  CHAT.admin.tick = setInterval(() => { if (!document.hidden) chatAdminTick(); }, 3000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) chatAdminTick(); });
   chatAdminTick();
 }
