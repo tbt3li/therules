@@ -866,6 +866,8 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
 .chat-bubble{max-width:80%;padding:8px 12px;border-radius:14px;font-size:13.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
 .chat-line.me .chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:5px}
 .chat-line.them .chat-bubble{background:var(--card);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:5px}
+.chat-sender{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--primary);margin:0 0 3px 5px}
+.chat-sender i{font-size:10px}
 .chat-time{font-size:10.5px;color:var(--muted);margin-top:3px;padding:0 4px}
 .chat-day{text-align:center;font-size:11px;color:var(--muted);margin:10px 0;text-transform:uppercase;letter-spacing:.05em}
 .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);align-items:flex-end;background:var(--card)}
@@ -3411,7 +3413,9 @@ function chatMessagesHtml(msgs) {
   msgs.forEach((m) => {
     const d = chatDay(m.created_at);
     if (d !== day) { day = d; html += `<div class="chat-day">${esc(d)}</div>`; }
-    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}"><div class="chat-bubble">${esc(m.message)}</div><div class="chat-time">${chatClock(m.created_at)}</div></div>`;
+    const who = (!m.mine && m.sender_role !== 'member')
+      ? `<div class="chat-sender"><i class="fas fa-headset"></i>${esc(m.sender_username || (m.sender_role === 'superadmin' ? 'Super Admin' : 'Support'))}</div>` : '';
+    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}">${who}<div class="chat-bubble">${esc(m.message)}</div><div class="chat-time">${chatClock(m.created_at)}</div></div>`;
   });
   return html;
 }
