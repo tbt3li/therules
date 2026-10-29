@@ -1,0 +1,28 @@
+CREATE TABLE chest_defs ( id INTEGER PRIMARY KEY AUTOINCREMENT, grp TEXT NOT NULL, type TEXT NOT NULL, name TEXT NOT NULL, level INTEGER NOT NULL DEFAULT 0, points INTEGER NOT NULL DEFAULT 0, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+
+
+CREATE TABLE chest_groups (name TEXT PRIMARY KEY, sort_order INTEGER DEFAULT 100);
+
+
+CREATE TABLE event_catalog ( id INTEGER PRIMARY KEY AUTOINCREMENT, event_key TEXT NOT NULL UNIQUE, title TEXT NOT NULL, category TEXT DEFAULT '', image_url TEXT DEFAULT '', short_desc TEXT DEFAULT '', details_html TEXT DEFAULT '', created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, icon_url TEXT DEFAULT '');
+
+
+CREATE TABLE guide_categories ( category_key TEXT PRIMARY KEY, label TEXT NOT NULL, description TEXT DEFAULT '', icon TEXT DEFAULT 'fa-book', image_url TEXT DEFAULT '', sort_order INTEGER DEFAULT 0);
+
+
+CREATE TABLE guides ( id INTEGER PRIMARY KEY AUTOINCREMENT, category_key TEXT NOT NULL, title TEXT NOT NULL, summary TEXT DEFAULT '', content TEXT DEFAULT '', image_url TEXT DEFAULT '', is_premium INTEGER DEFAULT 1, is_published INTEGER DEFAULT 1, sort_order INTEGER DEFAULT 0, source_file TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP);
+
+
+CREATE TABLE role_permissions ( role_key TEXT NOT NULL, menu_key TEXT NOT NULL, PRIMARY KEY (role_key, menu_key) );
+
+
+CREATE TABLE roles ( role_key TEXT PRIMARY KEY, label TEXT NOT NULL, sort_order INTEGER NOT NULL, color TEXT NOT NULL DEFAULT '#6c757d' );
+
+
+CREATE TABLE sessions ( token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL, expires_at INTEGER NOT NULL, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE );
+
+
+CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+
+
+CREATE TABLE users ( id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, name TEXT, password_hash TEXT NOT NULL, salt TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT (datetime('now')) , username TEXT, role TEXT NOT NULL DEFAULT 'member', is_active INTEGER NOT NULL DEFAULT 1, last_seen INTEGER DEFAULT 0, last_ip TEXT DEFAULT '', last_country TEXT DEFAULT '');

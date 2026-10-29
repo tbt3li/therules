@@ -1,0 +1,249 @@
+/**
+ * Admin Authentication Worker
+ * Domain: admin.t3li.workers.dev
+ * Database: admin-login
+ * Table: users (id, username, password, salt, pepper)
+ *
+ * Includes a first-time /api/setup endpoint that creates the FIRST admin.
+ * It automatically locks itself once any user exists.
+ */
+
+const JWT_SECRET = 'CHANGE_ME_TO_A_LONG_RANDOM_STRING_32CHARS_MIN';
+
+const ALLOWED_ORIGINS = [
+  'https://thefamily.pages.dev',
+  'https://www.thefamily.pages.dev',
+  'http://localhost:3000',
+  'http://127.0.0.1:5500',
+  'http://localhost:8080'
+];
+
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const MAX_ATTEMPTS = 5;
+
+function jsonResponse(data, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      ...extraHeaders
+    }
+  });
+}
+
+function corsHeaders(origin) {
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    return {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Max-Age': '86400'
+    };
+  }
+  return {};
+}
+
+// ─── PBKDF2 ───
+async function hashPassword(password, salt, pepper) {
+  const encoder = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', encoder.encode(password + pepper),
+    { name: 'PBKDF2' }, false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: encoder.encode(salt), iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, 256
+  );
+  return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return result === 0;
+}
+
+// ─── Random helpers ───
+function randomHex(bytes = 16) {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  return [...arr].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ─── JWT ───
+async function createJWT(payload) {
+  const header = { alg: 'HS256', typ: 'JWT' };
+  const now = Math.floor(Date.now() / 1000);
+  const fullPayload = { ...payload, iat: now, exp: now + 3600 };
+  const b64url = (obj) =>
+    btoa(JSON.stringify(obj)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const data = `${b64url(header)}.${b64url(fullPayload)}`;
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', encoder.encode(JWT_SECRET),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
+  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sig)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return `${data}.${sigB64}`;
+}
+
+async function verifyJWT(token) {
+  try {
+    const [h, p, s] = token.split('.');
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw', encoder.encode(JWT_SECRET),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']
+    );
+    const signature = Uint8Array.from(
+      atob(s.replace(/-/g, '+').replace(/_/g, '/')),
+      (c) => c.charCodeAt(0)
+    );
+    const valid = await crypto.subtle.verify('HMAC', key, signature, encoder.encode(`${h}.${p}`));
+    if (!valid) return null;
+    const payload = JSON.parse(atob(p.replace(/-/g, '+').replace(/_/g, '/')));
+    if (payload.exp && Date.now() / 1000 > payload.exp) return null;
+    return payload;
+  } catch { return null; }
+}
+
+// ─── Rate limiting ───
+const rateLimitStore = new Map();
+function checkRateLimit(key) {
+  const now = Date.now();
+  const record = rateLimitStore.get(key);
+  if (!record || now - record.windowStart > RATE_LIMIT_WINDOW_MS) {
+    rateLimitStore.set(key, { windowStart: now, count: 1 });
+    return { allowed: true };
+  }
+  if (record.count >= MAX_ATTEMPTS) return { allowed: false };
+  record.count++;
+  return { allowed: true };
+}
+
+// ─── Main ───
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const origin = request.headers.get('Origin') || '';
+    const cors = corsHeaders(origin);
+
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+
+    // ── GET /api/setup-status ── tell frontend if setup is needed
+    if (url.pathname === '/api/setup-status' && request.method === 'GET') {
+      try {
+        const row = await env.DB.prepare('SELECT COUNT(*) as count FROM users').first();
+        return jsonResponse({ needs_setup: !row || row.count === 0 }, 200, cors);
+      } catch {
+        return jsonResponse({ needs_setup: true }, 200, cors);
+      }
+    }
+
+    // ── POST /api/setup ── create FIRST admin only
+    if (url.pathname === '/api/setup' && request.method === 'POST') {
+      try {
+        // Reject if any user already exists
+        const existing = await env.DB.prepare('SELECT COUNT(*) as count FROM users').first();
+        if (existing && existing.count > 0) {
+          return jsonResponse({ error: 'Setup already completed.' }, 403, cors);
+        }
+
+        const { username, password } = await request.json();
+        if (!username || !password) {
+          return jsonResponse({ error: 'Username and password required.' }, 400, cors);
+        }
+        if (password.length < 8) {
+          return jsonResponse({ error: 'Password must be at least 8 characters.' }, 400, cors);
+        }
+        if (!/^[a-zA-Z0-9_.-]{3,32}$/.test(username)) {
+          return jsonResponse({ error: 'Username must be 3–32 chars (letters, numbers, _.-).' }, 400, cors);
+        }
+
+        const salt = randomHex(16);
+        const pepper = randomHex(16);
+        const hashed = await hashPassword(password, salt, pepper);
+
+        await env.DB.prepare(
+          'INSERT INTO users (username, password, salt, pepper) VALUES (?1, ?2, ?3, ?4)'
+        ).bind(username, hashed, salt, pepper).run();
+
+        return jsonResponse({ success: true }, 201, cors);
+      } catch (err) {
+        console.error('Setup error:', err);
+        return jsonResponse({ error: 'Setup failed.' }, 500, cors);
+      }
+    }
+
+    // ── POST /api/login ──
+    if (url.pathname === '/api/login' && request.method === 'POST') {
+      const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
+      try {
+        const { username, password } = await request.json();
+        if (!username || !password) {
+          return jsonResponse({ error: 'Username and password are required.' }, 400, cors);
+        }
+
+        const limit = checkRateLimit(`${clientIP}:${username}`);
+        if (!limit.allowed) {
+          return jsonResponse(
+            { error: 'Too many failed attempts. Try again in 15 minutes.' },
+            429, { ...cors, 'Retry-After': '900' }
+          );
+        }
+
+        const user = await env.DB.prepare(
+          'SELECT id, username, password, salt, pepper FROM users WHERE username = ?1'
+        ).bind(username).first();
+
+        if (!user) return jsonResponse({ error: 'Invalid username or password.' }, 401, cors);
+
+        const inputHash = await hashPassword(password, user.salt, user.pepper);
+        if (!timingSafeEqual(inputHash, user.password)) {
+          return jsonResponse({ error: 'Invalid username or password.' }, 401, cors);
+        }
+
+        const token = await createJWT({ sub: user.id, username: user.username, role: 'admin' });
+
+        const cookieValue = [
+          `admin_session=${token}`, 'Path=/', 'HttpOnly',
+          'Secure', 'SameSite=Strict', 'Max-Age=3600'
+        ].join('; ');
+
+        return jsonResponse(
+          { success: true, token, user: { id: user.id, username: user.username } },
+          200, { ...cors, 'Set-Cookie': cookieValue }
+        );
+      } catch (err) {
+        console.error('Login error:', err);
+        return jsonResponse({ error: 'Internal server error.' }, 500, cors);
+      }
+    }
+
+    // ── POST /api/logout ──
+    if (url.pathname === '/api/logout' && request.method === 'POST') {
+      const cookieValue = [
+        'admin_session=', 'Path=/', 'HttpOnly', 'Secure', 'SameSite=Strict', 'Max-Age=0'
+      ].join('; ');
+      return jsonResponse({ success: true }, 200, { ...cors, 'Set-Cookie': cookieValue });
+    }
+
+    // ── GET /api/verify ──
+    if (url.pathname === '/api/verify' && request.method === 'GET') {
+      const token = (request.headers.get('Authorization') || '').replace('Bearer ', '');
+      if (!token) return jsonResponse({ valid: false }, 401, cors);
+      const payload = await verifyJWT(token);
+      if (!payload) return jsonResponse({ valid: false }, 401, cors);
+      return jsonResponse({ valid: true, user: payload }, 200, cors);
+    }
+
+    return jsonResponse({ error: 'Not found.' }, 404, cors);
+  }
+};

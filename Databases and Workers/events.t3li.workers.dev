@@ -1,0 +1,206 @@
+/**
+ * Events Worker  -  events.t3li.workers.dev
+ * Reads the schedule from an .xlsx file hosted on your site/GitHub, merges it with the
+ * event catalog stored in D1 (table event_catalog, DB member-login, binding login_db)
+ * and sends it to the dashboard.
+ *
+ * Settings (Cloudflare -> Workers -> events -> Settings):
+ *   Binding  D1 database  : variable name  login_db   -> database  member-login
+ *   Variable (text)       : XLSX_URL = https://thefamily.pages.dev/data/events.xlsx
+ */
+const ALLOWED_ORIGINS = ['https://thefamily.pages.dev'];
+const CACHE_MS = 5 * 60 * 1000;
+let cache = { at: 0, data: null };
+const enc = new TextEncoder();
+
+// ---------- helpers ----------
+const norm = (s) => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const sha256 = async (t) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(t)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+const IMG_RE = /^(https:\/\/|\/?(event-images|assets)\/)[^\s"'<>]{1,300}$/;
+const cleanImg = (v) => { v = String(v || '').trim().replace(/\\/g, '/'); return v === '' || IMG_RE.test(v) ? v : null; };
+const decode = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&amp;/g, '&');
+
+// ---------- minimal .xlsx reader (no libraries, very low CPU) ----------
+async function inflate(raw) {
+  const s = new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return await new Response(s).text();
+}
+async function unzip(buf) {
+  const dv = new DataView(buf), u8 = new Uint8Array(buf);
+  let e = buf.byteLength - 22;
+  while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
+  if (e < 0) throw new Error('The file is not a valid .xlsx (save it as "Excel Workbook .xlsx").');
+  const n = dv.getUint16(e + 10, true);
+  let p = dv.getUint32(e + 16, true);
+  const files = {};
+  for (let i = 0; i < n; i++) {
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nl));
+    p += 46 + nl + el + cl;
+    if (!/^xl\/(sharedStrings\.xml|worksheets\/sheet\d+\.xml)$/.test(name)) continue;
+    const ds = lo + 30 + dv.getUint16(lo + 26, true) + dv.getUint16(lo + 28, true);
+    const raw = u8.subarray(ds, ds + csize);
+    files[name] = method === 0 ? new TextDecoder().decode(raw) : await inflate(raw);
+  }
+  return files;
+}
+const colIndex = (L) => [...L].reduce((a, c) => a * 26 + c.charCodeAt(0) - 64, 0) - 1;
+function toDate(val) {
+  if (/^\d+(\.\d+)?$/.test(val)) {                       // real Excel date (serial number)
+    const n = Math.floor(parseFloat(val));
+    return n > 20000 && n < 80000 ? new Date(Math.round((n - 25569) * 864e5)).toISOString().slice(0, 10) : null;
+  }
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(val);       // 2026-10-15
+  if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+  m = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/.exec(val); // 15/10/2026 (day first)
+  if (m) return `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+  const t = Date.parse(val + ' UTC');                      // 15 Oct 2026
+  return isNaN(t) ? null : new Date(t).toISOString().slice(0, 10);
+}
+function parseXlsx(f) {
+  const ss = [];
+  if (f['xl/sharedStrings.xml'])
+    for (const m of f['xl/sharedStrings.xml'].matchAll(/<si>([\s\S]*?)<\/si>/g))
+      ss.push(decode([...m[1].matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((x) => x[1]).join('')));
+  const sheet = Object.keys(f).filter((n) => /worksheets\/sheet\d+\.xml$/.test(n)).sort()[0];
+  if (!sheet) throw new Error('No worksheet found in the Excel file.');
+  const schedule = {};
+  for (const rm of f[sheet].matchAll(/<row\b[^>]*>([\s\S]*?)<\/row>/g)) {
+    const cells = [];
+    for (const cm of rm[1].matchAll(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g)) {
+      const attrs = cm[1], body = cm[2] || '';
+      const ref = /\br="([A-Z]+)\d+"/.exec(attrs); if (!ref) continue;
+      const type = (/\bt="(\w+)"/.exec(attrs) || [])[1];
+      const v = /<v>([\s\S]*?)<\/v>/.exec(body);
+      let val = '';
+      if (type === 's' && v) val = ss[+v[1]] || '';
+      else if (type === 'inlineStr') val = decode([...body.matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((x) => x[1]).join(''));
+      else if (v) val = decode(v[1]);
+      cells.push([colIndex(ref[1]), val.trim()]);
+    }
+    const first = cells.find((c) => c[0] === 0);
+    const date = first ? toDate(first[1]) : null;          // header rows are skipped automatically
+    if (!date) continue;
+    const list = schedule[date] || (schedule[date] = []);
+    for (const [ci, val] of cells) if (ci > 0 && val && !list.includes(val)) list.push(val);
+  }
+  return schedule;
+}
+async function getSchedule(env, force) {
+  if (!force && cache.data && Date.now() - cache.at < CACHE_MS) return cache.data;
+  if (!env.XLSX_URL) throw new Error('Variable XLSX_URL is not set on the events Worker.');
+  const res = await fetch(env.XLSX_URL + (force ? '?t=' + Date.now() : ''), { cf: { cacheTtl: 60 } });
+  if (!res.ok) throw new Error('Could not download the Excel file (HTTP ' + res.status + ').');
+  const data = parseXlsx(await unzip(await res.arrayBuffer()));
+  cache = { at: Date.now(), data };
+  return data;
+}
+
+// ---------- session check (same sessions table as the login Worker) ----------
+async function sessionUser(request, env) {
+  const h = request.headers.get('Authorization') || '';
+  const token = h.startsWith('Bearer ') ? h.slice(7).trim() : '';
+  if (!token) return null;
+  const row = await env.login_db.prepare(
+    `SELECT u.id, u.role, u.is_active, s.expires_at FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?`
+  ).bind(await sha256(token)).first();
+  return row && row.expires_at >= Date.now() ? row : null;
+}
+
+// ---------- data ----------
+async function buildData(env, force) {
+  const schedule = await getSchedule(env, force);
+  const rows = (await env.login_db.prepare(
+    'SELECT id, event_key, title, category, icon_url, image_url, short_desc, details_html FROM event_catalog').all()).results;
+  const catalog = {};
+  rows.forEach((r) => { catalog[r.event_key] = r; });
+  const seen = new Map();
+  for (const names of Object.values(schedule))
+    for (const n of names) { const k = norm(n); if (k && !catalog[k] && !seen.has(k)) seen.set(k, n); }
+  return { success: true, schedule, catalog, unknown: [...seen].map(([key, name]) => ({ key, name })) };
+}
+
+async function saveEvent(request, env, json, id) {
+  const b = await request.json().catch(() => ({}));
+  const f = {};
+  if (b.title !== undefined) {
+    const t = String(b.title).trim().slice(0, 80), k = norm(t);
+    if (!k) return json({ success: false, error: 'Event name is required.' }, 400);
+    f.title = t; f.event_key = k;
+  }
+  if (b.category !== undefined) f.category = String(b.category).trim().slice(0, 40);
+  if (b.short_desc !== undefined) f.short_desc = String(b.short_desc).slice(0, 300);
+  if (b.details_html !== undefined) f.details_html = String(b.details_html).slice(0, 60000);
+  if (b.image_url !== undefined) {
+    const i = cleanImg(b.image_url);
+    if (i === null) return json({ success: false, error: 'Image path must look like event-images/name.png or an https:// link.' }, 400);
+    f.image_url = i;
+  }
+  if (b.icon_url !== undefined) {
+    const i = cleanImg(b.icon_url);
+    if (i === null) return json({ success: false, error: 'Icon path must look like event-images/icons/name.png or an https:// link.' }, 400);
+    f.icon_url = i;
+  }
+  const keys = Object.keys(f);                 // whitelisted above
+  try {
+    if (id === null) {
+      if (!f.title) return json({ success: false, error: 'Event name is required.' }, 400);
+      const r = await env.login_db.prepare(`INSERT INTO event_catalog (${keys.join(', ')}) VALUES (${keys.map(() => '?').join(', ')})`)
+        .bind(...keys.map((k) => f[k])).run();
+      return json({ success: true, id: r.meta.last_row_id }, 201);
+    }
+    if (!keys.length) return json({ success: true });
+    const r = await env.login_db.prepare(`UPDATE event_catalog SET ${keys.map((k) => k + ' = ?').join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`)
+      .bind(...keys.map((k) => f[k]), id).run();
+    return r.meta.changes ? json({ success: true }) : json({ success: false, error: 'Event not found.' }, 404);
+  } catch (e) {
+    if (/UNIQUE/i.test(String(e.message))) return json({ success: false, error: 'An event with this name already exists.' }, 409);
+    throw e;
+  }
+}
+
+// ---------- main ----------
+export default {
+  async fetch(request, env) {
+    const origin = request.headers.get('Origin');
+    const headers = {
+      'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : 'null',
+      'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Vary': 'Origin', 'Content-Type': 'application/json',
+    };
+    const json = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers });
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+    if (!env.login_db) return json({ success: false, error: 'D1 binding "login_db" is missing on the events Worker.' }, 500);
+
+    try {
+      const user = await sessionUser(request, env);
+      if (!user) return json({ success: false, error: 'Invalid session' }, 401);
+      if (!user.is_active) return json({ success: false, error: 'Account disabled.' }, 403);
+
+      const path = new URL(request.url).pathname, method = request.method;
+      if (path === '/api/events/data' && method === 'GET') return json(await buildData(env, false));
+
+      // admin only
+      const admin = user.role === 'superadmin';
+      let m;
+      if (path.startsWith('/api/events/admin/')) {
+        if (!admin) return json({ success: false, error: 'Super Admins only.' }, 403);
+        if (path === '/api/events/admin/refresh' && method === 'POST') { await getSchedule(env, true); return json({ success: true }); }
+        if (path === '/api/events/admin/catalog' && method === 'POST') return await saveEvent(request, env, json, null);
+        if ((m = path.match(/^\/api\/events\/admin\/catalog\/(\d+)$/))) {
+          if (method === 'PATCH') return await saveEvent(request, env, json, +m[1]);
+          if (method === 'DELETE') {
+            const r = await env.login_db.prepare('DELETE FROM event_catalog WHERE id = ?').bind(+m[1]).run();
+            return r.meta.changes ? json({ success: true }) : json({ success: false, error: 'Event not found.' }, 404);
+          }
+        }
+      }
+      return json({ success: false, error: 'Not found' }, 404);
+    } catch (e) {
+      console.error(e);
+      return json({ success: false, error: e.message }, 500);
+    }
+  },
+};

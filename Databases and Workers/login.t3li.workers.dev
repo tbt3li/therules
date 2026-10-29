@@ -1,0 +1,650 @@
+// Cloudflare Worker + D1 (binding: login_db)
+// Auth:   POST /api/signup  POST /api/login  GET /api/check  POST /api/logout  PATCH /api/user
+// Admin:  GET|POST /api/admin/users   PATCH|DELETE /api/admin/users/:id   GET|PUT /api/admin/permissions
+
+const ALLOWED_ORIGINS = [
+  'https://thefamily.pages.dev',
+  // 'https://yourdomain.com',
+  // 'http://localhost:8788',
+];
+
+const SESSION_DAYS = 7;
+const ONLINE_MS = 5 * 60 * 1000;          // a member counts as online if seen in the last 5 minutes
+const enc = new TextEncoder();
+
+// Dashboard menus. "roles" is admin-only and can never be granted through the matrix.
+const MENUS = [
+  { key: 'overview',    label: 'Overview',            always: true },
+  { key: 'events',      label: 'Events & Calendar' },
+  { key: 'members',     label: 'Clan Chests' },
+  { key: 'tutorials',   label: 'Premium Tutorials' },
+  { key: 'loadouts',    label: 'Equipment Loadouts' },
+  { key: 'strategies',  label: 'Pro Strategies' },
+  { key: 'guides',      label: 'Game Guides',         always: true },
+  { key: 'premiumguides', label: 'Premium Guides (open locked guides)' },
+  { key: 'checklist',   label: 'Daily Checklist' },
+  { key: 'tools',       label: 'Calculators' },
+  { key: 'rules',       label: 'Clan Rules & Contact' },
+  { key: 'account',     label: 'My Account',          always: true },
+  { key: 'roles',       label: 'User Roles',          adminOnly: true },
+  { key: 'guideadmin',  label: 'Manage Guides',       adminOnly: true, superOnly: true },
+  { key: 'eventadmin',  label: 'Manage Events',       adminOnly: true, superOnly: true },
+  { key: 'inquiries',   label: 'Contact Inquiries',   adminOnly: true, superOnly: true },
+];
+const ALL_KEYS = MENUS.map((m) => m.key);
+const ALWAYS = MENUS.filter((m) => m.always).map((m) => m.key);
+const ADMIN_ONLY = MENUS.filter((m) => m.adminOnly).map((m) => m.key);
+const SUPER_ONLY = MENUS.filter((m) => m.superOnly).map((m) => m.key);
+const GRANTABLE = MENUS.filter((m) => !m.adminOnly).map((m) => m.key);
+
+// ---------- helpers ----------
+const toHex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+const randomHex = (n) => toHex(crypto.getRandomValues(new Uint8Array(n)));
+const sha256 = async (t) => toHex(await crypto.subtle.digest('SHA-256', enc.encode(t)));
+
+async function hashPassword(password, saltHex) {
+  const salt = Uint8Array.from(saltHex.match(/.{2}/g).map((h) => parseInt(h, 16)));
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 100000 }, key, 256);
+  return toHex(bits);
+}
+
+const getBearer = (request) => {
+  const h = request.headers.get('Authorization') || '';
+  return h.startsWith('Bearer ') ? h.slice(7).trim() : null;
+};
+const isEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+const isUsername = (u) => /^[a-z0-9_.-]{3,24}$/.test(u);
+
+async function uniqueUsername(env, base) {
+  base = String(base).toLowerCase().replace(/[^a-z0-9_.-]/g, '').slice(0, 20) || 'user';
+  if (base.length < 3) base = (base + 'user').slice(0, 20);
+  let u = base, i = 0;
+  while (await env.login_db.prepare('SELECT 1 FROM users WHERE username = ?').bind(u).first()) {
+    i++; u = base + i;
+  }
+  return u;
+}
+
+async function createSession(env, userId) {
+  const token = randomHex(32);
+  const expires = Date.now() + SESSION_DAYS * 86400000;
+  await env.login_db
+    .prepare('INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)')
+    .bind(await sha256(token), userId, expires).run();
+  return token;
+}
+
+async function getSessionUser(request, env) {
+  const token = getBearer(request);
+  if (!token) return null;
+  const tokenHash = await sha256(token);
+  const row = await env.login_db.prepare(
+    `SELECT u.id, u.email, u.username, u.name, u.role, u.is_active, u.created_at, s.expires_at,
+            r.label AS role_label, r.color AS role_color
+       FROM sessions s
+       JOIN users u ON u.id = s.user_id
+       LEFT JOIN roles r ON r.role_key = u.role
+      WHERE s.token_hash = ?`).bind(tokenHash).first();
+  if (!row || row.expires_at < Date.now()) return null;
+  return { ...row, tokenHash };
+}
+
+async function permissionsFor(env, roleKey) {
+  if (roleKey === 'superadmin') return ALL_KEYS;
+  if (roleKey === 'admin') return ALL_KEYS.filter((k) => !SUPER_ONLY.includes(k));
+  const { results } = await env.login_db.prepare('SELECT menu_key FROM role_permissions WHERE role_key = ?').bind(roleKey).all();
+  const set = new Set(results.map((r) => r.menu_key));
+  ALWAYS.forEach((k) => set.add(k));
+  ADMIN_ONLY.forEach((k) => set.delete(k));
+  return ALL_KEYS.filter((k) => set.has(k));
+}
+
+async function auth(request, env, json, adminOnly = false) {
+  const user = await getSessionUser(request, env);
+  if (!user) return { res: json({ success: false, error: 'Invalid session' }, 401) };
+  if (!user.is_active) return { res: json({ success: false, error: 'Your account has been disabled. Please contact the admin (웃T3li).' }, 403) };
+  if (adminOnly && !['admin', 'superadmin'].includes(user.role)) return { res: json({ success: false, error: 'Admins only.' }, 403) };
+  if (adminOnly === 'super' && user.role !== 'superadmin') return { res: json({ success: false, error: 'Super Admin only.' }, 403) };
+  return { user };
+}
+
+const otherActiveSupers = async (env, excludeId) =>
+  (await env.login_db.prepare("SELECT COUNT(*) AS c FROM users WHERE role = 'superadmin' AND is_active = 1 AND id != ?").bind(excludeId).first()).c;
+const SUPER_ONLY_MSG = 'Only a Super Admin can change a Super Admin.';
+
+// ---------- presence (online/offline, IP, country) ----------
+let _dn;
+const countryName = (cc) => {
+  if (!/^[A-Z]{2}$/.test(cc || '')) return '';
+  try { _dn = _dn || new Intl.DisplayNames(['en'], { type: 'region' }); return _dn.of(cc) || cc; } catch { return cc; }
+};
+async function touch(env, request, userId) {          // never lets a presence problem break login
+  try {
+    const ip = request.headers.get('CF-Connecting-IP') || '';
+    const cc = String((request.cf && request.cf.country) || request.headers.get('CF-IPCountry') || '').toUpperCase().slice(0, 2);
+    await env.login_db.prepare('UPDATE users SET last_seen = ?, last_ip = ?, last_country = ? WHERE id = ?')
+      .bind(Date.now(), ip, cc, userId).run();
+  } catch (e) { console.error('presence', e); }
+}
+
+// ---------- main ----------
+export default {
+  async fetch(request, env) {
+    const origin = request.headers.get('Origin');
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : 'null',
+      'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Vary': 'Origin',
+      'Content-Type': 'application/json',
+    };
+    const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: corsHeaders });
+
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
+    if (!env.login_db) return json({ success: false, error: 'D1 binding "login_db" is missing on this Worker.' }, 500);
+
+    const path = new URL(request.url).pathname;
+    const method = request.method;
+    let m;
+
+    try {
+      if (path === '/api/signup' && method === 'POST') return await signup(request, env, json);
+      if (path === '/api/login' && method === 'POST') return await login(request, env, json);
+      if (path === '/api/check' && method === 'GET') return await check(request, env, json);
+      if (path === '/api/ping' && method === 'POST') return await ping(request, env, json);
+      if (path === '/api/logout' && method === 'POST') return await logout(request, env, json);
+      if (path === '/api/user' && method === 'PATCH') return await updateSelf(request, env, json);
+
+      if (path === '/api/admin/users' && method === 'GET') return await adminListUsers(request, env, json);
+      if (path === '/api/admin/users' && method === 'POST') return await adminCreateUser(request, env, json);
+      if ((m = path.match(/^\/api\/admin\/users\/(\d+)$/))) {
+        if (method === 'PATCH') return await adminUpdateUser(request, env, json, +m[1]);
+        if (method === 'DELETE') return await adminDeleteUser(request, env, json, +m[1]);
+      }
+      if (path === '/api/admin/permissions' && method === 'GET') return await adminGetPermissions(request, env, json);
+      if (path === '/api/admin/permissions' && method === 'PUT') return await adminSetPermissions(request, env, json);
+
+      // chest definitions
+      if (path === '/api/chest-defs' && method === 'GET') return await listChestDefs(request, env, json);
+      if (path === '/api/chest-defs' && method === 'POST') return await saveChestDef(request, env, json, null);
+      if (path === '/api/chest-defs/bulk' && method === 'POST') return await bulkChestDefs(request, env, json);
+      if ((m = path.match(/^\/api\/chest-defs\/(\d+)$/))) {
+        if (method === 'PATCH') return await saveChestDef(request, env, json, +m[1]);
+        if (method === 'DELETE') return await deleteChestDef(request, env, json, +m[1]);
+      }
+      // settings
+      if (path === '/api/settings/chest-target' && method === 'GET') return await getChestTarget(request, env, json);
+      if (path === '/api/settings/chest-target' && method === 'PUT') return await setChestTarget(request, env, json);
+      // guides
+      if (path === '/api/guides/categories' && method === 'GET') return await publicCategories(env, json);
+      if (path === '/api/guides' && method === 'GET') return await listGuides(request, env, json);
+      if ((m = path.match(/^\/api\/guides\/(\d+)$/)) && method === 'GET') return await getGuide(request, env, json, +m[1]);
+      if (path === '/api/admin/guides' && method === 'GET') return await adminListGuides(request, env, json);
+      if (path === '/api/admin/guides' && method === 'POST') return await adminSaveGuide(request, env, json, null);
+      if ((m = path.match(/^\/api\/admin\/guides\/(\d+)$/))) {
+        if (method === 'GET') return await adminGetGuide(request, env, json, +m[1]);
+        if (method === 'PATCH') return await adminSaveGuide(request, env, json, +m[1]);
+        if (method === 'DELETE') return await adminDeleteGuide(request, env, json, +m[1]);
+      }
+      if ((m = path.match(/^\/api\/admin\/categories\/([a-z_]+)$/)) && method === 'PATCH') return await adminUpdateCategory(request, env, json, m[1]);
+
+      if (path === '/' || path === '/api') {
+        return json({ message: 'Login API is running', endpoints: [
+          'POST /api/signup', 'POST /api/login', 'GET /api/check', 'POST /api/logout', 'PATCH /api/user',
+          'GET|POST /api/admin/users', 'PATCH|DELETE /api/admin/users/:id', 'GET|PUT /api/admin/permissions'] });
+      }
+      return json({ success: false, error: 'Not found' }, 404);
+    } catch (error) {
+      console.error('Worker error:', error);
+      return json({ success: false, error: 'Server error: ' + error.message }, 500);
+    }
+  },
+};
+
+// ---------- auth ----------
+async function signup(request, env, json) {
+  const body = await request.json().catch(() => ({}));
+  const email = String(body.email || '').trim().toLowerCase();
+  const password = String(body.password || '');
+  const name = String(body.name || email.split('@')[0] || 'User').trim().slice(0, 50);
+
+  if (!email || !password) return json({ success: false, error: 'All fields are required' }, 400);
+  if (!isEmail(email)) return json({ success: false, error: 'Please enter a valid email address.' }, 400);
+  if (password.length < 6) return json({ success: false, error: 'Password must be at least 6 characters.' }, 400);
+
+  if (await env.login_db.prepare('SELECT id FROM users WHERE email = ?').bind(email).first())
+    return json({ success: false, error: 'An account with this email already exists.' }, 409);
+
+  const salt = randomHex(16);
+  const hash = await hashPassword(password, salt);
+  const username = await uniqueUsername(env, email.split('@')[0]);
+
+  let result;
+  try {
+    result = await env.login_db
+      .prepare("INSERT INTO users (email, username, name, password_hash, salt, role) VALUES (?, ?, ?, ?, ?, 'member')")
+      .bind(email, username, name, hash, salt).run();
+  } catch (e) {
+    return json({ success: false, error: 'An account with this email already exists.' }, 409);
+  }
+  return json({ success: true, message: 'Signup successful! Now please log in.',
+    user: { id: result.meta.last_row_id, email, username, name, role: 'member' } }, 201);
+}
+
+async function login(request, env, json) {
+  const body = await request.json().catch(() => ({}));
+  const id = String(body.email || body.username || '').trim().toLowerCase();   // email OR username
+  const password = String(body.password || '');
+  if (!id || !password) return json({ success: false, error: 'Email/username and password required' }, 400);
+
+  const user = await env.login_db.prepare('SELECT * FROM users WHERE email = ? OR username = ?').bind(id, id).first();
+  const fail = () => json({ success: false, error: 'Invalid email/username or password.' }, 401);
+  if (!user) return fail();
+  if ((await hashPassword(password, user.salt)) !== user.password_hash) return fail();
+  if (!user.is_active) return json({ success: false, error: 'Your account has been disabled. Please contact the admin (웃T3li).' }, 403);
+
+  const token = await createSession(env, user.id);
+  await touch(env, request, user.id);
+  return json({ success: true, token, user: { id: user.id, email: user.email, username: user.username, name: user.name, role: user.role } });
+}
+
+async function check(request, env, json) {
+  const a = await auth(request, env, json);
+  if (a.res) return a.res;
+  const u = a.user;
+  await touch(env, request, u.id);
+  return json({ success: true, user: {
+    id: u.id, email: u.email, username: u.username, name: u.name, createdAt: u.created_at,
+    role: u.role, roleLabel: u.role_label || u.role, roleColor: u.role_color || '#6c757d',
+    permissions: await permissionsFor(env, u.role),
+  } });
+}
+
+async function ping(request, env, json) {
+  const a = await auth(request, env, json);
+  if (a.res) return a.res;
+  await touch(env, request, a.user.id);
+  return json({ success: true });
+}
+
+async function logout(request, env, json) {
+  const token = getBearer(request);
+  if (token) await env.login_db.prepare('DELETE FROM sessions WHERE token_hash = ?').bind(await sha256(token)).run();   // last_seen is kept
+  return json({ success: true });
+}
+
+async function updateSelf(request, env, json) {
+  const a = await auth(request, env, json);
+  if (a.res) return a.res;
+  const body = await request.json().catch(() => ({}));
+  if (body.action !== 'updatePassword') return json({ success: false, error: 'Invalid action' }, 400);
+  const password = String(body.password || '');
+  if (password.length < 6) return json({ success: false, error: 'Password must be at least 6 characters' }, 400);
+
+  const salt = randomHex(16);
+  await env.login_db.prepare('UPDATE users SET password_hash = ?, salt = ? WHERE id = ?')
+    .bind(await hashPassword(password, salt), salt, a.user.id).run();
+  await env.login_db.prepare('DELETE FROM sessions WHERE user_id = ? AND token_hash != ?').bind(a.user.id, a.user.tokenHash).run();
+  return json({ success: true, message: 'Password updated successfully' });
+}
+
+// ---------- admin: users ----------
+async function adminListUsers(request, env, json) {
+  const a = await auth(request, env, json, true);
+  if (a.res) return a.res;
+  const sup = a.user.role === 'superadmin';           // presence data is for Super Admin only
+  const now = Date.now();
+  const { results } = sup
+    ? await env.login_db.prepare(
+        `SELECT id, email, username, name, role, is_active, created_at, last_seen, last_ip, last_country,
+                (SELECT COUNT(*) FROM sessions s WHERE s.user_id = users.id AND s.expires_at > ?) AS sess
+           FROM users ORDER BY id`).bind(now).all()
+    : await env.login_db.prepare(
+        "SELECT id, email, username, name, role, is_active, created_at FROM users WHERE role != 'superadmin' ORDER BY id").all();
+  return json({ success: true, users: results.map((u) => {
+    const o = { ...u, is_active: !!u.is_active };
+    if (sup) { o.online = u.sess > 0 && u.last_seen > now - ONLINE_MS; o.country_name = countryName(u.last_country); delete o.sess; }
+    return o;
+  }) });
+}
+
+async function validRole(env, role) {
+  return !!(await env.login_db.prepare('SELECT 1 FROM roles WHERE role_key = ?').bind(role).first());
+}
+
+async function adminCreateUser(request, env, json) {
+  const a = await auth(request, env, json, true);
+  if (a.res) return a.res;
+  const b = await request.json().catch(() => ({}));
+  const email = String(b.email || '').trim().toLowerCase();
+  const password = String(b.password || '');
+  const name = String(b.name || email.split('@')[0] || 'User').trim().slice(0, 50);
+  const role = String(b.role || 'member');
+  let username = String(b.username || '').trim().toLowerCase();
+
+  if (!isEmail(email)) return json({ success: false, error: 'Please enter a valid email address.' }, 400);
+  if (password.length < 6) return json({ success: false, error: 'Password must be at least 6 characters.' }, 400);
+  if (role === 'superadmin' && a.user.role !== 'superadmin') return json({ success: false, error: 'Only a Super Admin can create a Super Admin.' }, 403);
+  if (!(await validRole(env, role))) return json({ success: false, error: 'Unknown role.' }, 400);
+  if (username && !isUsername(username)) return json({ success: false, error: 'Username: 3-24 chars, letters, numbers, . _ - only.' }, 400);
+  if (!username) username = await uniqueUsername(env, email.split('@')[0]);
+
+  if (await env.login_db.prepare('SELECT 1 FROM users WHERE email = ?').bind(email).first())
+    return json({ success: false, error: 'That email is already registered.' }, 409);
+  if (await env.login_db.prepare('SELECT 1 FROM users WHERE username = ?').bind(username).first())
+    return json({ success: false, error: 'That username is already taken.' }, 409);
+
+  const salt = randomHex(16);
+  const r = await env.login_db
+    .prepare('INSERT INTO users (email, username, name, password_hash, salt, role) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(email, username, name, await hashPassword(password, salt), salt, role).run();
+  return json({ success: true, user: { id: r.meta.last_row_id, email, username, name, role, is_active: true } }, 201);
+}
+
+async function adminUpdateUser(request, env, json, id) {
+  const a = await auth(request, env, json, true);
+  if (a.res) return a.res;
+  const admin = a.user;
+  const target = await env.login_db.prepare('SELECT * FROM users WHERE id = ?').bind(id).first();
+  if (!target) return json({ success: false, error: 'User not found.' }, 404);
+  if (target.role === 'superadmin' && admin.role !== 'superadmin') return json({ success: false, error: 'User not found.' }, 404);
+
+  const b = await request.json().catch(() => ({}));
+  const sets = [], vals = [];
+  let killSessions = false;
+
+  if (b.role !== undefined && b.role !== target.role) {
+    const role = String(b.role);
+    if (role === 'superadmin' && admin.role !== 'superadmin') return json({ success: false, error: 'Only a Super Admin can assign the Super Admin role.' }, 403);
+    if (!(await validRole(env, role))) return json({ success: false, error: 'Unknown role.' }, 400);
+    if (id === admin.id) return json({ success: false, error: 'You cannot change your own role.' }, 400);
+    if (target.role === 'superadmin' && (await otherActiveSupers(env, id)) < 1)
+      return json({ success: false, error: 'At least one active Super Admin must remain.' }, 400);
+    sets.push('role = ?'); vals.push(role);
+  }
+
+  if (b.is_active !== undefined && !!b.is_active !== !!target.is_active) {
+    const active = b.is_active ? 1 : 0;
+    if (!active) {
+      if (id === admin.id) return json({ success: false, error: 'You cannot disable your own account.' }, 400);
+      if (target.role === 'superadmin' && (await otherActiveSupers(env, id)) < 1)
+        return json({ success: false, error: 'At least one active Super Admin must remain.' }, 400);
+      killSessions = true;
+    }
+    sets.push('is_active = ?'); vals.push(active);
+  }
+
+  if (b.email !== undefined && String(b.email).trim().toLowerCase() !== target.email) {
+    const email = String(b.email).trim().toLowerCase();
+    if (!isEmail(email)) return json({ success: false, error: 'Please enter a valid email address.' }, 400);
+    if (await env.login_db.prepare('SELECT 1 FROM users WHERE email = ? AND id != ?').bind(email, id).first())
+      return json({ success: false, error: 'That email is already registered.' }, 409);
+    sets.push('email = ?'); vals.push(email);
+  }
+
+  if (b.username !== undefined && String(b.username).trim().toLowerCase() !== target.username) {
+    const username = String(b.username).trim().toLowerCase();
+    if (!isUsername(username)) return json({ success: false, error: 'Username: 3-24 chars, letters, numbers, . _ - only.' }, 400);
+    if (await env.login_db.prepare('SELECT 1 FROM users WHERE username = ? AND id != ?').bind(username, id).first())
+      return json({ success: false, error: 'That username is already taken.' }, 409);
+    sets.push('username = ?'); vals.push(username);
+  }
+
+  if (b.name !== undefined && String(b.name).trim() !== target.name) {
+    sets.push('name = ?'); vals.push(String(b.name).trim().slice(0, 50));
+  }
+
+  if (b.password) {
+    const pw = String(b.password);
+    if (pw.length < 6) return json({ success: false, error: 'Password must be at least 6 characters.' }, 400);
+    const salt = randomHex(16);
+    sets.push('password_hash = ?', 'salt = ?');
+    vals.push(await hashPassword(pw, salt), salt);
+    killSessions = true;
+  }
+
+  if (!sets.length) return json({ success: true, message: 'Nothing to change.' });
+
+  try {
+    await env.login_db.prepare(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`).bind(...vals, id).run();
+  } catch (e) {
+    return json({ success: false, error: 'Email or username already in use.' }, 409);
+  }
+  if (killSessions) await env.login_db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id).run();
+  return json({ success: true, message: 'User updated.' });
+}
+
+async function adminDeleteUser(request, env, json, id) {
+  const a = await auth(request, env, json, true);
+  if (a.res) return a.res;
+  if (id === a.user.id) return json({ success: false, error: 'You cannot delete your own account.' }, 400);
+  const target = await env.login_db.prepare('SELECT * FROM users WHERE id = ?').bind(id).first();
+  if (!target) return json({ success: false, error: 'User not found.' }, 404);
+  if (target.role === 'superadmin' && a.user.role !== 'superadmin') return json({ success: false, error: 'User not found.' }, 404);
+  if (target.role === 'superadmin' && (await otherActiveSupers(env, id)) < 1)
+    return json({ success: false, error: 'At least one active Super Admin must remain.' }, 400);
+  await env.login_db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id).run();
+  await env.login_db.prepare('DELETE FROM users WHERE id = ?').bind(id).run();
+  return json({ success: true, message: 'User deleted.' });
+}
+
+// ---------- admin: menu rights ----------
+async function adminGetPermissions(request, env, json) {
+  const a = await auth(request, env, json, true);
+  if (a.res) return a.res;
+  let roles = (await env.login_db.prepare('SELECT role_key, label, sort_order, color FROM roles ORDER BY sort_order DESC').all()).results;
+  const isSuperCaller = a.user.role === 'superadmin';
+  if (!isSuperCaller) roles = roles.filter((r) => r.role_key !== 'superadmin');   // hidden from Admin
+  const rows = (await env.login_db.prepare('SELECT role_key, menu_key FROM role_permissions').all()).results;
+  const matrix = {};
+  for (const r of roles) matrix[r.role_key] = r.role_key === 'superadmin' ? ALL_KEYS : r.role_key === 'admin' ? ALL_KEYS.filter((k) => !SUPER_ONLY.includes(k)) : [...ALWAYS];
+  for (const row of rows) {
+    if (row.role_key === 'admin' || row.role_key === 'superadmin' || !matrix[row.role_key] || ADMIN_ONLY.includes(row.menu_key)) continue;
+    if (!matrix[row.role_key].includes(row.menu_key)) matrix[row.role_key].push(row.menu_key);
+  }
+  return json({ success: true, menus: isSuperCaller ? MENUS : MENUS.filter((m) => !m.superOnly), roles, matrix });
+}
+
+async function adminSetPermissions(request, env, json) {
+  const a = await auth(request, env, json, true);
+  if (a.res) return a.res;
+  const body = await request.json().catch(() => ({}));
+  const matrix = body.matrix;
+  if (!matrix || typeof matrix !== 'object') return json({ success: false, error: 'matrix is required.' }, 400);
+
+  const stmts = [];
+  for (const [role, menus] of Object.entries(matrix)) {
+    if (role === 'admin' || role === 'superadmin') continue;                       // admin always has everything
+    if (!(await validRole(env, role)) || !Array.isArray(menus)) continue;
+    const keep = new Set([...menus.filter((k) => GRANTABLE.includes(k)), ...ALWAYS]);
+    stmts.push(env.login_db.prepare('DELETE FROM role_permissions WHERE role_key = ?').bind(role));
+    for (const k of keep) {
+      stmts.push(env.login_db.prepare('INSERT INTO role_permissions (role_key, menu_key) VALUES (?, ?)').bind(role, k));
+    }
+  }
+  if (stmts.length) await env.login_db.batch(stmts);
+  return json({ success: true, message: 'Rights saved.' });
+}
+
+// ---------- guides ----------
+const IMG_RE = /^(https:\/\/|\/?assets\/)[^\s"'<>]{1,500}$/;
+const cleanImg = (v) => { v = String(v || '').trim(); return v === '' || IMG_RE.test(v) ? v : null; };
+const CAT_SQL = 'SELECT category_key, label, description, icon, image_url FROM guide_categories ORDER BY sort_order';
+const canPremium = async (env, user) => (await permissionsFor(env, user.role)).includes('premiumguides');
+
+// public: category cards + guide titles (no content)
+async function publicCategories(env, json) {
+  const cats = (await env.login_db.prepare(CAT_SQL).all()).results;
+  const gs = (await env.login_db.prepare('SELECT category_key, title, is_premium FROM guides WHERE is_published = 1 ORDER BY sort_order, title').all()).results;
+  return json({ success: true, categories: cats.map((c) => {
+    const l = gs.filter((g) => g.category_key === c.category_key);
+    return { ...c, count: l.length, titles: l.map((g) => ({ title: g.title, premium: !!g.is_premium })) };
+  }) });
+}
+
+// members: list (no content). Premium guides are flagged locked unless the role has 'premiumguides'.
+async function listGuides(request, env, json) {
+  const a = await auth(request, env, json); if (a.res) return a.res;
+  const prem = await canPremium(env, a.user);
+  const cats = (await env.login_db.prepare(CAT_SQL).all()).results;
+  const gs = (await env.login_db.prepare(
+    'SELECT id, category_key, title, summary, image_url, is_premium FROM guides WHERE is_published = 1 ORDER BY sort_order, title').all()).results;
+  return json({ success: true, categories: cats,
+    guides: gs.map((g) => ({ ...g, is_premium: !!g.is_premium, locked: !!g.is_premium && !prem })) });
+}
+
+async function getGuide(request, env, json, id) {
+  const a = await auth(request, env, json); if (a.res) return a.res;
+  const g = await env.login_db.prepare('SELECT id, category_key, title, summary, content, image_url, is_premium, updated_at FROM guides WHERE id = ? AND is_published = 1').bind(id).first();
+  if (!g) return json({ success: false, error: 'Guide not found.' }, 404);
+  if (g.is_premium && !(await canPremium(env, a.user)))
+    return json({ success: false, error: 'This is a Premium guide. Ask an admin to unlock it for your group.' }, 403);
+  return json({ success: true, guide: { ...g, is_premium: !!g.is_premium } });
+}
+
+// admin
+async function adminListGuides(request, env, json) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const cats = (await env.login_db.prepare(CAT_SQL).all()).results;
+  const gs = (await env.login_db.prepare(
+    `SELECT id, category_key, title, image_url, is_premium, is_published, sort_order, updated_at, length(content) AS size
+       FROM guides ORDER BY category_key, sort_order, title`).all()).results;
+  return json({ success: true, categories: cats,
+    guides: gs.map((g) => ({ ...g, is_premium: !!g.is_premium, is_published: !!g.is_published })) });
+}
+
+async function adminGetGuide(request, env, json, id) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const g = await env.login_db.prepare('SELECT * FROM guides WHERE id = ?').bind(id).first();
+  if (!g) return json({ success: false, error: 'Guide not found.' }, 404);
+  return json({ success: true, guide: { ...g, is_premium: !!g.is_premium, is_published: !!g.is_published } });
+}
+
+async function adminSaveGuide(request, env, json, id) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const b = await request.json().catch(() => ({}));
+  const f = {};
+  if (b.title !== undefined) { f.title = String(b.title).trim().slice(0, 150); if (!f.title) return json({ success: false, error: 'Title is required.' }, 400); }
+  if (b.category_key !== undefined) {
+    const k = String(b.category_key);
+    if (!(await env.login_db.prepare('SELECT 1 FROM guide_categories WHERE category_key = ?').bind(k).first()))
+      return json({ success: false, error: 'Unknown category.' }, 400);
+    f.category_key = k;
+  }
+  if (b.summary !== undefined) f.summary = String(b.summary).slice(0, 300);
+  if (b.content !== undefined) f.content = String(b.content).slice(0, 90000);
+  if (b.image_url !== undefined) {
+    const i = cleanImg(b.image_url);
+    if (i === null) return json({ success: false, error: 'Image must be an https:// link or a path starting with assets/.' }, 400);
+    f.image_url = i;
+  }
+  for (const k of ['is_premium', 'is_published']) if (b[k] !== undefined) f[k] = b[k] ? 1 : 0;
+  if (b.sort_order !== undefined) f.sort_order = parseInt(b.sort_order, 10) || 0;
+
+  const keys = Object.keys(f);   // keys are whitelisted above, safe to put in SQL
+  if (id === null) {
+    if (!f.title || !f.category_key) return json({ success: false, error: 'Title and category are required.' }, 400);
+    const r = await env.login_db.prepare(`INSERT INTO guides (${keys.join(', ')}) VALUES (${keys.map(() => '?').join(', ')})`)
+      .bind(...keys.map((k) => f[k])).run();
+    return json({ success: true, id: r.meta.last_row_id }, 201);
+  }
+  if (!keys.length) return json({ success: true, message: 'Nothing to change.' });
+  const r = await env.login_db.prepare(`UPDATE guides SET ${keys.map((k) => k + ' = ?').join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`)
+    .bind(...keys.map((k) => f[k]), id).run();
+  if (!r.meta.changes) return json({ success: false, error: 'Guide not found.' }, 404);
+  return json({ success: true, message: 'Guide saved.' });
+}
+
+async function adminDeleteGuide(request, env, json, id) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const r = await env.login_db.prepare('DELETE FROM guides WHERE id = ?').bind(id).run();
+  return r.meta.changes ? json({ success: true }) : json({ success: false, error: 'Guide not found.' }, 404);
+}
+
+async function adminUpdateCategory(request, env, json, key) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const b = await request.json().catch(() => ({}));
+  const f = {};
+  if (b.label !== undefined) { f.label = String(b.label).trim().slice(0, 60); if (!f.label) return json({ success: false, error: 'Label is required.' }, 400); }
+  if (b.description !== undefined) f.description = String(b.description).slice(0, 200);
+  if (b.icon !== undefined) { const ic = String(b.icon).trim(); if (!/^fa-[a-z0-9-]{1,40}$/.test(ic)) return json({ success: false, error: 'Icon must look like fa-crown.' }, 400); f.icon = ic; }
+  if (b.image_url !== undefined) {
+    const i = cleanImg(b.image_url);
+    if (i === null) return json({ success: false, error: 'Image must be an https:// link or a path starting with assets/.' }, 400);
+    f.image_url = i;
+  }
+  const keys = Object.keys(f);
+  if (!keys.length) return json({ success: true, message: 'Nothing to change.' });
+  const r = await env.login_db.prepare(`UPDATE guide_categories SET ${keys.map((k) => k + ' = ?').join(', ')} WHERE category_key = ?`)
+    .bind(...keys.map((k) => f[k]), key).run();
+  return r.meta.changes ? json({ success: true }) : json({ success: false, error: 'Category not found.' }, 404);
+}
+
+// ---------- settings: weekly chest target ----------
+async function getChestTarget(request, env, json) {
+  const a = await auth(request, env, json); if (a.res) return a.res;
+  let target = 35000;
+  try {
+    const r = await env.login_db.prepare("SELECT value FROM settings WHERE key = 'chest_target'").first();
+    if (r) target = parseInt(r.value, 10) || 35000;
+  } catch (e) { /* settings table not created yet: use the default */ }
+  return json({ success: true, target });
+}
+async function setChestTarget(request, env, json) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;   // Super Admin only
+  const b = await request.json().catch(() => ({}));
+  const t = parseInt(b.target, 10);
+  if (!(t >= 1 && t <= 10000000)) return json({ success: false, error: 'Target must be between 1 and 10,000,000.' }, 400);
+  await env.login_db.prepare("INSERT INTO settings (key, value) VALUES ('chest_target', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").bind(String(t)).run();
+  return json({ success: true, target: t });
+}
+
+// ---------- chest definitions (members read, Super Admin writes) ----------
+const cdText = (v, max) => String(v == null ? '' : v).trim().slice(0, max);
+const cdInt = (v, max) => { const n = parseInt(v, 10); return Number.isFinite(n) && n >= 0 && n <= max ? n : null; };
+function cdClean(b) {
+  const o = { grp: cdText(b.grp, 40), type: cdText(b.type, 40), name: cdText(b.name, 60), level: cdInt(b.level, 9999), points: cdInt(b.points, 1e9) };
+  return (!o.grp || !o.type || !o.name || o.level === null || o.points === null) ? null : o;
+}
+async function listChestDefs(request, env, json) {
+  const a = await auth(request, env, json); if (a.res) return a.res;
+  if (!(await permissionsFor(env, a.user.role)).includes('members'))
+    return json({ success: false, error: 'You do not have access to Clan Chests.' }, 403);
+  const groups = (await env.login_db.prepare('SELECT name FROM chest_groups ORDER BY sort_order, name').all()).results.map((g) => g.name);
+  const defs = (await env.login_db.prepare('SELECT id, grp, type, name, level, points FROM chest_defs ORDER BY grp, type, level, name').all()).results;
+  return json({ success: true, groups, defs });
+}
+async function saveChestDef(request, env, json, id) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const o = cdClean(await request.json().catch(() => ({})));
+  if (!o) return json({ success: false, error: 'Group, type, name, level and points are required (level and points must be whole numbers).' }, 400);
+  await env.login_db.prepare('INSERT OR IGNORE INTO chest_groups (name, sort_order) VALUES (?, 100)').bind(o.grp).run();
+  if (id === null) {
+    const r = await env.login_db.prepare('INSERT INTO chest_defs (grp, type, name, level, points) VALUES (?, ?, ?, ?, ?)')
+      .bind(o.grp, o.type, o.name, o.level, o.points).run();
+    return json({ success: true, id: r.meta.last_row_id }, 201);
+  }
+  const r = await env.login_db.prepare('UPDATE chest_defs SET grp = ?, type = ?, name = ?, level = ?, points = ? WHERE id = ?')
+    .bind(o.grp, o.type, o.name, o.level, o.points, id).run();
+  return r.meta.changes ? json({ success: true }) : json({ success: false, error: 'Chest not found.' }, 404);
+}
+async function bulkChestDefs(request, env, json) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const b = await request.json().catch(() => ({}));
+  const grp = cdText(b.grp, 40), rows = Array.isArray(b.rows) ? b.rows.slice(0, 500) : [];
+  if (!grp || !rows.length) return json({ success: false, error: 'Choose a group and add at least one row.' }, 400);
+  const stmts = [env.login_db.prepare('INSERT OR IGNORE INTO chest_groups (name, sort_order) VALUES (?, 100)').bind(grp)];
+  for (let i = 0; i < rows.length; i++) {
+    const o = cdClean({ ...rows[i], grp });
+    if (!o) return json({ success: false, error: 'Row ' + (i + 1) + ' is invalid (type, name, level and points are required; level and points must be numbers).' }, 400);
+    stmts.push(env.login_db.prepare('INSERT INTO chest_defs (grp, type, name, level, points) VALUES (?, ?, ?, ?, ?)').bind(o.grp, o.type, o.name, o.level, o.points));
+  }
+  await env.login_db.batch(stmts);
+  return json({ success: true, added: rows.length });
+}
+async function deleteChestDef(request, env, json, id) {
+  const a = await auth(request, env, json, 'super'); if (a.res) return a.res;
+  const r = await env.login_db.prepare('DELETE FROM chest_defs WHERE id = ?').bind(id).run();
+  return r.meta.changes ? json({ success: true }) : json({ success: false, error: 'Chest not found.' }, 404);
+}

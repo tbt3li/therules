@@ -1,0 +1,157 @@
+const ALLOWED_ORIGIN = "https://thefamily.pages.dev";
+// Simple hardcoded token (change this to any random string)
+const ADMIN_SECRET = "your-simple-secret-token-here-change-this";
+
+export default {
+  async fetch(request, env, ctx) {
+    const origin = request.headers.get("Origin") || "";
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, "") || "/";
+
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+      "Access-Control-Allow-Methods": "POST, GET, DELETE, PUT, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    };
+
+    // 1. Handle CORS preflight
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    // 2. Block other origins
+    if (origin && origin !== ALLOWED_ORIGIN) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    const json = (data, status = 200) =>
+      new Response(JSON.stringify(data), {
+        status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+
+    // Helper: Check if request has valid admin token
+    function isAuthorized(request) {
+      const authHeader = request.headers.get("Authorization");
+      return authHeader === `Bearer ${ADMIN_SECRET}`;
+    }
+
+    // 3. POST /contact — save to D1 (public - no auth)
+    if (request.method === "POST" && path === "/contact") {
+      try {
+        let body;
+        try {
+          body = await request.json();
+        } catch (e) {
+          return json({ error: "Invalid JSON body: " + e.message }, 400);
+        }
+
+        const { name, email, subject, message, rating } = body;
+
+        if (!name || !email || !subject || !message) {
+          return json({ error: "Missing required fields." }, 400);
+        }
+
+        if (!env.DB) {
+          return json({ error: "Database not bound." }, 500);
+        }
+
+        await env.DB.prepare(
+          `INSERT INTO contacts (name, email, subject, message, rating, reply_status) VALUES (?, ?, ?, ?, ?, ?)`
+        ).bind(
+          name.trim(),
+          email.trim(),
+          subject.trim(),
+          message.trim(),
+          rating ? parseInt(rating) : null,
+          'No' // Default reply status
+        ).run();
+
+        return json({ ok: true });
+
+      } catch (e) {
+        return json({ error: "Server error: " + e.message }, 500);
+      }
+    }
+
+    // 4. GET /contacts — requires admin token
+    if (request.method === "GET" && path === "/contacts") {
+      if (!isAuthorized(request)) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+      
+      try {
+        if (!env.DB) {
+          return json({ error: "Database not bound." }, 500);
+        }
+        const { results } = await env.DB.prepare(
+          "SELECT * FROM contacts ORDER BY created_at DESC"
+        ).all();
+        return json(results);
+      } catch (e) {
+        return json({ error: e.message }, 500);
+      }
+    }
+
+    // 5. PUT /contacts — Update reply status
+    if (request.method === "PUT" && path === "/contacts") {
+      if (!isAuthorized(request)) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+      
+      try {
+        const body = await request.json();
+        const { id, reply_status } = body;
+        
+        if (!id) {
+          return json({ error: "ID required" }, 400);
+        }
+        
+        if (!reply_status || !['Yes', 'No', 'Process'].includes(reply_status)) {
+          return json({ error: "Valid reply status (Yes, No, Process) required" }, 400);
+        }
+        
+        await env.DB.prepare(
+          "UPDATE contacts SET reply_status = ? WHERE id = ?"
+        ).bind(reply_status, id).run();
+        
+        return json({ ok: true, reply_status });
+      } catch (e) {
+        return json({ error: e.message }, 500);
+      }
+    }
+
+    // 6. DELETE /contacts — requires admin token
+    if (request.method === "DELETE" && path === "/contacts") {
+      if (!isAuthorized(request)) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+      
+      const id = url.searchParams.get("id");
+      if (!id) {
+        return json({ error: "ID required" }, 400);
+      }
+
+      try {
+        await env.DB.prepare("DELETE FROM contacts WHERE id = ?").bind(id).run();
+        return json({ ok: true });
+      } catch (e) {
+        return json({ error: e.message }, 500);
+      }
+    }
+
+    // Debug route
+    if (path === "/debug") {
+      return json({ ok: true, path, method: request.method, origin });
+    }
+
+    return json({
+      error: "Route not found",
+      received_path: path,
+      received_method: request.method
+    }, 404);
+  }
+};
