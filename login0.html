@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --primary-dark: #005a9e;
+            --dark-bg: #201f1e;
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body {
+            background-color: #faf9f8; color: #323130; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; padding: 20px 0;
+            background-image: linear-gradient(135deg, rgba(0,120,212,.05) 0%, rgba(92,45,145,.05) 100%);
+        }
+        .login-container {
+            display: flex; width: 900px; min-height: 600px; border-radius: var(--border-radius);
+            overflow: hidden; box-shadow: var(--shadow-hover);
+        }
+        /* Left */
+        .login-brand {
+            flex: 1; background-color: var(--dark-bg); color: white; padding: 50px 40px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden;
+        }
+        .login-brand::before {
+            content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            background: linear-gradient(45deg, rgba(0,120,212,.1) 0%, rgba(92,45,145,.1) 100%);
+        }
+        .brand-content, .register-link, .copyright { position: relative; z-index: 2; }
+        .logo { display: flex; align-items: center; margin-bottom: 40px; }
+        .logo-icon { margin-right: 15px; color: var(--primary-color); }
+        .logo-text { font-size: 32px; font-weight: 600; text-align: center; }
+        .brand-tagline { font-size: 20px; margin-bottom: 15px; color: rgba(255,255,255,.9); }
+        .brand-description { font-size: 16px; line-height: 1.6; color: rgba(255,255,255,.7); margin-bottom: 30px; }
+        .features-list { list-style: none; margin-top: 30px; }
+        .features-list li { display: flex; align-items: center; margin-bottom: 18px; font-size: 15px; }
+        .features-list i { color: var(--primary-color); margin-right: 12px; font-size: 18px; }
+        .register-link { font-size: 15px; color: rgba(255,255,255,.8); margin-top: 20px; }
+        .register-link a { color: #6cb8ff; font-weight: 600; text-decoration: none; }
+        .copyright { font-size: 13px; color: rgba(255,255,255,.5); margin-top: 20px; }
+
+        /* Right */
+        .login-form-container {
+            flex: 1; background-color: var(--card-bg); padding: 50px; display: flex;
+            flex-direction: column; justify-content: center;
+        }
+        .login-header { margin-bottom: 30px; }
+        .login-header h1 { font-size: 32px; margin-bottom: 10px; }
+        .login-header p { color: #605e5c; font-size: 16px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .input-with-icon { position: relative; }
+        .input-with-icon i {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            color: #605e5c; font-size: 18px;
+        }
+        .form-control {
+            width: 100%; padding: 15px 15px 15px 50px; border: 1px solid #edebe9;
+            border-radius: var(--border-radius); font-size: 16px; background-color: #faf9f8;
+            transition: var(--transition);
+        }
+        .form-control:focus {
+            outline: none; border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0,120,212,.2); background-color: white;
+        }
+        .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .remember-me { display: flex; align-items: center; }
+        .remember-me input { margin-right: 8px; }
+        .remember-me label { font-size: 14px; color: #605e5c; }
+        .forgot-password { color: var(--primary-color); text-decoration: none; font-size: 14px; }
+        .forgot-password:hover { text-decoration: underline; }
+
+        .button-row { display: flex; gap: 10px; }
+        .btn {
+            flex: 1; display: inline-block; background-color: var(--primary-color); color: white;
+            padding: 14px 20px; border-radius: var(--border-radius); font-weight: 600; border: none;
+            cursor: pointer; transition: var(--transition); text-align: center; font-size: 16px;
+        }
+        .btn:hover { filter: brightness(.92); }
+        .btn:disabled { opacity: .7; cursor: not-allowed; }
+
+        .divider { display: flex; align-items: center; margin: 20px 0 15px; color: #605e5c; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background-color: #edebe9; }
+        .divider span { padding: 0 15px; font-size: 14px; }
+        .social-login { display: flex; gap: 15px; margin-bottom: 20px; }
+        .social-btn {
+            flex: 1; padding: 12px; border-radius: var(--border-radius); border: 1px solid #edebe9;
+            background: white; display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 14px; opacity: .6; cursor: not-allowed;
+        }
+        .social-btn i { margin-right: 8px; }
+        .btn-steam { color: #171a21; }
+        .btn-discord { color: #5865f2; }
+
+        .home-link-wrap { text-align: center; padding-top: 15px; border-top: 1px solid #edebe9; margin-top: 10px; }
+        .home-link {
+            display: inline-block; color: #0078d4; padding: 10px 28px; border-radius: var(--border-radius);
+            text-decoration: none; font-weight: 600; border: 2px solid #0078d4; transition: var(--transition); font-size: 15px;
+        }
+        .home-link:hover { background: #0078d4; color: white; }
+
+        /* Messages */
+        .error-message, .success-message {
+            padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; display: none; font-size: 14px;
+        }
+        .error-message { background: linear-gradient(135deg,#ffebee,#ffcdd2); color: #c62828; border-left: 4px solid #c62828; }
+        .success-message { background: linear-gradient(135deg,#e8f5e9,#c8e6c9); color: #2e7d32; border-left: 4px solid #2e7d32; }
+        .error-message.show, .success-message.show { display: block; animation: fadeIn .3s ease; }
+        .error-message i, .success-message i { margin-right: 8px; }
+        .mode-notice {
+            margin-top: 15px; padding: 12px 15px; background: #e1f5fe; border-radius: var(--border-radius);
+            color: #01579b; font-size: 14px; display: none;
+        }
+        .mode-notice.show { display: block; animation: fadeIn .3s ease; }
+        .mode-notice i { margin-right: 8px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); }
+        }
+        .shake { animation: shake .5s; }
+
+        /* Toast notifications */
+        .custom-notification {
+            position: fixed; top: 20px; right: 20px; min-width: 300px; max-width: 400px; background: white;
+            border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,.15); overflow: hidden; z-index: 10000;
+            animation: slideInRight .3s ease-out; border-left: 4px solid #0078d4; transition: opacity .3s ease;
+        }
+        .custom-notification-success { border-left-color: #28a745; background: linear-gradient(135deg,#f8fff9,#e8f5e9); }
+        .custom-notification-warning { border-left-color: #ffc107; background: linear-gradient(135deg,#fffdf5,#fff8e1); }
+        .custom-notification-error { border-left-color: #dc3545; background: linear-gradient(135deg,#fff5f5,#ffebee); }
+        .notification-content { display: flex; align-items: center; padding: 16px 20px; }
+        .notification-icon { font-size: 24px; margin-right: 15px; color: #0078d4; }
+        .custom-notification-success .notification-icon { color: #28a745; }
+        .custom-notification-warning .notification-icon { color: #ffc107; }
+        .custom-notification-error .notification-icon { color: #dc3545; }
+        .notification-text { flex: 1; font-size: 14px; line-height: 1.5; font-weight: 500; }
+        .notification-close { background: none; border: none; color: #605e5c; cursor: pointer; padding: 5px; margin-left: 10px; opacity: .6; }
+        .notification-close:hover { opacity: 1; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Loading screen */
+        #loading {
+            position: fixed; inset: 0; background: rgba(255,255,255,.92); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .loader { text-align: center; }
+        .loader-spinner {
+            border: 4px solid #f3f3f3; border-top: 4px solid #0078d4; border-radius: 50%;
+            width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 950px) { .login-container { width: 95%; max-width: 800px; } }
+        @media (max-width: 768px) {
+            .login-container { flex-direction: column; width: 90%; max-width: 500px; }
+            .login-brand { padding: 35px 30px; }
+            .login-form-container { padding: 35px 30px; }
+            .social-login { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .login-container { width: 95%; }
+            .login-brand, .login-form-container { padding: 25px 20px; }
+            .logo-text { font-size: 26px; }
+            .login-header h1 { font-size: 26px; }
+            .custom-notification { left: 10px; right: 10px; min-width: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="loader">
+            <div class="loader-spinner"></div>
+            <p style="margin-top: 15px; color: #605e5c;">Loading...</p>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <!-- Left: Branding -->
+        <div class="login-brand">
+            <div class="brand-content">
+                <div class="logo">
+                    <div class="logo-icon"><a href="\" aria-label="Home"><img src="assets/img/logo.png" style="max-height: 50px;" alt="" onerror="this.style.display='none'"></a></div>
+                    <div class="logo-text">THE <span style="font-size:22px;">Family Gang</span><br><span style="font-size:14px;">(Kingdom 34)</span></div>
+                </div>
+                <h2 class="brand-tagline">Access Premium Resources</h2>
+                <p class="brand-description">Login to access exclusive tutorials, equipment guides, hacks, and cheat sheets available.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> Premium Tutorials &amp; Guides</li>
+                    <li><i class="fas fa-check-circle"></i> Equipment Loadout Optimizer</li>
+                    <li><i class="fas fa-check-circle"></i> Pro Strategies &amp; Tactics</li>
+                    <li><i class="fas fa-check-circle"></i> Exclusive Cheat Sheets</li>
+                    <li><i class="fas fa-check-circle"></i> Clan Member Statistics</li>
+                </ul>
+            </div>
+            <div class="register-link">
+                <span id="registerText">Not a member yet? <a href="#" id="registerLink">Sign up</a></span>
+            </div>
+            <div class="copyright">
+                &copy; 2026 THE Family Gang. <br> 웃 T3li <br>Premium access for members.
+            </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1 id="loginTitle">Member Login</h1>
+                <p id="loginSubtitle">Enter your credentials to access the dashboard</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="email" id="idLabel">Email or Username</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user" id="idIcon"></i>
+                        <input type="text" id="email" class="form-control" placeholder="Enter your email or username" autocomplete="username" spellcheck="false" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required>
+                    </div>
+                </div>
+
+                <!-- Only visible in Sign Up mode -->
+                <div class="form-group" id="confirmGroup" style="display:none;">
+                    <label for="confirmPassword">Repeat Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="Repeat your password" autocomplete="new-password">
+                    </div>
+                </div>
+
+                <div class="remember-forgot" id="rememberForgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
+                </div>
+
+                <div class="button-row">
+                    <button type="submit" class="btn" id="loginBtn">
+                        <span id="signinBtn">Sign In</span>
+                        <i class="fas fa-spinner fa-spin" id="btnSpinner" style="display:none;"></i>
+                    </button>
+                    <button type="button" class="btn" id="signBtn">
+                        <span id="signupBtn">Sign Up</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mode-notice" id="modeNotice">
+                <i class="fas fa-info-circle"></i> You are in Sign Up mode. Fill in your details to create a new account.
+            </div>
+
+            <div class="divider" id="divider"><span>Or sign in with</span></div>
+            <div class="social-login" id="socialLogin">
+                <button type="button" class="social-btn btn-steam" id="steamBtn"><i class="fab fa-steam"></i> Steam</button>
+                <button type="button" class="social-btn btn-discord" id="discordBtn"><i class="fab fa-discord"></i> Discord</button>
+            </div>
+
+            <div class="home-link-wrap">
+                <a href="index.html" class="home-link"><i class="fas fa-home" style="margin-right:8px;"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ================= CONFIG =================
+const API_URL = 'https://login.t3li.workers.dev/api';
+const DASHBOARD_URL = 'dashboard.html';
+let isSignUpMode = false;
+
+const $ = (id) => document.getElementById(id);
+
+// ================= TOKEN HELPERS =================
+function getToken() {
+    return localStorage.getItem('family_token') || sessionStorage.getItem('family_token');
+}
+function clearToken() {
+    localStorage.removeItem('family_token');
+    sessionStorage.removeItem('family_token');
+}
+
+// ================= UI HELPERS =================
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str);
+    return d.innerHTML;
+}
+
+function hideMessages() {
+    $('errorMessage').classList.remove('show');
+    $('successMessage').classList.remove('show');
+}
+
+function showError(message) {
+    hideMessages();
+    $('errorMessage').innerHTML = '<i class="fas fa-exclamation-circle"></i>' + escapeHtml(message);
+    $('errorMessage').classList.add('show');
+    $('loginForm').classList.add('shake');
+    setTimeout(() => $('loginForm').classList.remove('shake'), 500);
+}
+
+function showSuccess(message) {
+    hideMessages();
+    $('successMessage').innerHTML = '<i class="fas fa-check-circle"></i>' + escapeHtml(message);
+    $('successMessage').classList.add('show');
+}
+
+function showNotification(message, type = 'error') {
+    const old = document.querySelector('.custom-notification');
+    if (old) old.remove();
+
+    const icons = {
+        success: 'fa-check-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle',
+        error: 'fa-times-circle'
+    };
+    const n = document.createElement('div');
+    n.className = 'custom-notification custom-notification-' + type;
+    n.innerHTML =
+        '<div class="notification-content">' +
+        '<div class="notification-icon"><i class="fas ' + (icons[type] || icons.error) + '"></i></div>' +
+        '<div class="notification-text">' + escapeHtml(message) + '</div>' +
+        '<button class="notification-close" type="button"><i class="fas fa-times"></i></button>' +
+        '</div>';
+    n.querySelector('.notification-close').onclick = () => n.remove();
+    document.body.appendChild(n);
+
+    setTimeout(() => {
+        if (n.parentElement) {
+            n.style.opacity = '0';
+            setTimeout(() => n.remove(), 300);
+        }
+    }, 5000);
+}
+
+function setLoading(isLoading) {
+    $('loginBtn').disabled = isLoading;
+    $('signBtn').disabled = isLoading;
+    $('btnSpinner').style.display = isLoading ? 'inline-block' : 'none';
+    if (isLoading) {
+        $('signinBtn').textContent = isSignUpMode ? 'Creating Account...' : 'Signing In...';
+    } else {
+        $('signinBtn').textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+    }
+}
+
+// ================= MODE SWITCH =================
+function setMode(signUp) {
+    isSignUpMode = signUp;
+    hideMessages();
+
+    $('loginTitle').textContent = signUp ? 'Create Account' : 'Member Login';
+    $('loginSubtitle').textContent = signUp
+        ? 'Join us by creating a new account'
+        : 'Enter your credentials to access the dashboard';
+    $('signinBtn').textContent = signUp ? 'Create Account' : 'Sign In';
+    $('signupBtn').textContent = signUp ? 'Back to Login' : 'Sign Up';
+
+    $('password').placeholder = signUp ? 'Create a password (min 6 characters)' : 'Enter your password';
+    $('password').autocomplete = signUp ? 'new-password' : 'current-password';
+    $('idLabel').textContent = signUp ? 'Email Address' : 'Email or Username';
+    $('email').placeholder = signUp ? 'Enter your email address' : 'Enter your email or username';
+    $('idIcon').className = signUp ? 'fas fa-envelope' : 'fas fa-user';
+    $('confirmGroup').style.display = signUp ? 'block' : 'none';
+    $('confirmPassword').required = signUp;
+
+    $('rememberForgot').style.display = signUp ? 'none' : 'flex';
+    $('divider').style.display = signUp ? 'none' : 'flex';
+    $('socialLogin').style.display = signUp ? 'none' : 'flex';
+    $('modeNotice').classList.toggle('show', signUp);
+
+    $('loginBtn').style.backgroundColor = signUp ? '#28a745' : '';
+    $('signBtn').style.backgroundColor = signUp ? '#6c757d' : '';
+
+    $('registerText').innerHTML = signUp
+        ? 'Already have an account? <a href="#" id="registerLink">Sign in</a>'
+        : 'Not a member yet? <a href="#" id="registerLink">Sign up</a>';
+    $('registerLink').onclick = (e) => { e.preventDefault(); setMode(!isSignUpMode); };
+
+    $('password').value = '';
+    $('confirmPassword').value = '';
+}
+
+// ================= API =================
+async function api(path, payload) {
+    try {
+        const res = await fetch(API_URL + path, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        return await res.json();
+    } catch (err) {
+        console.error(path, err);
+        return { success: false, error: 'Network error. Please try again.' };
+    }
+}
+
+// ================= FORM SUBMIT =================
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const loginId = $('email').value.trim();
+    const password = $('password').value;
+    const confirm = $('confirmPassword').value;
+
+    if (!loginId || !password) return showError('Please fill in all fields.');
+    const looksEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginId);
+    const looksUsername = /^[A-Za-z0-9._-]{3,24}$/.test(loginId);
+    if (isSignUpMode) {
+        if (!looksEmail) return showError('Please enter a valid email address.');
+    } else if (!looksEmail && !looksUsername) {
+        return showError('Enter a valid email address or a username (3-24 letters, numbers, dot, dash or underscore).');
+    }
+    if (password.length < 6) return showError('Password must be at least 6 characters.');
+
+    if (isSignUpMode) {
+        if (!confirm) return showError('Please repeat your password.');
+        if (password !== confirm) { $('confirmPassword').focus(); return showError('Passwords do not match.'); }
+    }
+
+    let redirecting = false;
+    setLoading(true);
+    try {
+        if (isSignUpMode) {
+            // ---------- SIGN UP ----------
+            const name = loginId.split('@')[0] || 'User';
+            const data = await api('/signup', { email: loginId, password, name });
+
+            if (data.success) {
+                // Back to login mode, keep the email, tell the user to log in
+                setMode(false);
+                $('email').value = loginId;
+                $('password').focus();
+                showSuccess('Signup successful! Now please log in.');
+                showNotification('Signup successful! Now please log in.', 'success');
+            } else {
+                showError(data.error || 'Signup failed.');
+            }
+        } else {
+            // ---------- LOGIN (email OR username) ----------
+            // The worker looks the member up by email OR username, so one call covers both.
+            const data = await api('/login', { email: loginId, password });
+
+            if (data.success) {
+                clearToken();
+                if ($('rememberMe').checked) {
+                    localStorage.setItem('family_token', data.token);
+                } else {
+                    sessionStorage.setItem('family_token', data.token);
+                }
+                showSuccess('Login successful! Redirecting to dashboard...');
+                redirecting = true; // keep buttons disabled while redirecting
+                setTimeout(() => { window.location.href = DASHBOARD_URL; }, 1000);
+            } else {
+                showError(data.error || 'Login failed.');
+            }
+        }
+    } finally {
+        if (!redirecting) setLoading(false);
+    }
+}
+
+// ================= INIT =================
+async function init() {
+    const token = getToken();
+    if (token) {
+        try {
+            const res = await fetch(API_URL + '/check', { headers: { Authorization: 'Bearer ' + token } });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = DASHBOARD_URL;
+                return;
+            }
+            clearToken();
+        } catch (err) {
+            console.error('Session check failed:', err);
+        }
+    }
+
+    $('loading').style.display = 'none';
+
+    $('loginForm').addEventListener('submit', handleSubmit);
+    $('signBtn').addEventListener('click', () => setMode(!isSignUpMode));
+    $('registerLink').onclick = (e) => { e.preventDefault(); setMode(!isSignUpMode); };
+    $('forgotPassword').addEventListener('click', (e) => {
+        e.preventDefault();
+        showNotification('Password reset is not available yet. Please contact the admin (웃T3li).', 'warning');
+    });
+    $('steamBtn').addEventListener('click', () => showNotification('Steam login is not configured yet.', 'warning'));
+    $('discordBtn').addEventListener('click', () => showNotification('Discord login is not configured yet.', 'warning'));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
