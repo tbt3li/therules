@@ -840,6 +840,75 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
 [data-theme="dark"] mark.rh{background:#7a5c00;color:#fff}
 @media(max-width:640px){.rule-item{grid-template-columns:44px 1fr}.rule-def{grid-template-columns:1fr;gap:2px}}
 
+/* ===== LIVE CHAT ===== */
+.chat-fab{position:fixed;right:22px;bottom:22px;width:60px;height:60px;padding:0;border:none;background:none;z-index:900;filter:drop-shadow(0 10px 22px rgba(2,132,199,.35));transition:transform .15s;border-radius:16px}
+.chat-fab:hover{transform:translateY(-2px) scale(1.03)}
+.chat-fab:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+.chat-fab img{width:60px;height:60px;display:block;border-radius:16px}
+.chat-fab-dot{position:absolute;top:-3px;right:-3px;width:17px;height:17px;border-radius:50%;background:#dc2626;border:2px solid var(--card);display:block}
+.chat-fab-dot[hidden]{display:none}
+.chat-admin-open .chat-fab{display:none}
+.chat-panel{position:fixed;right:22px;bottom:94px;width:372px;max-width:calc(100vw - 24px);height:540px;max-height:calc(100vh - 120px);background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 26px 60px -22px rgba(0,0,0,.5);z-index:901;display:flex;flex-direction:column;overflow:hidden}
+.chat-panel[hidden]{display:none}
+.chat-panel-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.chat-panel-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.chat-panel-info{flex:1;min-width:0;line-height:1.25}
+.chat-panel-info b{display:block;font-size:14px}
+.chat-panel-info small{display:block;font-size:11.5px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:5px;vertical-align:middle}
+.chat-status-dot.off{background:#cbd5e1}
+.chat-panel-x{background:rgba(255,255,255,.16);border:none;color:#fff;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-panel-x:hover{background:rgba(255,255,255,.3)}
+.chat-panel-body{flex:1;overflow:auto;padding:14px;background:var(--bg-soft,var(--input));min-height:0}
+.chat-line{display:flex;flex-direction:column;margin-bottom:8px}
+.chat-line.me{align-items:flex-end}
+.chat-line.them{align-items:flex-start}
+.chat-bubble{max-width:80%;padding:8px 12px;border-radius:14px;font-size:13.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.chat-line.me .chat-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:5px}
+.chat-line.them .chat-bubble{background:var(--card);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:5px}
+.chat-time{font-size:10.5px;color:var(--muted);margin-top:3px;padding:0 4px}
+.chat-day{text-align:center;font-size:11px;color:var(--muted);margin:10px 0;text-transform:uppercase;letter-spacing:.05em}
+.chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);align-items:flex-end;background:var(--card)}
+.chat-form textarea{flex:1;resize:none;max-height:120px;min-height:42px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--input);color:var(--text);font-size:13.5px;font-family:inherit;line-height:1.4}
+.chat-form textarea:focus{outline:none;border-color:var(--primary)}
+.chat-send{width:42px;height:42px;border-radius:50%;border:none;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-send:hover{background:var(--primary-dark,#0b8f8e)}
+.chat-send:disabled{opacity:.55}
+.chat-count{position:absolute;top:3px;right:3px;background:#dc2626;color:#fff;border-radius:20px;min-width:17px;height:17px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--card);line-height:1}
+.chat-count[hidden]{display:none}
+.chat-bell{position:relative}
+.nav-badge{margin-left:auto;background:#dc2626;color:#fff;border-radius:20px;min-width:18px;height:18px;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.nav-badge[hidden]{display:none}
+.chat-admin{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;height:calc(100vh - 240px);min-height:460px}
+.chat-convos{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.chat-convos-head{padding:10px;border-bottom:1px solid var(--border)}
+.chat-convo-list{overflow:auto;flex:1}
+.chat-convo{display:flex;gap:10px;width:100%;text-align:left;padding:10px 12px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text);align-items:center}
+.chat-convo:hover{background:var(--input)}
+.chat-convo.active{background:color-mix(in srgb,var(--primary),transparent 88%)}
+.chat-convo .avatar{width:34px;height:34px;font-size:12px}
+.chat-convo-main{flex:1;min-width:0}
+.chat-convo-main b{display:flex;align-items:center;gap:6px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--heading-color)}
+.chat-convo-main small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-convo-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:10.5px;color:var(--muted);flex-shrink:0}
+.chat-unread{background:#dc2626;color:#fff;border-radius:20px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;padding:0 5px}
+.chat-online,.chat-offline{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.chat-online{background:#22c55e}
+.chat-offline{background:#9ca3af}
+.chat-thread{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.chat-thread-inner{display:flex;flex-direction:column;height:100%;min-height:0}
+.chat-thread-head{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.chat-thread-user{flex:1;min-width:120px;line-height:1.25}
+.chat-thread-user b{display:block;font-size:14px;color:var(--heading-color)}
+.chat-thread-user small{color:var(--muted);font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-thread-body{flex:1;overflow:auto;padding:14px;min-height:0;background:var(--bg-soft,var(--input))}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:160px;gap:6px;color:var(--muted);text-align:center;padding:26px}
+.chat-empty i{font-size:42px;color:var(--primary);opacity:.65}
+.chat-empty b{color:var(--heading-color);font-size:15px}
+.chat-empty span{font-size:13px;max-width:300px}
+.chat-status-pill{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);border-radius:20px;padding:3px 9px}
+@media(max-width:900px){.chat-admin{grid-template-columns:1fr;height:auto}.chat-convos{max-height:290px}.chat-thread{min-height:420px}}
+@media(max-width:600px){.chat-panel{right:0;bottom:0;width:100vw;max-width:100vw;height:calc(100% - 56px);border-radius:16px 16px 0 0;border-left:none;border-right:none;border-bottom:none}.chat-fab{right:14px;bottom:14px}.chat-admin{height:auto}}
 </style>
 </head>
 <body>
@@ -862,6 +931,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
   <div class="hright">
     <div class="utc">Server time (UTC)<b id="utcClock">--:--:--</b></div>
     <button class="btn hbtn-refresh" id="refreshBtn" title="Refresh data"><i class="bi bi-arrow-repeat"></i><span>Refresh</span></button>
+    <button class="hbtn chat-bell" id="chatBell" title="Live chat" aria-label="Live chat" style="display:none"><i class="ph-light ph-chat-circle-dots"></i><span class="chat-count" id="chatBellCount" hidden>0</span></button>
     <button class="hbtn" id="themeBtn" title="Toggle dark mode"><i class="ph-light ph-moon-stars"></i></button>
     <div class="dropdown">
       <button class="user-trigger dropdown-toggle" id="userChip" data-bs-toggle="dropdown" aria-expanded="false">
@@ -893,6 +963,8 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
     <li class="nav-heading"><span>Tools</span></li>
     <li class="nav-item"><a class="nav-link" href="#checklist" data-s="checklist"><span class="nav-icon"><i class="ph-light ph-check-square"></i></span><span class="nav-text">Daily Checklist</span></a></li>
     <li class="nav-item"><a class="nav-link" href="#tools" data-s="tools"><span class="nav-icon"><i class="ph-light ph-calculator"></i></span><span class="nav-text">Calculators</span></a></li>
+    <li class="nav-heading" id="chatHeading" style="display:none"><span>Support</span></li>
+    <li class="nav-item" id="navChat" style="display:none"><a class="nav-link" href="#chat" data-s="chat"><span class="nav-icon"><i class="ph-light ph-chat-circle-dots"></i></span><span class="nav-text">Live Chat</span><span class="nav-badge" id="navChatCount" hidden>0</span></a></li>
     <li class="nav-heading"><span>Clan</span></li>
     <li class="nav-item has-submenu"><a class="nav-link sub-toggle" href="#" aria-expanded="false"><span class="nav-icon"><i class="ph-light ph-scroll"></i></span><span class="nav-text">Rules</span><span class="nav-arrow"><i class="bi bi-chevron-right"></i></span></a><ul class="nav-submenu"><li><a class="nav-link" href="#rules-kingdom" data-s="rules-kingdom"><span class="nav-dot"></span>Kingdom Rules</a></li><li><a class="nav-link" href="#rules-clan" data-s="rules-clan"><span class="nav-dot"></span>Clan Rules</a></li><li><a class="nav-link" href="#rules-cp" data-s="rules-cp"><span class="nav-dot"></span>CP Run Rules</a></li></ul></li>
     <li class="nav-item"><a class="nav-link" href="#account" data-s="account"><span class="nav-icon"><i class="ph-light ph-user-gear"></i></span><span class="nav-text">My Account</span></a></li>
@@ -1212,6 +1284,33 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
         </div>
       </section>
 
+      <!-- LIVE CHAT (Admin / Super Admin) -->
+      <section class="section" id="s-chat">
+        <div class="page-head"><h1>💬 Live Chat</h1><p>Member conversations — reply here in near real time. Clearing hides the history for both sides but never deletes rows from the database.</p></div>
+        <div class="chat-admin">
+          <aside class="chat-convos card">
+            <div class="chat-convos-head"><input class="input" id="chatConvoSearch" type="search" placeholder="Search member..."></div>
+            <div class="chat-convo-list" id="chatConvoList"></div>
+          </aside>
+          <div class="chat-thread card">
+            <div class="chat-empty" id="chatThreadEmpty"><i class="ph-light ph-chat-circle-dots"></i><b>Select a conversation</b><span>Pick a member on the left to read the history and reply.</span></div>
+            <div class="chat-thread-inner" id="chatThreadInner" hidden>
+              <div class="chat-thread-head">
+                <div class="avatar" id="chatThreadAvatar">?</div>
+                <div class="chat-thread-user"><b id="chatThreadName">-</b><small id="chatThreadMeta">-</small></div>
+                <span class="chat-status-pill" id="chatThreadOnline"><span class="chat-offline"></span> offline</span>
+                <button class="btn outline sm" id="chatClearBtn" type="button"><i class="fas fa-broom"></i> Clear</button>
+              </div>
+              <div class="chat-thread-body" id="chatThreadBody"></div>
+              <form class="chat-form" id="chatReplyForm">
+                <textarea id="chatReplyInput" rows="1" maxlength="2000" placeholder="Reply as support… (Enter to send, Shift+Enter for a new line)"></textarea>
+                <button class="chat-send" type="submit" aria-label="Send reply"><i class="fas fa-paper-plane"></i></button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ACCOUNT -->
       <section class="section" id="s-account">
         <div class="page-head"><h1>⚙️ My Account</h1><p>Your member details and security settings.</p></div>
@@ -1270,6 +1369,24 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
 </main>
 
 <div class="modal-bg" id="modalBg"><div class="dmodal" id="modal"></div></div>
+
+<!-- USER LIVE CHAT WIDGET -->
+<button class="chat-fab" id="chatFab" type="button" aria-label="Open support chat" aria-expanded="false">
+  <img src="chat-icon.png" alt="" width="60" height="60">
+  <span class="chat-fab-dot" id="chatFabDot" hidden></span>
+</button>
+<div class="chat-panel" id="chatPanel" hidden role="dialog" aria-label="Support chat">
+  <div class="chat-panel-head">
+    <div class="chat-panel-avatar"><i class="fas fa-headset"></i></div>
+    <div class="chat-panel-info"><b>Clan Support</b><small id="chatPanelStatus"><span class="chat-status-dot off"></span>Usually replies in a few hours</small></div>
+    <button class="chat-panel-x" id="chatPanelClose" type="button" aria-label="Close chat"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="chat-panel-body" id="chatPanelBody"></div>
+  <form class="chat-form" id="chatForm">
+    <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Type a message… (Enter to send)"></textarea>
+    <button class="chat-send" type="submit" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+  </form>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -1428,9 +1545,10 @@ const TITLES = { overview:'Overview', tutorials:'Premium Tutorials', loadouts:'E
   helper:'Research Helper', gifts:'Clan Gifts',
   checklist:'Daily Checklist', tools:'Calculators', rules:'Rules', account:'My Account',
   'rules-kingdom':'Kingdom Rules', 'rules-clan':'Clan Rules', 'rules-cp':'CP Run Rules',
+  chat:'Live Chat',
   roles:'User Roles & Rights', guideadmin:'Manage Guides', eventadmin:'Manage Events', inquiries:'Contact Inquiries' };
 const PERM_OF = { eventlist: 'events', chestdefs: 'members', helper: 'guides', gifts: 'overview' };       // sub pages share their parent's right
-const RESTRICTED = ['roles', 'guideadmin', 'eventadmin', 'inquiries'];
+const RESTRICTED = ['roles', 'chat', 'guideadmin', 'eventadmin', 'inquiries'];
 const OPEN_TO_ALL = ['rules', 'rules-kingdom', 'rules-clan', 'rules-cp'];                                  // never locked, for every role
 
 function showSection(name) {
@@ -1473,7 +1591,10 @@ function showSection(name) {
     renderGiftTabs();
     loadGiftTable(currentGiftCategory);
   }
+  document.body.classList.toggle('chat-admin-open', name === 'chat');
+  if (name !== 'chat') { clearInterval(CHAT.admin.thread); CHAT.admin.thread = null; }
   if (name === 'rules') drawRules();
+  if (name === 'chat') { chatAdminResume(); chatAdminTick(); }
 }
 const closeMenu = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); };
 function setSub(g, open) {                                // open/close a sidebar submenu (same behaviour as the template)
@@ -2153,6 +2274,7 @@ function initAdmin() {
   $('addUserBtn').onclick = () => openUserModal(null);
   $('usrTable').onclick = onUserAction;
   $('saveRights').onclick = saveRights;
+  initChatAdmin();
   if (isSuper()) { initGuideAdmin(); initEventAdmin(); initInquiries(); }      // Super Admin only
   loadAdmin();
 }
@@ -2184,6 +2306,7 @@ function renderUsers() {
         <button class="mini" data-act="promote" data-id="${u.id}" title="Promote" ${me || lk || i <= 0 || (!sup && ADM.roles[i - 1] && ADM.roles[i - 1].role_key === 'superadmin') ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
         <button class="mini" data-act="demote" data-id="${u.id}" title="Demote" ${me || lk || i >= ADM.roles.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
         <button class="mini" data-act="edit" data-id="${u.id}" title="Edit login details" ${lk ? 'disabled' : ''}><i class="fas fa-pen"></i></button>
+        ${sup ? `<button class="mini" data-act="chat" data-id="${u.id}" title="Open live chat"><i class="fas fa-comments"></i></button>` : ''}
         <button class="mini" data-act="toggle" data-id="${u.id}" title="${u.is_active ? 'Disable' : 'Enable'} account" ${me || lk ? 'disabled' : ''}><i class="fas fa-${u.is_active ? 'ban' : 'circle-check'}"></i></button>
         ${sup ? `<button class="mini bad" data-act="delete" data-id="${u.id}" title="Delete" ${me || lk ? 'disabled' : ''}><i class="fas fa-trash"></i></button>` : ''}
       </div></td></tr>`; }).join('') || `<tr><td colspan="${sup ? 8 : 6}" class="muted">No users found.</td></tr>`);
@@ -2209,6 +2332,8 @@ async function onUserAction(e) {
     await saveUser(id, { is_active: !u.is_active }, u.username + (u.is_active ? ' disabled' : ' enabled'));
   } else if (act === 'edit') {
     openUserModal(u);
+  } else if (act === 'chat') {
+    chatAdminInitiate(u.id);
   } else if (act === 'delete') {
     if (!isSuper()) return toast('Only a Super Admin can delete users.', 'err');
     if (!confirm('Permanently delete ' + u.username + '? This cannot be undone.')) return;
@@ -3268,6 +3393,251 @@ function filterGiftTable(q) {
 }
 
 /* =====================================================================
+   5g. LIVE CHAT
+   Member widget + Admin/Super Admin inbox. Polling only while the tab is
+   visible and the relevant surface is open; unread counts are refreshed by
+   the heartbeat (members) or the 5s inbox poll (admins).
+   ===================================================================== */
+const CHAT = {
+  open: false, messages: [], conv: null, sig: '', timer: null,
+  admin: { list: [], now: 0, convId: null, conv: null, q: '', threadSig: '', tick: null, thread: null }
+};
+
+const chatClock = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const chatDay = (ts) => new Date(ts).toLocaleDateString([], { day: 'numeric', month: 'short' });
+
+function chatMessagesHtml(msgs) {
+  let html = '', day = '';
+  msgs.forEach((m) => {
+    const d = chatDay(m.created_at);
+    if (d !== day) { day = d; html += `<div class="chat-day">${esc(d)}</div>`; }
+    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}"><div class="chat-bubble">${esc(m.message)}</div><div class="chat-time">${chatClock(m.created_at)}</div></div>`;
+  });
+  return html;
+}
+function chatScroll(el) { if (el) el.scrollTop = el.scrollHeight; }
+function chatAutoGrow(el) { if (!el) return; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight || 42, 120) + 'px'; }
+function chatFabDot(show) { const el = $('chatFabDot'); if (el) el.hidden = !show; }
+function chatSetBadges(n) {
+  [['chatBellCount', n], ['navChatCount', n]].forEach(([id, v]) => {
+    const el = $(id); if (!el) return;
+    el.textContent = v > 99 ? '99+' : String(v);
+    el.hidden = !v;
+  });
+}
+function chatKey(e) {
+  if (e.key !== 'Enter' || e.shiftKey) return;
+  e.preventDefault();
+  const form = e.target.closest('form');
+  if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+}
+
+/* ---- member widget ---- */
+async function chatHeartbeat() {
+  if (document.hidden || !currentUser) return;
+  const r = await api('/chat/heartbeat', 'POST', {});
+  if (!r || !r.success) return;
+  if (!CHAT.open) chatFabDot(r.unread > 0);
+  const st = $('chatPanelStatus');
+  if (st) st.innerHTML = `<span class="chat-status-dot ${r.admin_online ? '' : 'off'}"></span>${r.admin_online ? 'Support is online' : 'Usually replies in a few hours'}`;
+}
+
+async function chatLoadMine(initial) {
+  const r = await api('/chat/me');
+  if (!r || !r.success) return;
+  const last = r.messages[r.messages.length - 1];
+  const sig = r.messages.length + ':' + (last ? last.id : 0) + ':' + (r.unread || 0);
+  if (!initial && sig === CHAT.sig) return;
+  CHAT.sig = sig;
+  CHAT.messages = r.messages || [];
+  CHAT.conv = r.conversation || null;
+  const body = $('chatPanelBody');
+  body.innerHTML = CHAT.messages.length ? chatMessagesHtml(CHAT.messages)
+    : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>Start the conversation</b><span>Send a message and the clan team will reply here.</span></div>';
+  chatScroll(body);
+  if (r.unread) { chatFabDot(false); api('/chat/read', 'POST', {}); }
+}
+
+function chatOpenWidget() {
+  CHAT.open = true;
+  $('chatPanel').hidden = false;
+  $('chatFab').setAttribute('aria-expanded', 'true');
+  chatFabDot(false);
+  $('chatPanelBody').innerHTML = '<div class="chat-empty"><i class="fas fa-spinner fa-spin"></i><span>Loading messages…</span></div>';
+  chatLoadMine(true);
+  clearInterval(CHAT.timer);
+  CHAT.timer = setInterval(() => { if (!document.hidden && CHAT.open) chatLoadMine(false); }, 4000);
+  setTimeout(() => { const i = $('chatInput'); if (i) i.focus(); }, 120);
+}
+function chatCloseWidget() {
+  CHAT.open = false;
+  $('chatPanel').hidden = true;
+  $('chatFab').setAttribute('aria-expanded', 'false');
+  clearInterval(CHAT.timer); CHAT.timer = null;
+}
+
+async function chatSendMine() {
+  const inp = $('chatInput'), text = inp.value.trim();
+  if (!text) return;
+  const btn = $('chatForm').querySelector('.chat-send');
+  btn.disabled = true;
+  const r = await api('/chat/send', 'POST', { message: text });
+  btn.disabled = false;
+  if (!r || !r.success) return toast((r && r.error) || 'Message not sent.', 'err');
+  inp.value = ''; chatAutoGrow(inp);
+  CHAT.sig = '';
+  await chatLoadMine(false);
+}
+
+function initChatUser() {
+  $('chatFab').onclick = () => (CHAT.open ? chatCloseWidget() : chatOpenWidget());
+  $('chatPanelClose').onclick = chatCloseWidget;
+  $('chatForm').onsubmit = (e) => { e.preventDefault(); chatSendMine(); };
+  $('chatInput').addEventListener('keydown', chatKey);
+  $('chatInput').addEventListener('input', (e) => chatAutoGrow(e.target));
+  setInterval(chatHeartbeat, 30000);
+  chatHeartbeat();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    chatHeartbeat();
+    if (CHAT.admin.convId && document.getElementById('s-chat').classList.contains('active')) chatAdminLoadThread(false);
+  });
+}
+
+/* ---- admin inbox ---- */
+function chatAdminTick() {
+  const on = document.getElementById('s-chat') && document.getElementById('s-chat').classList.contains('active');
+  if (on) return chatAdminLoadList();
+  return chatAdminLoadUnread();
+}
+async function chatAdminLoadUnread() {
+  const r = await api('/chat/unread');
+  if (r && r.success) chatSetBadges(r.unread || 0);
+}
+async function chatAdminLoadList() {
+  const r = await api('/chat/conversations');
+  if (!r || !r.success) return;
+  CHAT.admin.list = r.conversations || [];
+  CHAT.admin.now = r.now;
+  chatAdminRenderList();
+  chatSetBadges(CHAT.admin.list.reduce((n, c) => n + (c.unread || 0), 0));
+  const cur = CHAT.admin.list.find((c) => c.id === CHAT.admin.convId);
+  if (cur) chatAdminHead(cur);
+}
+
+function chatAdminRenderList() {
+  const q = CHAT.admin.q, host = $('chatConvoList');
+  if (!host) return;
+  const items = CHAT.admin.list.filter((c) => !q || (c.username + ' ' + (c.name || '') + ' ' + c.email).toLowerCase().includes(q));
+  host.innerHTML = items.length ? items.map((c) => `<button type="button" class="chat-convo ${c.id === CHAT.admin.convId ? 'active' : ''}" data-conv="${c.id}">
+      <span class="avatar">${esc((c.username || c.email || '?').charAt(0).toUpperCase())}</span>
+      <span class="chat-convo-main"><b>${esc(c.username || c.email)}<span class="${c.online ? 'chat-online' : 'chat-offline'}"></span></b>
+        <small>${c.last_message ? esc(c.last_message) : 'No messages yet'}</small></span>
+      <span class="chat-convo-side"><span>${c.last_message_at ? chatClock(c.last_message_at) : ''}</span>${c.unread ? `<span class="chat-unread">${c.unread}</span>` : ''}</span>
+    </button>`).join('') : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><span>No conversations yet. Open one from the Users table.</span></div>';
+}
+
+function chatAdminHead(c) {
+  $('chatThreadAvatar').textContent = (c.username || c.email || '?').charAt(0).toUpperCase();
+  $('chatThreadName').textContent = c.username || c.email || '-';
+  $('chatThreadMeta').textContent = [c.name, c.email, c.role].filter(Boolean).join(' · ');
+  const on = $('chatThreadOnline');
+  on.innerHTML = `<span class="${c.online ? 'chat-online' : 'chat-offline'}"></span> ${c.online ? 'online' : 'offline'}`;
+}
+
+function chatAdminResume() {
+  if (CHAT.admin.thread || !CHAT.admin.convId) return;
+  CHAT.admin.thread = setInterval(() => { if (!document.hidden && CHAT.admin.convId) chatAdminLoadThread(false); }, 4000);
+}
+
+function chatAdminOpen(id) {
+  CHAT.admin.convId = id;
+  CHAT.admin.threadSig = '';
+  $('chatThreadEmpty').hidden = true;
+  $('chatThreadInner').hidden = false;
+  chatAdminRenderList();
+  if (location.hash.slice(1) !== 'chat') location.hash = 'chat';
+  $('chatThreadBody').innerHTML = '<div class="chat-empty"><i class="fas fa-spinner fa-spin"></i><span>Loading conversation…</span></div>';
+  chatAdminLoadThread(true);
+  clearInterval(CHAT.admin.thread); CHAT.admin.thread = null;
+  chatAdminResume();
+}
+
+async function chatAdminLoadThread(initial) {
+  if (!CHAT.admin.convId) return;
+  const id = CHAT.admin.convId;
+  const r = await api('/chat/conversations/' + id);
+  if (!r || !r.success) { if (initial) toast((r && r.error) || 'Could not load this conversation.', 'err'); return; }
+  CHAT.admin.conv = r.conversation;
+  const msgs = Array.isArray(r.messages) ? r.messages : [];
+  const item = CHAT.admin.list.find((c) => c.id === id);
+  chatAdminHead(Object.assign({}, r.conversation || {}, item ? { online: item.online } : {}));
+  const last = msgs[msgs.length - 1];
+  const sig = id + ':' + msgs.length + ':' + (last ? last.id : 0) + ':' + ((r.conversation && r.conversation.cleared_at) || 0);
+  if (sig !== CHAT.admin.threadSig) {
+    CHAT.admin.threadSig = sig;
+    const body = $('chatThreadBody');
+    body.innerHTML = msgs.length ? chatMessagesHtml(msgs)
+      : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>No messages</b><span>This conversation is empty or was cleared. Send a reply to start it again.</span></div>';
+    chatScroll(body);
+  }
+  if (msgs.some((m) => !m.mine && !m.read_at)) {
+    await api('/chat/conversations/' + id + '/read', 'POST', {});
+    chatAdminLoadList();
+  }
+}
+
+async function chatAdminReply() {
+  if (!CHAT.admin.convId) return;
+  const inp = $('chatReplyInput'), text = inp.value.trim();
+  if (!text) return;
+  const btn = $('chatReplyForm').querySelector('.chat-send');
+  btn.disabled = true;
+  const r = await api('/chat/conversations/' + CHAT.admin.convId + '/reply', 'POST', { message: text });
+  btn.disabled = false;
+  if (!r || !r.success) return toast((r && r.error) || 'Reply not sent.', 'err');
+  inp.value = ''; chatAutoGrow(inp);
+  CHAT.admin.threadSig = '';
+  await chatAdminLoadThread(true);
+  chatAdminLoadList();
+}
+
+async function chatAdminClear() {
+  if (!CHAT.admin.convId) return;
+  if (!confirm('Clear this conversation?\n\nMessages stay in the database, but the history disappears for you and the member until someone sends a new message.')) return;
+  const r = await api('/chat/conversations/' + CHAT.admin.convId + '/clear', 'POST', {});
+  if (!r || !r.success) return toast((r && r.error) || 'Could not clear the conversation.', 'err');
+  toast('Conversation cleared', 'ok');
+  CHAT.admin.threadSig = '';
+  await chatAdminLoadThread(true);
+  chatAdminLoadList();
+}
+
+async function chatAdminInitiate(userId) {
+  const r = await api('/chat/initiate', 'POST', { user_id: userId });
+  if (!r || !r.success) return toast((r && r.error) || 'Could not open chat.', 'err');
+  if (location.hash.slice(1) !== 'chat') location.hash = 'chat';
+  chatAdminOpen(r.conversation_id);
+}
+
+function initChatAdmin() {
+  $('chatHeading').style.display = '';
+  $('navChat').style.display = '';
+  $('chatBell').style.display = '';
+  $('chatBell').onclick = () => { location.hash = 'chat'; };
+  $('chatConvoSearch').oninput = (e) => { CHAT.admin.q = e.target.value.trim().toLowerCase(); chatAdminRenderList(); };
+  $('chatConvoList').onclick = (e) => { const b = e.target.closest('[data-conv]'); if (b) chatAdminOpen(+b.dataset.conv); };
+  $('chatClearBtn').onclick = chatAdminClear;
+  $('chatReplyForm').onsubmit = (e) => { e.preventDefault(); chatAdminReply(); };
+  $('chatReplyInput').addEventListener('keydown', chatKey);
+  $('chatReplyInput').addEventListener('input', (e) => chatAutoGrow(e.target));
+  clearInterval(CHAT.admin.tick);
+  CHAT.admin.tick = setInterval(() => { if (!document.hidden) chatAdminTick(); }, 5000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) chatAdminTick(); });
+  chatAdminTick();
+}
+
+/* =====================================================================
    6. REFRESH + START
    ===================================================================== */
 async function refreshAll() {
@@ -3287,6 +3657,8 @@ async function refreshAll() {
     if (isSuper()) jobs.push(loadGuideAdmin(), loadInquiries());
     await Promise.all(jobs);
     showSection(location.hash.slice(1));
+    if (CHAT.open) chatLoadMine(false);
+    if (isAdmin()) chatAdminTick();
     toast('Refreshed', 'ok');
   } catch (e) {
     toast('Refresh failed. Check your connection.', 'err');
@@ -3382,7 +3754,7 @@ function startApp() {
   applyPermissions();
   renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies(); renderEvents(); renderMembers();
   renderChecklist(); renderTools(); renderRules(); renderAccount();
-  initGuides(); initEvents(); initChests(); initChestDefs();
+  initGuides(); initEvents(); initChests(); initChestDefs(); initChatUser();
 
   document.body.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) location.hash = g.dataset.go; });
   $('nav').addEventListener('click', (e) => {
