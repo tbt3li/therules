@@ -112,6 +112,19 @@ a.chip{text-decoration:none;display:inline-block}
 .user-brief .badge{margin-top:2px;font-size:9.5px;padding:1px 7px}
 .icon-btn{background:none;border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:8px;font-size:15px}
 .icon-btn:hover{background:var(--input)}
+.update-flag{color:#dc2626;font-weight:800;font-size:12px;line-height:1.2;white-space:nowrap;letter-spacing:.01em;padding-left:4px;animation:update-shake 2.8s ease-in-out infinite;will-change:transform}
+@keyframes update-shake{
+  0%,70%,100%{transform:translateX(0) rotate(0)}
+  72%{transform:translateX(-2px) rotate(-1.2deg)}
+  75%{transform:translateX(2px) rotate(1.2deg)}
+  78%{transform:translateX(-2px) rotate(-1.2deg)}
+  81%{transform:translateX(2px) rotate(1.2deg)}
+  84%{transform:translateX(-1px) rotate(0)}
+  87%{transform:translateX(1px) rotate(0)}
+}
+[data-theme="dark"] .update-flag{color:#ff6b6b}
+@media(max-width:1180px){.update-flag{display:none}}
+@media(prefers-reduced-motion:reduce){.update-flag{animation:none}}
 
 /* ===== LAYOUT: sidebar + main ===== */
 /* ===== SIDEBAR (ported from the FlexAdmin template) ===== */
@@ -591,6 +604,8 @@ tr:hover td{background:var(--table-hover-bg)}
 .input,select.input,textarea.input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--input);
   color:var(--text);font-size:14px}
 .input:focus{outline:none;border-color:var(--primary)}
+.input:disabled{background:var(--input);color:var(--muted);cursor:not-allowed;opacity:.7}
+.badge-solid{font-size:11px;box-shadow:0 2px 10px -2px rgba(0,0,0,.35)}
 label.l{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
 .toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
 .toolbar .input{max-width:340px}
@@ -781,8 +796,7 @@ img{max-width:100%}
 .helper-table-wrapper thead th{position:sticky;top:0;z-index:10;background:var(--table-header-bg);color:var(--heading-color);font-weight:700;border-bottom:2px solid var(--border)}
 .helper-table-wrapper th:first-child,.helper-table-wrapper td:first-child{position:sticky;left:0;z-index:5;background:var(--card);border-right:1px solid var(--border);min-width:44px;width:44px}
 .helper-table-wrapper thead th:first-child{z-index:15;background:var(--table-header-bg)}
-.helper-table-wrapper th:nth-child(2),.helper-table-wrapper td:nth-child(2){position:sticky;left:44px;z-index:5;background:var(--card);border-right:2px solid var(--border);text-align:left;box-shadow:3px 0 6px -2px rgba(0,0,0,.08)}
-.helper-table-wrapper thead th:nth-child(2){z-index:15;background:var(--table-header-bg)}
+.helper-table-wrapper th:nth-child(2),.helper-table-wrapper td:nth-child(2){text-align:left}
 .helper-table-wrapper tbody tr:hover td,.helper-table-wrapper tbody tr:hover th{background:var(--table-hover-bg)}
 .helper-table-wrapper .tdl{text-align:left !important;font-weight:600}
 .helper-table-wrapper .bl{font-weight:700;color:var(--primary)}
@@ -844,6 +858,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
   </a>
   <h2 id="pageTitle" class="page-title-top">Overview</h2>
   <form class="hsearch" id="topSearch" autocomplete="off"><i class="bi bi-search"></i><input type="search" id="topSearchInput" placeholder="Search guides..."></form>
+  <div class="update-flag" role="status" aria-live="polite">we are updating, so stay tuned!</div>
   <div class="hright">
     <div class="utc">Server time (UTC)<b id="utcClock">--:--:--</b></div>
     <button class="btn hbtn-refresh" id="refreshBtn" title="Refresh data"><i class="bi bi-arrow-repeat"></i><span>Refresh</span></button>
@@ -909,7 +924,7 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
       <section class="section" id="s-overview">
         <div class="hero">
           <h1>Welcome back, <span id="heroName">Member</span>! ⚔️</h1>
-          <p style="margin-bottom:10px"><span class="badge" id="heroRole" style="background:rgba(255,255,255,.22);color:#fff"></span></p>
+          <p style="margin-bottom:10px"><span id="heroRole"></span></p>
           <p>Your private HQ for <b>THE Family Gang</b> (Kingdom 34): premium tutorials, loadouts, strategies, game guides and clan stats, all in one place.</p>
           <div class="btns">
             <button class="btn ghost" data-go="tutorials"><i class="fas fa-graduation-cap"></i> Browse Tutorials</button>
@@ -2048,11 +2063,16 @@ function renderAccount() {
 const ROLE_ICON = { superadmin: ['fa-crown', '👑'], admin: ['fa-user-shield', '🛡️'], superior: ['fa-gem', '💎'],
   officer: ['fa-user-tie', '⚔️'], veteran: ['fa-award', '🏅'], member: ['fa-handshake', '🤝'] };
 const roleKeyOf = (label) => String(label || '').toLowerCase().replace(/[^a-z]/g, '');
-const roleIcon = (label, color) => { const k = roleKeyOf(label), r = ROLE_ICON[k]; if (!r) return '';
-  return `<i class="fas ${r[0]}" style="color:${k === 'admin' ? '#dc3545' : color};margin-right:5px"></i>`; };
+const roleIcon = (label, color, force) => { const k = roleKeyOf(label), r = ROLE_ICON[k]; if (!r) return '';
+  return `<i class="fas ${r[0]}" style="color:${force || (k === 'admin' ? '#dc3545' : color)};margin-right:5px"></i>`; };
 const roleEmoji = (label) => { const r = ROLE_ICON[roleKeyOf(label)]; return r ? r[1] + ' ' : ''; };
-const roleBadgeRaw = (label, color) => { const c = /^#[0-9a-fA-F]{3,8}$/.test(color || '') ? color : '#6c757d';
+const MEMBER_BADGE_COLOR = '#16a34a';                 // members are green everywhere (server may still say grey)
+const roleColorOf = (label, color) => roleKeyOf(label) === 'member' ? MEMBER_BADGE_COLOR
+  : (/^#[0-9a-fA-F]{3,8}$/.test(color || '') ? color : '#6c757d');
+const roleBadgeRaw = (label, color) => { const c = roleColorOf(label, color);
   return `<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}66">${roleIcon(label, c)}${esc(label)}</span>`; };
+const roleBadgeSolid = (label, color) => { const c = roleColorOf(label, color);   // filled badge for the coloured hero
+  return `<span class="badge badge-solid" style="background:${c};color:#fff;border:1px solid ${c}">${roleIcon(label, '#fff', '#fff')}${esc(label)}</span>`; };
 
 function applyPermissions() {
   PERMS = new Set(currentUser.permissions || ['overview', 'account']);
@@ -2165,7 +2185,7 @@ function renderUsers() {
         <button class="mini" data-act="demote" data-id="${u.id}" title="Demote" ${me || lk || i >= ADM.roles.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
         <button class="mini" data-act="edit" data-id="${u.id}" title="Edit login details" ${lk ? 'disabled' : ''}><i class="fas fa-pen"></i></button>
         <button class="mini" data-act="toggle" data-id="${u.id}" title="${u.is_active ? 'Disable' : 'Enable'} account" ${me || lk ? 'disabled' : ''}><i class="fas fa-${u.is_active ? 'ban' : 'circle-check'}"></i></button>
-        <button class="mini bad" data-act="delete" data-id="${u.id}" title="Delete" ${me || lk ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
+        <button class="mini bad" data-act="delete" data-id="${u.id}" title="${sup ? 'Delete' : 'Only a Super Admin can delete users'}" ${me || lk || !sup ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
       </div></td></tr>`; }).join('') || `<tr><td colspan="${sup ? 8 : 6}" class="muted">No users found.</td></tr>`);
 }
 
@@ -2190,6 +2210,7 @@ async function onUserAction(e) {
   } else if (act === 'edit') {
     openUserModal(u);
   } else if (act === 'delete') {
+    if (!isSuper()) return toast('Only a Super Admin can delete users.', 'err');
     if (!confirm('Permanently delete ' + u.username + '? This cannot be undone.')) return;
     const r = await api('/admin/users/' + id, 'DELETE');
     toast(r.success ? 'User deleted' : (r.error || 'Failed'), r.success ? 'ok' : 'err');
@@ -2199,18 +2220,21 @@ async function onUserAction(e) {
 
 function openUserModal(u) {
   const isNew = !u, me = u && u.id === currentUser.id;
+  const canEditIdentity = isSuper();                   // only a Super Admin may change username / display name / email
+  const idLock = (!isNew && !canEditIdentity) ? 'disabled' : '';
   const opts = ADM.roles.filter(r => isSuper() || r.role_key !== 'superadmin').map(r => `<option value="${esc(r.role_key)}" ${(u ? u.role : 'member') === r.role_key ? 'selected' : ''}>${roleEmoji(r.label)}${esc(r.label)}</option>`).join('');
   $('modal').innerHTML = `<button class="icon-btn x" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
     <h2>${isNew ? 'Add user' : 'Edit user'}</h2>
     <p class="muted" style="margin-bottom:6px">${isNew ? 'Create a login for a new member.' : 'Change login details, role or status.'}</p>
-    <label class="l">Username</label><input class="input" id="mu_user" value="${escA(u ? u.username || '' : '')}" placeholder="3-24 letters, numbers . _ -">
-    <label class="l">Display name</label><input class="input" id="mu_name" value="${escA(u ? u.name || '' : '')}">
-    <label class="l">Email</label><input class="input" id="mu_email" type="email" value="${escA(u ? u.email : '')}">
+    <label class="l">Username</label><input class="input" id="mu_user" value="${escA(u ? u.username || '' : '')}" placeholder="3-24 letters, numbers . _ -" ${idLock}>
+    <label class="l">Display name</label><input class="input" id="mu_name" value="${escA(u ? u.name || '' : '')}" ${idLock}>
+    <label class="l">Email</label><input class="input" id="mu_email" type="email" value="${escA(u ? u.email : '')}" ${idLock}>
     <label class="l">${isNew ? 'Password' : 'New password (leave empty to keep current)'}</label>
     <div class="pw-row"><input class="input" id="mu_pw" type="text" autocomplete="off" placeholder="min 6 characters"><button class="btn outline sm" type="button" id="mu_gen">Generate</button>${isSuper() ? '<button class="btn outline sm" type="button" id="mu_copy">Copy</button>' : ''}</div>
     <label class="l">Role</label><select class="input" id="mu_role" ${me ? 'disabled' : ''}>${opts}</select>
     ${isNew ? '' : `<label class="check" style="margin-top:14px"><input type="checkbox" id="mu_active" ${u.is_active ? 'checked' : ''} ${me ? 'disabled' : ''}><span>Account active (can log in)</span></label>`}
     ${me ? '<p class="muted" style="font-size:12px;margin-top:8px">You cannot change your own role or disable your own account.</p>' : ''}
+    ${!isNew && !canEditIdentity ? '<p class="muted" style="font-size:12px;margin-top:8px"><i class="fas fa-lock"></i> Only a Super Admin can change a username, display name or email. You can still change the role, password and status.</p>' : ''}
     ${!isNew ? '<p class="muted" style="font-size:12px;margin-top:8px">Changing the password or disabling the account signs the user out everywhere.</p>' : ''}
     <div style="display:flex;gap:10px;margin-top:20px"><button class="btn" id="mu_save">${isNew ? 'Create user' : 'Save changes'}</button><button class="btn outline" onclick="closeModal()">Cancel</button></div>`;
   $('modalBg').classList.add('show');
@@ -2218,7 +2242,16 @@ function openUserModal(u) {
     const a = new Uint32Array(12); crypto.getRandomValues(a); a.forEach(n => p += c[n % c.length]); $('mu_pw').value = p; };
   if ($('mu_copy')) $('mu_copy').onclick = async () => { try { await navigator.clipboard.writeText($('mu_pw').value); toast('Copied', 'ok'); } catch { toast('Copy failed', 'err'); } };
   $('mu_save').onclick = async () => {
-    const body = { username: $('mu_user').value.trim(), name: $('mu_name').value.trim(), email: $('mu_email').value.trim(), role: $('mu_role').value };
+    const body = { role: $('mu_role').value };
+    if (isNew || canEditIdentity) {                    // identity fields are super-admin-only when editing
+      body.username = $('mu_user').value.trim();
+      body.name = $('mu_name').value.trim();
+      body.email = $('mu_email').value.trim();
+    } else if (u) {                                    // send the stored values back unchanged, never the locked inputs
+      body.username = u.username;
+      body.name = u.name || '';
+      body.email = u.email;
+    }
     const pw = $('mu_pw').value; if (pw) body.password = pw;
     if (!isNew && $('mu_active')) body.is_active = $('mu_active').checked;
     $('mu_save').disabled = true;
@@ -3246,7 +3279,7 @@ async function refreshAll() {
     if (r.user.role !== currentUser.role) { location.reload(); return; }   // role changed: rebuild the page
     currentUser = r.user;
     $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
-    $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
+    $('heroRole').innerHTML = roleBadgeSolid(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
     $('sbRole').textContent = currentUser.roleLabel || currentUser.role;
     applyPermissions(); renderAccount();
     const jobs = [loadGuides(), loadEvents(), loadChests(), loadChestDefs()];
@@ -3345,7 +3378,7 @@ function startApp() {
   $('sbName').textContent = name; $('sbAvatar').textContent = name.charAt(0).toUpperCase();
   $('sbRole').textContent = currentUser.roleLabel || currentUser.role;
   $('topRole').innerHTML = roleBadgeRaw(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
-  $('heroRole').innerHTML = roleIcon(currentUser.roleLabel || currentUser.role, '#fff') + esc(currentUser.roleLabel || currentUser.role);
+  $('heroRole').innerHTML = roleBadgeSolid(currentUser.roleLabel || currentUser.role, currentUser.roleColor);
   applyPermissions();
   renderOverview(); renderTutorials(); renderLoadouts(); renderStrategies(); renderEvents(); renderMembers();
   renderChecklist(); renderTools(); renderRules(); renderAccount();
