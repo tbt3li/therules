@@ -101,47 +101,73 @@
 	</div><!-- End Page Title -->
 
 
-	   <!-- Services Section -->
-    <section id="services" class="services section" style="padding: 5px 0 !important;">
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up" style="    padding-bottom: 20px !important;">
-        
-      </div><!-- End Section Title -->
-
-      <div class="container">
-		<div clas="row gy-3">
-		<div class="container-fluid mb-5">
-			<div class="row justify-content-md-center">
-
-			
-				<div class="col-md-4">
-				<a href="rlist.html">
-					<div class="box">
-						<div class="our-services database">
-							<div class="icon"> <img src="../assets/img/researchicon.png"> </div>
-							<h4>Research Cost</h4>
-							<p>Check cost that required for Research completition</p>
-						</div>
-					</div></a>
-				</div>
-				<div class="col-md-4">
-				<a href="#">
-					<div class="box">
-						<div class="our-services settings">
-							<div class="icon"> <img src="../assets/img/buildingicon.png"> </div>
-							<h4>Cost of Buildings</h4>
-							<p>Calculate your Resources that required for Buildings Constructions</p>
-						</div>
-					</div></a>
-				</div>
-				
-			</div>
-		</div>
-		
-		</div>
-      </div>
-    </section><!-- /Services Section -->
+	   <div class="gate">
 	  
+	  <h1>Go to Dashboard</h1>
+	  <p>
+	    To view the <b style="color:blue;">Research Helper</b>, clan chests, premium tutorials and other
+	    resources, please log in with your email.
+	  </p>
+	  <a class="btn-login" href="/login.html">
+	    <i class="fas fa-right-to-bracket"></i> Login
+	  </a>
+	  <small>THE Family Gang · Kingdom 34</small>
+	</div>
+	
+	<style>
+	.gate{
+	  background:var(--card,#fff);
+	  border:1px solid var(--border,#e1dfdd);
+	  border-radius:16px;
+	  box-shadow:0 10px 30px rgba(0,0,0,.10);
+	  padding:48px 36px;
+	  max-width:460px;
+	  width:100%;
+	  margin:40px auto;
+	  text-align:center;
+	}
+	.gate .icon{
+	  width:80px; height:80px;
+	  margin:0 auto 22px;
+	  border-radius:50%;
+	  background:linear-gradient(135deg,var(--primary,#0078d4),var(--accent,#7c4dbd));
+	  color:#fff;
+	  display:flex; align-items:center; justify-content:center;
+	  font-size:32px;
+	  box-shadow:0 8px 20px rgba(0,120,212,.35);
+	}
+	.gate h1{font-size:26px;margin-bottom:10px;color:var(--text,#323130)}
+	.gate p{color:var(--muted,#605e5c);font-size:15px;line-height:1.6;margin-bottom:28px}
+	.gate .btn-login{
+	  display:inline-flex;
+	  align-items:center;
+	  gap:10px;
+	  background:var(--primary,#0078d4);
+	  color:#fff;
+	  text-decoration:none;
+	  font-weight:600;
+	  font-size:16px;
+	  padding:14px 32px;
+	  border-radius:10px;
+	  transition:.15s;
+	  box-shadow:0 4px 14px rgba(0,120,212,.35);
+	}
+	.gate .btn-login:hover{
+	  background:#005a9e;
+	  transform:translateY(-2px);
+	  box-shadow:0 8px 20px rgba(0,120,212,.45);
+	}
+	.gate small{
+	  display:block;
+	  margin-top:22px;
+	  color:var(--muted,#605e5c);
+	  font-size:12.5px;
+	}
+	@media(max-width:480px){
+	  .gate{padding:36px 22px}
+	  .gate h1{font-size:22px}
+	}
+	</style>
 	  
   </main>
 
