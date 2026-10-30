@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- dashboard build: 2026-10-30 · chat optimistic-send v3 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -18,9 +19,13 @@
 </script>
 <script>try{var __t=localStorage.getItem('tb_theme')||'light';document.documentElement.dataset.theme=__t;document.documentElement.setAttribute('data-bs-theme',__t);}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>THE Family Gang | Member Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://login.t3li.workers.dev" crossorigin>
+<link rel="dns-prefetch" href="https://login.t3li.workers.dev">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -869,7 +874,9 @@ mark.rh{background:#ffe58a;color:inherit;border-radius:3px;padding:0 2px}
 .chat-sender{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--primary);margin:0 0 3px 5px}
 .chat-sender i{font-size:10px}
 .chat-sender-time{font-weight:600;color:var(--muted)}
-.chat-time{font-size:10.5px;color:var(--muted);margin-top:3px;padding:0 4px}
+.chat-time{font-size:10.5px;color:var(--muted);margin-top:3px;padding:0 4px;display:flex;align-items:center;gap:4px}
+.chat-state{display:inline-flex;align-items:center;color:var(--muted);font-size:10px}
+.chat-state.bad{color:#dc2626;background:none;border:none;padding:0;cursor:pointer}
 .chat-day{text-align:center;font-size:11px;color:var(--muted);margin:10px 0;text-transform:uppercase;letter-spacing:.05em}
 .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);align-items:flex-end;background:var(--card)}
 .chat-form textarea{flex:1;resize:none;max-height:120px;min-height:42px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--input);color:var(--text);font-size:13.5px;font-family:inherit;line-height:1.4}
@@ -3402,9 +3409,9 @@ function filterGiftTable(q) {
    the heartbeat (members) or the 5s inbox poll (admins).
    ===================================================================== */
 const CHAT = {
-  open: false, messages: [], conv: null, sig: '', timer: null, lastId: 0, clearedAt: null,
+  open: false, messages: [], conv: null, sig: '', timer: null, lastId: 0, clearedAt: null, tmpSeq: 0,
   admin: { list: [], now: 0, convId: null, conv: null, q: '', threadSig: '', tick: null, thread: null,
-           messages: [], lastId: 0, clearedAt: null, threadFor: null }
+           messages: [], lastId: 0, clearedAt: null, threadFor: null, tmpSeq: 0 }
 };
 
 const chatClock = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -3418,7 +3425,9 @@ function chatMessagesHtml(msgs) {
     const staff = !m.mine && m.sender_role !== 'member';
     const who = staff
       ? `<div class="chat-sender"><i class="fas fa-headset"></i>${esc(m.sender_username || (m.sender_role === 'superadmin' ? 'Super Admin' : 'Support'))} <span class="chat-sender-time">(${chatClock(m.created_at)})</span></div>` : '';
-    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}">${who}<div class="chat-bubble">${esc(m.message)}</div>${staff ? '' : `<div class="chat-time">${chatClock(m.created_at)}</div>`}</div>`;
+    const state = m.pending ? '<span class="chat-state"><i class="fas fa-circle-notch fa-spin"></i></span>'
+      : m.failed ? `<button type="button" class="chat-state bad" data-retry="${esc(String(m.id))}" title="Not sent — click to retry"><i class="fas fa-circle-exclamation"></i></button>` : '';
+    html += `<div class="chat-line ${m.mine ? 'me' : 'them'}">${who}<div class="chat-bubble">${esc(m.message)}</div>${staff ? '' : `<div class="chat-time">${chatClock(m.created_at)}${state}</div>`}</div>`;
   });
   return html;
 }
@@ -3462,19 +3471,17 @@ async function chatLoadMine(initial) {
   if (incoming.length) {
     const seen = new Set(CHAT.messages.map((m) => m.id));
     incoming.forEach((m) => { if (!seen.has(m.id)) { CHAT.messages.push(m); seen.add(m.id); } });
-    CHAT.messages.sort((a, b) => a.id - b.id);
+    CHAT.messages.sort((a, b) => (a.created_at - b.created_at) || 0);
   }
   CHAT.clearedAt = nowCleared;
   CHAT.conv = r.conversation || CHAT.conv;
+  const lastNumeric = [...CHAT.messages].reverse().find((m) => typeof m.id === 'number');
+  if (lastNumeric) CHAT.lastId = Math.max(CHAT.lastId || 0, lastNumeric.id);
   const last = CHAT.messages[CHAT.messages.length - 1];
-  if (last) CHAT.lastId = Math.max(CHAT.lastId, last.id);
   const sig = CHAT.messages.length + ':' + (last ? last.id : 0) + ':' + (r.unread || 0) + ':' + (nowCleared || 0);
   if (!full && sig === CHAT.sig) return;
   CHAT.sig = sig;
-  const body = $('chatPanelBody');
-  body.innerHTML = CHAT.messages.length ? chatMessagesHtml(CHAT.messages)
-    : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>Start the conversation</b><span>Send a message and the clan team will reply here.</span></div>';
-  chatScroll(body);
+  chatRenderMineBody();
   if (r.unread) { chatFabDot(false); api('/chat/read', 'POST', {}); }
 }
 
@@ -3486,7 +3493,7 @@ function chatOpenWidget() {
   $('chatPanelBody').innerHTML = '<div class="chat-empty"><i class="fas fa-spinner fa-spin"></i><span>Loading messages…</span></div>';
   chatLoadMine(true);
   clearInterval(CHAT.timer);
-  CHAT.timer = setInterval(() => { if (!document.hidden && CHAT.open) chatLoadMine(false); }, 2000);
+  CHAT.timer = setInterval(() => { if (!document.hidden && CHAT.open) chatLoadMine(false); }, 1500);
   setTimeout(() => { const i = $('chatInput'); if (i) i.focus(); }, 120);
 }
 function chatCloseWidget() {
@@ -3499,26 +3506,48 @@ function chatCloseWidget() {
 async function chatSendMine() {
   const inp = $('chatInput'), text = inp.value.trim();
   if (!text) return;
-  const btn = $('chatForm').querySelector('.chat-send');
-  btn.disabled = true;
+  inp.value = ''; chatAutoGrow(inp);                  // clear at once: the user never waits on the network
+  inp.focus();
+  const tmp = {
+    id: 'tmp' + (++CHAT.tmpSeq), conversation_id: CHAT.conv ? CHAT.conv.id : 0,
+    sender_id: currentUser.id, sender_role: 'member', sender_username: currentUser.username,
+    sender_name: currentUser.name, message: text, created_at: Date.now(), read_at: null, mine: true, pending: true
+  };
+  CHAT.messages.push(tmp);
+  chatRenderMineBody();
   const r = await api('/chat/send', 'POST', { message: text });
-  btn.disabled = false;
-  if (!r || !r.success) return toast((r && r.error) || 'Message not sent.', 'err');
-  inp.value = ''; chatAutoGrow(inp);
-  if (r.message) {                                    // show instantly, no extra round trip
-    if (!CHAT.messages.some((m) => m.id === r.message.id)) CHAT.messages.push(r.message);
-    CHAT.lastId = Math.max(CHAT.lastId, r.message.id);
+  const i = CHAT.messages.indexOf(tmp);
+  if (r && r.success && r.message) {
+    if (i >= 0) CHAT.messages[i] = r.message; else CHAT.messages.push(r.message);
+    CHAT.lastId = Math.max(CHAT.lastId || 0, r.message.id);
     CHAT.sig = '';
-    const body = $('chatPanelBody');
-    body.innerHTML = chatMessagesHtml(CHAT.messages);
-    chatScroll(body);
+  } else if (i >= 0) {
+    CHAT.messages[i].pending = false;
+    CHAT.messages[i].failed = true;
+    toast((r && r.error) || 'Message not sent. Click the red icon to try again.', 'err');
   }
+  chatRenderMineBody();
+}
+
+function chatRenderMineBody() {
+  const body = $('chatPanelBody');
+  body.innerHTML = CHAT.messages.length ? chatMessagesHtml(CHAT.messages)
+    : '<div class="chat-empty"><i class="ph-light ph-chat-circle-dots"></i><b>Start the conversation</b><span>Send a message and the clan team will reply here.</span></div>';
+  chatScroll(body);
 }
 
 function initChatUser() {
   $('chatFab').onclick = () => (CHAT.open ? chatCloseWidget() : chatOpenWidget());
   $('chatPanelClose').onclick = chatCloseWidget;
   $('chatForm').onsubmit = (e) => { e.preventDefault(); chatSendMine(); };
+  $('chatPanelBody').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-retry]'); if (!b) return;
+    const m = CHAT.messages.find((x) => String(x.id) === b.dataset.retry && x.failed);
+    if (!m) return;
+    CHAT.messages = CHAT.messages.filter((x) => x !== m);
+    chatRenderMineBody();
+    const inp = $('chatInput'); inp.value = m.message; chatAutoGrow(inp); inp.focus();
+  });
   $('chatInput').addEventListener('keydown', chatKey);
   $('chatInput').addEventListener('input', (e) => chatAutoGrow(e.target));
   setInterval(chatHeartbeat, 30000);
@@ -3573,7 +3602,7 @@ function chatAdminHead(c) {
 
 function chatAdminResume() {
   if (CHAT.admin.thread || !CHAT.admin.convId) return;
-  CHAT.admin.thread = setInterval(() => { if (!document.hidden && CHAT.admin.convId) chatAdminLoadThread(false); }, 2000);
+  CHAT.admin.thread = setInterval(() => { if (!document.hidden && CHAT.admin.convId) chatAdminLoadThread(false); }, 1500);
 }
 
 function chatAdminOpen(id) {
@@ -3616,11 +3645,12 @@ async function chatAdminLoadThread(initial) {
   if (incoming.length) {
     const seen = new Set(CHAT.admin.messages.map((m) => m.id));
     incoming.forEach((m) => { if (!seen.has(m.id)) { CHAT.admin.messages.push(m); seen.add(m.id); } });
-    CHAT.admin.messages.sort((a, b) => a.id - b.id);
+    CHAT.admin.messages.sort((a, b) => (a.created_at - b.created_at) || 0);
   }
   CHAT.admin.clearedAt = nowCleared;
+  const lastNumeric = [...CHAT.admin.messages].reverse().find((m) => typeof m.id === 'number');
+  if (lastNumeric) CHAT.admin.lastId = Math.max(CHAT.admin.lastId || 0, lastNumeric.id);
   const last = CHAT.admin.messages[CHAT.admin.messages.length - 1];
-  if (last) CHAT.admin.lastId = Math.max(CHAT.admin.lastId, last.id);
   const item = CHAT.admin.list.find((c) => c.id === id);
   chatAdminHead(Object.assign({}, r.conversation || {}, item ? { online: item.online } : {}));
   const sig = id + ':' + CHAT.admin.messages.length + ':' + (last ? last.id : 0) + ':' + (nowCleared || 0);
@@ -3638,18 +3668,27 @@ async function chatAdminReply() {
   if (!CHAT.admin.convId) return;
   const inp = $('chatReplyInput'), text = inp.value.trim();
   if (!text) return;
-  const btn = $('chatReplyForm').querySelector('.chat-send');
-  btn.disabled = true;
+  inp.value = ''; chatAutoGrow(inp);                  // instant feedback, network runs in the background
+  inp.focus();
+  const tmp = {
+    id: 'tmp' + (++CHAT.admin.tmpSeq), conversation_id: CHAT.admin.convId,
+    sender_id: currentUser.id, sender_role: currentUser.role, sender_username: currentUser.username,
+    sender_name: currentUser.name, message: text, created_at: Date.now(), read_at: null, mine: true, pending: true
+  };
+  CHAT.admin.messages.push(tmp);
+  chatAdminRenderThread();
   const r = await api('/chat/conversations/' + CHAT.admin.convId + '/reply', 'POST', { message: text });
-  btn.disabled = false;
-  if (!r || !r.success) return toast((r && r.error) || 'Reply not sent.', 'err');
-  inp.value = ''; chatAutoGrow(inp);
-  if (r.message) {                                    // show instantly, no extra round trip
-    if (!CHAT.admin.messages.some((m) => m.id === r.message.id)) CHAT.admin.messages.push(r.message);
-    CHAT.admin.lastId = Math.max(CHAT.admin.lastId, r.message.id);
+  const i = CHAT.admin.messages.indexOf(tmp);
+  if (r && r.success && r.message) {
+    if (i >= 0) CHAT.admin.messages[i] = r.message; else CHAT.admin.messages.push(r.message);
+    CHAT.admin.lastId = Math.max(CHAT.admin.lastId || 0, r.message.id);
     CHAT.admin.threadSig = '';
-    chatAdminRenderThread();
+  } else if (i >= 0) {
+    CHAT.admin.messages[i].pending = false;
+    CHAT.admin.messages[i].failed = true;
+    toast((r && r.error) || 'Reply not sent. Click the red icon to try again.', 'err');
   }
+  chatAdminRenderThread();
   chatAdminLoadList();
 }
 
@@ -3680,10 +3719,18 @@ function initChatAdmin() {
   $('chatConvoList').onclick = (e) => { const b = e.target.closest('[data-conv]'); if (b) chatAdminOpen(+b.dataset.conv); };
   $('chatClearBtn').onclick = chatAdminClear;
   $('chatReplyForm').onsubmit = (e) => { e.preventDefault(); chatAdminReply(); };
+  $('chatThreadBody').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-retry]'); if (!b) return;
+    const m = CHAT.admin.messages.find((x) => String(x.id) === b.dataset.retry && x.failed);
+    if (!m) return;
+    CHAT.admin.messages = CHAT.admin.messages.filter((x) => x !== m);
+    chatAdminRenderThread();
+    const inp = $('chatReplyInput'); inp.value = m.message; chatAutoGrow(inp); inp.focus();
+  });
   $('chatReplyInput').addEventListener('keydown', chatKey);
   $('chatReplyInput').addEventListener('input', (e) => chatAutoGrow(e.target));
   clearInterval(CHAT.admin.tick);
-  CHAT.admin.tick = setInterval(() => { if (!document.hidden) chatAdminTick(); }, 3000);
+  CHAT.admin.tick = setInterval(() => { if (!document.hidden) chatAdminTick(); }, 2500);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) chatAdminTick(); });
   chatAdminTick();
 }
