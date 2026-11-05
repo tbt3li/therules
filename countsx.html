@@ -445,7 +445,9 @@
       buildCols(); render();
       const badge = j.stale ? '<span class="pill stale">showing last saved data</span>' : '<span class="pill ok">live</span>';
       $("status").innerHTML = "Data updated: " + fmtDT(j.fetchedAt) + " " + badge +
-        (offset === 0 ? "<br>Next update: " + fmtDT(j.nextRefresh) : "");
+      (j.stale && j.error ? '<br><small style="color:var(--bad)">Update failed: ' + 
+         String(j.error).replace(/</g, "&lt;") + '</small>' : "") +
+      (offset === 0 ? "<br>Next update: " + fmtDT(j.nextRefresh) : "");
     } catch (e) {
       meta.nextRefresh = Date.now() + 6e4;
       if (!players.length) { $("tablebox").innerHTML = '<div class="msg">⚠️ Could not load data.<br><small></small></div>'; $("tablebox").querySelector("small").textContent = e.message; }
